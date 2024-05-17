@@ -1,62 +1,43 @@
-import { Selector } from '@/components/common/Selector';
-import { Circle, Image, Text } from '@node-real/uikit';
+import { Selector, SelectorProps } from '@/components/common/Selector';
+import { Circle, Flex, Image, Text } from '@node-real/uikit';
 
-export interface TokenSelectorProps {
-  title: React.ReactNode;
-  value: string;
-  chain: string;
-  onChange: (value: string) => void;
+export interface TokenSelectorProps extends SelectorProps {
+  options: Array<{
+    icon: string;
+    value: any;
+    label: React.ReactNode;
+    symbol: React.ReactNode;
+  }>;
 }
 
 export function TokenSelector(props: TokenSelectorProps) {
-  const { title, value, onChange } = props;
+  const { title, value, options, onChange, ...restProps } = props;
 
-  const options = [
-    {
-      value: 'USDT',
-      label: 'USDT',
-      icon: <Image src="https://get.celer.app/cbridge-icons/USDT.png" alt="" />,
-    },
-    {
-      value: 'USDT2',
-      label: 'USDT2',
-      icon: <Image src="https://get.celer.app/cbridge-icons/USDT.png" alt="" />,
-    },
-    {
-      value: 'USDT3',
-      label: 'USDT3',
-      icon: <Image src="https://get.celer.app/cbridge-icons/USDT.png" alt="" />,
-    },
-    {
-      value: 'USDT4',
-      label: 'USDT4',
-      icon: <Image src="https://get.celer.app/cbridge-icons/USDT.png" alt="" />,
-    },
-    {
-      value: 'USDT4',
-      label: 'USDT4',
-      icon: <Image src="https://get.celer.app/cbridge-icons/USDT.png" alt="" />,
-    },
-    {
-      value: 'USDT4',
-      label: 'USDT4',
-      icon: <Image src="https://get.celer.app/cbridge-icons/USDT.png" alt="" />,
-    },
-    {
-      value: 'USDT4',
-      label: 'USDT4',
-      icon: <Image src="https://get.celer.app/cbridge-icons/USDT.png" alt="" />,
-    },
-  ];
-
+  const finalOptions = options.map((item) => ({
+    value: item.value,
+    label: (
+      <Flex alignItems="center" gap={16}>
+        <Circle boxSize={24} overflow="hidden">
+          <Image src={item.icon} alt={item.value} />
+        </Circle>
+        {item.label}
+      </Flex>
+    ),
+  }));
   const selectedOption = options.find((item) => item.value === value);
 
   return (
-    <Selector title={title} value={value} options={options} onChange={onChange}>
+    <Selector
+      title={title}
+      value={value}
+      options={finalOptions}
+      onChange={onChange}
+      {...restProps}
+    >
       <Circle boxSize={24} overflow="hidden">
-        {selectedOption?.icon}
+        <Image src={selectedOption?.icon} alt={selectedOption?.value} />
       </Circle>
-      <Text>{selectedOption?.value}</Text>
+      <Text>{selectedOption?.symbol}</Text>
     </Selector>
   );
 }

@@ -2,7 +2,6 @@ import { MenuCloseIcon } from '@node-real/icons';
 import {
   Button,
   ButtonProps,
-  Circle,
   Flex,
   Modal,
   ModalBody,
@@ -12,19 +11,26 @@ import {
 } from '@node-real/uikit';
 
 export interface SelectorProps extends Omit<ButtonProps, 'title' | 'onChange'> {
+  isDisabled?: boolean;
   title: React.ReactNode;
   value: any;
   options: Array<{
     value: any;
-    icon: React.ReactNode;
     label: React.ReactNode;
-    rightElement?: React.ReactNode;
   }>;
   onChange: (value: any) => void;
 }
 
 export function Selector(props: SelectorProps) {
-  const { title, value, options, onChange, children, ...restProps } = props;
+  const {
+    isDisabled = false,
+    title,
+    value,
+    options,
+    onChange,
+    children,
+    ...restProps
+  } = props;
 
   const { isOpen, onClose, onOpen } = useDisclosure();
 
@@ -36,7 +42,7 @@ export function Selector(props: SelectorProps) {
   return (
     <>
       <Button
-        onClick={onOpen}
+        onClick={isDisabled ? undefined : onOpen}
         borderRadius={16}
         flexShrink={0}
         h={40}
@@ -49,7 +55,7 @@ export function Selector(props: SelectorProps) {
         {...restProps}
       >
         {children}
-        <MenuCloseIcon />
+        {!isDisabled && <MenuCloseIcon />}
       </Button>
 
       <Modal isOpen={isOpen} onClose={onClose}>
@@ -82,11 +88,7 @@ export function Selector(props: SelectorProps) {
                 cursor="pointer"
                 flexShrink={0}
               >
-                <Circle boxSize={28} overflow="hidden">
-                  {item.icon}
-                </Circle>
                 {item.label}
-                {item.rightElement}
               </Flex>
             );
           })}

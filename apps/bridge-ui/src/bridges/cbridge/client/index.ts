@@ -1,4 +1,4 @@
-import { WebClient } from '@/adapters/bridges/cbridge/ts-proto/gateway/GatewayServiceClientPb';
+import { WebClient } from '@/bridges/cbridge/ts-proto/gateway/GatewayServiceClientPb';
 import { CLIENT_TIME_OUT } from '@/config/app';
 import { env } from '@/config/env';
 import axios from 'axios';

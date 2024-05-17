@@ -44,5 +44,5 @@
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": "explicit"
   },
-  "cSpell.words": ["cbridge", "protobuf", "tanstack"]
+  "cSpell.words": ["cbridge", "protobuf", "reduxjs", "tanstack"]
 }
