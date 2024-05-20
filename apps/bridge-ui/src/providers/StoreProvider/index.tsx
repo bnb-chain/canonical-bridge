@@ -25,7 +25,7 @@ export function StoreProvider(props: StoreProviderProps) {
 
   const [fromChainId, setFromChainId] = useState<number>(97);
   const [fromTokenAddress, setFromTokenAddress] = useState<string>('');
-  const [transferValue, setTransferValue] = useState<string>('');
+  const [transferValue, setTransferValue] = useState<string>('0');
   const [toChainId, setToChainId] = useState<number>(0);
   const [toTokenAddress, setToTokenAddress] = useState<string>('');
 

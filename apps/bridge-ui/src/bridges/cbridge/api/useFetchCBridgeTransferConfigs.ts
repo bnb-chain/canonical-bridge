@@ -1,12 +1,100 @@
 import { cBridgeApiClient } from '@/bridges/cbridge/client';
-import { ICBridgeTransferConfig } from '@/bridges/cbridge/types';
+import {
+  CBridgeEstimateAmountResponse,
+  CBridgeTransferConfigResponse,
+  CBridgeTransferHistoryResponse,
+  CBridgeTransferStatusResponse,
+} from '@/bridges/cbridge/types';
 import { useQuery } from '@tanstack/react-query';
 
 export function useFetchCBridgeTransferConfigs() {
-  return useQuery<ICBridgeTransferConfig>({
-    queryKey: ['cbridge-transfer-configs'],
+  return useQuery<CBridgeTransferConfigResponse>({
+    queryKey: ['cbridge/getTransferConfigsForAll'],
     queryFn: async () => {
       return (await cBridgeApiClient.get('v2/getTransferConfigsForAll')).data;
+    },
+  });
+}
+
+export function useFetchCBridgeEstimateAmount({
+  srcChainId,
+  dstChainId,
+  tokenSymbol,
+  amount,
+  userAddress,
+  slippageTolerance,
+  isPegged = false,
+}: {
+  srcChainId: number;
+  dstChainId: number;
+  tokenSymbol: string;
+  amount: number;
+  userAddress?: string;
+  slippageTolerance: number;
+  isPegged?: boolean;
+}) {
+  const params = {
+    src_chain_id: srcChainId,
+    dst_chain_id: dstChainId,
+    token_symbol: tokenSymbol,
+    amt: amount,
+    usr_addr: userAddress,
+    slippage_tolerance: slippageTolerance,
+    is_pegged: isPegged,
+  };
+
+  return useQuery<CBridgeEstimateAmountResponse>({
+    queryKey: ['cbridge/estimateAmt', JSON.stringify(params)],
+    queryFn: async () => {
+      return (
+        await cBridgeApiClient.get(`v2/estimateAmt`, {
+          params,
+        })
+      ).data;
+    },
+  });
+}
+
+export function useFetchCBridgeTransferStatus({
+  transferId,
+}: {
+  transferId: string;
+}) {
+  return useQuery<CBridgeTransferStatusResponse>({
+    queryKey: ['cbridge/getTransferStatus', transferId],
+    queryFn: async () => {
+      return (
+        await cBridgeApiClient.post(`v2/getTransferStatus`, {
+          transfer_id: transferId,
+        })
+      ).data;
+    },
+  });
+}
+
+export function useFetchCBridgeTransferHistory({
+  nextPageToken,
+  pageSize,
+  accounts,
+}: {
+  nextPageToken?: string;
+  pageSize: number;
+  accounts: string[];
+}) {
+  const params = {
+    'acct_addr[]': accounts.join(','),
+    next_page_token: nextPageToken,
+    page_size: pageSize,
+  };
+
+  return useQuery<CBridgeTransferHistoryResponse>({
+    queryKey: ['cbridge/transferHistory', JSON.stringify(params)],
+    queryFn: async () => {
+      return (
+        await cBridgeApiClient.get(`v2/transferHistory`, {
+          params: params,
+        })
+      ).data;
     },
   });
 }

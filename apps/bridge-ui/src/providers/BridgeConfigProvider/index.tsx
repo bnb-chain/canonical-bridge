@@ -1,17 +1,17 @@
 import { useFetchCBridgeTransferConfigs } from '@/bridges/cbridge/api/useFetchCBridgeTransferConfigs';
 import {
-  ICBridgeChain,
-  ICBridgePeggedPairConfig,
-  ICBridgeToken,
-  ICBridgeTransferConfig,
+  CBridgeChain,
+  CBridgePeggedPairConfig,
+  CBridgeToken,
+  CBridgeTransferConfigResponse,
 } from '@/bridges/cbridge/types';
 import React, { useMemo } from 'react';
 
 export interface BridgeConfigContextProps {
-  chainsMap: Map<number, ICBridgeChain>;
-  chainTokensMap: Map<number, ICBridgeToken[]>;
-  farmingRewardContractAddr: ICBridgeTransferConfig['farming_reward_contract_addr'];
-  peggedPairConfigs: ICBridgePeggedPairConfig[];
+  chainsMap: Map<number, CBridgeChain>;
+  chainTokensMap: Map<number, CBridgeToken[]>;
+  farmingRewardContractAddr: CBridgeTransferConfigResponse['farming_reward_contract_addr'];
+  peggedPairConfigs: CBridgePeggedPairConfig[];
 }
 
 export const BridgeConfigContext = React.createContext(
@@ -38,7 +38,7 @@ export function BridgeConfigProvider(props: BridgeConfigProviderProps) {
   );
 }
 
-function getTransferConfig(config = {} as ICBridgeTransferConfig) {
+function getTransferConfig(config = {} as CBridgeTransferConfigResponse) {
   const {
     chains = [],
     chain_token = {},
@@ -46,8 +46,8 @@ function getTransferConfig(config = {} as ICBridgeTransferConfig) {
     pegged_pair_configs = [],
   } = config;
 
-  const chainsMap = new Map<number, ICBridgeChain>();
-  const chainTokensMap = new Map<number, ICBridgeToken[]>();
+  const chainsMap = new Map<number, CBridgeChain>();
+  const chainTokensMap = new Map<number, CBridgeToken[]>();
 
   chains.forEach((chainItem) => {
     chainsMap.set(chainItem.id, chainItem);
@@ -58,7 +58,7 @@ function getTransferConfig(config = {} as ICBridgeTransferConfig) {
     }
   });
 
-  const checkPeggedPair = (chainId: number, token: ICBridgeToken) => {
+  const checkPeggedPair = (chainId: number, token: CBridgeToken) => {
     const hasChainInfo = chainsMap.has(chainId);
     const isEnabledToken = !token.token.xfer_disabled;
 

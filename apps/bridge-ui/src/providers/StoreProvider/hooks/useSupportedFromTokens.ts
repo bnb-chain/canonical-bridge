@@ -1,4 +1,4 @@
-import { ICBridgeToken } from '@/bridges/cbridge/types';
+import { CBridgeToken } from '@/bridges/cbridge/types';
 import { useBridgeConfig } from '@/providers/BridgeConfigProvider/hooks/useBridgeConfig';
 import { useStore } from '@/providers/StoreProvider/hooks/useStore';
 import { useMemo } from 'react';
@@ -8,7 +8,7 @@ export function useSupportedFromTokens() {
   const { fromChainId, toChainId } = useStore();
 
   const tokens = useMemo(() => {
-    const tokens: ICBridgeToken[] = [];
+    const tokens: CBridgeToken[] = [];
 
     peggedPairConfigs.forEach((ppItem) => {
       if (

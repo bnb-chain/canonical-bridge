@@ -1,4 +1,4 @@
-import { ICBridgeChain } from '@/bridges/cbridge/types';
+import { CBridgeChain } from '@/bridges/cbridge/types';
 import { useBridgeConfig } from '@/providers/BridgeConfigProvider/hooks/useBridgeConfig';
 import { useStore } from '@/providers/StoreProvider/hooks/useStore';
 import { useMemo } from 'react';
@@ -8,7 +8,7 @@ export function useSupportedToChains() {
   const { fromChainId } = useStore();
 
   const chains = useMemo(() => {
-    const tmpChainsMap = new Map<number, ICBridgeChain>();
+    const tmpChainsMap = new Map<number, CBridgeChain>();
 
     peggedPairConfigs.forEach((ppItem) => {
       if (ppItem.org_chain_id === fromChainId) {
