@@ -1,7 +1,7 @@
-import { deBridgeApiClient } from '@/bridges/debridge/client';
 import { useQuery } from '@tanstack/react-query';
+import { getDeBridgeTxQuote } from '@/bridges/debridge/api';
 
-export const useFetchDeBridgeOrderQuote = (params: {
+export const useCreateOrderTx = (params: {
   srcChainId: string; // src chain id
   srcChainTokenIn: string; // asset address
   srcChainTokenInAmount: string; // asset amount
@@ -14,8 +14,15 @@ export const useFetchDeBridgeOrderQuote = (params: {
   dstIntermediaryTokenSpenderAddress?: string;
   intermediaryTokenUSDPrice?: string;
   slippage?: number;
+  dstChainTokenOutRecipient?: string;
+  srcChainOrderAuthorityAddress?: string; //an address a user has access to
+  referralCode?: number;
+  senderAddress?: string;
   affiliateFeePercent?: number;
+  affiliateFeeRecipient?: string;
   prependOperatingExpenses?: boolean;
+  srcChainTokenInSenderPermit?: string;
+  dstChainOrderAuthorityAddress?: string; //an address a user has access to
 }) => {
   const urlParams = new URLSearchParams(params as any);
   [...urlParams.entries()].forEach(([key, value]) => {
@@ -25,7 +32,7 @@ export const useFetchDeBridgeOrderQuote = (params: {
   });
   return useQuery<any>({
     queryKey: [
-      'debridge-order-quote',
+      'debridge-create-tx',
       params.srcChainId,
       params.srcChainTokenIn,
       params.srcChainTokenInAmount,
@@ -33,10 +40,7 @@ export const useFetchDeBridgeOrderQuote = (params: {
       params.dstChainTokenOut,
     ],
     queryFn: async () => {
-      return (
-        await deBridgeApiClient.get(`/dln/order/quote?${urlParams.toString()}`)
-      ).data;
+      return getDeBridgeTxQuote(urlParams);
     },
-    staleTime: 1000 * 5,
   });
 };
