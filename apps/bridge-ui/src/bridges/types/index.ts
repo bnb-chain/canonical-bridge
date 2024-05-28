@@ -4,12 +4,14 @@ export interface TokenPair {
     name: string;
     symbol: string;
     address: string;
+    decimals: number;
   };
   dst_chain_id: number;
   dst_token: {
     name: string;
     symbol: string;
     address: string;
+    decimals: number;
   };
   bridge_type: 'cbridge' | 'debridge';
 }
