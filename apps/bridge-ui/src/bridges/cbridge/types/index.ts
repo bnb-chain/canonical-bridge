@@ -21,6 +21,7 @@ export interface CBridgeToken {
     address: string;
     decimal: number;
     xfer_disabled: boolean;
+    display_symbol?: string; /// FOR ETH <=====> WETH
   };
   name: string;
   icon: string;
@@ -114,4 +115,23 @@ export interface CBridgeTransferHistoryResponse {
   history: CBridgeTransferHistory[];
   next_page_token: string;
   current_size: string;
+}
+
+interface BurnConfig {
+  chain_id: number;
+  token: CBridgeToken;
+  burn_contract_addr: string;
+  canonical_token_contract_addr: string;
+  burn_contract_version: number;
+}
+
+/// burn_config_as_org.bridge_version === 2
+/// burn_config_as_dst.bridge_version is not required
+/// If the bridge_version of burnConfig1 and burnConfig2 are 2,
+/// There should be two MultiBurnPairConfigs
+/// 1: burnConfig1 ----> burnConfig2
+/// 2: burnConfig2 ----> burnConfig1
+export interface MultiBurnPairConfig {
+  burn_config_as_org: BurnConfig; /// Could be used only as from chain
+  burn_config_as_dst: BurnConfig; /// Could be used only as to chain
 }

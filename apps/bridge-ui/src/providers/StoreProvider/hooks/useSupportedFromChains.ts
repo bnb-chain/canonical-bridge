@@ -3,24 +3,17 @@ import { useBridgeConfig } from '@/providers/BridgeConfigProvider/hooks/useBridg
 import { useMemo } from 'react';
 
 export function useSupportedFromChains() {
-  const { chainsMap, peggedPairConfigs } = useBridgeConfig();
+  const { CBSupportedFromChains } = useBridgeConfig();
 
   const chains = useMemo(() => {
-    const tmpChainsMap = new Map<number, CBridgeChain>();
+    // const tmpChainsMap = new Map<number, CBridgeChain>();
 
-    peggedPairConfigs.forEach((ppItem) => {
-      tmpChainsMap.set(
-        ppItem.org_chain_id,
-        chainsMap.get(ppItem.org_chain_id)!
-      );
-    });
-
-    const chains = [...tmpChainsMap.values()].sort((a, b) =>
-      a.name < b.name ? -1 : 1
+    const chains = CBSupportedFromChains.sort(
+      (a: CBridgeChain, b: CBridgeChain) => (a.name < b.name ? -1 : 1)
     );
 
     return chains;
-  }, [chainsMap, peggedPairConfigs]);
+  }, [CBSupportedFromChains]);
 
   return chains;
 }
