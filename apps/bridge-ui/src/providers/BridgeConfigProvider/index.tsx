@@ -5,6 +5,7 @@ import {
   CBridgeToken,
   CBridgeTransferConfigResponse,
 } from '@/bridges/cbridge/types';
+import { getSupportedFromChains } from '@/bridges/cbridge/utils';
 import React, { useMemo } from 'react';
 
 export interface BridgeConfigContextProps {
@@ -12,6 +13,7 @@ export interface BridgeConfigContextProps {
   chainTokensMap: Map<number, CBridgeToken[]>;
   farmingRewardContractAddr: CBridgeTransferConfigResponse['farming_reward_contract_addr'];
   peggedPairConfigs: CBridgePeggedPairConfig[];
+  CBSupportedFromChains: CBridgeChain[];
 }
 
 export const BridgeConfigContext = React.createContext(
@@ -72,10 +74,14 @@ function getTransferConfig(config = {} as CBridgeTransferConfigResponse) {
     );
   });
 
+  // Get pegged and pool-based supported chains
+  const CBSupportedFromChains = getSupportedFromChains(config);
+
   return {
     chainsMap,
     chainTokensMap,
     farmingRewardContractAddr: farming_reward_contract_addr,
     peggedPairConfigs: filteredPeggedPairConfigs,
+    CBSupportedFromChains,
   };
 }

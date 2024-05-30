@@ -1,5 +1,6 @@
 import { ChainSelector } from '@/app/transfer/components/ChainSelector';
 import { TokenSelector } from '@/app/transfer/components/TokenSelector';
+import { CBridgeChain } from '@/bridges/cbridge/types';
 import { useStore } from '@/providers/StoreProvider/hooks/useStore';
 import { useSupportedFromChains } from '@/providers/StoreProvider/hooks/useSupportedFromChains';
 import { useSupportedFromTokens } from '@/providers/StoreProvider/hooks/useSupportedFromTokens';
@@ -20,7 +21,7 @@ export function FromBlock() {
   const tokens = useSupportedFromTokens();
 
   const chainOptions = useMemo(() => {
-    return chains.map((item) => ({
+    return chains.map((item: CBridgeChain) => ({
       value: item.id,
       label: item.name,
       icon: item.icon,
