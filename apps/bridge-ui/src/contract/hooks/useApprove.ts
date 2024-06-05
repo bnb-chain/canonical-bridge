@@ -25,9 +25,9 @@ export const useApprove = () => {
         });
         setIsLoadingAllowance(false);
         return allowance;
-      } catch (e) {
+      } catch (e: any) {
         // eslint-disable-next-line no-console
-        console.log(e);
+        console.log(e, e?.message);
       }
     },
     [address]
@@ -47,9 +47,9 @@ export const useApprove = () => {
         });
         setIsLoadingApprove(false);
         return hash;
-      } catch (e) {
+      } catch (e: any) {
         // eslint-disable-next-line no-console
-        console.log(e);
+        console.log(e, e.message);
       }
     },
     [walletClient, address]

@@ -2,6 +2,7 @@ import { cBridgeApiClient } from '@/bridges/cbridge/client';
 import {
   CBridgeEstimateAmountResponse,
   CBridgeTransferConfigResponse,
+  CBridgeTransferEstimatedTime,
   CBridgeTransferHistoryResponse,
   CBridgeTransferStatusResponse,
 } from '@/bridges/cbridge/types';
@@ -52,6 +53,7 @@ export function useFetchCBridgeEstimateAmount({
         })
       ).data;
     },
+    enabled: !!srcChainId && !!dstChainId && !!tokenSymbol && !!amount,
   });
 }
 
@@ -64,9 +66,17 @@ export function useFetchCBridgeTransferStatus({
     queryKey: ['cbridge/getTransferStatus', transferId],
     queryFn: async () => {
       return (
-        await cBridgeApiClient.post(`v2/getTransferStatus`, {
-          transfer_id: transferId,
-        })
+        await cBridgeApiClient.post(
+          `v2/getTransferStatus`,
+          {
+            transfer_id: transferId,
+          },
+          {
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          }
+        )
       ).data;
     },
   });
@@ -98,3 +108,28 @@ export function useFetchCBridgeTransferHistory({
     },
   });
 }
+
+export const useFetchCBridgeTransferWaitingTime = ({
+  srcChainId,
+  dstChainId,
+}: {
+  srcChainId: number;
+  dstChainId: number;
+}) => {
+  const params = {
+    src_chain_id: srcChainId,
+    dst_chain_id: dstChainId,
+  };
+
+  return useQuery<CBridgeTransferEstimatedTime>({
+    queryKey: ['cbridge/estimateTime', JSON.stringify(params)],
+    queryFn: async () => {
+      return (
+        await cBridgeApiClient.get(`v2/getLatest7DayTransferLatencyForQuery`, {
+          params,
+        })
+      ).data;
+    },
+    enabled: !!srcChainId && !!dstChainId,
+  });
+};
