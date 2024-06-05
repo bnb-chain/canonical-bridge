@@ -35,12 +35,14 @@ export default function Debridge() {
                       name: value.name,
                       symbol: value.symbol,
                       address: value.address,
+                      decimals: value.decimals,
                     },
                     dst_chain_id: initChainInfo.chains[indexInner].chainId,
                     dst_token: {
                       name: value2.name,
                       symbol: value2.symbol,
                       address: value2.address,
+                      decimals: value2.decimals,
                     },
                     bridge_type: 'debridge',
                   });
