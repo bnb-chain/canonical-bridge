@@ -25,7 +25,6 @@
       "@/*": ["src/*"]
     }
   },
-  "include": ["src", "__dev__"],
   "exclude": ["node_modules"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

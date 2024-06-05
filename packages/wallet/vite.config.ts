@@ -30,7 +30,7 @@ export default defineConfig({
       plugins: [
         peerDepsExternal({
           includeDependencies: true,
-        }) as never,
+        }) as any,
       ],
       output: {
         preserveModules: true,

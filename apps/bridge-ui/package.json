@@ -23,7 +23,8 @@
     "ethers": "^5.7.2",
     "wagmi": "~1.4.10",
     "viem": "~1.19.13",
-    "@wagmi/core": "^1"
+    "@wagmi/core": "^1",
+    "@bridge/wallet": "workspace:*"
   },
   "devDependencies": {
     "typescript": "^5",

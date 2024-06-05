@@ -414,7 +414,7 @@
       "projectFolder": "apps/bridge-ui"
     },
     {
-      "packageName": "wallet",
+      "packageName": "@bridge/wallet",
       "projectFolder": "packages/wallet"
     }
   ]
