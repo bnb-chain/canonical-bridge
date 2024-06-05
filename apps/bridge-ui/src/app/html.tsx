@@ -24,15 +24,15 @@ export default function Html({ children }: React.PropsWithChildren) {
       <body>
         <ColorModeScript {...theme.config} />
         <QueryClientProvider client={queryClient}>
-          <WalletProvider>
-            <ThemeProvider theme={theme}>
+          <ThemeProvider theme={theme}>
+            <WalletProvider>
               <BridgeConfigProvider>
                 <StoreProvider>
                   <Layout>{children}</Layout>
                 </StoreProvider>
               </BridgeConfigProvider>
-            </ThemeProvider>
-          </WalletProvider>
+            </WalletProvider>
+          </ThemeProvider>
         </QueryClientProvider>
       </body>
     </html>
