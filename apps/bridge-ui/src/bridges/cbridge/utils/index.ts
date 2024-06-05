@@ -3,6 +3,7 @@ import {
   CBridgeTransferConfigResponse,
   MultiBurnPairConfig,
 } from '@/bridges/cbridge/types';
+import { ethers } from 'ethers';
 
 export const isTwoChainsBridged = (
   chainId1: number,
@@ -174,7 +175,7 @@ export const getSupportedTargetChains = (
 
   const poolBasedSupportedTokenSymbols: string[] = chain_token?.[
     fromChainId
-  ].token
+  ]?.token
     .filter((tokenInfo) => {
       return !tokenInfo.token.xfer_disabled;
     })
@@ -195,7 +196,7 @@ export const getSupportedTargetChains = (
     );
     if (supportedTokens && supportedTokens.length > 0) {
       supportedTokens?.forEach((tokenInfo) => {
-        if (poolBasedSupportedTokenSymbols.includes(tokenInfo.token.symbol)) {
+        if (poolBasedSupportedTokenSymbols?.includes(tokenInfo.token.symbol)) {
           potentialTargetChainIds.add(chain.id);
         }
       });
@@ -228,4 +229,19 @@ export const getSupportedTargetChains = (
   });
 
   return targetChains;
+};
+
+export const getTransferId = (args: any) => {
+  return ethers.utils.solidityKeccak256(
+    [
+      'address', // user's wallet address
+      'address', // user's wallet address
+      'address', // ERC20 token address
+      'uint256', //amount
+      'uint64', // destination chain id
+      'uint64', // nonce
+      'uint64', // source chain id
+    ],
+    args
+  );
 };

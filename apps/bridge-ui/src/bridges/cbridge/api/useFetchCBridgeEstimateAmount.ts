@@ -38,5 +38,6 @@ export function useFetchCBridgeEstimateAmount({
         })
       ).data;
     },
+    enabled: !!srcChainId && !!dstChainId && !!tokenSymbol && !!amount,
   });
 }

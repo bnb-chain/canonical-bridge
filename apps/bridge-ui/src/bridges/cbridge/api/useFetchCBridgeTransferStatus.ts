@@ -11,9 +11,17 @@ export function useFetchCBridgeTransferStatus({
     queryKey: ['cbridge/getTransferStatus', transferId],
     queryFn: async () => {
       return (
-        await cBridgeApiClient.post(`v2/getTransferStatus`, {
-          transfer_id: transferId,
-        })
+        await cBridgeApiClient.post(
+          `v2/getTransferStatus`,
+          {
+            transfer_id: transferId,
+          },
+          {
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          }
+        )
       ).data;
     },
   });
