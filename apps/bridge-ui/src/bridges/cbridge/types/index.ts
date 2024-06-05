@@ -117,6 +117,11 @@ export interface CBridgeTransferHistoryResponse {
   current_size: string;
 }
 
+export interface CBridgeTransferEstimatedTime {
+  err: object;
+  median_transfer_latency_in_second: number;
+}
+
 interface BurnConfig {
   chain_id: number;
   token: CBridgeToken;
