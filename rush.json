@@ -412,6 +412,10 @@
     {
       "packageName": "bridge-ui",
       "projectFolder": "apps/bridge-ui"
+    },
+    {
+      "packageName": "wallet",
+      "projectFolder": "packages/wallet"
     }
   ]
 }

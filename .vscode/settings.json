@@ -44,5 +44,16 @@
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": "explicit"
   },
-  "cSpell.words": ["cbridge", "protobuf", "reduxjs", "tanstack"]
+  "cSpell.words": [
+    "Blocto",
+    "cbridge",
+    "multichain",
+    "onflow",
+    "protobuf",
+    "reduxjs",
+    "tanstack",
+    "unauthenticate",
+    "Wagmi",
+    "walletkit"
+  ]
 }
