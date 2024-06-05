@@ -1,0 +1,48 @@
+{
+  "name": "@bridge/wallet",
+  "private": true,
+  "version": "0.0.1",
+  "type": "module",
+  "files": [
+    "dist"
+  ],
+  "sideEffects": false,
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": "./dist/index.js"
+  },
+  "scripts": {
+    "dev": "vite __dev__ --config __dev__/vite.config.ts --port 3333 --host 0.0.0.0 --open",
+    "build": "vite build",
+    "build:watch": "vite build --watch --emptyOutDir=false"
+  },
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "@node-real/uikit": "~2.55.7",
+    "@emotion/react": "^11",
+    "@emotion/styled": "^11",
+    "@node-real/icons": "~2.21.2",
+    "@node-real/walletkit": "1.0.12",
+    "@onflow/fcl": "~1.10.1",
+    "wagmi": "~1.4.10",
+    "viem": "~1.19.13"
+  },
+  "devDependencies": {
+    "@types/react": "18.2.6",
+    "@types/react-dom": "18.2.0",
+    "@typescript-eslint/eslint-plugin": "^7.2.0",
+    "@typescript-eslint/parser": "^7.2.0",
+    "@vitejs/plugin-react": "^4.2.1",
+    "eslint": "^8.57.0",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-react-refresh": "^0.4.6",
+    "typescript": "^5.4.5",
+    "vite": "^4.5.3",
+    "vite-plugin-dts": "~3.9.1",
+    "rollup-plugin-peer-deps-external": "^2.2.4",
+    "@types/rollup-plugin-peer-deps-external": "~2.2.5",
+    "@onflow/types": "~1.4.0"
+  }
+}

@@ -1,5 +1,5 @@
-import { CLIENT_TIME_OUT } from '@/config/app';
-import { env } from '@/config/env';
+import { CLIENT_TIME_OUT } from '@/configs/app';
+import { env } from '@/configs/env';
 import axios from 'axios';
 
 export const deBridgeApiClient = axios.create({
