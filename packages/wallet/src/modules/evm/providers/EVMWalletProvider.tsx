@@ -1,18 +1,19 @@
 import '@node-real/walletkit/styles.css';
 
 import { WalletKitProvider, getDefaultConfig } from '@node-real/walletkit';
-import { WagmiConfig, createConfig, mainnet } from 'wagmi';
+import { WagmiConfig, createConfig } from 'wagmi';
 import {
   metaMask,
   trustWallet,
   walletConnect,
 } from '@node-real/walletkit/wallets';
+import { chains } from '@/modules/evm/providers/chains';
 
 const config = createConfig(
   getDefaultConfig({
     autoConnect: true,
     appName: 'multichain-bridge',
-    chains: [mainnet],
+    chains: chains,
     connectors: [trustWallet(), metaMask(), walletConnect()],
   })
 );

@@ -1,6 +1,6 @@
 import { LogoIcon } from '@/components/icons/Logo';
 import { useAccount, useDisconnect, useModal } from '@bridge/wallet';
-import { Button, Flex, FlexProps, Text } from '@node-real/uikit';
+import { Button, Flex, FlexProps } from '@node-real/uikit';
 
 export function Header(props: FlexProps) {
   const { onOpen } = useModal();
