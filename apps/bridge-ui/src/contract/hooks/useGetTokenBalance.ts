@@ -20,8 +20,6 @@ export const useGetTokenBalance = ({
     functionName: 'balanceOf',
     args: [address as `0x${string}`],
   });
-
-  console.log(isError, error);
   return {
     balance,
   };
