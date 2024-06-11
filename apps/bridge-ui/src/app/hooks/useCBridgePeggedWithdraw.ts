@@ -15,6 +15,7 @@ export const useCBridgePeggedWithdraw = ({
   peggedChainId,
   destinationChainId,
   bridge_version, // 0 or 2 ==> PeggedTokenBridge.sol or PeggedTokenBridgeV2.sol
+  enable = false,
 }: {
   tokenAddress: `0x${string}`;
   bridgeAddress: `0x${string}`;
@@ -22,10 +23,10 @@ export const useCBridgePeggedWithdraw = ({
   peggedChainId: number;
   destinationChainId: number;
   bridge_version: number;
+  enable: boolean;
 }) => {
   const { address } = useAccount();
   const { data: walletClient } = useWalletClient();
-  const publicClient = usePublicClient();
   const { getEstimatedGas } = useGetEstimatedGas();
   const { chain } = useNetwork();
   const [response, setResponse] = useState<CBridgeTransactionResponse>({
@@ -38,16 +39,22 @@ export const useCBridgePeggedWithdraw = ({
   useEffect(() => {
     let mounted = true;
     (async () => {
-      if (!mounted) return;
       try {
+        if (!mounted) return;
+        setResponse({
+          data: null,
+          isLoading: true,
+          isError: false,
+          error: null,
+        });
         if (
           !walletClient ||
-          !publicClient ||
           !address ||
           !bridgeAddress ||
           !chain ||
           chain.id !== peggedChainId ||
-          !bridge_version
+          !bridge_version ||
+          !enable
         ) {
           return;
         }
@@ -128,10 +135,10 @@ export const useCBridgePeggedWithdraw = ({
     chain,
     destinationChainId,
     peggedChainId,
-    publicClient,
     tokenAddress,
     walletClient,
     getEstimatedGas,
+    enable,
   ]);
   return response;
 };

@@ -18,6 +18,7 @@ export const useCBridgePeggedDeposit = ({
   peggedChainId,
   originalChainId,
   vault_version, // 0 or 2 ==> OriginalTokenVault.sol or OriginalTokenVaultV2.sol
+  enable = false,
 }: {
   tokenAddress: `0x${string}`;
   bridgeAddress: `0x${string}`;
@@ -25,11 +26,11 @@ export const useCBridgePeggedDeposit = ({
   peggedChainId: number;
   originalChainId: number;
   vault_version: number;
+  enable: boolean;
 }) => {
   const { address } = useAccount();
   const { chain } = useNetwork();
   const { data: walletClient } = useWalletClient();
-  const publicClient = usePublicClient();
   const { getEstimatedGas } = useGetEstimatedGas();
 
   const [response, setResponse] = useState<CBridgeTransactionResponse>({
@@ -44,13 +45,13 @@ export const useCBridgePeggedDeposit = ({
     let mounted = true;
     if (
       !walletClient ||
-      !publicClient ||
       !address ||
       !chain ||
       chain.id !== originalChainId ||
       !tokenAddress ||
       !amount ||
-      !peggedChainId
+      !peggedChainId ||
+      !enable
     ) {
       return;
     }
@@ -145,7 +146,6 @@ export const useCBridgePeggedDeposit = ({
   }, [
     address,
     walletClient,
-    publicClient,
     getEstimatedGas,
     chain,
     amount,
@@ -154,6 +154,7 @@ export const useCBridgePeggedDeposit = ({
     originalChainId,
     vault_version,
     bridgeAddress,
+    enable,
   ]);
 
   return response;

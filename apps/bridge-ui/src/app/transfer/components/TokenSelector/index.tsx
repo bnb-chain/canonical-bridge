@@ -6,25 +6,38 @@ export interface TokenSelectorProps extends SelectorProps {
     icon: string;
     value: any;
     label: React.ReactNode;
-    symbol: React.ReactNode;
+    symbol: string;
+    method?: string;
+    decimal: number;
+    bridgeAddress: string;
   }>;
 }
 
 export function TokenSelector(props: TokenSelectorProps) {
   const { title, value, options, onChange, ...restProps } = props;
 
-  const finalOptions = options.map((item) => ({
-    value: item.value,
-    label: (
-      <Flex alignItems="center" gap={16}>
-        <Circle boxSize={24} overflow="hidden">
-          <Image src={item.icon} alt={item.value} />
-        </Circle>
-        {item.label}
-      </Flex>
-    ),
-  }));
-  const selectedOption = options.find((item) => item.value === value);
+  const finalOptions = options.map((item) => {
+    return {
+      value: {
+        tokenAddress: item.value,
+        tokenSymbol: item.symbol,
+        tokenMethod: item?.method,
+        tokenDecimal: item.decimal,
+        bridgeAddress: item?.bridgeAddress,
+      },
+      label: (
+        <Flex alignItems="center" gap={16}>
+          <Circle boxSize={24} overflow="hidden">
+            <Image src={item.icon} alt={item.value} />
+          </Circle>
+          {item.label}
+        </Flex>
+      ),
+    };
+  });
+  const selectedOption = options.find((item) => {
+    return item.value === value.tokenAddress;
+  });
 
   return (
     <Selector

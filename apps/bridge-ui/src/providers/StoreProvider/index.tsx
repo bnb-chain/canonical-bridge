@@ -2,16 +2,37 @@ import React, { useMemo, useState } from 'react';
 
 export interface StoreContextProps {
   fromChainId: number;
-  fromTokenAddress: string;
+  // fromTokenAddress: string;
+  fromTokenInfo: {
+    fromTokenAddress: string;
+    fromTokenSymbol: string;
+    fromTokenDecimal: number;
+    fromTokenMethod?: string;
+    bridgeAddress: string;
+  };
   transferValue: string;
   setFromChainId: (value: number) => void;
-  setFromTokenAddress: (value: string) => void;
+  setFromTokenInfo: (value: {
+    fromTokenAddress: string;
+    fromTokenSymbol: string;
+    fromTokenMethod?: string;
+    fromTokenDecimal: number;
+    bridgeAddress: string;
+  }) => void;
   setTransferValue: (value: string) => void;
 
   toChainId: number;
-  toTokenAddress: string;
   setToChainId: (value: number) => void;
-  setToTokenAddress: (value: string) => void;
+  toTokenInfo: {
+    toTokenAddress: string;
+    toTokenSymbol: string;
+    toTokenDecimal: number;
+  };
+  setToTokenInfo: (value: {
+    toTokenAddress: string;
+    toTokenSymbol: string;
+    toTokenDecimal: number;
+  }) => void;
 }
 
 export const StoreContext = React.createContext({} as StoreContextProps);
@@ -24,26 +45,54 @@ export function StoreProvider(props: StoreProviderProps) {
   const { children } = props;
 
   const [fromChainId, setFromChainId] = useState<number>(97);
-  const [fromTokenAddress, setFromTokenAddress] = useState<string>('');
+  const [fromTokenInfo, setFromTokenInfo] = useState<{
+    fromTokenAddress: string;
+    fromTokenSymbol: string;
+    fromTokenDecimal: number;
+    fromTokenMethod?: string;
+    bridgeAddress: string;
+  }>({
+    fromTokenAddress: '',
+    fromTokenSymbol: '',
+    fromTokenDecimal: 0,
+    fromTokenMethod: '',
+    bridgeAddress: '',
+  });
   const [transferValue, setTransferValue] = useState<string>('0');
-  const [toChainId, setToChainId] = useState<number>(0);
-  const [toTokenAddress, setToTokenAddress] = useState<string>('');
+  const [toChainId, setToChainId] = useState<number>(137);
+  const [toTokenInfo, setToTokenInfo] = useState<{
+    toTokenAddress: string;
+    toTokenSymbol: string;
+    toTokenDecimal: number;
+  }>({
+    toTokenAddress: '',
+    toTokenSymbol: '',
+    toTokenDecimal: 0,
+  });
 
   const value = useMemo(() => {
     return {
       fromChainId,
-      fromTokenAddress,
+      fromTokenInfo,
+      setFromTokenInfo,
       transferValue,
       setFromChainId,
-      setFromTokenAddress,
       setTransferValue,
 
       toChainId,
-      toTokenAddress,
+      toTokenInfo,
       setToChainId,
-      setToTokenAddress,
+      setToTokenInfo,
     };
-  }, [fromChainId, fromTokenAddress, toChainId, toTokenAddress, transferValue]);
+  }, [
+    fromChainId,
+    fromTokenInfo,
+    setFromTokenInfo,
+    toChainId,
+    setToTokenInfo,
+    toTokenInfo,
+    transferValue,
+  ]);
 
   return (
     <StoreContext.Provider value={value}>{children}</StoreContext.Provider>

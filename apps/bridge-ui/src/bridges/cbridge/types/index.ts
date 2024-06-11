@@ -33,6 +33,8 @@ export interface CBridgeToken {
   liq_agg_rm_src_disabled: boolean;
   delay_threshold: string;
   delay_period: number;
+  method?: string;
+  bridgeAddress?: string; //bridge address for transfer
 }
 
 export interface CBridgePeggedPairConfig {
@@ -140,3 +142,15 @@ export interface MultiBurnPairConfig {
   burn_config_as_org: BurnConfig; /// Could be used only as from chain
   burn_config_as_dst: BurnConfig; /// Could be used only as to chain
 }
+
+export type CBridgeTransactionResponse = {
+  data: null | {
+    gasFee: bigint;
+    gasPrice: bigint;
+    transferId: string;
+    send: () => Promise<`0x${string}`>;
+  };
+  isLoading: boolean;
+  isError: boolean;
+  error: null | unknown;
+};

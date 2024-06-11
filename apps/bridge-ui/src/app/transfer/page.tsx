@@ -3,15 +3,9 @@
 import { FromBlock } from '@/app/transfer/components/FromBlock';
 import { ToBlock } from '@/app/transfer/components/ToBlock';
 import { TransferOverview } from '@/app/transfer/components/TransferOverview';
-import { useStore } from '@/providers/StoreProvider/hooks/useStore';
-import { Button, Flex } from '@node-real/uikit';
+import { Flex } from '@node-real/uikit';
 
 export default function Page() {
-  const { fromChainId, fromTokenAddress, toChainId, toTokenAddress } =
-    useStore();
-
-  console.log(fromChainId, fromTokenAddress, toChainId, toTokenAddress);
-
   return (
     <Flex
       flexDir="column"
@@ -25,12 +19,6 @@ export default function Page() {
     >
       <FromBlock />
       <ToBlock />
-
-      <Flex flexDir="column" mt={32}>
-        <Button isDisabled={false} color="light.readable.normal" w="100%">
-          Transfer
-        </Button>
-      </Flex>
 
       <TransferOverview />
     </Flex>

@@ -12,7 +12,12 @@ export const useGetAllowance = ({
   sender: `0x${string}`;
 }) => {
   const { address } = useAccount();
-  const { data: allowance } = useContractRead({
+  const {
+    data: allowance,
+    isLoading,
+    isError,
+    error,
+  } = useContractRead({
     abi: ERC20_TOKEN,
     address: tokenAddress,
     functionName: 'allowance',
@@ -20,5 +25,8 @@ export const useGetAllowance = ({
   });
   return {
     allowance,
+    isLoading,
+    isError,
+    error,
   };
 };
