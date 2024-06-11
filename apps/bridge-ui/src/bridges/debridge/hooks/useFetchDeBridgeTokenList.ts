@@ -4,7 +4,7 @@ import { getDeBridgeTokenList } from '@/bridges/debridge/api/getDeBridgeTokenLis
 
 export const useFetchDeBridgeTokenList = (chainId: number) => {
   return useQuery<DeBridgeTokenList>({
-    queryKey: ['debridge-token-list'],
+    queryKey: ['debridge-token-list', chainId],
     queryFn: async () => {
       return getDeBridgeTokenList(chainId);
     },

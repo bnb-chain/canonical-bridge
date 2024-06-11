@@ -184,11 +184,9 @@ export const getSupportedTargetChains = (
     });
 
   chains?.forEach((chain) => {
-    if (chain.id === fromChainId) {
-      /// Skip From Chain
-      return;
-    }
+    if (chain.id === fromChainId) return; /// Skip From Chain
 
+    /// Cbridge Pool based supported tokens
     const supportedTokens = chain_token?.[chain.id]?.token?.filter(
       (tokenInfo) => {
         return !tokenInfo.token.xfer_disabled;
@@ -203,6 +201,7 @@ export const getSupportedTargetChains = (
     }
   });
 
+  /// Pegged supported tokens
   pegged_pair_configs?.forEach((peggedPairConfig) => {
     if (peggedPairConfig.org_chain_id === fromChainId) {
       potentialTargetChainIds.add(peggedPairConfig.pegged_chain_id);

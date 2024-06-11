@@ -4,8 +4,8 @@ import { useStore } from '@/providers/StoreProvider/hooks/useStore';
 import { useMemo } from 'react';
 
 export function useSupportedToTokens() {
-  const { peggedPairConfigs } = useBridgeConfig();
-  const { fromChainId, toChainId } = useStore();
+  const { peggedPairConfigs, chainTokensMap } = useBridgeConfig();
+  const { fromChainId, toChainId, fromTokenInfo } = useStore();
 
   const tokens = useMemo(() => {
     const tokens: CBridgeToken[] = [];
@@ -19,8 +19,24 @@ export function useSupportedToTokens() {
       }
     });
 
+    // CBridge supported pool-based tokens
+    chainTokensMap.get(toChainId)?.forEach((token) => {
+      if (
+        !token.token.xfer_disabled &&
+        token.token.symbol === fromTokenInfo.fromTokenSymbol
+      ) {
+        tokens.push({ ...token });
+      }
+    });
+
     return tokens;
-  }, [fromChainId, peggedPairConfigs, toChainId]);
+  }, [
+    fromChainId,
+    peggedPairConfigs,
+    toChainId,
+    chainTokensMap,
+    fromTokenInfo.fromTokenSymbol,
+  ]);
 
   return tokens;
 }

@@ -7,8 +7,13 @@ import { Flex } from '@node-real/uikit';
 import { useEffect, useMemo } from 'react';
 
 export function ToBlock() {
-  const { toChainId, toTokenAddress, setToChainId, setToTokenAddress } =
-    useStore();
+  const {
+    toChainId,
+    toTokenInfo,
+    setToChainId,
+    setToTokenInfo,
+    fromTokenInfo,
+  } = useStore();
 
   const chains = useSupportedToChains();
   const tokens = useSupportedToTokens();
@@ -27,6 +32,8 @@ export function ToBlock() {
       label: item.name || item.token.symbol,
       icon: item.icon,
       symbol: item.token.symbol,
+      decimal: item.token.decimal,
+      bridgeAddress: item.bridgeAddress || '',
     }));
   }, [tokens]);
 
@@ -35,15 +42,35 @@ export function ToBlock() {
   }, [chains, setToChainId]);
 
   useEffect(() => {
-    setToTokenAddress(tokens?.[0]?.token?.address ?? '');
-  }, [setToTokenAddress, tokens]);
+    const selectedToken = tokenOptions.filter(
+      (item) => item.symbol === fromTokenInfo.fromTokenSymbol
+    );
+    setToTokenInfo({
+      toTokenAddress: selectedToken?.[0]?.value,
+      toTokenSymbol: selectedToken?.[0]?.symbol,
+      toTokenDecimal: selectedToken?.[0]?.decimal,
+    });
+  }, [setToTokenInfo, tokenOptions, fromTokenInfo.fromTokenSymbol]);
 
   const onChangeChainId = (chainId: number) => {
     setToChainId(chainId);
   };
 
-  const onChangeTokenAddress = (tokenAddress: string) => {
-    setToTokenAddress(tokenAddress);
+  const onChangeTokenAddress = ({
+    tokenAddress,
+    tokenSymbol,
+    tokenDecimal,
+  }: {
+    tokenAddress: string;
+    tokenSymbol: string;
+    tokenDecimal: number;
+  }) => {
+    console.log('decimal ', tokenDecimal);
+    setToTokenInfo({
+      toTokenAddress: tokenAddress,
+      toTokenSymbol: tokenSymbol,
+      toTokenDecimal: tokenDecimal,
+    });
   };
 
   return (
@@ -70,7 +97,11 @@ export function ToBlock() {
           <Flex flex={1}></Flex>
           <TokenSelector
             title="Select a token"
-            value={toTokenAddress}
+            value={{
+              tokenAddress: toTokenInfo.toTokenAddress,
+              tokenSymbol: toTokenInfo.toTokenSymbol,
+              tokenDecimal: toTokenInfo.toTokenDecimal,
+            }}
             options={tokenOptions}
             onChange={onChangeTokenAddress}
           />
