@@ -1,20 +1,18 @@
 import { useCBridgePoolBasedTransfer, useCBridgeSendMaxMin } from '@/app/hooks';
-import { useFetchCBridgeEstimateAmount } from '@/bridges/cbridge/api/useFetchCBridgeEstimateAmount';
-// import { useGetAllowance } from '@/contract/hooks/useGetAllowance';
+import { TransferButtonGroup } from '@/app/transfer/components/TransferButtonGroup';
+import { getCBridgeEstimateAmount } from '@/bridges/cbridge/api/getCBridgeEstimateAmount';
+import { useDebounce } from '@/bridges/utils';
 import { useStore } from '@/providers/StoreProvider/hooks/useStore';
 import { useAccount } from '@bridge/wallet';
-import { Button, Flex } from '@node-real/uikit';
+import { Flex } from '@node-real/uikit';
+import { useEffect, useState } from 'react';
 import { formatUnits, parseUnits } from 'viem';
 
 export function TransferOverview() {
   const { fromChainId, fromTokenInfo, toChainId, toTokenInfo, transferValue } =
     useStore();
   const { address } = useAccount();
-  // const { allowance, isError, error, isLoading } = useGetAllowance({
-  //   tokenAddress: fromTokenInfo.fromTokenAddress as `0x${string}`,
-  //   sender: fromTokenInfo.bridgeAddress as `0x${string}`,
-  // });
-  // console.log('allowance', allowance);
+  const [feeInfo, setFeeInfo] = useState<any>(null);
 
   const transaction = useCBridgePoolBasedTransfer({
     tokenAddress: fromTokenInfo.fromTokenAddress as `0x${string}`,
@@ -34,28 +32,50 @@ export function TransferOverview() {
   });
   console.log('res', transaction);
 
-  const { data: estimateAmt } = useFetchCBridgeEstimateAmount({
-    srcChainId: Number(fromChainId),
-    dstChainId: Number(toChainId),
-    tokenSymbol: fromTokenInfo.fromTokenSymbol,
-    amount: Number(parseUnits(transferValue, fromTokenInfo.fromTokenDecimal)),
-    userAddress: address as `0x${string}`, // Not required for multi-chain token transfer
-    slippageTolerance: 30000, // 0.03%, slippage_tolerance / 1M
-    isPegged: fromTokenInfo.fromTokenMethod !== 'CB_POOL_BASED',
-  });
-  // console.log('esti amount', estimateAmt);
+  const debouncedTransferValue = useDebounce(transferValue, 1000);
+
+  useEffect(() => {
+    let mount = true;
+    try {
+      if (
+        !fromChainId ||
+        !toChainId ||
+        !fromTokenInfo ||
+        !debouncedTransferValue ||
+        debouncedTransferValue === '0' ||
+        !address
+      ) {
+        return;
+      }
+      (async () => {
+        if (!mount) return;
+        const feeInfo = await getCBridgeEstimateAmount({
+          src_chain_id: Number(fromChainId),
+          dst_chain_id: Number(toChainId),
+          token_symbol: fromTokenInfo.fromTokenSymbol,
+          amt: Number(
+            parseUnits(debouncedTransferValue, fromTokenInfo.fromTokenDecimal)
+          ),
+          user_addr: address as `0x${string}`, // Not required for multi-chain token transfer
+          slippage_tolerance: 30000, // 0.03%, slippage_tolerance / 1M
+          is_pegged: fromTokenInfo.fromTokenMethod !== 'CB_POOL_BASED',
+        });
+        console.log('feeInfo', feeInfo);
+        setFeeInfo(feeInfo);
+      })();
+    } catch (error: any) {
+      // eslint-disable-next-line no-console
+      console.log(error);
+    }
+    return () => {
+      mount = false;
+    };
+  }, [address, fromChainId, fromTokenInfo, toChainId, debouncedTransferValue]);
 
   return (
     <>
       <Flex flexDir="column" mt={32}>
-        <Button
-          onClick={transaction.data?.send}
-          isDisabled={false}
-          color="light.readable.normal"
-          w="100%"
-        >
-          Transfer
-        </Button>
+        <TransferButtonGroup onSend={transaction.data?.send ?? (() => {})} />
       </Flex>
       <Flex
         flexDir="column"
@@ -74,7 +94,7 @@ export function TransferOverview() {
           label="Bridge Rate"
           value={
             fromTokenInfo.fromTokenMethod?.includes('CB_')
-              ? `${estimateAmt?.bridge_rate}`
+              ? `${feeInfo?.bridge_rate}`
               : '-'
           }
         />
@@ -92,13 +112,13 @@ export function TransferOverview() {
         <InfoRow
           label="Other Fee"
           value={
-            estimateAmt && fromTokenInfo.fromTokenMethod?.includes('CB_')
+            feeInfo && fromTokenInfo.fromTokenMethod?.includes('CB_')
               ? `${formatUnits(
-                  BigInt(estimateAmt.base_fee),
+                  BigInt(feeInfo?.base_fee),
                   toTokenInfo.toTokenDecimal
                 )} ${toTokenInfo.toTokenSymbol} + ` +
                 `${formatUnits(
-                  BigInt(estimateAmt.perc_fee),
+                  BigInt(feeInfo?.perc_fee),
                   toTokenInfo.toTokenDecimal
                 )} ${toTokenInfo.toTokenSymbol}`
               : '-'
@@ -107,9 +127,9 @@ export function TransferOverview() {
         <InfoRow
           label="Estimated Token Received"
           value={`${
-            estimateAmt?.estimated_receive_amt
+            feeInfo?.estimated_receive_amt
               ? formatUnits(
-                  BigInt(estimateAmt?.estimated_receive_amt),
+                  BigInt(feeInfo?.estimated_receive_amt),
                   toTokenInfo.toTokenDecimal
                 )
               : '-'

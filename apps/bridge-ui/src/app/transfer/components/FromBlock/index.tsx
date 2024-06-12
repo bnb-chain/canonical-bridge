@@ -1,7 +1,6 @@
 import { ChainSelector } from '@/app/transfer/components/ChainSelector';
 import { TokenSelector } from '@/app/transfer/components/TokenSelector';
 import { CBridgeChain, CBridgeToken } from '@/bridges/cbridge/types';
-import { useDebounce } from '@/bridges/utils';
 import { useGetTokenBalance } from '@/contract/hooks/useGetTokenBalance';
 import { useStore } from '@/providers/StoreProvider/hooks/useStore';
 import { useSupportedFromChains } from '@/providers/StoreProvider/hooks/useSupportedFromChains';
@@ -11,6 +10,30 @@ import { Box, Flex, Input } from '@node-real/uikit';
 import { useEffect, useMemo } from 'react';
 import { formatUnits } from 'viem';
 
+const handleKeyPress = (e: React.KeyboardEvent) => {
+  // only allow number and decimal
+  if (
+    e.key !== '1' &&
+    e.key !== '2' &&
+    e.key !== '3' &&
+    e.key !== '4' &&
+    e.key !== '5' &&
+    e.key !== '6' &&
+    e.key !== '7' &&
+    e.key !== '8' &&
+    e.key !== '9' &&
+    e.key !== '0' &&
+    e.key !== '.' &&
+    e.key !== ',' &&
+    e.key !== '。' &&
+    e.key !== 'ArrowLeft' &&
+    e.key !== 'ArrowRight' &&
+    e.key !== 'Backspace'
+  ) {
+    e.preventDefault();
+  }
+};
+
 export function FromBlock() {
   const {
     fromChainId,
@@ -18,6 +41,7 @@ export function FromBlock() {
     setFromChainId,
     setFromTokenInfo,
     setTransferValue,
+    transferValue,
   } = useStore();
 
   const chains = useSupportedFromChains();
@@ -81,13 +105,12 @@ export function FromBlock() {
     });
   };
 
-  const onChangeTransferValue = useDebounce(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      const value = event.target.value.trim() ?? 0;
-      setTransferValue(value);
-    },
-    1000
-  );
+  const onChangeTransferValue = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const value = event.target.value.trim() ?? 0;
+    setTransferValue(value);
+  };
 
   return (
     <Flex flexDir="column" gap={16}>
@@ -113,20 +136,19 @@ export function FromBlock() {
         <Flex gap={12}>
           <Flex flex={1} flexDir={'column'}>
             <Input
-              step={'0.000000001'}
-              pattern="[0-9]"
-              // value={transferValue}
+              value={transferValue}
               onChange={onChangeTransferValue}
+              onKeyDown={handleKeyPress}
               disabled={!balance}
             />
-            {!balance ? (
-              <ErrorMsg>Insufficient balance</ErrorMsg>
-            ) : (
+            {balance ? (
               <Box>
                 Balance:{' '}
                 {formatUnits(balance, fromTokenInfo.fromTokenDecimal) || ''}
               </Box>
-            )}
+            ) : transferValue !== '0' ? (
+              <ErrorMsg>Insufficient balance</ErrorMsg>
+            ) : null}
           </Flex>
           <TokenSelector
             title="Select a token"

@@ -1,4 +1,4 @@
-import { cBridgeApiClient } from '@/bridges/cbridge/client';
+import { getCBridgeEstimateAmount } from '@/bridges/cbridge/api/getCBridgeEstimateAmount';
 import { CBridgeEstimateAmountResponse } from '@/bridges/cbridge/types';
 import { useQuery } from '@tanstack/react-query';
 
@@ -32,11 +32,7 @@ export function useFetchCBridgeEstimateAmount({
   return useQuery<CBridgeEstimateAmountResponse>({
     queryKey: ['cbridge/estimateAmt', JSON.stringify(params)],
     queryFn: async () => {
-      return (
-        await cBridgeApiClient.get(`v2/estimateAmt`, {
-          params,
-        })
-      ).data;
+      return getCBridgeEstimateAmount(params);
     },
     enabled: !!srcChainId && !!dstChainId && !!tokenSymbol && !!amount,
   });
