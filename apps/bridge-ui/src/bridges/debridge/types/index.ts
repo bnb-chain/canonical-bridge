@@ -1,21 +1,26 @@
+export interface DeBridgetChainDetails {
+  chainId: number;
+  chainName: string;
+}
+
 export type DeBridgeSupportedChainsInfo = {
-  chains: { chainId: number; chainName: string }[];
+  chains: DeBridgetChainDetails[];
 };
 
-export interface TokenDetails {
+export interface DeBridgeTokenDetails {
   address: string;
   symbol: string;
   decimals: number;
   name: string;
-  logoURI: string;
-  eip2612: boolean;
+  logoURI: string | null;
+  eip2612?: boolean;
   tags: string[];
   domainVersion?: string;
 }
 
 export type DeBridgeTokenList = {
   tokens: {
-    [address: string]: TokenDetails;
+    [address: string]: DeBridgeTokenDetails;
   };
 };
 

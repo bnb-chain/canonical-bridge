@@ -1,5 +1,5 @@
 import {
-  CBridgeChain,
+  CBridgeChainInfo,
   CBridgeTransferConfigResponse,
   MultiBurnPairConfig,
 } from '@/bridges/cbridge/types';
@@ -135,7 +135,7 @@ const getMultiBurnConfigs = (config: CBridgeTransferConfigResponse) => {
 
 export const getSupportedFromChains = (
   config = {} as CBridgeTransferConfigResponse
-): CBridgeChain[] => {
+): CBridgeChainInfo[] => {
   const allChainIds: number[] =
     config?.chains?.map((chain) => {
       return chain.id;
@@ -168,7 +168,7 @@ export const getSupportedFromChains = (
 export const getSupportedTargetChains = (
   config = {} as CBridgeTransferConfigResponse,
   fromChainId: number
-): CBridgeChain[] => {
+): CBridgeChainInfo[] => {
   const potentialTargetChainIds = new Set<number>();
   const { chain_token, chains, pegged_pair_configs } = config;
   const multiBurnConfigs = getMultiBurnConfigs(config);
@@ -217,7 +217,7 @@ export const getSupportedTargetChains = (
     }
   });
 
-  const targetChains: CBridgeChain[] = [];
+  const targetChains: CBridgeChainInfo[] = [];
 
   potentialTargetChainIds?.forEach((chainId) => {
     const foundChains = chains.filter((chain) => {
