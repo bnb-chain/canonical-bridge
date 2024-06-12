@@ -11,9 +11,9 @@ import {
   getDeBridgeTxQuote,
 } from '@/bridges/debridge/api';
 import { useApprove } from '@/contract/hooks';
-import { useTokenAmountInput } from '@/app/hooks';
 import { useGetTokenBalance } from '@/contract/hooks/useGetTokenBalance';
 import { useGetAllowance } from '@/contract/hooks/useGetAllowance';
+import { useTokenAmountInput } from '@/hooks/useTokenAmountInput';
 
 export default function GetQuotePage() {
   const { address } = useAccount();

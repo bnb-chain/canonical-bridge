@@ -23,7 +23,10 @@
     "wagmi": "~1.4.10",
     "viem": "~1.19.13",
     "@wagmi/core": "^1",
-    "@bridge/wallet": "workspace:*"
+    "@bridge/wallet": "workspace:*",
+    "@reduxjs/toolkit": "~2.2.5",
+    "react-redux": "~9.1.2",
+    "dot-prop-immutable-chain": "~0.0.3"
   },
   "devDependencies": {
     "typescript": "^5",

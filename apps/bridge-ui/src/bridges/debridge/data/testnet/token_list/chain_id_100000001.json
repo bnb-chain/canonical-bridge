@@ -1,0 +1,36 @@
+{
+  "tokens": {
+    "0x0000000000000000000000000000000000000000": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "name": "NEON",
+      "symbol": "NEON",
+      "decimals": 18,
+      "logoURI": "https://raw.githubusercontent.com/neonscan/token-list/main/assets/0xf8ad328e98f85fccbf09e43b16dcbbda7e84beab.png",
+      "tags": []
+    },
+    "0xEA6B04272f9f62F997F666F07D3a974134f7FFb9": {
+      "address": "0xEA6B04272f9f62F997F666F07D3a974134f7FFb9",
+      "name": "USDC",
+      "symbol": "USDC",
+      "decimals": 6,
+      "logoURI": "https://s2.coinmarketcap.com/static/img/coins/64x64/3408.png",
+      "tags": []
+    },
+    "0x5f38248f339Bf4e84A2caf4e4c0552862dC9F82a": {
+      "address": "0x5f38248f339Bf4e84A2caf4e4c0552862dC9F82a",
+      "name": "WRAPPED SOL",
+      "symbol": "WSOL",
+      "decimals": 9,
+      "logoURI": "https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/So11111111111111111111111111111111111111112/logo.png",
+      "tags": []
+    },
+    "0x202C35e517Fa803B537565c40F0a6965D7204609": {
+      "address": "0x202C35e517Fa803B537565c40F0a6965D7204609",
+      "name": "WNEON",
+      "symbol": "WNEON",
+      "decimals": 18,
+      "logoURI": "https://raw.githubusercontent.com/neonscan/token-list/main/assets/0xf8ad328e98f85fccbf09e43b16dcbbda7e84beab.png",
+      "tags": []
+    }
+  }
+}

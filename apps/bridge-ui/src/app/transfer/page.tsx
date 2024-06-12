@@ -1,9 +1,9 @@
 'use client';
 
-import { FromBlock } from '@/app/transfer/components/FromBlock';
-import { ToBlock } from '@/app/transfer/components/ToBlock';
-import { TransferOverview } from '@/app/transfer/components/TransferOverview';
-import { Flex } from '@node-real/uikit';
+import { FromSection } from '@/app/transfer/components/FromSection';
+import { ToSection } from '@/app/transfer/components/ToSection';
+// import { TransferOverview } from '@/app/transfer/components/TransferOverview';
+import { Button, Flex } from '@node-real/uikit';
 
 export default function Page() {
   return (
@@ -17,10 +17,16 @@ export default function Page() {
       gap={16}
       position="relative"
     >
-      <FromBlock />
-      <ToBlock />
+      <FromSection />
+      <ToSection />
 
-      <TransferOverview />
+      <Flex flexDir="column" mt={32}>
+        <Button isDisabled={false} color="light.readable.normal" w="100%">
+          Transfer
+        </Button>
+      </Flex>
+
+      {/* <TransferOverview /> */}
     </Flex>
   );
 }

@@ -1,4 +1,4 @@
-export interface CBridgeChain {
+export interface CBridgeChainInfo {
   id: number;
   name: string;
   icon: string;
@@ -13,9 +13,10 @@ export interface CBridgeChain {
   flat_usd_fee: number;
   farming_reward_contract_addr: string;
   transfer_agent_contract_addr: string;
+  disabled: boolean;
 }
 
-export interface CBridgeToken {
+export interface CBridgeTokenInfo {
   token: {
     symbol: string;
     address: string;
@@ -39,9 +40,9 @@ export interface CBridgeToken {
 
 export interface CBridgePeggedPairConfig {
   org_chain_id: number;
-  org_token: CBridgeToken;
+  org_token: CBridgeTokenInfo;
   pegged_chain_id: number;
-  pegged_token: CBridgeToken;
+  pegged_token: CBridgeTokenInfo;
   pegged_deposit_contract_addr: string;
   pegged_burn_contract_addr: string;
   canonical_token_contract_addr: string;
@@ -51,10 +52,10 @@ export interface CBridgePeggedPairConfig {
 }
 
 export interface CBridgeTransferConfigResponse {
-  chains: CBridgeChain[];
+  chains: CBridgeChainInfo[];
   chain_token: {
     [k: string]: {
-      token: CBridgeToken[];
+      token: CBridgeTokenInfo[];
     };
   };
   farming_reward_contract_addr: string;
@@ -122,25 +123,6 @@ export interface CBridgeTransferHistoryResponse {
 export interface CBridgeTransferEstimatedTime {
   err: object;
   median_transfer_latency_in_second: number;
-}
-
-interface BurnConfig {
-  chain_id: number;
-  token: CBridgeToken;
-  burn_contract_addr: string;
-  canonical_token_contract_addr: string;
-  burn_contract_version: number;
-}
-
-/// burn_config_as_org.bridge_version === 2
-/// burn_config_as_dst.bridge_version is not required
-/// If the bridge_version of burnConfig1 and burnConfig2 are 2,
-/// There should be two MultiBurnPairConfigs
-/// 1: burnConfig1 ----> burnConfig2
-/// 2: burnConfig2 ----> burnConfig1
-export interface MultiBurnPairConfig {
-  burn_config_as_org: BurnConfig; /// Could be used only as from chain
-  burn_config_as_dst: BurnConfig; /// Could be used only as to chain
 }
 
 export type CBridgeTransactionResponse = {
