@@ -1,4 +1,4 @@
-import { TokenInfo } from '@/types';
+import { TokenInfo } from '@/bridges/index/types';
 import { CircleImage } from '@/components/common/CircleImage';
 import { Tag } from '@/components/common/Tag';
 import { MenuCloseIcon } from '@node-real/icons';
@@ -59,7 +59,7 @@ export function TokenSelector(props: TokenSelectorProps) {
         {selectedToken && (
           <Flex gap={12}>
             <CircleImage src={selectedToken.icon} />
-            <Text>{selectedToken.name}</Text>
+            <Text>{selectedToken.symbol}</Text>
           </Flex>
         )}
         <MenuCloseIcon />
@@ -83,10 +83,10 @@ export function TokenSelector(props: TokenSelectorProps) {
                 alignItems="center"
                 transition="all"
                 transitionDuration="normal"
-                h={60}
                 borderRadius={8}
                 bg="bg.bottom"
                 px={16}
+                py={8}
                 gap={12}
                 _hover={{
                   bg: 'bg.top.active',
@@ -96,13 +96,21 @@ export function TokenSelector(props: TokenSelectorProps) {
                 flexShrink={0}
               >
                 <CircleImage src={item.icon} />
-                <Flex flexDir="column" gap={2}>
-                  <Text>{item.name}</Text>
-                  <Flex gap={8}>
-                    {item.tags.map((tag) => {
-                      return <Tag key={tag}>{tag}</Tag>;
-                    })}
+                <Flex
+                  alignItems="center"
+                  justifyContent="space-between"
+                  flex={1}
+                  gap={8}
+                >
+                  <Flex flexDir="column" gap={2} flex={1}>
+                    {item.name}
+                    <Flex gap={8}>
+                      {item.tags.map((tag) => {
+                        return <Tag key={tag}>{tag}</Tag>;
+                      })}
+                    </Flex>
                   </Flex>
+                  <Text flexShrink={0}>{item.symbol}</Text>
                 </Flex>
               </Flex>
             );

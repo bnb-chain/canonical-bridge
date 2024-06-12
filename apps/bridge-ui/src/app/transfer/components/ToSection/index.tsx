@@ -2,7 +2,7 @@ import { setToChain } from '@/app/transfer/action';
 import { ChainSelector } from '@/app/transfer/components/ChainSelector';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { Flex, Input } from '@node-real/uikit';
-import { ChainInfo } from '@/types';
+import { ChainInfo } from '@/bridges/index/types';
 import { useEffect } from 'react';
 import { useSupportedToChains } from '@/app/transfer/hooks/useSupportedToChains';
 

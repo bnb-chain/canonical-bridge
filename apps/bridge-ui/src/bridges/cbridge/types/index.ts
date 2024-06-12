@@ -125,25 +125,6 @@ export interface CBridgeTransferEstimatedTime {
   median_transfer_latency_in_second: number;
 }
 
-interface BurnConfig {
-  chain_id: number;
-  token: CBridgeTokenInfo;
-  burn_contract_addr: string;
-  canonical_token_contract_addr: string;
-  burn_contract_version: number;
-}
-
-/// burn_config_as_org.bridge_version === 2
-/// burn_config_as_dst.bridge_version is not required
-/// If the bridge_version of burnConfig1 and burnConfig2 are 2,
-/// There should be two MultiBurnPairConfigs
-/// 1: burnConfig1 ----> burnConfig2
-/// 2: burnConfig2 ----> burnConfig1
-export interface MultiBurnPairConfig {
-  burn_config_as_org: BurnConfig; /// Could be used only as from chain
-  burn_config_as_dst: BurnConfig; /// Could be used only as to chain
-}
-
 export type CBridgeTransactionResponse = {
   data: null | {
     gasFee: bigint;

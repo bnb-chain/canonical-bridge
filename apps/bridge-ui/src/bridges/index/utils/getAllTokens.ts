@@ -1,55 +1,7 @@
-import { ChainInfo, TokenInfo } from '@/types';
-import {
-  CBRIDGE_TRANSFER_CONFIGS,
-  DEBRIDGE_CHAIN_LIST,
-  DEBRIDGE_TOKENS,
-} from '../data/index';
+import { TokenInfo } from '@/bridges/index/types';
+import { CBRIDGE_TRANSFER_CONFIGS, DEBRIDGE_TOKENS } from '../data/index';
 
-export function getSupportedChains() {
-  const CBridgeChainInfos = CBRIDGE_TRANSFER_CONFIGS.chains;
-  const deBridgeChains = DEBRIDGE_CHAIN_LIST.chains;
-
-  const chainMap = new Map<number, ChainInfo>();
-  const supportedChains: ChainInfo[] = [];
-  CBridgeChainInfos.forEach((item) => {
-    const chainInfo: ChainInfo = {
-      id: item.id,
-      name: item.name,
-      icon: item.icon,
-      tags: ['cbridge'],
-      rawData: {
-        cbridge: item,
-      },
-    };
-
-    chainMap.set(item.id, chainInfo);
-    supportedChains.push(chainInfo);
-  });
-
-  deBridgeChains.forEach((item) => {
-    const chainInfo = chainMap.get(item.chainId);
-    if (chainInfo) {
-      chainInfo.tags.push('debridge');
-      chainInfo.rawData.debridge = item;
-    } else {
-      supportedChains.push({
-        id: item.chainId,
-        name: item.chainName,
-        icon: '',
-        tags: ['debridge'],
-        rawData: {
-          debridge: item,
-        },
-      });
-    }
-  });
-
-  supportedChains.sort((a, b) => (a.id < b.id ? -1 : 1));
-
-  return supportedChains;
-}
-
-export function getSupportedTokens() {
+export function getAllTokens() {
   const CBridgeTokenInfos = CBRIDGE_TRANSFER_CONFIGS.chain_token;
   const deBridgeTokens = DEBRIDGE_TOKENS;
 

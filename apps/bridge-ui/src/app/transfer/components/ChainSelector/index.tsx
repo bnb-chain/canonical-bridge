@@ -1,4 +1,4 @@
-import { ChainInfo } from '@/types';
+import { ChainInfo } from '@/bridges/index/types';
 import { CircleImage } from '@/components/common/CircleImage';
 import { Tag } from '@/components/common/Tag';
 import { MenuCloseIcon } from '@node-real/icons';
@@ -76,10 +76,10 @@ export function ChainSelector(props: ChainSelectorProps) {
                 alignItems="center"
                 transition="all"
                 transitionDuration="normal"
-                h={60}
                 borderRadius={8}
                 bg="bg.bottom"
                 px={16}
+                py={8}
                 gap={12}
                 _hover={{
                   bg: 'bg.top.active',

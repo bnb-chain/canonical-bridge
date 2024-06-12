@@ -11,7 +11,7 @@ import { useGetTokenBalance } from '@/contract/hooks/useGetTokenBalance';
 import { formatUnits } from 'viem';
 import { useSupportedTokens } from '@/app/transfer/hooks/useSupportedTokens';
 import { useSupportedFromChains } from '@/app/transfer/hooks/useSupportedFromChains';
-import { ChainInfo, TokenInfo } from '@/types';
+import { ChainInfo, TokenInfo } from '@/bridges/index/types';
 import { useEffect } from 'react';
 import { TokenSelector } from '@/app/transfer/components/TokenSelector';
 
