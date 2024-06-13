@@ -1,22 +1,21 @@
-import { useCBridgePoolBasedTransfer, useCBridgeSendMaxMin } from '@/app/hooks';
 import { TransferButtonGroup } from '@/app/transfer/components/TransferButtonGroup';
 import { getCBridgeEstimateAmount } from '@/bridges/cbridge/api/getCBridgeEstimateAmount';
-import { useDebounce } from '@/bridges/utils';
+import {
+  useCBridgePoolBasedTransfer,
+  useCBridgeSendMaxMin,
+} from '@/bridges/cbridge/hooks';
+import { useDebounce } from '@/hooks/useDebounce';
 import { useAppSelector } from '@/store/hooks';
-// import { useStore } from '@/providers/StoreProvider/hooks/useStore';
 import { useAccount } from '@bridge/wallet';
 import { Flex } from '@node-real/uikit';
 import { useEffect, useState } from 'react';
 import { formatUnits, parseUnits } from 'viem';
 
 export function TransferOverview() {
-  // const { fromChainId, fromTokenInfo, toChainId, toTokenInfo, transferValue } =
-  //   useStore();
-
   const fromChain = useAppSelector((state) => state.transfer.fromChain);
   const toChain = useAppSelector((state) => state.transfer.toChain);
   const selectedToken = useAppSelector((state) => state.transfer.selectedToken);
-  const receiveValue = useAppSelector((state) => state.transfer.receiveValue);
+  const sendValue = useAppSelector((state) => state.transfer.sendValue);
   const { address } = useAccount();
   const [feeInfo, setFeeInfo] = useState<any>(null);
 
@@ -25,7 +24,7 @@ export function TransferOverview() {
   //   bridgeAddress: fromTokenInfo.bridgeAddress as `0x${string}`,
   //   fromChain.id,
   //   toChain.id,
-  //   amount: receiveValue,
+  //   amount: sendValue,
   //   decimal: selectedToken.decimal,
   //   enable: selectedToken.tags.includes('cbridge') && selectedToken.rowData,
   //   max_slippage: 3000, // TODO: Get from user input
@@ -38,7 +37,7 @@ export function TransferOverview() {
   //   });
   //   console.log('res', transaction);
 
-  // const debouncedTransferValue = useDebounce(transferValue, 1000);
+  // const debouncedTransferValue = useDebounce(sendValue, 1000);
 
   // useEffect(() => {
   //   let mount = true;

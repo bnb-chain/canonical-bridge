@@ -47,7 +47,7 @@ export function FromSection() {
   const fromChain = useAppSelector((state) => state.transfer.fromChain);
   const toChain = useAppSelector((state) => state.transfer.toChain);
   const selectedToken = useAppSelector((state) => state.transfer.selectedToken);
-  const receiveValue = useAppSelector((state) => state.transfer.receiveValue);
+  const sendValue = useAppSelector((state) => state.transfer.sendValue);
 
   const { balance } = useGetTokenBalance({
     tokenAddress: selectedToken.address as `0x${string}`,
@@ -102,7 +102,7 @@ export function FromSection() {
         <Flex gap={12}>
           <Flex flex={1} flexDir={'column'} gap={4}>
             <Input
-              value={receiveValue}
+              value={sendValue}
               onChange={onChangeSendValue}
               onKeyDown={handleKeyPress}
               // isDisabled={!balance}
