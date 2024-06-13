@@ -11,10 +11,11 @@ export function getSupportedTokens(
 ) {
   const { chainTokensMap, peggedPairConfigs } = configs;
 
-  const chainTokens = chainTokensMap[fromChain.id];
+  const fromChainTokens = chainTokensMap[fromChain.id];
+  const toChainTokens = chainTokensMap[toChain.id];
   const finalTokens: TokenInfo[] = [];
 
-  chainTokens.forEach((item) => {
+  fromChainTokens.forEach((item) => {
     if (item.rawData.cbridge) {
       const tokenSet = new Set<string>();
       peggedPairConfigs.forEach((ppItem) => {
@@ -62,11 +63,16 @@ export function getSupportedTokens(
         });
       }
     } else if (item.rawData.debridge) {
-      finalTokens.push({
-        ...item,
-        isPegged: false,
-        peggedRawData: undefined,
-      });
+      const toToken = toChainTokens.find(
+        (token) => token.symbol === item.symbol
+      );
+      if (toToken) {
+        finalTokens.push({
+          ...item,
+          isPegged: false,
+          peggedRawData: undefined,
+        });
+      }
     }
   });
 
