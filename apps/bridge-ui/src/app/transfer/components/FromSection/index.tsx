@@ -50,20 +50,14 @@ export function FromSection() {
   const sendValue = useAppSelector((state) => state.transfer.sendValue);
 
   const { balance } = useGetTokenBalance({
-    tokenAddress: selectedToken.address as `0x${string}`,
+    tokenAddress: selectedToken?.address as `0x${string}`,
   });
 
   useEffect(() => {
-    if (!fromChain?.id) {
-      dispatch(setFromChain(chains[1]));
-    }
-  }, [chains, dispatch, fromChain?.id]);
-
-  useEffect(() => {
-    if (fromChain.id && toChain.id) {
+    if (fromChain && toChain) {
       dispatch(setSelectedToken(tokens[0]));
     }
-  }, [dispatch, fromChain.id, toChain.id, tokens]);
+  }, [dispatch, fromChain, toChain, tokens]);
 
   const onChangeSendValue = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value.trim() ?? 0;
@@ -84,7 +78,7 @@ export function FromSection() {
         From
         <ChainSelector
           title="Select Source Chain"
-          value={fromChain.id}
+          value={fromChain?.id}
           chains={chains}
           onChange={onChangeFromChain}
         />
@@ -111,12 +105,13 @@ export function FromSection() {
               <ErrorMsg>Insufficient balance</ErrorMsg>
             ) : (
               <Box>
-                Balance: {formatUnits(balance, selectedToken.decimal) || ''}
+                Balance:{' '}
+                {formatUnits(balance, selectedToken?.decimal ?? 0) || ''}
               </Box>
             )}
           </Flex>
           <TokenSelector
-            value={selectedToken.symbol}
+            value={selectedToken?.symbol}
             tokens={tokens}
             onChange={onChangeSelectedToken}
           />
