@@ -8,6 +8,7 @@ export type TransferState = {
   toChain?: ChainInfo;
   receiveValue: string;
   selectedToken?: TokenInfo;
+  slippage?: number;
 };
 
 const initStates: TransferState = {
@@ -16,6 +17,7 @@ const initStates: TransferState = {
   toChain: undefined,
   receiveValue: '',
   selectedToken: undefined,
+  slippage: undefined,
 };
 
 export default createReducer(initStates, (builder) => {
@@ -40,5 +42,10 @@ export default createReducer(initStates, (builder) => {
   builder.addCase(actions.setReceiveValue, (state, { payload }) => ({
     ...state,
     receiveValue: payload,
+  }));
+
+  builder.addCase(actions.setSlippage, (state, { payload }) => ({
+    ...state,
+    slippage: payload,
   }));
 });

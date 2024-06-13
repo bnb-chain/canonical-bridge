@@ -19,3 +19,6 @@ export const setToChain = createAction<TransferState['toChain']>(
 export const setReceiveValue = createAction<TransferState['receiveValue']>(
   'transfer/setReceiveValue'
 );
+export const setSlippage = createAction<TransferState['slippage']>(
+  'transfer/setSlippage'
+);

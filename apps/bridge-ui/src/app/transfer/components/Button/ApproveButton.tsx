@@ -23,7 +23,7 @@ export const ApproveButton = () => {
       w="100%"
       disabled={
         // !selectedToken.bridgeAddress ||
-        !sendValue || !selectedToken.decimal || !address || isLoadingApprove
+        !sendValue || !selectedToken || !address || isLoadingApprove
       }
     >
       Approve

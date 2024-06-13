@@ -3,7 +3,8 @@
 import { FromSection } from '@/app/transfer/components/FromSection';
 import { ToSection } from '@/app/transfer/components/ToSection';
 import { useInitialConfig } from '@/app/transfer/hooks/useInitialConfig';
-// import { TransferOverview } from '@/app/transfer/components/TransferOverview';
+import { TransferOverview } from '@/app/transfer/components/TransferOverview';
+
 import { Button, Flex } from '@node-real/uikit';
 
 export default function Page() {
@@ -29,7 +30,7 @@ export default function Page() {
         </Button>
       </Flex>
 
-      {/* <TransferOverview /> */}
+      <TransferOverview />
     </Flex>
   );
 }
