@@ -4,7 +4,6 @@ import {
   setSendValue,
 } from '@/app/transfer/action';
 import { ChainSelector } from '@/app/transfer/components/ChainSelector';
-import { useDebounce } from '@/hooks/useDebounce';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { Box, BoxProps, Flex, Input } from '@node-real/uikit';
 import { useGetTokenBalance } from '@/contract/hooks/useGetTokenBalance';
@@ -15,6 +14,30 @@ import { ChainInfo, TokenInfo } from '@/bridges/index/types';
 import { useEffect } from 'react';
 import { TokenSelector } from '@/app/transfer/components/TokenSelector';
 
+const handleKeyPress = (e: React.KeyboardEvent) => {
+  // only allow number and decimal
+  if (
+    e.key !== '1' &&
+    e.key !== '2' &&
+    e.key !== '3' &&
+    e.key !== '4' &&
+    e.key !== '5' &&
+    e.key !== '6' &&
+    e.key !== '7' &&
+    e.key !== '8' &&
+    e.key !== '9' &&
+    e.key !== '0' &&
+    e.key !== '.' &&
+    e.key !== ',' &&
+    e.key !== '。' &&
+    e.key !== 'ArrowLeft' &&
+    e.key !== 'ArrowRight' &&
+    e.key !== 'Backspace'
+  ) {
+    e.preventDefault();
+  }
+};
+
 export function FromSection() {
   const dispatch = useAppDispatch();
 
@@ -24,6 +47,7 @@ export function FromSection() {
   const fromChain = useAppSelector((state) => state.transfer.fromChain);
   const toChain = useAppSelector((state) => state.transfer.toChain);
   const selectedToken = useAppSelector((state) => state.transfer.selectedToken);
+  const sendValue = useAppSelector((state) => state.transfer.sendValue);
 
   const { balance } = useGetTokenBalance({
     tokenAddress: selectedToken.address as `0x${string}`,
@@ -41,13 +65,10 @@ export function FromSection() {
     }
   }, [dispatch, fromChain.id, toChain.id, tokens]);
 
-  const onChangeSendValue = useDebounce(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      const value = event.target.value.trim() ?? 0;
-      dispatch(setSendValue(value));
-    },
-    1000
-  );
+  const onChangeSendValue = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const value = event.target.value.trim() ?? 0;
+    dispatch(setSendValue(value));
+  };
 
   const onChangeFromChain = (chain: ChainInfo) => {
     dispatch(setFromChain(chain));
@@ -81,9 +102,9 @@ export function FromSection() {
         <Flex gap={12}>
           <Flex flex={1} flexDir={'column'} gap={4}>
             <Input
-              step={'0.000000001'}
-              pattern="[0-9]"
+              value={sendValue}
               onChange={onChangeSendValue}
+              onKeyDown={handleKeyPress}
               // isDisabled={!balance}
             />
             {!balance ? (

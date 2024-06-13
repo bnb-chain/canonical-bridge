@@ -63,7 +63,6 @@ export const useCBridgePoolBasedTransfer = ({
         ) {
           return;
         }
-        console.log(transferAmount);
         if (walletClient && address) {
           const nonce = new Date().getTime();
           const amount = parseUnits(String(transferAmount), decimal); // Convert to big number
@@ -104,6 +103,8 @@ export const useCBridgePoolBasedTransfer = ({
           console.log('transfer id', transfer_id);
           setResponse((value) => ({
             ...value,
+            error: null,
+            isError: false,
             data: {
               gasFee: gas,
               gasPrice,

@@ -24,7 +24,7 @@ export default createReducer(initStates, (builder) => {
   }));
   builder.addCase(actions.setSendValue, (state, { payload }) => ({
     ...state,
-    setSendValue: payload,
+    sendValue: payload,
   }));
 
   builder.addCase(actions.setToChain, (state, { payload }) => ({
