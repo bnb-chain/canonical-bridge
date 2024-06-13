@@ -21,6 +21,7 @@ export function getSupportedTokens(
         if (
           ppItem.org_chain_id === fromChain.id &&
           ppItem.pegged_chain_id === toChain.id &&
+          ppItem.org_token.token.symbol === item.symbol &&
           !tokenSet.has(item.symbol)
         ) {
           finalTokens.push({
@@ -36,6 +37,7 @@ export function getSupportedTokens(
         if (
           ppItem.org_chain_id === toChain.id &&
           ppItem.pegged_chain_id === fromChain.id &&
+          ppItem.pegged_token.token.symbol === item.symbol &&
           !tokenSet.has(item.symbol)
         ) {
           finalTokens.push({
