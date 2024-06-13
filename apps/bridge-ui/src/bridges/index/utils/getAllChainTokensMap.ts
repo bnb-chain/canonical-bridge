@@ -1,14 +1,15 @@
 import { TokenInfo } from '@/bridges/index/types';
 import { CBRIDGE_TRANSFER_CONFIGS, DEBRIDGE_TOKENS } from '../data/index';
 
-export function getAllTokens() {
-  const CBridgeTokenInfos = CBRIDGE_TRANSFER_CONFIGS.chain_token;
+export function getAllChainTokensMap() {
+  const cbridgeTokens = CBRIDGE_TRANSFER_CONFIGS.chain_token;
   const deBridgeTokens = DEBRIDGE_TOKENS;
 
-  const chainTokenMap = new Map<string, Record<string, TokenInfo>>();
-  const supportedTokens: Record<string, TokenInfo[]> = {};
+  const chainTokenMap = new Map<number, Record<string, TokenInfo>>();
+  const supportedTokens: Record<number, TokenInfo[]> = {};
 
-  Object.entries(CBridgeTokenInfos).forEach(([chainId, { token }]) => {
+  Object.entries(cbridgeTokens).forEach(([key, { token }]) => {
+    const chainId = Number(key);
     supportedTokens[chainId] = [];
 
     const tokenMap: Record<string, TokenInfo> = {};
@@ -26,11 +27,13 @@ export function getAllTokens() {
           cbridge: item,
         },
       };
+
       supportedTokens[chainId].push(tokenInfo);
       tokenMap[item.token.symbol] = tokenInfo;
     });
   });
 
+  // debridge tokens
   const createTokenByDeBridge = (item: any) => {
     return {
       name: item.name,
@@ -45,7 +48,8 @@ export function getAllTokens() {
     } as TokenInfo;
   };
 
-  Object.entries(deBridgeTokens).forEach(([chainId, token]) => {
+  Object.entries(deBridgeTokens).forEach(([key, token]) => {
+    const chainId = Number(key);
     const tokenMap = chainTokenMap.get(chainId);
     if (tokenMap) {
       token.forEach((item) => {

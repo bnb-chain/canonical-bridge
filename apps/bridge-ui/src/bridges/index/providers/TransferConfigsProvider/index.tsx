@@ -1,20 +1,21 @@
+import { CBridgePeggedPairConfig } from '@/bridges/cbridge/types';
 import {
   ChainInfo,
   MultiBurnPairConfig,
   TokenInfo,
 } from '@/bridges/index/types';
 import { getAllChains } from '@/bridges/index/utils/getAllChains';
-import { getAllTokens } from '@/bridges/index/utils/getAllTokens';
+import { getAllChainTokensMap } from '@/bridges/index/utils/getAllChainTokensMap';
 import { getMultiBurnConfigs } from '@/bridges/index/utils/getMultiBurnConfigs';
 import { getPeggedPairConfigs } from '@/bridges/index/utils/getPeggedPairConfigs';
 import React, { useContext, useMemo } from 'react';
 
 export interface TransferConfigsContextProps {
   chains: ChainInfo[];
-  tokens: {
+  chainTokensMap: {
     [k in string]: TokenInfo[];
   };
-  peggedPairConfigs: any[];
+  peggedPairConfigs: CBridgePeggedPairConfig[];
   multiBurnConfigs: MultiBurnPairConfig[];
 }
 
@@ -31,13 +32,13 @@ export function TransferConfigsProvider(props: TransferConfigsProviderProps) {
 
   const value = useMemo(() => {
     const chains = getAllChains();
-    const tokens = getAllTokens();
+    const chainTokensMap = getAllChainTokensMap();
     const peggedPairConfigs = getPeggedPairConfigs(chains);
     const multiBurnConfigs = getMultiBurnConfigs();
 
     return {
       chains,
-      tokens,
+      chainTokensMap,
       peggedPairConfigs,
       multiBurnConfigs,
     };
@@ -52,14 +53,6 @@ export function TransferConfigsProvider(props: TransferConfigsProviderProps) {
 
 export function useTransferConfigs() {
   return useContext(TransferConfigContext);
-}
-
-export function useSupportedChains() {
-  return useTransferConfigs().chains;
-}
-
-export function useSupportedChainTokens(chainId: number) {
-  return useTransferConfigs().tokens[chainId];
 }
 
 export function usePeggedPairConfigs() {

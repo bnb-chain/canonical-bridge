@@ -9,6 +9,9 @@ export function useSupportedTokens() {
   const configs = useTransferConfigs();
 
   const supportedTokens = useMemo(() => {
+    if (!fromChain || !toChain) {
+      return [];
+    }
     return getSupportedTokens(configs, fromChain, toChain);
   }, [configs, fromChain, toChain]);
 

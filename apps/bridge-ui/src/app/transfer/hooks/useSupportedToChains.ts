@@ -8,6 +8,9 @@ export function useSupportedToChains() {
   const configs = useTransferConfigs();
 
   const supportedToChains = useMemo(() => {
+    if (!fromChain) {
+      return [];
+    }
     return getSupportedToChains(configs, fromChain);
   }, [configs, fromChain]);
 

@@ -2,12 +2,14 @@ import { ChainInfo } from '@/bridges/index/types';
 import { CBRIDGE_TRANSFER_CONFIGS, DEBRIDGE_CHAIN_LIST } from '../data/index';
 
 export function getAllChains() {
-  const CBridgeChainInfos = CBRIDGE_TRANSFER_CONFIGS.chains;
+  const cbridgeChains = CBRIDGE_TRANSFER_CONFIGS.chains;
   const deBridgeChains = DEBRIDGE_CHAIN_LIST.chains;
 
   const chainMap = new Map<number, ChainInfo>();
   const supportedChains: ChainInfo[] = [];
-  CBridgeChainInfos.forEach((item) => {
+
+  // cbridge chains
+  cbridgeChains.forEach((item) => {
     const chainInfo: ChainInfo = {
       id: item.id,
       name: item.name,
@@ -22,6 +24,7 @@ export function getAllChains() {
     supportedChains.push(chainInfo);
   });
 
+  // debridge chains
   deBridgeChains.forEach((item) => {
     const chainInfo = chainMap.get(item.chainId);
     if (chainInfo) {

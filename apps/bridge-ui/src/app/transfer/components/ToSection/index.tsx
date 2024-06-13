@@ -3,8 +3,8 @@ import { ChainSelector } from '@/app/transfer/components/ChainSelector';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { Flex, Input } from '@node-real/uikit';
 import { ChainInfo } from '@/bridges/index/types';
-import { useEffect } from 'react';
 import { useSupportedToChains } from '@/app/transfer/hooks/useSupportedToChains';
+import { useEffect } from 'react';
 
 export function ToSection() {
   const dispatch = useAppDispatch();
@@ -14,10 +14,10 @@ export function ToSection() {
   const receiveValue = useAppSelector((state) => state.transfer.receiveValue);
 
   useEffect(() => {
-    if (!toChain?.id) {
+    if (chains[0]) {
       dispatch(setToChain(chains[0]));
     }
-  }, [chains, dispatch, toChain?.id]);
+  }, [chains, dispatch]);
 
   const onChangeToChain = (chain: ChainInfo) => {
     dispatch(setToChain(chain));
@@ -29,7 +29,7 @@ export function ToSection() {
         To
         <ChainSelector
           title="Select Destination Chain"
-          value={toChain.id}
+          value={toChain?.id}
           chains={chains}
           onChange={onChangeToChain}
         />

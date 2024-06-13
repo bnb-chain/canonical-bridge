@@ -2,15 +2,21 @@ import { ChainInfo, TokenInfo } from '@/bridges/index/types';
 import * as actions from './action';
 import { createReducer } from '@reduxjs/toolkit';
 
-const initStates = {
-  fromChain: {} as ChainInfo,
-  sendValue: '',
-  toChain: {} as ChainInfo,
-  receiveValue: '',
-  selectedToken: {} as TokenInfo,
+export type TransferState = {
+  fromChain?: ChainInfo;
+  sendValue: string;
+  toChain?: ChainInfo;
+  receiveValue: string;
+  selectedToken?: TokenInfo;
 };
 
-export type TransferState = typeof initStates;
+const initStates: TransferState = {
+  fromChain: undefined,
+  sendValue: '',
+  toChain: undefined,
+  receiveValue: '',
+  selectedToken: undefined,
+};
 
 export default createReducer(initStates, (builder) => {
   builder.addCase(actions.setSelectedToken, (state, { payload }) => ({

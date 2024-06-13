@@ -1,4 +1,8 @@
-import { CBridgeChainInfo, CBridgeTokenInfo } from '@/bridges/cbridge/types';
+import {
+  CBridgeChainInfo,
+  CBridgePeggedPairConfig,
+  CBridgeTokenInfo,
+} from '@/bridges/cbridge/types';
 import {
   DeBridgetChainDetails,
   DeBridgeTokenDetails,
@@ -27,6 +31,10 @@ export interface TokenInfo {
   rawData: {
     cbridge?: CBridgeTokenInfo;
     debridge?: DeBridgeTokenDetails;
+  };
+  isPegged?: boolean;
+  peggedRawData?: {
+    cbridge: CBridgePeggedPairConfig;
   };
 }
 
