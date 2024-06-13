@@ -2,7 +2,7 @@ import { getCBridgeEstimateAmount } from '@/bridges/cbridge/api/getCBridgeEstima
 import { CBridgeEstimateAmountResponse } from '@/bridges/cbridge/types';
 import { useQuery } from '@tanstack/react-query';
 
-export function useFetchCBridgeEstimateAmount(params: {
+export function useFetchCBridgeEstimateAmount(value: {
   srcChainId: number;
   dstChainId: number;
   tokenSymbol: string;
@@ -12,13 +12,13 @@ export function useFetchCBridgeEstimateAmount(params: {
   isPegged?: boolean;
 }) {
   const params = {
-    src_chain_id: params.srcChainId,
-    dst_chain_id: params.dstChainId,
-    token_symbol: params.tokenSymbol,
-    amt: params.amount,
-    usr_addr: params.userAddress,
-    slippage_tolerance: params.slippageTolerance,
-    is_pegged: params.isPegged,
+    src_chain_id: value.srcChainId,
+    dst_chain_id: value.dstChainId,
+    token_symbol: value.tokenSymbol,
+    amt: value.amount,
+    usr_addr: value.userAddress,
+    slippage_tolerance: value.slippageTolerance,
+    is_pegged: value.isPegged,
   };
 
   return useQuery<CBridgeEstimateAmountResponse>({
@@ -27,9 +27,9 @@ export function useFetchCBridgeEstimateAmount(params: {
       return getCBridgeEstimateAmount(params);
     },
     enabled:
-      !!params.srcChainId &&
-      !!params.dstChainId &&
-      !!params.tokenSymbol &&
-      !!params.amount,
+      !!value.srcChainId &&
+      !!value.dstChainId &&
+      !!value.tokenSymbol &&
+      !!value.amount,
   });
 }
