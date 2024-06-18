@@ -6,7 +6,7 @@ export function useFetchCBridgeEstimateAmount(value: {
   srcChainId: number;
   dstChainId: number;
   tokenSymbol: string;
-  amount: number;
+  amount: string;
   userAddress?: string;
   slippageTolerance: number;
   isPegged?: boolean;

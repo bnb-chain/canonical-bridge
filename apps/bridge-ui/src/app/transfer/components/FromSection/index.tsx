@@ -56,6 +56,9 @@ export function FromSection() {
   useEffect(() => {
     if (fromChain && toChain) {
       dispatch(setSelectedToken(tokens[0]));
+      // dispatch(
+      //   setSelectedToken(tokens.find((token) => token.symbol === 'USDT'))
+      // );
     }
   }, [dispatch, fromChain, toChain, tokens]);
 
@@ -69,6 +72,7 @@ export function FromSection() {
   };
 
   const onChangeSelectedToken = (token: TokenInfo) => {
+    dispatch(setSendValue('0'));
     dispatch(setSelectedToken(token));
   };
 
@@ -99,7 +103,6 @@ export function FromSection() {
               value={sendValue}
               onChange={onChangeSendValue}
               onKeyDown={handleKeyPress}
-              // isDisabled={!balance}
             />
             {!balance ? (
               <ErrorMsg>Insufficient balance</ErrorMsg>

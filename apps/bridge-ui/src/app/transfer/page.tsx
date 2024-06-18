@@ -5,7 +5,8 @@ import { ToSection } from '@/app/transfer/components/ToSection';
 import { useInitialConfig } from '@/app/transfer/hooks/useInitialConfig';
 import { TransferOverview } from '@/app/transfer/components/TransferOverview';
 
-import { Button, Flex } from '@node-real/uikit';
+import { Flex } from '@node-real/uikit';
+import { TransferButtonGroup } from '@/app/transfer/components/TransferButtonGroup';
 
 export default function Page() {
   useInitialConfig();
@@ -24,10 +25,8 @@ export default function Page() {
       <FromSection />
       <ToSection />
 
-      <Flex flexDir="column" mt={32}>
-        <Button isDisabled={false} color="light.readable.normal" w="100%">
-          Transfer
-        </Button>
+      <Flex flexDir="column">
+        <TransferButtonGroup />
       </Flex>
 
       <TransferOverview />
