@@ -1,5 +1,3 @@
-'use client';
-
 import { EVMWalletProvider } from '@/modules/evm/providers/EVMWalletProvider';
 import { FlowWalletProvider } from '@/modules/flow/providers/FlowWalletProvider';
 import { WalletType } from '@/types';
