@@ -4,7 +4,8 @@ import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { Flex, Input } from '@node-real/uikit';
 import { ChainInfo } from '@/bridges/index/types';
 import { useSupportedToChains } from '@/app/transfer/hooks/useSupportedToChains';
-import { useEffect } from 'react';
+import { useToTokenInfo } from '@/app/transfer/hooks/useToTokenInfo';
+import { formatUnits } from 'viem';
 
 export function ToSection() {
   const dispatch = useAppDispatch();
@@ -12,13 +13,7 @@ export function ToSection() {
   const chains = useSupportedToChains();
   const toChain = useAppSelector((state) => state.transfer.toChain);
   const receiveValue = useAppSelector((state) => state.transfer.receiveValue);
-
-  useEffect(() => {
-    if (chains[0]) {
-      dispatch(setToChain(chains[0]));
-    }
-  }, [chains, dispatch]);
-
+  const toTokenInfo = useToTokenInfo();
   const onChangeToChain = (chain: ChainInfo) => {
     dispatch(setToChain(chain));
   };
@@ -46,7 +41,17 @@ export function ToSection() {
         <Flex>Receive:</Flex>
         <Flex gap={12}>
           <Flex flex={1} flexDir={'column'}>
-            <Input value={receiveValue} readOnly />
+            <Input
+              value={
+                toTokenInfo
+                  ? `${formatUnits(
+                      BigInt(receiveValue),
+                      toTokenInfo?.decimal
+                    )} ${toTokenInfo?.symbol}`
+                  : ''
+              }
+              readOnly
+            />
           </Flex>
         </Flex>
       </Flex>

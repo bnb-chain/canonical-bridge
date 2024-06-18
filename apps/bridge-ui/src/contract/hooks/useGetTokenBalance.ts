@@ -19,6 +19,7 @@ export const useGetTokenBalance = ({
     address: tokenAddress,
     functionName: 'balanceOf',
     args: [address as `0x${string}`],
+    cacheTime: 5000,
   });
   return {
     balance,

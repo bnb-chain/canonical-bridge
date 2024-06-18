@@ -16,20 +16,22 @@ export function getAllChainTokensMap() {
     chainTokenMap.set(chainId, tokenMap);
 
     token.forEach((item) => {
-      const tokenInfo: TokenInfo = {
-        name: item.name,
-        icon: item.icon,
-        address: item.token.address,
-        symbol: item.token.symbol,
-        decimal: item.token.decimal,
-        tags: ['cbridge'],
-        rawData: {
-          cbridge: item,
-        },
-      };
-
-      supportedTokens[chainId].push(tokenInfo);
-      tokenMap[item.token.symbol] = tokenInfo;
+      if (item.token.xfer_disabled === false) {
+        // cBridge pool-based transfer not supported token
+        const tokenInfo: TokenInfo = {
+          name: item.name,
+          icon: item.icon,
+          address: item.token.address,
+          symbol: item.token.symbol,
+          decimal: item.token.decimal,
+          tags: ['cbridge'],
+          rawData: {
+            cbridge: item,
+          },
+        };
+        supportedTokens[chainId].push(tokenInfo);
+        tokenMap[item.token.symbol] = tokenInfo;
+      }
     });
   });
 

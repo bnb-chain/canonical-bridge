@@ -38,6 +38,13 @@ export interface TokenInfo {
   };
 }
 
+export interface TransferActionInfo {
+  data?: `0x${string}`;
+  bridgeAddress?: `0x${string}`;
+  value?: string;
+  bridgeType?: BridgeType;
+}
+
 export interface BurnConfig {
   chain_id: number;
   token: CBridgeTokenInfo;

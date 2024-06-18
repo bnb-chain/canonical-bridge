@@ -4,8 +4,8 @@ import { useAppDispatch } from '@/store/hooks';
 import { useEffect } from 'react';
 
 const defaultConfig = {
-  fromChainId: 10,
-  toChainId: 56,
+  fromChainId: 56,
+  toChainId: 137,
 };
 
 export function useInitialConfig() {

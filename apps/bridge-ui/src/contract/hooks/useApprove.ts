@@ -22,11 +22,12 @@ export const useApprove = () => {
           functionName: 'approve',
           args: [spender, amount as bigint],
         });
-        setIsLoadingApprove(false);
         return hash;
       } catch (e: any) {
         // eslint-disable-next-line no-console
         console.log(e, e.message);
+      } finally {
+        setIsLoadingApprove(false);
       }
     },
     [walletClient, address]

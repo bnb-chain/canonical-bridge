@@ -22,3 +22,6 @@ export const setReceiveValue = createAction<TransferState['receiveValue']>(
 export const setSlippage = createAction<TransferState['slippage']>(
   'transfer/setSlippage'
 );
+export const setTransferActionInfo = createAction<
+  TransferState['transferActionInfo']
+>('transfer/setTransferActionInfo');

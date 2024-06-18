@@ -1,4 +1,8 @@
-import { ChainInfo, TokenInfo } from '@/bridges/index/types';
+import {
+  ChainInfo,
+  TokenInfo,
+  TransferActionInfo,
+} from '@/bridges/index/types';
 import * as actions from './action';
 import { createReducer } from '@reduxjs/toolkit';
 
@@ -9,6 +13,7 @@ export type TransferState = {
   receiveValue: string;
   selectedToken?: TokenInfo;
   slippage?: number;
+  transferActionInfo?: TransferActionInfo;
 };
 
 const initStates: TransferState = {
@@ -18,6 +23,7 @@ const initStates: TransferState = {
   receiveValue: '',
   selectedToken: undefined,
   slippage: undefined,
+  transferActionInfo: undefined,
 };
 
 export default createReducer(initStates, (builder) => {
@@ -47,5 +53,9 @@ export default createReducer(initStates, (builder) => {
   builder.addCase(actions.setSlippage, (state, { payload }) => ({
     ...state,
     slippage: payload,
+  }));
+  builder.addCase(actions.setTransferActionInfo, (state, { payload }) => ({
+    ...state,
+    transferActionInfo: payload,
   }));
 });

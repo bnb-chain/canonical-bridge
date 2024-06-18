@@ -15,7 +15,7 @@ export function getSupportedTokens(
   const toChainTokens = chainTokensMap[toChain.id];
   const finalTokens: TokenInfo[] = [];
 
-  fromChainTokens.forEach((item) => {
+  fromChainTokens?.forEach((item) => {
     if (item.rawData.cbridge) {
       const tokenSet = new Set<string>();
       peggedPairConfigs.forEach((ppItem) => {
@@ -51,16 +51,20 @@ export function getSupportedTokens(
           tokenSet.add(item.symbol);
         }
       });
-
       if (
         !tokenSet.has(item.symbol) &&
         !item.rawData.cbridge.token.xfer_disabled
       ) {
-        finalTokens.push({
-          ...item,
-          isPegged: false,
-          peggedRawData: undefined,
-        });
+        const toToken = toChainTokens.find(
+          (token) => token.symbol === item.symbol
+        );
+        if (toToken) {
+          finalTokens.push({
+            ...item,
+            isPegged: false,
+            peggedRawData: undefined,
+          });
+        }
       }
     } else if (item.rawData.debridge) {
       const toToken = toChainTokens.find(
