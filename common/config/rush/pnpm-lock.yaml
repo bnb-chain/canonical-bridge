@@ -8,7 +8,7 @@ importers:
 
   .: {}
 
-  ../../apps/bridge-ui:
+  ../../apps/multichain-bridge-ui:
     dependencies:
       '@bridge/wallet':
         specifier: workspace:*
