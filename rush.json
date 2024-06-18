@@ -410,8 +410,8 @@
     //   "tags": [ "tools" ]
     // }
     {
-      "packageName": "bridge-ui",
-      "projectFolder": "apps/bridge-ui"
+      "packageName": "multichain-bridge-ui",
+      "projectFolder": "apps/multichain-bridge-ui"
     },
     {
       "packageName": "@bridge/wallet",

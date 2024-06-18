@@ -253,3 +253,7 @@
 // // console.log(transfer_id);
 
 // // vault_version = 2  ===> OriginalTokenVaultV2
+
+export default function CBridgePage() {
+  return null;
+}
