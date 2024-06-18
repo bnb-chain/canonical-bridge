@@ -4,6 +4,8 @@ FROM gcr.io/distroless/nodejs20-debian12
 WORKDIR /opt/deploy
 
 COPY common/deploy .
+COPY apps/multichain-bridge-ui/.next apps/multichain-bridge-ui/.next
+
 COPY --from=builder /bin/sleep /usr/local/bin/sleep
 
 WORKDIR /opt/deploy/apps/multichain-bridge-ui
