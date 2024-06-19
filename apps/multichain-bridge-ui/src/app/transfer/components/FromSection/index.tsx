@@ -1,5 +1,6 @@
 import {
   setFromChain,
+  setReceiveValue,
   setSelectedToken,
   setSendValue,
 } from '@/app/transfer/action';
@@ -13,6 +14,7 @@ import { useSupportedFromChains } from '@/app/transfer/hooks/useSupportedFromCha
 import { ChainInfo, TokenInfo } from '@/bridges/index/types';
 import { useEffect } from 'react';
 import { TokenSelector } from '@/app/transfer/components/TokenSelector';
+import { useNetwork } from 'wagmi';
 
 const handleKeyPress = (e: React.KeyboardEvent) => {
   // only allow number and decimal
@@ -43,6 +45,7 @@ export function FromSection() {
 
   const chains = useSupportedFromChains();
   const tokens = useSupportedTokens();
+  const { chain } = useNetwork();
 
   const fromChain = useAppSelector((state) => state.transfer.fromChain);
   const toChain = useAppSelector((state) => state.transfer.toChain);
@@ -56,9 +59,6 @@ export function FromSection() {
   useEffect(() => {
     if (fromChain && toChain) {
       dispatch(setSelectedToken(tokens[0]));
-      // dispatch(
-      //   setSelectedToken(tokens.find((token) => token.symbol === 'USDT'))
-      // );
     }
   }, [dispatch, fromChain, toChain, tokens]);
 
@@ -73,6 +73,7 @@ export function FromSection() {
 
   const onChangeSelectedToken = (token: TokenInfo) => {
     dispatch(setSendValue('0'));
+    dispatch(setReceiveValue('0'));
     dispatch(setSelectedToken(token));
   };
 
@@ -103,6 +104,7 @@ export function FromSection() {
               value={sendValue}
               onChange={onChangeSendValue}
               onKeyDown={handleKeyPress}
+              disabled={!fromChain || !chain || fromChain?.id !== chain?.id}
             />
             {!balance ? (
               <ErrorMsg>Insufficient balance</ErrorMsg>
