@@ -96,8 +96,7 @@ export const DeBridgeOption = () => {
           !debouncedSendValue ||
           debouncedSendValue === '0' ||
           !toTokenInfo ||
-          !mount ||
-          !address
+          !mount
         ) {
           return;
         }
@@ -119,19 +118,23 @@ export const DeBridgeOption = () => {
           dstChainTokenOut: toTokenInfo?.rawData.debridge?.address,
           prependOperatingExpenses: false,
           affiliateFeePercent: 0,
-          srcChainOrderAuthorityAddress: address,
-          dstChainOrderAuthorityAddress: address,
-          dstChainTokenOutRecipient: address,
-        };
+        } as any;
+        if (address) {
+          params.dstChainTokenOutRecipient = address;
+          params.dstChainOrderAuthorityAddress = address;
+          params.srcChainOrderAuthorityAddress = address;
+        }
         const urlParams = new URLSearchParams(params as any);
         const deBridgeQuote = await createDeBridgeTxQuote(urlParams);
         // console.log('debridge quote', deBridgeQuote);
         setDeBridgeEstimatedAmt(deBridgeQuote);
-        dispatch(
-          setReceiveValue(deBridgeQuote?.estimation.dstChainTokenOut.amount)
-        );
-        if (deBridgeQuote?.tx) {
-          dispatch(setError(''));
+        if (selectedToken.tags.length === 1) {
+          dispatch(
+            setReceiveValue(deBridgeQuote?.estimation.dstChainTokenOut.amount)
+          );
+        }
+        dispatch(setError(''));
+        if (deBridgeQuote?.tx && address) {
           // Check whether token allowance is enough before getting gas estimation
           const allowance = await publicClient.readContract({
             address: selectedToken?.address as `0x${string}`,
@@ -211,6 +214,11 @@ export const DeBridgeOption = () => {
         if (!deBridgeEstimatedAmt || !deBridgeEstimatedAmt.tx) {
           return;
         }
+        dispatch(
+          setReceiveValue(
+            deBridgeEstimatedAmt?.estimation.dstChainTokenOut.amount
+          )
+        );
         dispatch(
           setTransferActionInfo({
             bridgeType: 'debridge',
