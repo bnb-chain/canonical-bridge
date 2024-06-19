@@ -1,4 +1,8 @@
-import { setReceiveValue, setTransferActionInfo } from '@/app/transfer/action';
+import {
+  setError,
+  setReceiveValue,
+  setTransferActionInfo,
+} from '@/app/transfer/action';
 import { InfoRow } from '@/app/transfer/components/InfoRow';
 import { useGetNativeToken } from '@/app/transfer/hooks/useGetNativeToken';
 import { useToTokenInfo } from '@/app/transfer/hooks/useToTokenInfo';
@@ -90,6 +94,7 @@ export const DeBridgeOption = () => {
           !fromChain ||
           !toChain ||
           !debouncedSendValue ||
+          debouncedSendValue === '0' ||
           !toTokenInfo ||
           !mount ||
           !address
@@ -97,6 +102,12 @@ export const DeBridgeOption = () => {
           return;
         }
         setIsLoading(true);
+        // init value
+        setGasInfo({
+          gas: 0n,
+          gasPrice: 0n,
+        });
+        setDeBridgeEstimatedAmt(null);
         const params = {
           srcChainId: fromChain.id,
           srcChainTokenIn: selectedToken?.address as `0x${string}`,
@@ -120,6 +131,7 @@ export const DeBridgeOption = () => {
           setReceiveValue(deBridgeQuote?.estimation.dstChainTokenOut.amount)
         );
         if (deBridgeQuote?.tx) {
+          dispatch(setError(''));
           // Check whether token allowance is enough before getting gas estimation
           const allowance = await publicClient.readContract({
             address: selectedToken?.address as `0x${string}`,
@@ -158,6 +170,9 @@ export const DeBridgeOption = () => {
       } catch (error: any) {
         // eslint-disable-next-line no-console
         console.log(error, error.message);
+        if (error?.response?.data?.errorMessage) {
+          dispatch(setError(error.response.data.errorMessage));
+        }
       } finally {
         setIsLoading(false);
       }
