@@ -1,8 +1,9 @@
 import { setReceiveValue, setTransferActionInfo } from '@/app/transfer/action';
 import { InfoRow } from '@/app/transfer/components/InfoRow';
+import { AllowAmountRange } from '@/app/transfer/components/TransferOverview/cbridge/AllowedAmountRange';
+import { EstimatedArrivalTime } from '@/app/transfer/components/TransferOverview/cbridge/EstimatedArrivalTime';
 import { useToTokenInfo } from '@/app/transfer/hooks/useToTokenInfo';
 import { getCBridgeEstimateAmount } from '@/bridges/cbridge/api/getCBridgeEstimateAmount';
-import { useCBridgeSendMaxMin } from '@/bridges/cbridge/hooks';
 import { useCBridgeTransferParams } from '@/bridges/cbridge/hooks/useCBridgeTransferParams';
 import { useTransferConfigs } from '@/bridges/index';
 import { useGetAllowance } from '@/contract/hooks/useGetAllowance';
@@ -22,6 +23,7 @@ export const CBridgeOption = () => {
   const { address } = useAccount();
   const toTokenInfo = useToTokenInfo();
   const { getEstimatedGas } = useGetEstimatedGas();
+  const { args, bridgeAddress } = useCBridgeTransferParams();
 
   const selectedToken = useAppSelector((state) => state.transfer.selectedToken);
   const fromChain = useAppSelector((state) => state.transfer.fromChain);
@@ -30,28 +32,26 @@ export const CBridgeOption = () => {
   const transferActionInfo = useAppSelector(
     (state) => state.transfer.transferActionInfo
   );
+
   const [isLoading, setIsLoading] = useState(false);
   const [cBridgeGasFee, setCBridgeGasFee] = useState<{
     gas: bigint;
     gasPrice: bigint;
   }>({ gas: 0n, gasPrice: 0n });
   const [cBridgeEstimatedAmt, setCBridgeEstimatedAmt] = useState<any>(null);
+
   const isPegged = useMemo(
     () => selectedToken?.isPegged || false,
     [selectedToken]
   );
-  const { args, bridgeAddress } = useCBridgeTransferParams();
   const { allowance } = useGetAllowance({
     tokenAddress: selectedToken?.address as `0x${string}`,
     sender: bridgeAddress as `0x${string}`,
   });
-  const { minMaxSendAmt } = useCBridgeSendMaxMin({
-    bridgeAddress: bridgeAddress as `0x${string}`,
-    tokenAddress: selectedToken?.address as `0x${string}`,
-  });
-  // console.log(minMaxSendAmt, toTokenInfo);
+
   const debouncedArguments = useDebounce(args, 1000);
   const debouncedTransferValue = useDebounce(sendValue, 1000);
+
   useEffect(() => {
     let mount = true;
     if (
@@ -112,9 +112,9 @@ export const CBridgeOption = () => {
       (async () => {
         setCBridgeEstimatedAmt(null);
         const estimated = await getCBridgeEstimateAmount(params);
-        // console.log('estimated', estimated);
         setCBridgeEstimatedAmt(estimated);
-        dispatch(setReceiveValue(estimated.estimated_receive_amt));
+        if (selectedToken.tags.length === 1)
+          dispatch(setReceiveValue(estimated.estimated_receive_amt));
       })();
     } catch (error: any) {
       // eslint-disable-next-line no-console
@@ -158,6 +158,9 @@ export const CBridgeOption = () => {
             bridgeAddress: bridgeAddress as `0x${string}`,
           })
         );
+        if (cBridgeEstimatedAmt) {
+          dispatch(setReceiveValue(cBridgeEstimatedAmt.estimated_receive_amt));
+        }
       }}
     >
       <Box fontSize={'20px'} fontWeight={700}>
@@ -176,7 +179,7 @@ export const CBridgeOption = () => {
         />
       ) : null}
       <InfoRow
-        label={'Transfer Fee:'}
+        label={'Base Fee:'}
         value={
           cBridgeEstimatedAmt &&
           toTokenInfo &&
@@ -199,24 +202,8 @@ export const CBridgeOption = () => {
             : '-'
         }
       />
-      <InfoRow
-        label="Allow Range:"
-        value={
-          minMaxSendAmt &&
-          minMaxSendAmt?.[0]?.result &&
-          minMaxSendAmt?.[1]?.result &&
-          selectedToken
-            ? `${formatUnits(
-                minMaxSendAmt?.[0]?.result,
-                selectedToken?.decimal
-              )} ${selectedToken.symbol} - ${formatUnits(
-                minMaxSendAmt?.[1]?.result,
-                selectedToken?.decimal
-              )} ${selectedToken.symbol}`
-            : '-'
-        }
-      />
-      <InfoRow label="Estimated Arrival Time:" value={'-'} />
+      <AllowAmountRange />
+      <EstimatedArrivalTime />
     </Flex>
   );
 };

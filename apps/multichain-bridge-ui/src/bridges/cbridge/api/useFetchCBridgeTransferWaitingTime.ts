@@ -24,5 +24,6 @@ export const useFetchCBridgeTransferWaitingTime = ({
       ).data;
     },
     enabled: !!srcChainId && !!dstChainId,
+    staleTime: 1000 * 60 * 30,
   });
 };
