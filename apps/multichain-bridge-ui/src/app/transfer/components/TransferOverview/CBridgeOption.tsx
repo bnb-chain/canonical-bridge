@@ -92,8 +92,6 @@ export const CBridgeOption = () => {
       !toChain ||
       !selectedToken ||
       !mount ||
-      !chain ||
-      chain.id !== fromChain.id ||
       !debouncedTransferValue ||
       debouncedTransferValue === '0'
     ) {
@@ -114,8 +112,9 @@ export const CBridgeOption = () => {
         setCBridgeEstimatedAmt(null);
         const estimated = await getCBridgeEstimateAmount(params);
         setCBridgeEstimatedAmt(estimated);
-        if (selectedToken.tags.length === 1)
+        if (selectedToken.tags.length === 1) {
           dispatch(setReceiveValue(estimated.estimated_receive_amt));
+        }
       })();
     } catch (error: any) {
       // eslint-disable-next-line no-console
@@ -133,7 +132,6 @@ export const CBridgeOption = () => {
     dispatch,
     debouncedTransferValue,
     address,
-    chain,
     isPegged,
     slippage,
   ]);

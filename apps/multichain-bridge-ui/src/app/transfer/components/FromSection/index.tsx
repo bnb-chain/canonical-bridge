@@ -5,6 +5,7 @@ import {
   setSelectedToken,
   setSendValue,
   setToChain,
+  setTransferActionInfo,
 } from '@/app/transfer/action';
 import { ChainSelector } from '@/app/transfer/components/ChainSelector';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
@@ -16,7 +17,6 @@ import { useSupportedFromChains } from '@/app/transfer/hooks/useSupportedFromCha
 import { ChainInfo, TokenInfo } from '@/bridges/index/types';
 import { useEffect } from 'react';
 import { TokenSelector } from '@/app/transfer/components/TokenSelector';
-import { useNetwork } from 'wagmi';
 
 const handleKeyPress = (e: React.KeyboardEvent) => {
   // only allow number and decimal
@@ -47,7 +47,6 @@ export function FromSection() {
 
   const chains = useSupportedFromChains();
   const tokens = useSupportedTokens();
-  const { chain } = useNetwork();
 
   const fromChain = useAppSelector((state) => state.transfer.fromChain);
   const toChain = useAppSelector((state) => state.transfer.toChain);
@@ -76,10 +75,11 @@ export function FromSection() {
   };
 
   const onChangeSelectedToken = (token: TokenInfo) => {
-    dispatch(setSendValue('0'));
-    dispatch(setReceiveValue('0'));
+    dispatch(setSendValue(''));
+    dispatch(setReceiveValue(''));
     dispatch(setSelectedToken(token));
     dispatch(setError(''));
+    dispatch(setTransferActionInfo(undefined));
   };
 
   return (
@@ -109,7 +109,6 @@ export function FromSection() {
               value={sendValue}
               onChange={onChangeSendValue}
               onKeyDown={handleKeyPress}
-              disabled={!fromChain || !chain || fromChain?.id !== chain?.id}
             />
             {error ? (
               <ErrorMsg>{error}</ErrorMsg>
