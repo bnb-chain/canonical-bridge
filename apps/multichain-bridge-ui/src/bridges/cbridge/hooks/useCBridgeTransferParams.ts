@@ -16,7 +16,7 @@ export const useCBridgeTransferParams = () => {
   const fromChain = useAppSelector((state) => state.transfer.fromChain);
   const toChain = useAppSelector((state) => state.transfer.toChain);
   const sendValue = useAppSelector((state) => state.transfer.sendValue);
-  const max_slippage = 30000;
+  const max_slippage = useAppSelector((state) => state.transfer.slippage);
   const isPegged = useMemo(
     () => selectedToken?.isPegged || false,
     [selectedToken]
@@ -112,7 +112,15 @@ export const useCBridgeTransferParams = () => {
       : transferType === 'withdraw'
       ? [selectedToken?.address, amount, address as `0x${string}`, nonce]
       : null;
-  }, [sendValue, toChain, selectedToken, address, isPegged, transferType]);
+  }, [
+    sendValue,
+    toChain,
+    selectedToken,
+    address,
+    isPegged,
+    transferType,
+    max_slippage,
+  ]);
 
   // Arguments for bridge smart contract
   const args = useMemo(() => {
