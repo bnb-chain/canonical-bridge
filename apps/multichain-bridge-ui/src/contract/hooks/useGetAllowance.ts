@@ -34,7 +34,6 @@ export const useGetAllowance = ({
       return true;
     }
     const sendVal = parseUnits(sendValue, selectedToken.decimal);
-    console.log(sendVal, allowance);
     if (sendVal <= allowance) {
       return false;
     } else {

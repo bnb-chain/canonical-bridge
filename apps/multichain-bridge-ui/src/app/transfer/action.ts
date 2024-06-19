@@ -25,3 +25,5 @@ export const setSlippage = createAction<TransferState['slippage']>(
 export const setTransferActionInfo = createAction<
   TransferState['transferActionInfo']
 >('transfer/setTransferActionInfo');
+export const setError =
+  createAction<TransferState['error']>('transfer/setError');

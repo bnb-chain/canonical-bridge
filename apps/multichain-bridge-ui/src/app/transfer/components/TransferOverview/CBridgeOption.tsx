@@ -29,6 +29,7 @@ export const CBridgeOption = () => {
   const fromChain = useAppSelector((state) => state.transfer.fromChain);
   const toChain = useAppSelector((state) => state.transfer.toChain);
   const sendValue = useAppSelector((state) => state.transfer.sendValue);
+  const slippage = useAppSelector((state) => state.transfer.slippage);
   const transferActionInfo = useAppSelector(
     (state) => state.transfer.transferActionInfo
   );
@@ -104,7 +105,7 @@ export const CBridgeOption = () => {
       token_symbol: selectedToken?.symbol,
       amt: String(parseUnits(debouncedTransferValue, selectedToken?.decimal)),
       usr_addr: address,
-      slippage_tolerance: 30000,
+      slippage_tolerance: slippage,
       is_pegged: isPegged,
     };
     try {
@@ -134,6 +135,7 @@ export const CBridgeOption = () => {
     address,
     chain,
     isPegged,
+    slippage,
   ]);
   return (
     <Flex

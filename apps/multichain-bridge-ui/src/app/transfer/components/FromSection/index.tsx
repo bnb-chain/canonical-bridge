@@ -1,8 +1,10 @@
 import {
+  setError,
   setFromChain,
   setReceiveValue,
   setSelectedToken,
   setSendValue,
+  setToChain,
 } from '@/app/transfer/action';
 import { ChainSelector } from '@/app/transfer/components/ChainSelector';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
@@ -51,6 +53,7 @@ export function FromSection() {
   const toChain = useAppSelector((state) => state.transfer.toChain);
   const selectedToken = useAppSelector((state) => state.transfer.selectedToken);
   const sendValue = useAppSelector((state) => state.transfer.sendValue);
+  const error = useAppSelector((state) => state.transfer.error);
 
   const { balance } = useGetTokenBalance({
     tokenAddress: selectedToken?.address as `0x${string}`,
@@ -69,12 +72,14 @@ export function FromSection() {
 
   const onChangeFromChain = (chain: ChainInfo) => {
     dispatch(setFromChain(chain));
+    dispatch(setToChain(undefined));
   };
 
   const onChangeSelectedToken = (token: TokenInfo) => {
     dispatch(setSendValue('0'));
     dispatch(setReceiveValue('0'));
     dispatch(setSelectedToken(token));
+    dispatch(setError(''));
   };
 
   return (
@@ -106,7 +111,9 @@ export function FromSection() {
               onKeyDown={handleKeyPress}
               disabled={!fromChain || !chain || fromChain?.id !== chain?.id}
             />
-            {!balance ? (
+            {error ? (
+              <ErrorMsg>{error}</ErrorMsg>
+            ) : !balance ? (
               <ErrorMsg>Insufficient balance</ErrorMsg>
             ) : (
               <Box>

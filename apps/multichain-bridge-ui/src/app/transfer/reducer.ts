@@ -12,8 +12,9 @@ export type TransferState = {
   toChain?: ChainInfo;
   receiveValue: string;
   selectedToken?: TokenInfo;
-  slippage?: number;
+  slippage: number;
   transferActionInfo?: TransferActionInfo;
+  error?: string;
 };
 
 const initStates: TransferState = {
@@ -22,8 +23,9 @@ const initStates: TransferState = {
   toChain: undefined,
   receiveValue: '',
   selectedToken: undefined,
-  slippage: undefined,
+  slippage: 10000, // 1% for cBridge
   transferActionInfo: undefined,
+  error: '',
 };
 
 export default createReducer(initStates, (builder) => {
@@ -57,5 +59,9 @@ export default createReducer(initStates, (builder) => {
   builder.addCase(actions.setTransferActionInfo, (state, { payload }) => ({
     ...state,
     transferActionInfo: payload,
+  }));
+  builder.addCase(actions.setError, (state, { payload }) => ({
+    ...state,
+    error: payload,
   }));
 });
