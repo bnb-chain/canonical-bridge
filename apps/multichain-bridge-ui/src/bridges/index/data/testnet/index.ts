@@ -11,7 +11,7 @@ import deBridgeTokenList8453 from '@/bridges/debridge/data/testnet/token_list/ch
 import deBridgeTokenList42161 from '@/bridges/debridge/data/testnet/token_list/chain_id_42161.json';
 import deBridgeTokenList43114 from '@/bridges/debridge/data/testnet/token_list/chain_id_43114.json';
 import deBridgeTokenList59144 from '@/bridges/debridge/data/testnet/token_list/chain_id_59144.json';
-import deBridgeTokenList7565164 from '@/bridges/debridge/data/testnet/token_list/chain_id_7565164.json';
+import deBridgeTokenList7565164 from '@/bridges/debridge/data/testnet/token_list/chain_id_7565164.json'; // Solana
 import deBridgeTokenList100000001 from '@/bridges/debridge/data/testnet/token_list/chain_id_100000001.json';
 import deBridgeTokenList100000002 from '@/bridges/debridge/data/testnet/token_list/chain_id_100000002.json';
 import deBridgeTokenList100000003 from '@/bridges/debridge/data/testnet/token_list/chain_id_100000003.json';
