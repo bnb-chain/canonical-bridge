@@ -168,6 +168,7 @@ export const CBridgeOption = () => {
       </Box>
       {!!cBridgeGasFee?.gas && !!cBridgeGasFee?.gasPrice ? (
         <InfoRow
+          isLoading={isLoading}
           label={'Gas Fee:'}
           value={`${formatUnits(
             cBridgeGasFee?.gas * cBridgeGasFee?.gasPrice,
@@ -179,6 +180,7 @@ export const CBridgeOption = () => {
         />
       ) : null}
       <InfoRow
+        isLoading={isLoading}
         label={'Base Fee:'}
         value={
           cBridgeEstimatedAmt &&
@@ -192,6 +194,7 @@ export const CBridgeOption = () => {
         }
       />
       <InfoRow
+        isLoading={isLoading}
         label="Protocol Fee:"
         value={
           cBridgeEstimatedAmt && toTokenInfo
@@ -202,7 +205,7 @@ export const CBridgeOption = () => {
             : '-'
         }
       />
-      <AllowAmountRange />
+      <AllowAmountRange isLoading={isLoading} />
       <EstimatedArrivalTime />
     </Flex>
   );

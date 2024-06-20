@@ -225,6 +225,7 @@ export const DeBridgeOption = () => {
             bridgeAddress: deBridgeEstimatedAmt.tx.to as `0x${string}`,
             data: deBridgeEstimatedAmt.tx.data,
             value: deBridgeEstimatedAmt.tx.value,
+            orderId: deBridgeEstimatedAmt.orderId,
           })
         );
       }}
@@ -239,6 +240,7 @@ export const DeBridgeOption = () => {
             gasInfo.gas * gasInfo.gasPrice,
             18
           )} ${nativeToken}`}
+          isLoading={isLoading}
         />
       ) : null}
       <InfoRow
@@ -251,6 +253,7 @@ export const DeBridgeOption = () => {
               )} ${nativeToken}`
             : '-'
         }
+        isLoading={isLoading}
       />
       <InfoRow
         label="Estimated Arrival Time:"
@@ -259,6 +262,7 @@ export const DeBridgeOption = () => {
             ? deBridgeEstimatedAmt?.order.approximateFulfillmentDelay + 's'
             : '-'
         }
+        isLoading={isLoading}
       />
     </Flex>
   );

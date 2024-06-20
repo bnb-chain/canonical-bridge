@@ -43,6 +43,7 @@ export interface TransferActionInfo {
   bridgeAddress?: `0x${string}`;
   value?: string;
   bridgeType?: BridgeType;
+  orderId?: string; // deBridge order id. May be used for tracking history
 }
 
 export interface BurnConfig {

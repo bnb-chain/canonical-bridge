@@ -3,7 +3,7 @@ import { useCBridgeTransferParams } from '@/bridges/cbridge/hooks/useCBridgeTran
 import { useGetEstimatedGas } from '@/contract/hooks/useGetEstimatedGas';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { useAccount } from '@bridge/wallet';
-import { Box, Button, Flex } from '@node-real/uikit';
+import { Box, Button, Flex, Link } from '@node-real/uikit';
 import { useCallback, useEffect, useState } from 'react';
 import { useSendTransaction, useWalletClient } from 'wagmi';
 
@@ -39,7 +39,6 @@ export function TransferButton() {
     try {
       setCBridgeHash(null);
       setIsLoading(true);
-      // CBridge transfer
       if (transferActionInfo.bridgeType === 'cbridge') {
         const { gas, gasPrice } = await getEstimatedGas(args as any);
         const hash = await walletClient.writeContract({
@@ -80,13 +79,6 @@ export function TransferButton() {
   ]);
 
   useEffect(() => {
-    if (sendValue === '0') {
-      setCBridgeHash(null);
-      setDeBridgeHash(null);
-    }
-  }, [sendValue]);
-
-  useEffect(() => {
     if (hash) {
       setDeBridgeHash(hash.hash);
     }
@@ -100,14 +92,35 @@ export function TransferButton() {
         color="light.readable.normal"
         w="100%"
         mb={'8px'}
+        disabled={isLoading}
       >
         Transfer
       </Button>
-      {deBridgeHash && (
-        <Box padding={'4px'}>{`deBridge Tx Hash` + deBridgeHash}</Box>
+      {deBridgeHash && address && (
+        <Box padding={'4px'}>
+          {`Your transaction hash: `}
+          <Flex>{deBridgeHash}</Flex>
+          {`View deBridge transaction history at: `}
+          <Link
+            href={`https://app.debridge.finance/orders?s=${address}`}
+            target="_blank"
+          >
+            deExplorer
+          </Link>
+        </Box>
       )}
       {cBridgeHash && (
-        <Box padding={'4px'}>{`cBridge Tx Hash` + cBridgeHash}</Box>
+        <Box padding={'4px'}>
+          {`Your transaction hash: `}
+          <Flex>{cBridgeHash}</Flex>
+          {`View cBridge transaction history at `}
+          <Link
+            href={`https://celerscan.com/tx/${cBridgeHash}`}
+            target="_blank"
+          >
+            {`CelerScan`}
+          </Link>
+        </Box>
       )}
     </Flex>
   );
