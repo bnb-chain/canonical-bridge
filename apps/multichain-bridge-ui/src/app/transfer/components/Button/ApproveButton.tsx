@@ -2,7 +2,7 @@ import { useApprove } from '@/contract/hooks';
 import { useAppSelector } from '@/store/hooks';
 import { Button } from '@node-real/uikit';
 import { parseUnits } from 'viem';
-import { useAccount, useNetwork } from 'wagmi';
+import { useAccount } from 'wagmi';
 
 export const ApproveButton = () => {
   const sendValue = useAppSelector((state) => state.transfer.sendValue);
@@ -11,7 +11,6 @@ export const ApproveButton = () => {
     (state) => state.transfer.transferActionInfo
   );
   const { address } = useAccount();
-  const { chain } = useNetwork();
   const { approveErc20Token, isLoadingApprove } = useApprove();
 
   return transferActionInfo?.bridgeAddress && selectedToken?.address ? (

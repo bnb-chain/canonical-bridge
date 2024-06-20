@@ -4,7 +4,7 @@ import { useCBridgeTransferParams } from '@/bridges/cbridge/hooks/useCBridgeTran
 import { useAppSelector } from '@/store/hooks';
 import { formatUnits } from 'viem';
 
-export const AllowAmountRange = () => {
+export const AllowAmountRange = ({ isLoading }: { isLoading?: boolean }) => {
   const selectedToken = useAppSelector((state) => state.transfer.selectedToken);
   const { bridgeAddress } = useCBridgeTransferParams();
 
@@ -15,6 +15,7 @@ export const AllowAmountRange = () => {
 
   return (
     <InfoRow
+      isLoading={isLoading}
       label="Allow Range:"
       value={
         minMaxSendAmt &&

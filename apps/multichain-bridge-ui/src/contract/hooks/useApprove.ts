@@ -1,6 +1,6 @@
 'use client';
 
-import { useWalletClient } from 'wagmi';
+import { usePublicClient, useWalletClient } from 'wagmi';
 import { useAccount } from '@bridge/wallet';
 import { useCallback, useState } from 'react';
 import { ERC20_TOKEN } from '@/contract/abi';
@@ -9,6 +9,7 @@ export const useApprove = () => {
   const { address } = useAccount();
   const [isLoadingApprove, setIsLoadingApprove] = useState(false);
   const { data: walletClient } = useWalletClient();
+  const publicClient = usePublicClient();
 
   const approveErc20Token = useCallback(
     async (tokenAddress: string, spender: `0x${string}`, amount: BigInt) => {
@@ -22,6 +23,13 @@ export const useApprove = () => {
           functionName: 'approve',
           args: [spender, amount as bigint],
         });
+        // TODO: There is a time gap between the transaction is sent and getting the latest allowance.
+        // May need to adjust allowance refetching interval period.
+        const transaction = await publicClient.waitForTransactionReceipt({
+          hash: hash,
+        });
+        // eslint-disable-next-line no-console
+        console.log('approve tx:', transaction);
         return hash;
       } catch (e: any) {
         // eslint-disable-next-line no-console
@@ -30,7 +38,7 @@ export const useApprove = () => {
         setIsLoadingApprove(false);
       }
     },
-    [walletClient, address]
+    [walletClient, publicClient, address]
   );
   return {
     approveErc20Token,
