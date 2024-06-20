@@ -9,14 +9,13 @@ import {
 } from '@/app/transfer/action';
 import { ChainSelector } from '@/app/transfer/components/ChainSelector';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
-import { Box, BoxProps, Flex, Input } from '@node-real/uikit';
-import { useGetTokenBalance } from '@/contract/hooks/useGetTokenBalance';
-import { formatUnits } from 'viem';
+import { Flex, Input } from '@node-real/uikit';
 import { useSupportedTokens } from '@/app/transfer/hooks/useSupportedTokens';
 import { useSupportedFromChains } from '@/app/transfer/hooks/useSupportedFromChains';
 import { ChainInfo, TokenInfo } from '@/bridges/index/types';
 import { useEffect } from 'react';
 import { TokenSelector } from '@/app/transfer/components/TokenSelector';
+import { TokenBalance } from '@/app/transfer/components/TokenBalance';
 
 const handleKeyPress = (e: React.KeyboardEvent) => {
   // only allow number and decimal
@@ -52,11 +51,6 @@ export function FromSection() {
   const toChain = useAppSelector((state) => state.transfer.toChain);
   const selectedToken = useAppSelector((state) => state.transfer.selectedToken);
   const sendValue = useAppSelector((state) => state.transfer.sendValue);
-  const error = useAppSelector((state) => state.transfer.error);
-
-  const { balance } = useGetTokenBalance({
-    tokenAddress: selectedToken?.address as `0x${string}`,
-  });
 
   useEffect(() => {
     if (fromChain && toChain) {
@@ -110,16 +104,7 @@ export function FromSection() {
               onChange={onChangeSendValue}
               onKeyDown={handleKeyPress}
             />
-            {error ? (
-              <ErrorMsg>{error}</ErrorMsg>
-            ) : !balance ? (
-              <ErrorMsg>Insufficient balance</ErrorMsg>
-            ) : (
-              <Box>
-                Balance:{' '}
-                {formatUnits(balance, selectedToken?.decimal ?? 0) || ''}
-              </Box>
-            )}
+            <TokenBalance />
           </Flex>
           <TokenSelector
             value={selectedToken?.symbol}
@@ -130,8 +115,4 @@ export function FromSection() {
       </Flex>
     </Flex>
   );
-}
-
-function ErrorMsg(props: BoxProps) {
-  return <Box color="scene.danger.normal" {...props} />;
 }

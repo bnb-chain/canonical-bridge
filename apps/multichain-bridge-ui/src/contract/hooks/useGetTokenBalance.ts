@@ -1,7 +1,7 @@
 'use client';
 import { ERC20_TOKEN } from '@/contract/abi';
 import { useAccount } from '@bridge/wallet';
-import { useContractRead } from 'wagmi';
+import { useContractRead, useNetwork } from 'wagmi';
 
 export const useGetTokenBalance = ({
   tokenAddress,
@@ -9,11 +9,11 @@ export const useGetTokenBalance = ({
   tokenAddress: `0x${string}`;
 }) => {
   const { address } = useAccount();
-
   const {
     data: balance,
     isError,
     error,
+    refetch,
   } = useContractRead({
     abi: ERC20_TOKEN,
     address: tokenAddress,
@@ -25,5 +25,6 @@ export const useGetTokenBalance = ({
     balance,
     isError,
     error,
+    refetch,
   };
 };
