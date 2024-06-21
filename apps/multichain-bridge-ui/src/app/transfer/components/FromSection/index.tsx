@@ -66,6 +66,8 @@ export function FromSection() {
   const onChangeFromChain = (chain: ChainInfo) => {
     dispatch(setFromChain(chain));
     dispatch(setToChain(undefined));
+    dispatch(setTransferActionInfo(undefined));
+    dispatch(setSelectedToken(undefined));
   };
 
   const onChangeSelectedToken = (token: TokenInfo) => {
