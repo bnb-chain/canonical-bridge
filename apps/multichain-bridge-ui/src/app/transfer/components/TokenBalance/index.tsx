@@ -22,6 +22,8 @@ export const TokenBalance = () => {
       setBalance(initBalance);
     } else if (!selectedToken) {
       setBalance(0n);
+    } else {
+      setBalance(0n);
     }
   }, [initBalance, selectedToken]);
 
@@ -55,11 +57,14 @@ export const TokenBalance = () => {
     <Flex flex={1} flexDir={'column'} gap={4}>
       {error ? (
         <ErrorMsg>{error}</ErrorMsg>
-      ) : !balance ? (
+      ) : !balance && selectedToken ? (
         <ErrorMsg>Insufficient balance</ErrorMsg>
       ) : (
         <Box>
-          Balance: {formatUnits(balance, selectedToken?.decimal ?? 0) || ''}
+          Balance:{' '}
+          {selectedToken?.decimal && balance
+            ? formatUnits(balance, selectedToken?.decimal)
+            : ''}
         </Box>
       )}
     </Flex>

@@ -98,6 +98,7 @@ export const DeBridgeOption = () => {
           !toTokenInfo ||
           !mount
         ) {
+          setDeBridgeEstimatedAmt(null);
           return;
         }
         setIsLoading(true);
@@ -106,7 +107,6 @@ export const DeBridgeOption = () => {
           gas: 0n,
           gasPrice: 0n,
         });
-        setDeBridgeEstimatedAmt(null);
         const params = {
           srcChainId: fromChain.id,
           srcChainTokenIn: selectedToken?.address as `0x${string}`,

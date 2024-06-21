@@ -97,16 +97,16 @@ export const CBridgeOption = () => {
     ) {
       return;
     }
-    const params = {
-      src_chain_id: fromChain?.id,
-      dst_chain_id: toChain?.id,
-      token_symbol: selectedToken?.symbol,
-      amt: String(parseUnits(debouncedTransferValue, selectedToken?.decimal)),
-      usr_addr: address,
-      slippage_tolerance: slippage,
-      is_pegged: isPegged,
-    };
     try {
+      const params = {
+        src_chain_id: fromChain?.id,
+        dst_chain_id: toChain?.id,
+        token_symbol: selectedToken?.symbol,
+        amt: String(parseUnits(debouncedTransferValue, selectedToken?.decimal)),
+        usr_addr: address,
+        slippage_tolerance: slippage,
+        is_pegged: isPegged,
+      };
       setIsLoading(true);
       (async () => {
         setCBridgeEstimatedAmt(null);

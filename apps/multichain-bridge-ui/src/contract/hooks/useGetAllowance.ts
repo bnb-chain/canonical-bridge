@@ -39,14 +39,13 @@ export const useGetAllowance = ({
     address: tokenAddress,
     functionName: 'allowance',
     args: [address as `0x${string}`, sender],
-    cacheTime: 5000,
+    staleTime: 5000,
   });
   useEffect(() => {
-    if (typeof initAllowance === 'bigint' && initAllowance) {
+    if (typeof initAllowance === 'bigint') {
       setAllowance(initAllowance);
     }
   }, [initAllowance]);
-
   useEffect(() => {
     let mount = true;
     if (!mount) return;
