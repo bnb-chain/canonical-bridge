@@ -64,3 +64,8 @@ export interface MultiBurnPairConfig {
   burn_config_as_org: BurnConfig; /// Could be used only as from chain
   burn_config_as_dst: BurnConfig; /// Could be used only as to chain
 }
+
+export interface ReceiveValue {
+  debridge?: string;
+  cbridge?: string;
+}

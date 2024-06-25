@@ -72,7 +72,7 @@ export function FromSection() {
 
   const onChangeSelectedToken = (token: TokenInfo) => {
     dispatch(setSendValue(''));
-    dispatch(setReceiveValue(''));
+    dispatch(setReceiveValue(undefined));
     dispatch(setSelectedToken(token));
     dispatch(setError(''));
     dispatch(setTransferActionInfo(undefined));

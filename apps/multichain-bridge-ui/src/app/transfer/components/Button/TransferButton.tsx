@@ -72,7 +72,7 @@ export function TransferButton() {
     } finally {
       setIsLoading(false);
       dispatch(setSendValue(''));
-      dispatch(setReceiveValue(''));
+      dispatch(setReceiveValue(undefined));
     }
   }, [
     address,
