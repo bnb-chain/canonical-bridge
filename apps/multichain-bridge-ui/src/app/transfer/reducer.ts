@@ -1,5 +1,6 @@
 import {
   ChainInfo,
+  ReceiveValue,
   TokenInfo,
   TransferActionInfo,
 } from '@/bridges/index/types';
@@ -10,22 +11,24 @@ export type TransferState = {
   fromChain?: ChainInfo;
   sendValue: string;
   toChain?: ChainInfo;
-  receiveValue: string;
+  receiveValue?: ReceiveValue;
   selectedToken?: TokenInfo;
   slippage: number;
   transferActionInfo?: TransferActionInfo;
   error?: string;
+  isGlobalFeeLoading?: boolean;
 };
 
 const initStates: TransferState = {
   fromChain: undefined,
   sendValue: '',
   toChain: undefined,
-  receiveValue: '',
+  receiveValue: undefined,
   selectedToken: undefined,
   slippage: 10000, // 1% for cBridge
   transferActionInfo: undefined,
   error: '',
+  isGlobalFeeLoading: false,
 };
 
 export default createReducer(initStates, (builder) => {
@@ -63,5 +66,10 @@ export default createReducer(initStates, (builder) => {
   builder.addCase(actions.setError, (state, { payload }) => ({
     ...state,
     error: payload,
+  }));
+
+  builder.addCase(actions.setIsGlobalFeeLoading, (state, { payload }) => ({
+    ...state,
+    isGlobalFeeLoading: payload,
   }));
 });
