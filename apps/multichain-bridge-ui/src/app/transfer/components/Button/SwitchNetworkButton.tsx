@@ -1,5 +1,6 @@
+import { BnbChainButton } from '@/app/transfer/components/BNBChain/BnbChainButton';
 import { useAppSelector } from '@/store/hooks';
-import { Button, toast } from '@node-real/uikit';
+import { toast } from '@node-real/uikit';
 import { useSwitchNetwork } from 'wagmi';
 
 export const SwitchNetworkButton = () => {
@@ -12,7 +13,7 @@ export const SwitchNetworkButton = () => {
     },
   });
   return (
-    <Button
+    <BnbChainButton
       onClick={() => {
         if (fromChain?.id && switchNetwork) {
           switchNetwork(fromChain?.id);
@@ -22,6 +23,6 @@ export const SwitchNetworkButton = () => {
       w="100%"
     >
       Switch Network
-    </Button>
+    </BnbChainButton>
   );
 };

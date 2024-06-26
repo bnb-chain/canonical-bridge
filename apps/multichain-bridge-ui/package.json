@@ -27,7 +27,8 @@
     "@reduxjs/toolkit": "~2.2.5",
     "react-redux": "~9.1.2",
     "dot-prop-immutable-chain": "~0.0.3",
-    "pino-pretty": "~11.2.1"
+    "pino-pretty": "~11.2.1",
+    "polished": "~4.3.1"
   },
   "devDependencies": {
     "typescript": "^5",

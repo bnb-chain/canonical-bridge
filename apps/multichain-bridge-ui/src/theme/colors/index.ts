@@ -4,18 +4,18 @@ import { light } from './light';
 export const colors = {
   colors: {
     light: {
-      ...light.colors,
+      ...light,
     },
     dark: {
-      ...dark.colors,
+      ...dark,
     },
   },
   shadows: {
     light: {
-      ...light.shadows,
+      ...light.shadow,
     },
     dark: {
-      ...dark.shadows,
+      ...dark.shadow,
     },
   },
 };

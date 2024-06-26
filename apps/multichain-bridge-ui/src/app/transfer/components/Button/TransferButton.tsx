@@ -1,4 +1,5 @@
 import { setReceiveValue, setSendValue } from '@/app/transfer/action';
+import { BnbChainButton } from '@/app/transfer/components/BNBChain/BnbChainButton';
 import { useCBridgeTransferParams } from '@/bridges/cbridge/hooks/useCBridgeTransferParams';
 import { useGetEstimatedGas } from '@/contract/hooks/useGetEstimatedGas';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
@@ -66,13 +67,13 @@ export function TransferButton() {
       } else {
         console.log('Unsupported bridge type', transferActionInfo?.bridgeType);
       }
+      dispatch(setSendValue(''));
+      dispatch(setReceiveValue(undefined));
     } catch (e: any) {
       // eslint-disable-next-line no-console
       console.error(e, e.message);
     } finally {
       setIsLoading(false);
-      dispatch(setSendValue(''));
-      dispatch(setReceiveValue(undefined));
     }
   }, [
     address,
@@ -94,7 +95,7 @@ export function TransferButton() {
 
   return (
     <Flex flexDir="column" w={'100%'}>
-      <Button
+      <BnbChainButton
         onClick={sendTx}
         isDisabled={!sendValue || sendValue === '0'}
         color="light.readable.normal"
@@ -103,7 +104,7 @@ export function TransferButton() {
         disabled={isLoading}
       >
         Transfer
-      </Button>
+      </BnbChainButton>
       {deBridgeHash && address && (
         <Box padding={'4px'}>
           {`Your transaction hash: `}

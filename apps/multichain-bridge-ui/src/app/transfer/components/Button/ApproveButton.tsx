@@ -1,6 +1,6 @@
+import { BnbChainButton } from '@/app/transfer/components/BNBChain/BnbChainButton';
 import { useApprove } from '@/contract/hooks';
 import { useAppSelector } from '@/store/hooks';
-import { Button } from '@node-real/uikit';
 import { parseUnits } from 'viem';
 import { useAccount } from 'wagmi';
 
@@ -14,7 +14,7 @@ export const ApproveButton = () => {
   const { approveErc20Token, isLoadingApprove } = useApprove();
 
   return transferActionInfo?.bridgeAddress && selectedToken?.address ? (
-    <Button
+    <BnbChainButton
       onClick={() => {
         approveErc20Token(
           selectedToken.address as `0x${string}`,
@@ -27,6 +27,6 @@ export const ApproveButton = () => {
       disabled={!sendValue || !selectedToken || !address || isLoadingApprove}
     >
       Approve
-    </Button>
+    </BnbChainButton>
   ) : null;
 };
