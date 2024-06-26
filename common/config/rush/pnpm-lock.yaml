@@ -52,6 +52,9 @@ importers:
       pino-pretty:
         specifier: ~11.2.1
         version: 11.2.1
+      polished:
+        specifier: ~4.3.1
+        version: 4.3.1
       react:
         specifier: 18.2.0
         version: 18.2.0
@@ -8577,6 +8580,13 @@ packages:
   /pngjs@5.0.0:
     resolution: {integrity: sha512-40QW5YalBNfQo5yRYmiw7Yz6TKKVr3h6970B2YE+3fQpsWcrbj1PzJgxeJ19DRQjhMbKPIuMY8rFaXc8moolVw==}
     engines: {node: '>=10.13.0'}
+    dev: false
+
+  /polished@4.3.1:
+    resolution: {integrity: sha512-OBatVyC/N7SCW/FaDHrSd+vn0o5cS855TOmYi4OkdWUMSJCET/xip//ch8xGUvtr3i44X9LVyWwQlRMTN3pwSA==}
+    engines: {node: '>=10'}
+    dependencies:
+      '@babel/runtime': 7.24.6
     dev: false
 
   /pony-cause@2.1.11:

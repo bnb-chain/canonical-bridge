@@ -24,11 +24,10 @@ export function ToSection() {
 
   const receiveAmt = useMemo(() => {
     if (!receiveValue) return null;
-    // TODO: May need to choose which bridge receive amount to set first
+    // TODO: May need to choose which bridge receive amount to show first
     return receiveValue?.cbridge || receiveValue?.debridge;
   }, [receiveValue]);
 
-  console.log('receiveAmt: ', receiveAmt);
   return (
     <Flex flexDir="column" gap={16}>
       <Flex alignItems="center" gap={16}>

@@ -1,3 +1,4 @@
+import { BnbChainButton } from '@/app/transfer/components/BNBChain/BnbChainButton';
 import { MenuCloseIcon } from '@node-real/icons';
 import {
   Button,
@@ -41,22 +42,23 @@ export function Selector(props: SelectorProps) {
 
   return (
     <>
-      <Button
+      <BnbChainButton
         onClick={isDisabled ? undefined : onOpen}
         borderRadius={16}
         flexShrink={0}
         h={40}
         px={12}
         gap={8}
-        bg={'bg.bottom'}
+        background={`layer.3.default`}
         _hover={{
-          bg: 'bg.top.active',
+          background: 'layer.3.hover',
         }}
+        color={'text.primary'}
         {...restProps}
       >
         {children}
         {!isDisabled && <MenuCloseIcon />}
-      </Button>
+      </BnbChainButton>
 
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalCloseButton />

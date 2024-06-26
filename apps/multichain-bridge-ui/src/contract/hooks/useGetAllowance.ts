@@ -83,7 +83,7 @@ export const useGetAllowance = ({
     sender,
   ]);
   const isAllowanceLow = useMemo(() => {
-    if (!sendValue || !selectedToken || !allowance) {
+    if (!selectedToken || !allowance) {
       return true;
     }
     try {
