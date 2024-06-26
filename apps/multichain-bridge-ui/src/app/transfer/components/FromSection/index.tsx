@@ -4,7 +4,6 @@ import {
   setReceiveValue,
   setSelectedToken,
   setSendValue,
-  setToChain,
   setTransferActionInfo,
 } from '@/app/transfer/action';
 import { ChainSelector } from '@/app/transfer/components/ChainSelector';
@@ -12,8 +11,7 @@ import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { Flex, Input } from '@node-real/uikit';
 import { useSupportedTokens } from '@/app/transfer/hooks/useSupportedTokens';
 import { useSupportedFromChains } from '@/app/transfer/hooks/useSupportedFromChains';
-import { ChainInfo, TokenInfo } from '@/bridges/index/types';
-import { useEffect } from 'react';
+import { ChainInfo, TokenInfo } from '@/bridges/main/types';
 import { TokenSelector } from '@/app/transfer/components/TokenSelector';
 import { TokenBalance } from '@/app/transfer/components/TokenBalance';
 
@@ -48,15 +46,8 @@ export function FromSection() {
   const tokens = useSupportedTokens();
 
   const fromChain = useAppSelector((state) => state.transfer.fromChain);
-  const toChain = useAppSelector((state) => state.transfer.toChain);
   const selectedToken = useAppSelector((state) => state.transfer.selectedToken);
   const sendValue = useAppSelector((state) => state.transfer.sendValue);
-
-  useEffect(() => {
-    if (fromChain && toChain) {
-      dispatch(setSelectedToken(tokens[0]));
-    }
-  }, [dispatch, fromChain, toChain, tokens]);
 
   const onChangeSendValue = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value.trim() ?? 0;
@@ -65,7 +56,6 @@ export function FromSection() {
 
   const onChangeFromChain = (chain: ChainInfo) => {
     dispatch(setFromChain(chain));
-    dispatch(setToChain(undefined));
   };
 
   const onChangeSelectedToken = (token: TokenInfo) => {
@@ -99,11 +89,7 @@ export function FromSection() {
         <Flex>Send:</Flex>
         <Flex gap={12}>
           <Flex flex={1} flexDir={'column'} gap={4}>
-            <Input
-              value={sendValue}
-              onChange={onChangeSendValue}
-              onKeyDown={handleKeyPress}
-            />
+            <Input value={sendValue} onChange={onChangeSendValue} onKeyDown={handleKeyPress} />
             <TokenBalance />
           </Flex>
           <TokenSelector

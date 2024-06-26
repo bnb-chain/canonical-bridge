@@ -1,4 +1,4 @@
-import { TokenInfo } from '@/bridges/index/types';
+import { TokenInfo } from '@/bridges/main/types';
 import { CircleImage } from '@/components/common/CircleImage';
 import { Tag } from '@/components/common/Tag';
 import { MenuCloseIcon } from '@node-real/icons';
@@ -14,8 +14,7 @@ import {
   Text,
 } from '@node-real/uikit';
 
-export interface TokenSelectorProps
-  extends Omit<ButtonProps, 'title' | 'onChange'> {
+export interface TokenSelectorProps extends Omit<ButtonProps, 'title' | 'onChange'> {
   title?: React.ReactNode;
   value: any;
   tokens: TokenInfo[];
@@ -23,14 +22,7 @@ export interface TokenSelectorProps
 }
 
 export function TokenSelector(props: TokenSelectorProps) {
-  const {
-    title = 'Select a token',
-    value,
-    tokens,
-    onChange,
-    children,
-    ...restProps
-  } = props;
+  const { title = 'Select a token', value, tokens, onChange, children, ...restProps } = props;
 
   const { isOpen, onClose, onOpen } = useDisclosure();
 
@@ -68,13 +60,7 @@ export function TokenSelector(props: TokenSelectorProps) {
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalCloseButton />
         <ModalHeader>{title}</ModalHeader>
-        <ModalBody
-          display="flex"
-          flexDir="column"
-          gap={8}
-          maxH={420}
-          overflowY="auto"
-        >
+        <ModalBody display="flex" flexDir="column" gap={8} maxH={420} overflowY="auto">
           {tokens.map((item) => {
             return (
               <Flex
@@ -96,12 +82,7 @@ export function TokenSelector(props: TokenSelectorProps) {
                 flexShrink={0}
               >
                 <CircleImage src={item.icon} />
-                <Flex
-                  alignItems="center"
-                  justifyContent="space-between"
-                  flex={1}
-                  gap={8}
-                >
+                <Flex alignItems="center" justifyContent="space-between" flex={1} gap={8}>
                   <Flex flexDir="column" gap={2} flex={1}>
                     {item.name}
                     <Flex gap={8}>

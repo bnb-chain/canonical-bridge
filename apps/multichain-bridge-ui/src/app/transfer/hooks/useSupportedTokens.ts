@@ -1,4 +1,4 @@
-import { getSupportedTokens, useTransferConfigs } from '@/bridges/index';
+import { getSupportedTokens, useTransferConfigs } from '@/bridges/main';
 import { useAppSelector } from '@/store/hooks';
 import { useMemo } from 'react';
 

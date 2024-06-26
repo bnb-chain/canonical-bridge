@@ -1,8 +1,4 @@
-import {
-  ChainInfo,
-  TokenInfo,
-  TransferActionInfo,
-} from '@/bridges/index/types';
+import { ChainInfo, TokenInfo, TransferActionInfo } from '@/bridges/main/types';
 import * as actions from './action';
 import { createReducer } from '@reduxjs/toolkit';
 

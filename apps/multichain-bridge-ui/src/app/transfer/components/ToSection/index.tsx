@@ -2,7 +2,7 @@ import { setToChain } from '@/app/transfer/action';
 import { ChainSelector } from '@/app/transfer/components/ChainSelector';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { Flex, Input } from '@node-real/uikit';
-import { ChainInfo } from '@/bridges/index/types';
+import { ChainInfo } from '@/bridges/main/types';
 import { useSupportedToChains } from '@/app/transfer/hooks/useSupportedToChains';
 import { useToTokenInfo } from '@/app/transfer/hooks/useToTokenInfo';
 import { formatUnits } from 'viem';
@@ -44,10 +44,9 @@ export function ToSection() {
             <Input
               value={
                 toTokenInfo
-                  ? `${formatUnits(
-                      BigInt(receiveValue),
-                      toTokenInfo?.decimal
-                    )} ${toTokenInfo?.symbol}`
+                  ? `${formatUnits(BigInt(receiveValue), toTokenInfo?.decimal)} ${
+                      toTokenInfo?.symbol
+                    }`
                   : ''
               }
               readOnly

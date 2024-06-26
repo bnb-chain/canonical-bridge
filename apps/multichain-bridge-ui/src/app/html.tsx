@@ -6,7 +6,7 @@ import { ColorModeScript, ThemeProvider } from '@node-real/uikit';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { WalletProvider } from '@bridge/wallet';
 import { StoreProvider } from '@/store/StoreProvider';
-import { TransferConfigsProvider } from '@/bridges/index';
+import { TransferConfigsProvider } from '@/bridges/main';
 
 const queryClient = new QueryClient({
   defaultOptions: {

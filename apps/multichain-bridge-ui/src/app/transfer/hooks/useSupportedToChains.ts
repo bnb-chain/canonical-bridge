@@ -1,4 +1,4 @@
-import { getSupportedToChains, useTransferConfigs } from '@/bridges/index';
+import { getSupportedToChains, useTransferConfigs } from '@/bridges/main';
 import { useAppSelector } from '@/store/hooks';
 import { useMemo } from 'react';
 
