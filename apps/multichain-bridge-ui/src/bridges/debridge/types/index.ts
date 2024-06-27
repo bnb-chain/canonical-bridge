@@ -31,6 +31,7 @@ export type QuoteResponse = {
       address: `0x${string}`;
       name: string;
       symbol: string;
+      chainId: number;
       decimals: number;
       amount: string;
       approximateOperatingExpense: string;
@@ -42,6 +43,7 @@ export type QuoteResponse = {
       symbol: string;
       decimals: number;
       amount: string;
+      chainId: number;
       maxRefundAmount: string;
     };
     dstChainTokenOut: {
@@ -52,12 +54,19 @@ export type QuoteResponse = {
       amount: string;
       recommendedAmount: string;
       withoutAdditionalTakerRewardsAmount: string;
-      maxTheoreticalAmount: boolean;
+      maxTheoreticalAmount: string;
+      chainId: number;
     };
     costsDetails: any[];
     recommendedSlippage: number;
   };
-  tx: { allowanceTarget: `0x${string}`; allowanceValue: string };
+  tx: {
+    allowanceTarget: `0x${string}`;
+    allowanceValue: string;
+    data: `0x${string}`;
+    to: `0x${string}`; // Bridge address
+    value: string;
+  };
   prependedOperatingExpenseCost: string;
   order: {
     approximateFulfillmentDelay: number;
@@ -65,4 +74,5 @@ export type QuoteResponse = {
   fixFee: string;
   userPoints: number;
   integratorPoints: number;
+  orderId: string;
 };

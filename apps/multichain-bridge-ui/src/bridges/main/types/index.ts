@@ -70,3 +70,7 @@ export interface BridgeConfigsResponse {
     chain_token: Record<number, DeBridgeTokenDetails[]>;
   };
 }
+export interface ReceiveValue {
+  debridge?: string;
+  cbridge?: string;
+}

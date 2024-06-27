@@ -1,28 +1,31 @@
-import { setSendValue } from '@/app/transfer/action';
+import { setReceiveValue, setSendValue } from '@/app/transfer/action';
+import { BnbChainButton } from '@/app/transfer/components/BNBChain/BnbChainButton';
 import { useCBridgeTransferParams } from '@/bridges/cbridge/hooks/useCBridgeTransferParams';
 import { useGetEstimatedGas } from '@/contract/hooks/useGetEstimatedGas';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { useAccount } from '@bridge/wallet';
 import { Box, Button, Flex, Link } from '@node-real/uikit';
 import { useCallback, useEffect, useState } from 'react';
-import { useSendTransaction, useWalletClient } from 'wagmi';
+import { usePublicClient, useSendTransaction, useWalletClient } from 'wagmi';
 
 export function TransferButton() {
-  const sendValue = useAppSelector((state) => state.transfer.sendValue);
   const dispatch = useAppDispatch();
   const { data: walletClient } = useWalletClient();
   const { args } = useCBridgeTransferParams();
   const { getEstimatedGas } = useGetEstimatedGas();
   const { address } = useAccount();
+  const { data: hash, sendTransaction } = useSendTransaction();
+  const publicClient = usePublicClient();
+
+  const sendValue = useAppSelector((state) => state.transfer.sendValue);
   const transferActionInfo = useAppSelector(
     (state) => state.transfer.transferActionInfo
   );
-  const { data: hash, sendTransaction } = useSendTransaction();
+  const selectedToken = useAppSelector((state) => state.transfer.selectedToken);
+
   const [isLoading, setIsLoading] = useState(false);
   const [cBridgeHash, setCBridgeHash] = useState<string | null>(null);
   const [deBridgeHash, setDeBridgeHash] = useState<string | null>(null);
-
-  const selectedToken = useAppSelector((state) => state.transfer.selectedToken);
 
   const sendTx = useCallback(async () => {
     if (
@@ -38,6 +41,7 @@ export function TransferButton() {
     }
     try {
       setCBridgeHash(null);
+      setDeBridgeHash(null);
       setIsLoading(true);
       if (transferActionInfo.bridgeType === 'cbridge') {
         const { gas, gasPrice } = await getEstimatedGas(args as any);
@@ -46,8 +50,11 @@ export function TransferButton() {
           gas,
           gasPrice,
         });
+        await publicClient.waitForTransactionReceipt({
+          hash: hash,
+        });
         setCBridgeHash(hash);
-        console.log(hash);
+        console.log('cBridge tx', hash);
       } else if (
         transferActionInfo.bridgeType === 'debridge' &&
         transferActionInfo.value
@@ -60,16 +67,18 @@ export function TransferButton() {
       } else {
         console.log('Unsupported bridge type', transferActionInfo?.bridgeType);
       }
+      dispatch(setSendValue(''));
+      dispatch(setReceiveValue(undefined));
     } catch (e: any) {
       // eslint-disable-next-line no-console
       console.error(e, e.message);
     } finally {
       setIsLoading(false);
-      dispatch(setSendValue('0'));
     }
   }, [
     address,
     args,
+    publicClient,
     dispatch,
     getEstimatedGas,
     selectedToken,
@@ -86,7 +95,7 @@ export function TransferButton() {
 
   return (
     <Flex flexDir="column" w={'100%'}>
-      <Button
+      <BnbChainButton
         onClick={sendTx}
         isDisabled={!sendValue || sendValue === '0'}
         color="light.readable.normal"
@@ -95,7 +104,7 @@ export function TransferButton() {
         disabled={isLoading}
       >
         Transfer
-      </Button>
+      </BnbChainButton>
       {deBridgeHash && address && (
         <Box padding={'4px'}>
           {`Your transaction hash: `}

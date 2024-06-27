@@ -1,4 +1,8 @@
-import { setReceiveValue, setTransferActionInfo } from '@/app/transfer/action';
+import {
+  setReceiveValue,
+  setTransferActionInfo,
+  setIsGlobalFeeLoading,
+} from '@/app/transfer/action';
 import { InfoRow } from '@/app/transfer/components/InfoRow';
 import { AllowAmountRange } from '@/app/transfer/components/TransferOverview/cbridge/AllowedAmountRange';
 import { EstimatedArrivalTime } from '@/app/transfer/components/TransferOverview/cbridge/EstimatedArrivalTime';
@@ -12,14 +16,12 @@ import { useDebounce } from '@/hooks/useDebounce';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { useAccount } from '@bridge/wallet';
 import { Box, Flex } from '@node-real/uikit';
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { formatUnits, parseUnits } from 'viem';
-import { useNetwork } from 'wagmi';
 
 export const CBridgeOption = () => {
   const dispatch = useAppDispatch();
   const { chains } = useBridgeConfigs();
-  const { chain } = useNetwork();
   const { address } = useAccount();
   const toTokenInfo = useToTokenInfo();
   const { getEstimatedGas } = useGetEstimatedGas();
@@ -31,8 +33,8 @@ export const CBridgeOption = () => {
   const sendValue = useAppSelector((state) => state.transfer.sendValue);
   const slippage = useAppSelector((state) => state.transfer.slippage);
   const transferActionInfo = useAppSelector((state) => state.transfer.transferActionInfo);
+  const [isLoading, setLoading] = useState(false);
 
-  const [isLoading, setIsLoading] = useState(false);
   const [cBridgeGasFee, setCBridgeGasFee] = useState<{
     gas: bigint;
     gasPrice: bigint;
@@ -78,6 +80,22 @@ export const CBridgeOption = () => {
     };
   }, [selectedToken, debouncedArguments, getEstimatedGas, allowance]);
 
+  const setSelectBridge = useCallback(() => {
+    dispatch(
+      setTransferActionInfo({
+        bridgeType: 'cbridge',
+        bridgeAddress: bridgeAddress as `0x${string}`,
+      }),
+    );
+    if (cBridgeEstimatedAmt) {
+      dispatch(
+        setReceiveValue({
+          cbridge: cBridgeEstimatedAmt.estimated_receive_amt,
+        }),
+      );
+    }
+  }, [bridgeAddress, cBridgeEstimatedAmt, dispatch]);
+
   useEffect(() => {
     let mount = true;
     if (
@@ -90,30 +108,34 @@ export const CBridgeOption = () => {
     ) {
       return;
     }
-    const params = {
-      src_chain_id: fromChain?.id,
-      dst_chain_id: toChain?.id,
-      token_symbol: selectedToken?.symbol,
-      amt: String(parseUnits(debouncedTransferValue, selectedToken?.decimal)),
-      usr_addr: address,
-      slippage_tolerance: slippage,
-      is_pegged: isPegged,
-    };
     try {
-      setIsLoading(true);
+      const params = {
+        src_chain_id: fromChain?.id,
+        dst_chain_id: toChain?.id,
+        token_symbol: selectedToken?.symbol,
+        amt: String(parseUnits(debouncedTransferValue, selectedToken?.decimal)),
+        usr_addr: address,
+        slippage_tolerance: slippage,
+        is_pegged: isPegged,
+      };
+      dispatch(setIsGlobalFeeLoading(true));
+      setLoading(true);
       (async () => {
         setCBridgeEstimatedAmt(null);
         const estimated = await getCBridgeEstimateAmount(params);
         setCBridgeEstimatedAmt(estimated);
-        if (selectedToken.tags.length === 1) {
-          dispatch(setReceiveValue(estimated.estimated_receive_amt));
-        }
+        dispatch(
+          setReceiveValue({
+            cbridge: estimated.estimated_receive_amt,
+          }),
+        );
       })();
     } catch (error: any) {
       // eslint-disable-next-line no-console
       console.log(error, error.message);
     } finally {
-      setIsLoading(false);
+      dispatch(setIsGlobalFeeLoading(false));
+      setLoading(false);
     }
     return () => {
       mount = false;
@@ -142,17 +164,7 @@ export const CBridgeOption = () => {
       _hover={{
         borderColor: 'scene.primary.active',
       }}
-      onClick={() => {
-        dispatch(
-          setTransferActionInfo({
-            bridgeType: 'cbridge',
-            bridgeAddress: bridgeAddress as `0x${string}`,
-          }),
-        );
-        if (cBridgeEstimatedAmt) {
-          dispatch(setReceiveValue(cBridgeEstimatedAmt.estimated_receive_amt));
-        }
-      }}
+      onClick={setSelectBridge}
     >
       <Box fontSize={'20px'} fontWeight={700}>
         CBridge:

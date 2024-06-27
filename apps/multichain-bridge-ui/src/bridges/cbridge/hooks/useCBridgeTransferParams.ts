@@ -62,21 +62,26 @@ export const useCBridgeTransferParams = () => {
     const nonce = new Date().getTime();
 
     let amount = 0n;
-    if (selectedToken.isPegged === false) {
-      amount = parseUnits(
-        String(sendValue),
-        selectedToken?.rawData?.cbridge?.token.decimal as number,
-      ); // Convert to big number
-    } else if (transferType === 'deposit') {
-      amount = parseUnits(
-        String(sendValue),
-        selectedToken?.peggedRawData?.cbridge?.org_token.token.decimal as number,
-      );
-    } else if (transferType === 'withdraw') {
-      amount = parseUnits(
-        String(sendValue),
-        selectedToken?.peggedRawData?.cbridge?.pegged_token.token.decimal as number,
-      );
+    try {
+      if (selectedToken.isPegged === false) {
+        amount = parseUnits(
+          String(sendValue),
+          selectedToken?.rawData?.cbridge?.token.decimal as number,
+        ); // Convert to big number
+      } else if (transferType === 'deposit') {
+        amount = parseUnits(
+          String(sendValue),
+          selectedToken?.peggedRawData?.cbridge?.org_token.token.decimal as number,
+        );
+      } else if (transferType === 'withdraw') {
+        amount = parseUnits(
+          String(sendValue),
+          selectedToken?.peggedRawData?.cbridge?.pegged_token.token.decimal as number,
+        );
+      }
+    } catch (e: any) {
+      // eslint-disable-next-line no-console
+      console.log(e);
     }
     return isPegged === false
       ? [address as `0x${string}`, selectedToken?.address, amount, toChain?.id, nonce, max_slippage]

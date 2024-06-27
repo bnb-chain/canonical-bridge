@@ -58,6 +58,7 @@ export function FromSection() {
     setQuery({
       fromChainId: chain.id,
     });
+    dispatch(setTransferActionInfo(undefined));
   };
 
   const onChangeSelectedToken = (token: TokenInfo) => {
@@ -66,7 +67,7 @@ export function FromSection() {
     });
 
     dispatch(setSendValue(''));
-    dispatch(setReceiveValue(''));
+    dispatch(setReceiveValue(undefined));
     dispatch(setError(''));
     dispatch(setTransferActionInfo(undefined));
   };

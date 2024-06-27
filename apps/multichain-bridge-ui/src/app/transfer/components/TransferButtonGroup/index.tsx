@@ -4,8 +4,6 @@ import { TransferButton } from '@/app/transfer/components/Button/TransferButton'
 import { useGetAllowance } from '@/contract/hooks/useGetAllowance';
 import { useAppSelector } from '@/store/hooks';
 import { Flex } from '@node-real/uikit';
-import { useMemo } from 'react';
-import { parseUnits } from 'viem';
 import { useNetwork } from 'wagmi';
 
 export const TransferButtonGroup = () => {

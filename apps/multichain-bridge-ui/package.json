@@ -31,7 +31,8 @@
     "express-prom-bundle": "~7.0.0",
     "prom-client": "~15.1.2",
     "lru-cache": "~10.2.2",
-    "compression": "~1.7.4"
+    "compression": "~1.7.4",
+    "polished": "~4.3.1"
   },
   "devDependencies": {
     "typescript": "^5",

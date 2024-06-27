@@ -6,6 +6,7 @@ import { useSupportedToChains } from '@/app/transfer/hooks/useSupportedToChains'
 import { useToTokenInfo } from '@/app/transfer/hooks/useToTokenInfo';
 import { formatUnits } from 'viem';
 import { useSettingQuery } from '@/app/transfer/hooks/useSettingQuery';
+import { useMemo } from 'react';
 
 export function ToSection() {
   const { setQuery } = useSettingQuery();
@@ -19,6 +20,13 @@ export function ToSection() {
       toChainId: chain.id,
     });
   };
+  const isGlobalFeeLoading = useAppSelector((state) => state.transfer.isGlobalFeeLoading);
+
+  const receiveAmt = useMemo(() => {
+    if (!receiveValue) return null;
+    // TODO: May need to choose which bridge receive amount to show first
+    return receiveValue?.cbridge || receiveValue?.debridge;
+  }, [receiveValue]);
 
   return (
     <Flex flexDir="column" gap={16}>
@@ -45,8 +53,8 @@ export function ToSection() {
           <Flex flex={1} flexDir={'column'}>
             <Input
               value={
-                toTokenInfo
-                  ? `${formatUnits(BigInt(receiveValue), toTokenInfo?.decimal)} ${
+                toTokenInfo && receiveAmt && !isGlobalFeeLoading
+                  ? `${formatUnits(BigInt(receiveAmt), toTokenInfo?.decimal)} ${
                       toTokenInfo?.symbol
                     }`
                   : ''

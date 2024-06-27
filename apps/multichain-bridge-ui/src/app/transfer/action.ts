@@ -27,3 +27,7 @@ export const setTransferActionInfo = createAction<
 >('transfer/setTransferActionInfo');
 export const setError =
   createAction<TransferState['error']>('transfer/setError');
+
+export const setIsGlobalFeeLoading = createAction<
+  TransferState['isGlobalFeeLoading']
+>('transfer/setIsGlobalFeeLoading');

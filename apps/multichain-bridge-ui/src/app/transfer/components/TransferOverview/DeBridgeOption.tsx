@@ -1,5 +1,6 @@
 import {
   setError,
+  setIsGlobalFeeLoading,
   setReceiveValue,
   setTransferActionInfo,
 } from '@/app/transfer/action';
@@ -7,66 +8,20 @@ import { InfoRow } from '@/app/transfer/components/InfoRow';
 import { useGetNativeToken } from '@/app/transfer/hooks/useGetNativeToken';
 import { useToTokenInfo } from '@/app/transfer/hooks/useToTokenInfo';
 import { createDeBridgeTxQuote } from '@/bridges/debridge/api';
+import { QuoteResponse } from '@/bridges/debridge/types';
 import { ERC20_TOKEN } from '@/contract/abi';
 import { useDebounce } from '@/hooks/useDebounce';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { useAccount } from '@bridge/wallet';
 import { Box, Flex } from '@node-real/uikit';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { formatUnits, parseUnits } from 'viem';
 import { usePublicClient } from 'wagmi';
-
-type DeBridgeQuoteResponse = {
-  estimation: {
-    dstChainTokenOut: {
-      address: `0x${string}`;
-      amount: string;
-      chainId: number;
-      decimals: number;
-      maxTheoreticalAmount: string;
-      name: string;
-      recommendedAmount: string;
-      symbol: string;
-    };
-    srcChainTokenIn: {
-      address: `0x${string}`;
-      amount: string;
-      approximateOperatingExpense: string;
-      chainId: number;
-      decimals: number;
-      mutatedWithOperatingExpense: boolean;
-      name: string;
-      symbol: string;
-    };
-    srcChainTokenOut: {
-      address: `0x${string}`;
-      amount: string;
-      chainId: number;
-      decimals: number;
-      maxRefundAmount: string;
-      name: string;
-      symbol: string;
-    };
-  };
-  order: {
-    approximateFulfillmentDelay: number;
-  };
-  tx: {
-    data: `0x${string}`;
-    to: `0x${string}`; // Bridge address
-    value: string;
-  };
-  fixFee: string;
-  orderId: string;
-};
 
 export const DeBridgeOption = () => {
   const nativeToken = useGetNativeToken();
   const dispatch = useAppDispatch();
   const publicClient = usePublicClient();
-  const transferSendInfo = useAppSelector(
-    (state) => state.transfer.transferActionInfo
-  );
   const { address } = useAccount();
   const toTokenInfo = useToTokenInfo();
   const fromChain = useAppSelector((state) => state.transfer.fromChain);
@@ -78,7 +33,7 @@ export const DeBridgeOption = () => {
   );
   const [isLoading, setIsLoading] = useState(false);
   const [deBridgeEstimatedAmt, setDeBridgeEstimatedAmt] =
-    useState<DeBridgeQuoteResponse | null>(null);
+    useState<QuoteResponse | null>(null);
   const [gasInfo, setGasInfo] = useState<{ gas: bigint; gasPrice: bigint }>({
     gas: 0n,
     gasPrice: 0n,
@@ -98,15 +53,16 @@ export const DeBridgeOption = () => {
           !toTokenInfo ||
           !mount
         ) {
+          setDeBridgeEstimatedAmt(null);
           return;
         }
+        dispatch(setIsGlobalFeeLoading(true));
         setIsLoading(true);
         // init value
         setGasInfo({
           gas: 0n,
           gasPrice: 0n,
         });
-        setDeBridgeEstimatedAmt(null);
         const params = {
           srcChainId: fromChain.id,
           srcChainTokenIn: selectedToken?.address as `0x${string}`,
@@ -128,11 +84,11 @@ export const DeBridgeOption = () => {
         const deBridgeQuote = await createDeBridgeTxQuote(urlParams);
         // console.log('debridge quote', deBridgeQuote);
         setDeBridgeEstimatedAmt(deBridgeQuote);
-        if (selectedToken.tags.length === 1) {
-          dispatch(
-            setReceiveValue(deBridgeQuote?.estimation.dstChainTokenOut.amount)
-          );
-        }
+        dispatch(
+          setReceiveValue({
+            debridge: deBridgeQuote?.estimation.dstChainTokenOut.amount,
+          })
+        );
         dispatch(setError(''));
         if (deBridgeQuote?.tx && address) {
           // Check whether token allowance is enough before getting gas estimation
@@ -178,6 +134,7 @@ export const DeBridgeOption = () => {
         }
       } finally {
         setIsLoading(false);
+        dispatch(setIsGlobalFeeLoading(false));
       }
     })();
     return () => {
@@ -193,6 +150,26 @@ export const DeBridgeOption = () => {
     dispatch,
     publicClient,
   ]);
+
+  const setSelectBridge = useCallback(() => {
+    if (!deBridgeEstimatedAmt || !deBridgeEstimatedAmt.tx) {
+      return;
+    }
+    dispatch(
+      setReceiveValue({
+        debridge: deBridgeEstimatedAmt?.estimation.dstChainTokenOut.amount,
+      })
+    );
+    dispatch(
+      setTransferActionInfo({
+        bridgeType: 'debridge',
+        bridgeAddress: deBridgeEstimatedAmt.tx.to as `0x${string}`,
+        data: deBridgeEstimatedAmt.tx.data,
+        value: deBridgeEstimatedAmt.tx.value,
+        orderId: deBridgeEstimatedAmt.orderId,
+      })
+    );
+  }, [deBridgeEstimatedAmt, dispatch]);
 
   return (
     <Flex
@@ -210,25 +187,7 @@ export const DeBridgeOption = () => {
       _hover={{
         borderColor: 'scene.primary.active',
       }}
-      onClick={() => {
-        if (!deBridgeEstimatedAmt || !deBridgeEstimatedAmt.tx) {
-          return;
-        }
-        dispatch(
-          setReceiveValue(
-            deBridgeEstimatedAmt?.estimation.dstChainTokenOut.amount
-          )
-        );
-        dispatch(
-          setTransferActionInfo({
-            bridgeType: 'debridge',
-            bridgeAddress: deBridgeEstimatedAmt.tx.to as `0x${string}`,
-            data: deBridgeEstimatedAmt.tx.data,
-            value: deBridgeEstimatedAmt.tx.value,
-            orderId: deBridgeEstimatedAmt.orderId,
-          })
-        );
-      }}
+      onClick={setSelectBridge}
     >
       <Box fontSize={'20px'} fontWeight={700}>
         DeBridge:

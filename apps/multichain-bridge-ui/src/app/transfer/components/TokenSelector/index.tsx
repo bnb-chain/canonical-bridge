@@ -1,9 +1,9 @@
+import { BnbChainButton } from '@/app/transfer/components/BNBChain/BnbChainButton';
 import { TokenInfo } from '@/bridges/main/types';
 import { CircleImage } from '@/components/common/CircleImage';
 import { Tag } from '@/components/common/Tag';
 import { MenuCloseIcon } from '@node-real/icons';
 import {
-  Button,
   ButtonProps,
   Flex,
   Modal,
@@ -35,17 +35,18 @@ export function TokenSelector(props: TokenSelectorProps) {
 
   return (
     <>
-      <Button
+      <BnbChainButton
         onClick={onOpen}
         borderRadius={16}
         flexShrink={0}
         h={40}
         px={12}
         gap={8}
-        bg={'bg.bottom'}
+        background={`layer.3.default`}
         _hover={{
-          bg: 'bg.top.active',
+          background: 'layer.3.hover',
         }}
+        color={'text.primary'}
         {...restProps}
       >
         {selectedToken && (
@@ -55,7 +56,7 @@ export function TokenSelector(props: TokenSelectorProps) {
           </Flex>
         )}
         <MenuCloseIcon />
-      </Button>
+      </BnbChainButton>
 
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalCloseButton />
