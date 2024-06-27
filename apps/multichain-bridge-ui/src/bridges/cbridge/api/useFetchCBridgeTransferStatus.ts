@@ -2,11 +2,7 @@ import { cBridgeApiClient } from '@/bridges/cbridge/client';
 import { CBridgeTransferStatusResponse } from '@/bridges/cbridge/types';
 import { useQuery } from '@tanstack/react-query';
 
-export function useFetchCBridgeTransferStatus({
-  transferId,
-}: {
-  transferId: string;
-}) {
+export function useFetchCBridgeTransferStatus({ transferId }: { transferId: string }) {
   return useQuery<CBridgeTransferStatusResponse>({
     queryKey: ['cbridge/getTransferStatus', transferId],
     queryFn: async () => {
@@ -20,7 +16,7 @@ export function useFetchCBridgeTransferStatus({
             headers: {
               'Content-Type': 'application/json',
             },
-          }
+          },
         )
       ).data;
     },

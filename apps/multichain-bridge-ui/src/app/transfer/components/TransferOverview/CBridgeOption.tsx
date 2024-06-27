@@ -9,7 +9,7 @@ import { EstimatedArrivalTime } from '@/app/transfer/components/TransferOverview
 import { useToTokenInfo } from '@/app/transfer/hooks/useToTokenInfo';
 import { getCBridgeEstimateAmount } from '@/bridges/cbridge/api/getCBridgeEstimateAmount';
 import { useCBridgeTransferParams } from '@/bridges/cbridge/hooks/useCBridgeTransferParams';
-import { useTransferConfigs } from '@/bridges/index';
+import { useBridgeConfigs } from '@/bridges/main';
 import { useGetAllowance } from '@/contract/hooks/useGetAllowance';
 import { useGetEstimatedGas } from '@/contract/hooks/useGetEstimatedGas';
 import { useDebounce } from '@/hooks/useDebounce';
@@ -21,7 +21,7 @@ import { formatUnits, parseUnits } from 'viem';
 
 export const CBridgeOption = () => {
   const dispatch = useAppDispatch();
-  const { chains } = useTransferConfigs();
+  const { chains } = useBridgeConfigs();
   const { address } = useAccount();
   const toTokenInfo = useToTokenInfo();
   const { getEstimatedGas } = useGetEstimatedGas();
@@ -32,9 +32,7 @@ export const CBridgeOption = () => {
   const toChain = useAppSelector((state) => state.transfer.toChain);
   const sendValue = useAppSelector((state) => state.transfer.sendValue);
   const slippage = useAppSelector((state) => state.transfer.slippage);
-  const transferActionInfo = useAppSelector(
-    (state) => state.transfer.transferActionInfo
-  );
+  const transferActionInfo = useAppSelector((state) => state.transfer.transferActionInfo);
   const [isLoading, setLoading] = useState(false);
 
   const [cBridgeGasFee, setCBridgeGasFee] = useState<{
@@ -43,10 +41,7 @@ export const CBridgeOption = () => {
   }>({ gas: 0n, gasPrice: 0n });
   const [cBridgeEstimatedAmt, setCBridgeEstimatedAmt] = useState<any>(null);
 
-  const isPegged = useMemo(
-    () => selectedToken?.isPegged || false,
-    [selectedToken]
-  );
+  const isPegged = useMemo(() => selectedToken?.isPegged || false, [selectedToken]);
   const { allowance } = useGetAllowance({
     tokenAddress: selectedToken?.address as `0x${string}`,
     sender: bridgeAddress as `0x${string}`,
@@ -68,9 +63,7 @@ export const CBridgeOption = () => {
     }
     (async () => {
       try {
-        const { gas, gasPrice } = await getEstimatedGas(
-          debouncedArguments as any
-        );
+        const { gas, gasPrice } = await getEstimatedGas(debouncedArguments as any);
         if (gas && gasPrice) {
           setCBridgeGasFee({
             gas,
@@ -92,13 +85,13 @@ export const CBridgeOption = () => {
       setTransferActionInfo({
         bridgeType: 'cbridge',
         bridgeAddress: bridgeAddress as `0x${string}`,
-      })
+      }),
     );
     if (cBridgeEstimatedAmt) {
       dispatch(
         setReceiveValue({
           cbridge: cBridgeEstimatedAmt.estimated_receive_amt,
-        })
+        }),
       );
     }
   }, [bridgeAddress, cBridgeEstimatedAmt, dispatch]);
@@ -134,7 +127,7 @@ export const CBridgeOption = () => {
         dispatch(
           setReceiveValue({
             cbridge: estimated.estimated_receive_amt,
-          })
+          }),
         );
       })();
     } catch (error: any) {
@@ -163,9 +156,7 @@ export const CBridgeOption = () => {
       gap={'4px'}
       border={`2px solid`}
       borderColor={
-        transferActionInfo?.bridgeType === 'cbridge'
-          ? 'scene.primary.active'
-          : 'readable.border'
+        transferActionInfo?.bridgeType === 'cbridge' ? 'scene.primary.active' : 'readable.border'
       }
       borderRadius={'8px'}
       padding={'8px 16px'}
@@ -182,12 +173,8 @@ export const CBridgeOption = () => {
         <InfoRow
           isLoading={isLoading}
           label={'Gas Fee:'}
-          value={`${formatUnits(
-            cBridgeGasFee?.gas * cBridgeGasFee?.gasPrice,
-            18
-          )} ${
-            chains.find((chain) => chain.id === fromChain?.id)?.rawData.cbridge
-              ?.gas_token_symbol
+          value={`${formatUnits(cBridgeGasFee?.gas * cBridgeGasFee?.gasPrice, 18)} ${
+            chains.find((chain) => chain.id === fromChain?.id)?.rawData.cbridge?.gas_token_symbol
           }`}
         />
       ) : null}
@@ -195,13 +182,10 @@ export const CBridgeOption = () => {
         isLoading={isLoading}
         label={'Base Fee:'}
         value={
-          cBridgeEstimatedAmt &&
-          toTokenInfo &&
-          Number(debouncedTransferValue) > 0
-            ? `${formatUnits(
-                cBridgeEstimatedAmt?.base_fee,
-                toTokenInfo.decimal
-              )} ${toTokenInfo?.symbol}`
+          cBridgeEstimatedAmt && toTokenInfo && Number(debouncedTransferValue) > 0
+            ? `${formatUnits(cBridgeEstimatedAmt?.base_fee, toTokenInfo.decimal)} ${
+                toTokenInfo?.symbol
+              }`
             : '-'
         }
       />
@@ -210,10 +194,9 @@ export const CBridgeOption = () => {
         label="Protocol Fee:"
         value={
           cBridgeEstimatedAmt && toTokenInfo
-            ? `${formatUnits(
-                cBridgeEstimatedAmt?.perc_fee,
-                toTokenInfo?.decimal
-              )} ${toTokenInfo?.symbol}`
+            ? `${formatUnits(cBridgeEstimatedAmt?.perc_fee, toTokenInfo?.decimal)} ${
+                toTokenInfo?.symbol
+              }`
             : '-'
         }
       />

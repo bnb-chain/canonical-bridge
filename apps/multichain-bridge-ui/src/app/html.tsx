@@ -6,7 +6,8 @@ import { ColorModeScript, ThemeProvider } from '@node-real/uikit';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { WalletProvider } from '@bridge/wallet';
 import { StoreProvider } from '@/store/StoreProvider';
-import { TransferConfigsProvider } from '@/bridges/index';
+import { BridgeConfigsProvider } from '@/bridges/main';
+import { Suspense } from 'react';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -28,9 +29,11 @@ export default function Html({ children }: React.PropsWithChildren) {
           <StoreProvider>
             <ThemeProvider theme={theme}>
               <WalletProvider>
-                <TransferConfigsProvider>
-                  <Layout>{children}</Layout>
-                </TransferConfigsProvider>
+                <BridgeConfigsProvider>
+                  <Suspense>
+                    <Layout>{children}</Layout>
+                  </Suspense>
+                </BridgeConfigsProvider>
               </WalletProvider>
             </ThemeProvider>
           </StoreProvider>

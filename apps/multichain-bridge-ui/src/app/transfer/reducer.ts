@@ -3,7 +3,7 @@ import {
   ReceiveValue,
   TokenInfo,
   TransferActionInfo,
-} from '@/bridges/index/types';
+} from '@/bridges/main/types';
 import * as actions from './action';
 import { createReducer } from '@reduxjs/toolkit';
 

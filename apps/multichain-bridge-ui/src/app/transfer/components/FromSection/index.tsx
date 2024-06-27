@@ -1,10 +1,7 @@
 import {
   setError,
-  setFromChain,
   setReceiveValue,
-  setSelectedToken,
   setSendValue,
-  setToChain,
   setTransferActionInfo,
 } from '@/app/transfer/action';
 import { ChainSelector } from '@/app/transfer/components/ChainSelector';
@@ -12,10 +9,10 @@ import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { Flex, Input } from '@node-real/uikit';
 import { useSupportedTokens } from '@/app/transfer/hooks/useSupportedTokens';
 import { useSupportedFromChains } from '@/app/transfer/hooks/useSupportedFromChains';
-import { ChainInfo, TokenInfo } from '@/bridges/index/types';
-import { useEffect } from 'react';
+import { ChainInfo, TokenInfo } from '@/bridges/main/types';
 import { TokenSelector } from '@/app/transfer/components/TokenSelector';
 import { TokenBalance } from '@/app/transfer/components/TokenBalance';
+import { useSettingQuery } from '@/app/transfer/hooks/useSettingQuery';
 
 const handleKeyPress = (e: React.KeyboardEvent) => {
   // only allow number and decimal
@@ -46,17 +43,11 @@ export function FromSection() {
 
   const chains = useSupportedFromChains();
   const tokens = useSupportedTokens();
+  const { setQuery } = useSettingQuery();
 
   const fromChain = useAppSelector((state) => state.transfer.fromChain);
-  const toChain = useAppSelector((state) => state.transfer.toChain);
   const selectedToken = useAppSelector((state) => state.transfer.selectedToken);
   const sendValue = useAppSelector((state) => state.transfer.sendValue);
-
-  useEffect(() => {
-    if (fromChain && toChain) {
-      dispatch(setSelectedToken(tokens[0]));
-    }
-  }, [dispatch, fromChain, toChain, tokens]);
 
   const onChangeSendValue = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value.trim() ?? 0;
@@ -64,16 +55,19 @@ export function FromSection() {
   };
 
   const onChangeFromChain = (chain: ChainInfo) => {
-    dispatch(setFromChain(chain));
-    dispatch(setToChain(undefined));
+    setQuery({
+      fromChainId: chain.id,
+    });
     dispatch(setTransferActionInfo(undefined));
-    dispatch(setSelectedToken(undefined));
   };
 
   const onChangeSelectedToken = (token: TokenInfo) => {
+    setQuery({
+      tokenSymbol: token.symbol,
+    });
+
     dispatch(setSendValue(''));
     dispatch(setReceiveValue(undefined));
-    dispatch(setSelectedToken(token));
     dispatch(setError(''));
     dispatch(setTransferActionInfo(undefined));
   };
@@ -101,11 +95,7 @@ export function FromSection() {
         <Flex>Send:</Flex>
         <Flex gap={12}>
           <Flex flex={1} flexDir={'column'} gap={4}>
-            <Input
-              value={sendValue}
-              onChange={onChangeSendValue}
-              onKeyDown={handleKeyPress}
-            />
+            <Input value={sendValue} onChange={onChangeSendValue} onKeyDown={handleKeyPress} />
             <TokenBalance />
           </Flex>
           <TokenSelector

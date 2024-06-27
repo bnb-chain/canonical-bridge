@@ -1,26 +1,26 @@
-import { setToChain } from '@/app/transfer/action';
 import { ChainSelector } from '@/app/transfer/components/ChainSelector';
-import { useAppDispatch, useAppSelector } from '@/store/hooks';
+import { useAppSelector } from '@/store/hooks';
 import { Flex, Input } from '@node-real/uikit';
-import { ChainInfo } from '@/bridges/index/types';
+import { ChainInfo } from '@/bridges/main/types';
 import { useSupportedToChains } from '@/app/transfer/hooks/useSupportedToChains';
 import { useToTokenInfo } from '@/app/transfer/hooks/useToTokenInfo';
 import { formatUnits } from 'viem';
+import { useSettingQuery } from '@/app/transfer/hooks/useSettingQuery';
 import { useMemo } from 'react';
 
 export function ToSection() {
-  const dispatch = useAppDispatch();
+  const { setQuery } = useSettingQuery();
 
   const chains = useSupportedToChains();
   const toChain = useAppSelector((state) => state.transfer.toChain);
   const receiveValue = useAppSelector((state) => state.transfer.receiveValue);
   const toTokenInfo = useToTokenInfo();
   const onChangeToChain = (chain: ChainInfo) => {
-    dispatch(setToChain(chain));
+    setQuery({
+      toChainId: chain.id,
+    });
   };
-  const isGlobalFeeLoading = useAppSelector(
-    (state) => state.transfer.isGlobalFeeLoading
-  );
+  const isGlobalFeeLoading = useAppSelector((state) => state.transfer.isGlobalFeeLoading);
 
   const receiveAmt = useMemo(() => {
     if (!receiveValue) return null;

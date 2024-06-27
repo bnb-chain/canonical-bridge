@@ -3,10 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --port 3001",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint"
+    "dev": "tsx watch server/index.ts",
+    "build": "tsc --project tsconfig.server.json && tsc-alias && next build",
+    "start": "NODE_ENV=production node dist/index.js",
+    "lint-staged": "lint-staged"
   },
   "dependencies": {
     "react": "18.2.0",
@@ -28,6 +28,11 @@
     "react-redux": "~9.1.2",
     "dot-prop-immutable-chain": "~0.0.3",
     "pino-pretty": "~11.2.1",
+    "express": "~4.19.2",
+    "express-prom-bundle": "~7.0.0",
+    "prom-client": "~15.1.2",
+    "lru-cache": "~10.2.2",
+    "compression": "~1.7.4",
     "polished": "~4.3.1"
   },
   "devDependencies": {
@@ -43,6 +48,20 @@
     "i18next": ">= 23.2.3",
     "react-is": "16.8.0",
     "react-native": "*",
-    "cross-fetch": "^3.1.5"
+    "cross-fetch": "^3.1.5",
+    "eslint-config-prettier": "~9.1.0",
+    "tsx": "~4.15.7",
+    "@types/express": "~4.17.21",
+    "tsc-alias": "~1.8.10",
+    "@types/compression": "~1.7.5",
+    "lint-staged": "~15.2.7"
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx}": [
+      "eslint --fix"
+    ],
+    "*.{css,less,md}": [
+      "prettier --write"
+    ]
   }
 }

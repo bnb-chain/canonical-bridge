@@ -14,4 +14,4 @@ EXPOSE 3000
 
 ENV NODE_ENV production
 
-CMD [ "./node_modules/next/dist/bin/next", "start", "--keepAliveTimeout", "70000"]
+CMD [ "yarn", "start", "--keepAliveTimeout", "70000"]

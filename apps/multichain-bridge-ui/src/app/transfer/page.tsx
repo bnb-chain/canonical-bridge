@@ -2,14 +2,14 @@
 
 import { FromSection } from '@/app/transfer/components/FromSection';
 import { ToSection } from '@/app/transfer/components/ToSection';
-import { useInitialConfig } from '@/app/transfer/hooks/useInitialConfig';
 import { TransferOverview } from '@/app/transfer/components/TransferOverview';
 
 import { Flex } from '@node-real/uikit';
 import { TransferButtonGroup } from '@/app/transfer/components/TransferButtonGroup';
+import { useInitTransferConfigsByQuery } from '@/app/transfer/hooks/useSettingQuery';
 
 export default function Page() {
-  useInitialConfig();
+  useInitTransferConfigsByQuery();
 
   return (
     <Flex

@@ -12,7 +12,7 @@ function Wallet() {
       <div>
         account: {address}, isConnected: {isConnected ? 'true' : 'false'}
       </div>
-      <div onClick={() => onOpen('evm')}>open</div>
+      <div onClick={() => onOpen('flow')}>open</div>
       <div onClick={() => disconnect()}>disconnect</div>
     </>
   );

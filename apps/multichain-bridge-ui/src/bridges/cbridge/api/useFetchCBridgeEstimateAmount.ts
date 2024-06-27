@@ -26,10 +26,6 @@ export function useFetchCBridgeEstimateAmount(value: {
     queryFn: async () => {
       return getCBridgeEstimateAmount(params);
     },
-    enabled:
-      !!value.srcChainId &&
-      !!value.dstChainId &&
-      !!value.tokenSymbol &&
-      !!value.amount,
+    enabled: !!value.srcChainId && !!value.dstChainId && !!value.tokenSymbol && !!value.amount,
   });
 }

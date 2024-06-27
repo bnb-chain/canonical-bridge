@@ -1,5 +1,5 @@
 import { BnbChainButton } from '@/app/transfer/components/BNBChain/BnbChainButton';
-import { ChainInfo } from '@/bridges/index/types';
+import { ChainInfo } from '@/bridges/main/types';
 import { CircleImage } from '@/components/common/CircleImage';
 import { Tag } from '@/components/common/Tag';
 import { MenuCloseIcon } from '@node-real/icons';
@@ -14,8 +14,7 @@ import {
   Text,
 } from '@node-real/uikit';
 
-export interface ChainSelectorProps
-  extends Omit<ButtonProps, 'title' | 'onChange'> {
+export interface ChainSelectorProps extends Omit<ButtonProps, 'title' | 'onChange'> {
   title: React.ReactNode;
   value: any;
   chains: ChainInfo[];
@@ -62,13 +61,7 @@ export function ChainSelector(props: ChainSelectorProps) {
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalCloseButton />
         <ModalHeader>{title}</ModalHeader>
-        <ModalBody
-          display="flex"
-          flexDir="column"
-          gap={8}
-          maxH={420}
-          overflowY="auto"
-        >
+        <ModalBody display="flex" flexDir="column" gap={8} maxH={420} overflowY="auto">
           {chains.map((item) => {
             return (
               <Flex

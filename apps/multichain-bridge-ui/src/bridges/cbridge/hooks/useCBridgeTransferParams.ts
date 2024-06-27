@@ -3,24 +3,21 @@ import { ORIGINAL_TOKEN_VAULT } from '@/bridges/cbridge/abi/originalTokenVault';
 import { ORIGINAL_TOKEN_VAULT_V2 } from '@/bridges/cbridge/abi/originalTokenVaultV2';
 import { PEGGED_TOKEN_BRIDGE } from '@/bridges/cbridge/abi/peggedTokenBridge';
 import { PEGGED_TOKEN_BRIDGE_V2 } from '@/bridges/cbridge/abi/peggedTokenBridgeV2';
-import { useTransferConfigs } from '@/bridges/index';
+import { useBridgeConfigs } from '@/bridges/main';
 import { useAppSelector } from '@/store/hooks';
 import { useAccount } from '@bridge/wallet';
 import { useMemo } from 'react';
 import { parseUnits } from 'viem';
 
 export const useCBridgeTransferParams = () => {
-  const { chains } = useTransferConfigs();
+  const { chains } = useBridgeConfigs();
   const { address } = useAccount();
   const selectedToken = useAppSelector((state) => state.transfer.selectedToken);
   const fromChain = useAppSelector((state) => state.transfer.fromChain);
   const toChain = useAppSelector((state) => state.transfer.toChain);
   const sendValue = useAppSelector((state) => state.transfer.sendValue);
   const max_slippage = useAppSelector((state) => state.transfer.slippage);
-  const isPegged = useMemo(
-    () => selectedToken?.isPegged || false,
-    [selectedToken]
-  );
+  const isPegged = useMemo(() => selectedToken?.isPegged || false, [selectedToken]);
   const bridgeAddress = useMemo(() => {
     if (fromChain) {
       if (isPegged) {
@@ -33,9 +30,7 @@ export const useCBridgeTransferParams = () => {
           return peggedConfig.pegged_burn_contract_addr;
         }
       } else {
-        const cBridgeChainConfig = chains.find(
-          (chain) => chain.id === fromChain.id
-        );
+        const cBridgeChainConfig = chains.find((chain) => chain.id === fromChain.id);
         if (cBridgeChainConfig?.rawData?.cbridge?.contract_addr) {
           return cBridgeChainConfig.rawData.cbridge?.contract_addr;
         } else {
@@ -54,22 +49,14 @@ export const useCBridgeTransferParams = () => {
     if (selectedToken?.peggedRawData?.cbridge?.org_chain_id === fromChain?.id) {
       return 'deposit';
     }
-    if (
-      selectedToken?.peggedRawData?.cbridge?.pegged_chain_id === fromChain?.id
-    ) {
+    if (selectedToken?.peggedRawData?.cbridge?.pegged_chain_id === fromChain?.id) {
       return 'withdraw';
     }
     return '';
   }, [selectedToken, fromChain?.id]);
 
   const argument = useMemo(() => {
-    if (
-      !sendValue ||
-      sendValue === '0' ||
-      !toChain ||
-      !selectedToken ||
-      !address
-    ) {
+    if (!sendValue || sendValue === '0' || !toChain || !selectedToken || !address) {
       return null;
     }
     const nonce = new Date().getTime();
@@ -79,19 +66,17 @@ export const useCBridgeTransferParams = () => {
       if (selectedToken.isPegged === false) {
         amount = parseUnits(
           String(sendValue),
-          selectedToken?.rawData?.cbridge?.token.decimal as number
+          selectedToken?.rawData?.cbridge?.token.decimal as number,
         ); // Convert to big number
       } else if (transferType === 'deposit') {
         amount = parseUnits(
           String(sendValue),
-          selectedToken?.peggedRawData?.cbridge?.org_token.token
-            .decimal as number
+          selectedToken?.peggedRawData?.cbridge?.org_token.token.decimal as number,
         );
       } else if (transferType === 'withdraw') {
         amount = parseUnits(
           String(sendValue),
-          selectedToken?.peggedRawData?.cbridge?.pegged_token.token
-            .decimal as number
+          selectedToken?.peggedRawData?.cbridge?.pegged_token.token.decimal as number,
         );
       }
     } catch (e: any) {
@@ -99,44 +84,18 @@ export const useCBridgeTransferParams = () => {
       console.log(e);
     }
     return isPegged === false
-      ? [
-          address as `0x${string}`,
-          selectedToken?.address,
-          amount,
-          toChain?.id,
-          nonce,
-          max_slippage,
-        ]
+      ? [address as `0x${string}`, selectedToken?.address, amount, toChain?.id, nonce, max_slippage]
       : transferType === 'deposit'
-      ? [
-          selectedToken?.address,
-          amount,
-          toChain?.id,
-          address as `0x${string}`,
-          nonce,
-        ]
+      ? [selectedToken?.address, amount, toChain?.id, address as `0x${string}`, nonce]
       : transferType === 'withdraw'
       ? [selectedToken?.address, amount, address as `0x${string}`, nonce]
       : null;
-  }, [
-    sendValue,
-    toChain,
-    selectedToken,
-    address,
-    isPegged,
-    transferType,
-    max_slippage,
-  ]);
+  }, [sendValue, toChain, selectedToken, address, isPegged, transferType, max_slippage]);
 
   // Arguments for bridge smart contract
   const args = useMemo(() => {
     const peggedConfig = selectedToken?.peggedRawData?.cbridge;
-    if (
-      !argument ||
-      (isPegged && !transferType) ||
-      !address ||
-      !bridgeAddress
-    ) {
+    if (!argument || (isPegged && !transferType) || !address || !bridgeAddress) {
       return null;
     }
     return {
