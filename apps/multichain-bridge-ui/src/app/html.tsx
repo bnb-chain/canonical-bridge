@@ -7,6 +7,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { WalletProvider } from '@bridge/wallet';
 import { StoreProvider } from '@/store/StoreProvider';
 import { BridgeConfigsProvider } from '@/bridges/main';
+import { Suspense } from 'react';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -29,7 +30,9 @@ export default function Html({ children }: React.PropsWithChildren) {
             <ThemeProvider theme={theme}>
               <WalletProvider>
                 <BridgeConfigsProvider>
-                  <Layout>{children}</Layout>
+                  <Suspense>
+                    <Layout>{children}</Layout>
+                  </Suspense>
                 </BridgeConfigsProvider>
               </WalletProvider>
             </ThemeProvider>

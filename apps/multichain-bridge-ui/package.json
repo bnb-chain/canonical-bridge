@@ -4,8 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "tsx watch server/index.ts",
-    "build": "tsc && tsc-alias && next build",
-    "start": "NODE_ENV=production node dist/server/index.js"
+    "build": "tsc --project tsconfig.server.json && tsc-alias && next build",
+    "start": "NODE_ENV=production node dist/index.js"
   },
   "dependencies": {
     "react": "18.2.0",
