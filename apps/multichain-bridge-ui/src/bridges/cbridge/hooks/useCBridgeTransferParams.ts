@@ -3,14 +3,14 @@ import { ORIGINAL_TOKEN_VAULT } from '@/bridges/cbridge/abi/originalTokenVault';
 import { ORIGINAL_TOKEN_VAULT_V2 } from '@/bridges/cbridge/abi/originalTokenVaultV2';
 import { PEGGED_TOKEN_BRIDGE } from '@/bridges/cbridge/abi/peggedTokenBridge';
 import { PEGGED_TOKEN_BRIDGE_V2 } from '@/bridges/cbridge/abi/peggedTokenBridgeV2';
-import { useTransferConfigs } from '@/bridges/main';
+import { useBridgeConfigs } from '@/bridges/main';
 import { useAppSelector } from '@/store/hooks';
 import { useAccount } from '@bridge/wallet';
 import { useMemo } from 'react';
 import { parseUnits } from 'viem';
 
 export const useCBridgeTransferParams = () => {
-  const { chains } = useTransferConfigs();
+  const { chains } = useBridgeConfigs();
   const { address } = useAccount();
   const selectedToken = useAppSelector((state) => state.transfer.selectedToken);
   const fromChain = useAppSelector((state) => state.transfer.fromChain);

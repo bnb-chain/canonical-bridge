@@ -2,12 +2,12 @@ import { TokenInfo } from '@/bridges/main/types';
 import { CBridgeTransferConfigResponse } from '@/bridges/cbridge/types';
 import { DeBridgeTokenDetails } from '@/bridges/debridge/types';
 
-interface GetAllChainTokensMapParams {
+interface GetBridgeChainTokensMapParams {
   cbridgeTokens: CBridgeTransferConfigResponse['chain_token'];
   deBridgeTokens: Record<number, DeBridgeTokenDetails[]>;
 }
 
-export function getAllChainTokensMap(params: GetAllChainTokensMapParams) {
+export function getBridgeChainTokensMap(params: GetBridgeChainTokensMapParams) {
   const { cbridgeTokens, deBridgeTokens } = params;
 
   const supportedTokens: Record<number, TokenInfo[]> = {};

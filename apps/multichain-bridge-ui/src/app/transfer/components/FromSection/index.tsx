@@ -1,8 +1,6 @@
 import {
   setError,
-  setFromChain,
   setReceiveValue,
-  setSelectedToken,
   setSendValue,
   setTransferActionInfo,
 } from '@/app/transfer/action';
@@ -14,6 +12,7 @@ import { useSupportedFromChains } from '@/app/transfer/hooks/useSupportedFromCha
 import { ChainInfo, TokenInfo } from '@/bridges/main/types';
 import { TokenSelector } from '@/app/transfer/components/TokenSelector';
 import { TokenBalance } from '@/app/transfer/components/TokenBalance';
+import { useSettingQuery } from '@/app/transfer/hooks/useSettingQuery';
 
 const handleKeyPress = (e: React.KeyboardEvent) => {
   // only allow number and decimal
@@ -44,6 +43,7 @@ export function FromSection() {
 
   const chains = useSupportedFromChains();
   const tokens = useSupportedTokens();
+  const { setQuery } = useSettingQuery();
 
   const fromChain = useAppSelector((state) => state.transfer.fromChain);
   const selectedToken = useAppSelector((state) => state.transfer.selectedToken);
@@ -55,13 +55,18 @@ export function FromSection() {
   };
 
   const onChangeFromChain = (chain: ChainInfo) => {
-    dispatch(setFromChain(chain));
+    setQuery({
+      fromChainId: chain.id,
+    });
   };
 
   const onChangeSelectedToken = (token: TokenInfo) => {
+    setQuery({
+      tokenSymbol: token.symbol,
+    });
+
     dispatch(setSendValue(''));
     dispatch(setReceiveValue(''));
-    dispatch(setSelectedToken(token));
     dispatch(setError(''));
     dispatch(setTransferActionInfo(undefined));
   };

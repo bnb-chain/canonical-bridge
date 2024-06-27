@@ -19,7 +19,7 @@ import deBridgeTokenList100000003 from './debridge/token_list/chain_id_100000003
 export const CBRIDGE_CONFIGS = cBridgeTransferConfigs;
 
 export const DEBRIDGE_CONFIGS = {
-  chains: deBridgeChainList,
+  chains: deBridgeChainList.chains,
   chain_token: {
     1: Object.values(deBridgeTokenList1.tokens),
     10: Object.values(deBridgeTokenList10.tokens),

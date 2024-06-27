@@ -1,14 +1,18 @@
-import { ChainInfo, TokenInfo, BridgeConfigsContextProps } from '@/bridges/main';
+import { CBridgePeggedPairConfig } from '@/bridges/cbridge/types';
+import { TokenInfo } from '@/bridges/main';
 
-export function getSupportedTokens(
-  configs: BridgeConfigsContextProps,
-  fromChain: ChainInfo,
-  toChain: ChainInfo,
-) {
-  const { chainTokensMap, peggedPairConfigs } = configs;
+interface GetBridgeTokensParams {
+  chainTokensMap: Record<number, TokenInfo[]>;
+  peggedPairConfigs: CBridgePeggedPairConfig[];
+  fromChainId: number;
+  toChainId: number;
+}
 
-  const fromChainTokens = chainTokensMap[fromChain.id];
-  const toChainTokens = chainTokensMap[toChain.id];
+export function getBridgeTokens(params: GetBridgeTokensParams) {
+  const { chainTokensMap, peggedPairConfigs, fromChainId, toChainId } = params;
+
+  const fromChainTokens = chainTokensMap[fromChainId];
+  const toChainTokens = chainTokensMap[toChainId];
   const tokens: TokenInfo[] = [];
 
   fromChainTokens?.forEach((item) => {
@@ -19,7 +23,7 @@ export function getSupportedTokens(
       if (!item.rawData.cbridge.token.xfer_disabled) {
         const toToken = toChainTokens.find((token) => {
           const hasToken = !!token.rawData.cbridge;
-          const isEnabledToken = !token.rawData.cbridge!.token.xfer_disabled;
+          const isEnabledToken = !token.rawData.cbridge?.token.xfer_disabled;
           return hasToken && isEnabledToken && token.symbol === item.symbol;
         });
 
@@ -35,8 +39,8 @@ export function getSupportedTokens(
 
       peggedPairConfigs.forEach((ppItem) => {
         if (
-          ppItem.org_chain_id === fromChain.id &&
-          ppItem.pegged_chain_id === toChain.id &&
+          ppItem.org_chain_id === fromChainId &&
+          ppItem.pegged_chain_id === toChainId &&
           ppItem.org_token.token.symbol === item.symbol &&
           !tmpTokenSymbolSet.has(item.symbol)
         ) {
@@ -51,8 +55,8 @@ export function getSupportedTokens(
         }
 
         if (
-          ppItem.org_chain_id === toChain.id &&
-          ppItem.pegged_chain_id === fromChain.id &&
+          ppItem.org_chain_id === toChainId &&
+          ppItem.pegged_chain_id === fromChainId &&
           ppItem.pegged_token.token.symbol === item.symbol &&
           !tmpTokenSymbolSet.has(item.symbol)
         ) {
@@ -84,31 +88,4 @@ export function getSupportedTokens(
   });
 
   return tokens;
-}
-
-function getCBridgeTokenSymbolSet(
-  configs: BridgeConfigsContextProps,
-  fromChainId: number,
-  toChainId: number,
-) {
-  const { rawData, peggedPairConfigs, multiBurnConfigs } = configs;
-  const { chains, chain_token: tokensMap } = rawData.cbridge;
-
-  const tokenSymbolSet = new Set();
-}
-
-function getDeBridgeTokenSymbolSet(
-  configs: BridgeConfigsContextProps,
-  fromTokenSymbol: string,
-  toChainId: number,
-) {
-  const { rawData, peggedPairConfigs, multiBurnConfigs } = configs;
-  const { chains, chain_token: tokensMap } = rawData.debridge;
-
-  const tokenSymbolSet = new Set();
-  const toChainTokens = tokensMap[toChainId];
-
-  const hasToToken = toChainTokens?.find((token) => {
-    return token.symbol === fromTokenSymbol;
-  });
 }

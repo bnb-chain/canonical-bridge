@@ -5,7 +5,7 @@ import { EstimatedArrivalTime } from '@/app/transfer/components/TransferOverview
 import { useToTokenInfo } from '@/app/transfer/hooks/useToTokenInfo';
 import { getCBridgeEstimateAmount } from '@/bridges/cbridge/api/getCBridgeEstimateAmount';
 import { useCBridgeTransferParams } from '@/bridges/cbridge/hooks/useCBridgeTransferParams';
-import { useTransferConfigs } from '@/bridges/main';
+import { useBridgeConfigs } from '@/bridges/main';
 import { useGetAllowance } from '@/contract/hooks/useGetAllowance';
 import { useGetEstimatedGas } from '@/contract/hooks/useGetEstimatedGas';
 import { useDebounce } from '@/hooks/useDebounce';
@@ -18,7 +18,7 @@ import { useNetwork } from 'wagmi';
 
 export const CBridgeOption = () => {
   const dispatch = useAppDispatch();
-  const { chains } = useTransferConfigs();
+  const { chains } = useBridgeConfigs();
   const { chain } = useNetwork();
   const { address } = useAccount();
   const toTokenInfo = useToTokenInfo();

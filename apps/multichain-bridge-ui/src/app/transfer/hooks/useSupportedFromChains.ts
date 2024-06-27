@@ -1,12 +1,9 @@
-import { getSupportedFromChains, useTransferConfigs } from '@/bridges/main';
-import { useMemo } from 'react';
+import { useBridgeConfigs } from '@/bridges/main';
 
 export function useSupportedFromChains() {
-  const configs = useTransferConfigs();
+  const { getSupportedFromChains } = useBridgeConfigs();
 
-  const supportedFromChains = useMemo(() => {
-    return getSupportedFromChains(configs);
-  }, [configs]);
+  const chains = getSupportedFromChains();
 
-  return supportedFromChains;
+  return chains;
 }

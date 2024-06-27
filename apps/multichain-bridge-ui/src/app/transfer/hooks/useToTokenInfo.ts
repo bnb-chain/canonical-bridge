@@ -1,9 +1,9 @@
-import { useTransferConfigs } from '@/bridges/main';
+import { useBridgeConfigs } from '@/bridges/main';
 import { useAppSelector } from '@/store/hooks';
 import { useMemo } from 'react';
 
 export const useToTokenInfo = () => {
-  const { chainTokensMap } = useTransferConfigs();
+  const { chainTokensMap } = useBridgeConfigs();
   const toChain = useAppSelector((state) => state.transfer.toChain);
   const selectedToken = useAppSelector((state) => state.transfer.selectedToken);
   const toTokenInfo = useMemo(() => {

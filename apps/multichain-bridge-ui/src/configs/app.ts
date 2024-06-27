@@ -1,7 +1,7 @@
 export const CLIENT_TIME_OUT = 10 * 1000;
 
-export const DEFAULT_CONFIG = {
+export const DEFAULT_CONFIGS = {
   fromChainId: 56,
-  toChainId: 137,
-  tokenSymbol: 'USDT',
+  toChainId: 73,
+  tokenSymbol: 'BUSD',
 };

@@ -11,8 +11,8 @@ interface GetBridgeChainsParams {
 export function getBridgeChains(params: GetBridgeChainsParams) {
   const { rawData } = params;
 
-  const cbridgeRes = getCBridgeChainIdSet(params);
-  const deBridgetRes = getDeBridgeChainIdSet(params);
+  const cbridgeRes = getCBridgeChainIds(params);
+  const deBridgetRes = getDeBridgeChainIds(params);
 
   const cbridgeChains = rawData.cbridge.chains.filter((item) =>
     cbridgeRes.fromChainIdSet.has(item.id),
@@ -26,20 +26,10 @@ export function getBridgeChains(params: GetBridgeChainsParams) {
     deBridgeChains,
   });
 
-  const getSupportedToChains = (fromChainId: number) => {
-    const cbridgeToChainIdSet = cbridgeRes.toChainIdMap.get(fromChainId);
-    const deBridgeToChainIdSet = deBridgetRes.toChainIdMap.get(fromChainId);
-
-    const toChains = chains.filter(
-      (item) => cbridgeToChainIdSet?.has(item.id) || deBridgeToChainIdSet?.has(item.id),
-    );
-
-    return toChains;
-  };
-
   return {
     chains,
-    getSupportedToChains,
+    cbridgeToChainIdMap: cbridgeRes.toChainIdMap,
+    debridgeToChainIdMap: deBridgetRes.toChainIdMap,
   };
 }
 
@@ -58,7 +48,7 @@ function createToChainIdMap() {
   };
 }
 
-function getCBridgeChainIdSet(params: GetBridgeChainsParams) {
+function getCBridgeChainIds(params: GetBridgeChainsParams) {
   const { rawData, peggedPairConfigs, multiBurnConfigs } = params;
   const { chains, chain_token: tokensMap } = rawData.cbridge;
 
@@ -121,7 +111,7 @@ function getCBridgeChainIdSet(params: GetBridgeChainsParams) {
   };
 }
 
-function getDeBridgeChainIdSet(params: GetBridgeChainsParams) {
+function getDeBridgeChainIds(params: GetBridgeChainsParams) {
   const { rawData } = params;
   const { chains, chain_token: tokensMap } = rawData.debridge;
 

@@ -1,4 +1,4 @@
-import { useTransferConfigs } from '@/bridges/main';
+import { useBridgeConfigs } from '@/bridges/main';
 import { useAppSelector } from '@/store/hooks';
 
 export const deBridgeNativeTokenMap = {
@@ -16,7 +16,7 @@ export const deBridgeNativeTokenMap = {
 };
 
 export const useGetNativeToken = () => {
-  const { chains } = useTransferConfigs();
+  const { chains } = useBridgeConfigs();
   const fromChain = useAppSelector((state) => state.transfer.fromChain);
   if (fromChain?.id) {
     const nativeToken = chains.find((chain) => chain.id === fromChain.id)?.rawData?.cbridge
