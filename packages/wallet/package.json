@@ -15,7 +15,8 @@
   "scripts": {
     "dev": "vite __dev__ --config vite.config.ts --port 3333 --host 0.0.0.0 --open",
     "build": "vite build",
-    "build:watch": "vite build --watch --emptyOutDir=false"
+    "build:watch": "vite build --watch --emptyOutDir=false",
+    "lint-staged": "lint-staged"
   },
   "dependencies": {
     "react": "^18.2.0",
@@ -43,6 +44,15 @@
     "vite-plugin-dts": "~3.9.1",
     "rollup-plugin-peer-deps-external": "^2.2.4",
     "@types/rollup-plugin-peer-deps-external": "~2.2.5",
-    "@onflow/types": "~1.4.0"
+    "@onflow/types": "~1.4.0",
+    "lint-staged": "~15.2.7"
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx}": [
+      "eslint --fix"
+    ],
+    "*.{css,less,md}": [
+      "prettier --write"
+    ]
   }
 }
