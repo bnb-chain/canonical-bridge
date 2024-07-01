@@ -18,10 +18,10 @@ export function TransferButton() {
   const publicClient = usePublicClient();
 
   const sendValue = useAppSelector((state) => state.transfer.sendValue);
-  const transferActionInfo = useAppSelector(
-    (state) => state.transfer.transferActionInfo
-  );
+  const transferActionInfo = useAppSelector((state) => state.transfer.transferActionInfo);
   const selectedToken = useAppSelector((state) => state.transfer.selectedToken);
+  const error = useAppSelector((state) => state.transfer.error);
+  const isGlobalFeeLoading = useAppSelector((state) => state.transfer.isGlobalFeeLoading);
 
   const [isLoading, setIsLoading] = useState(false);
   const [cBridgeHash, setCBridgeHash] = useState<string | null>(null);
@@ -55,10 +55,7 @@ export function TransferButton() {
         });
         setCBridgeHash(hash);
         console.log('cBridge tx', hash);
-      } else if (
-        transferActionInfo.bridgeType === 'debridge' &&
-        transferActionInfo.value
-      ) {
+      } else if (transferActionInfo.bridgeType === 'debridge' && transferActionInfo.value) {
         sendTransaction({
           to: transferActionInfo.bridgeAddress as string,
           data: transferActionInfo.data,
@@ -97,11 +94,17 @@ export function TransferButton() {
     <Flex flexDir="column" w={'100%'}>
       <BnbChainButton
         onClick={sendTx}
-        isDisabled={!sendValue || sendValue === '0'}
         color="light.readable.normal"
         w="100%"
         mb={'8px'}
-        disabled={isLoading}
+        disabled={
+          isLoading ||
+          isGlobalFeeLoading ||
+          !!error ||
+          !sendValue ||
+          sendValue === '0' ||
+          !transferActionInfo
+        }
       >
         Transfer
       </BnbChainButton>
@@ -110,10 +113,7 @@ export function TransferButton() {
           {`Your transaction hash: `}
           <Flex>{deBridgeHash}</Flex>
           {`View deBridge transaction history at: `}
-          <Link
-            href={`https://app.debridge.finance/orders?s=${address}`}
-            target="_blank"
-          >
+          <Link href={`https://app.debridge.finance/orders?s=${address}`} target="_blank">
             deExplorer
           </Link>
         </Box>
@@ -123,10 +123,7 @@ export function TransferButton() {
           {`Your transaction hash: `}
           <Flex>{cBridgeHash}</Flex>
           {`View cBridge transaction history at `}
-          <Link
-            href={`https://celerscan.com/tx/${cBridgeHash}`}
-            target="_blank"
-          >
+          <Link href={`https://celerscan.com/tx/${cBridgeHash}`} target="_blank">
             {`CelerScan`}
           </Link>
         </Box>

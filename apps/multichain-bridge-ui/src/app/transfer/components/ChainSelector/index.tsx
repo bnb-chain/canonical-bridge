@@ -50,9 +50,9 @@ export function ChainSelector(props: ChainSelectorProps) {
         {...restProps}
       >
         {selectedChain && (
-          <Flex gap={12}>
+          <Flex gap={12} alignItems={'center'}>
             <CircleImage src={selectedChain.icon} />
-            <Text>{selectedChain.name}</Text>
+            <Text textAlign={'center'}>{selectedChain.name}</Text>
           </Flex>
         )}
         <MenuCloseIcon />
