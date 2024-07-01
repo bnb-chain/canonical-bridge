@@ -1,4 +1,5 @@
 import { BnbChainButton } from '@/app/transfer/components/BNBChain/BnbChainButton';
+import { WalletConnectButton } from '@/app/transfer/components/WalletConnectButton';
 import { LogoIcon } from '@/components/icons/Logo';
 import { useAccount, useDisconnect, useModal } from '@bridge/wallet';
 import { Flex, FlexProps } from '@node-real/uikit';
@@ -15,40 +16,12 @@ export function Header(props: FlexProps) {
       borderBottom="1px solid readable.border"
       alignItems="center"
       justifyContent="space-between"
-      px={24}
+      px={64}
       {...props}
     >
       <LogoIcon />
 
-      {!isConnected && (
-        <BnbChainButton
-          background={`layer.3.default`}
-          _hover={{
-            background: 'layer.3.hover',
-          }}
-          color={'text.primary'}
-          size="md"
-          onClick={() => onOpen('evm')}
-        >
-          connect
-        </BnbChainButton>
-      )}
-      {address && (
-        <Flex alignItems="center" gap={12}>
-          {address}
-          <BnbChainButton
-            background={`layer.3.default`}
-            _hover={{
-              background: 'layer.3.hover',
-            }}
-            color={'text.primary'}
-            size="md"
-            onClick={() => disconnect()}
-          >
-            disconnect
-          </BnbChainButton>
-        </Flex>
-      )}
+      <WalletConnectButton />
     </Flex>
   );
 }

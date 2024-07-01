@@ -52,6 +52,13 @@ export function ToSection() {
         <Flex gap={12}>
           <Flex flex={1} flexDir={'column'}>
             <Input
+              borderColor={'none'}
+              _hover={{
+                borderColor: 'none',
+              }}
+              _focus={{
+                borderColor: 'none',
+              }}
               value={
                 toTokenInfo && receiveAmt && !isGlobalFeeLoading
                   ? `${formatUnits(BigInt(receiveAmt), toTokenInfo?.decimal)} ${

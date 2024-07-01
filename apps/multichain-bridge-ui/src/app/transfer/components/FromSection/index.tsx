@@ -95,7 +95,18 @@ export function FromSection() {
         <Flex>Send:</Flex>
         <Flex gap={12}>
           <Flex flex={1} flexDir={'column'} gap={4}>
-            <Input value={sendValue} onChange={onChangeSendValue} onKeyDown={handleKeyPress} />
+            <Input
+              borderColor={'none'}
+              _hover={{
+                borderColor: 'none',
+              }}
+              _focus={{
+                borderColor: 'none',
+              }}
+              value={sendValue}
+              onChange={onChangeSendValue}
+              onKeyDown={handleKeyPress}
+            />
             <TokenBalance />
           </Flex>
           <TokenSelector
