@@ -1,0 +1,24 @@
+import { useEffect } from 'react';
+
+import { useBridgeConfigs, useSetSelectInfo } from '@/modules/bridges/main';
+import { useAppDispatch } from '@/core/store/hooks';
+import { setSendValue } from '@/modules/transfer/action';
+
+export function useDefaultSelectedInfo() {
+  const { isReady, defaultSelectedInfo } = useBridgeConfigs();
+  const { setSelectInfo } = useSetSelectInfo();
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    if (isReady) {
+      setSelectInfo({
+        fromChainId: defaultSelectedInfo.fromChainId,
+        toChainId: defaultSelectedInfo.toChainId,
+        tokenSymbol: defaultSelectedInfo.tokenSymbol,
+        tokenAddress: defaultSelectedInfo.tokenAddress,
+      });
+      dispatch(setSendValue(defaultSelectedInfo.amount));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isReady]);
+}

@@ -1,0 +1,31 @@
+{
+  "name": "bnb-chain-bridge-sdk",
+  "version": "1.0.0",
+  "description": "bnb chain bridge aggregator sdk",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc -p tsconfig.json"
+  },
+  "author": "Chris L",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "~0.27.2",
+    "ethers": "^5.7.2",
+    "typescript": "^5"
+  },
+  "devDependencies": {
+    "@bnb-chain/eslint-config": "workspace:*",
+    "@bnb-chain/prettier-config": "workspace:*"
+  },
+  "eslintConfig": {
+    "extends": [
+      "@bnb-chain/eslint-config/next"
+    ],
+    "rules": {
+      "@typescript-eslint/no-empty-function": "off",
+      "@typescript-eslint/no-empty-interface": "off"
+    }
+  },
+  "prettier": "@bnb-chain/prettier-config"
+}
