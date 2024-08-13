@@ -1,0 +1,54 @@
+{
+  "internal.use-format-message": "You can put <span>HTML tags</span> in your message using this hook.",
+  "internal.use-responsive-breaks-in-text-format-values": "You can put{br}line breaks{br}in your message using this hook.",
+
+  "generic.copy": "Copy",
+  "generic.download": "Download",
+
+  "component.blog-card.reading-time": "{value} min read",
+
+  "component.copy-to-clipboard.tooltip-copied": "Copied!",
+  "component.copy-to-clipboard.tooltip-copy-address": "Copy address",
+
+  "component.input-address.placeholder": "Address",
+
+  "component.input-amount.placeholder": "0.00",
+
+  "component.input-asset-search.placeholder": "Token name or contract address",
+
+  "component.input-password.placeholder": "Password",
+  "component.input-password.confirm.placeholder": "Confirm password",
+  "component.input-password.confirm.validation": "Passwords do not match.",
+  "component.input-password-new.placeholder": "New password",
+  "component.input-password-new.confirm.placeholder": "Confirm new password",
+
+  "component.select.message-no-options": "No options.",
+
+  "component.select-seed-phrase.input.validation.error": "Invalid Secret Phrase.",
+
+  "component.transaction-item.status.failed": "Fail",
+  "component.transaction-item.status.pending": "Pending",
+  "component.transaction-item.status.confirmed": "Success",
+  "component.transaction-item.type.contract": "Contract",
+  "component.transaction-item.type.approve": "Approve",
+  "component.transaction-item.type.receive": "Receive",
+  "component.transaction-item.type.send": "Send",
+  "component.transaction-item.type.swap": "Swap",
+
+  "validate.generic": "Invalid value.",
+  "validate-not-empty.generic": "Value cannot be empty.",
+  "validate-token-amount.generic": "Invalid amount.",
+  "validate-token-amount.decimals": "Invalid amount. Maximum {number} decimals.",
+  "validate-token-amount.minimum": "The minimum amount is {number}.",
+  "validate-token-amount.maximum": "Insufficient {token} balance.",
+  "validate-token-amount.zero": "Amount cannot be 0.",
+  "validate-token-decimal.generic": "Invalid decimal.",
+  "validate-password.length": "8 or more characters.",
+  "validate-password.case": "At least one upper case character.",
+  "validate-password.digit": "At least one digit.",
+  "validate-password.symbol": "At least one symbol.",
+  "validate-seed-phrase.generic": "Invalid Secret Phrase.",
+  "validate-seed-phrase.length": "Secret Phrases must contain 12 or 24 words.",
+  "validate-url.generic": "Invalid URL.",
+  "validate-url.prefix": "URLs require the appropriate HTTP/HTTPS prefix."
+}

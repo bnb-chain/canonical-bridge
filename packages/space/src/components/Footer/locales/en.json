@@ -1,0 +1,28 @@
+{
+  "footer.explore.title": "Explore",
+  "footer.link.trust-wallet": "Trust Wallet",
+  "footer.link.binance-wallet": "BNB Chain Wallet",
+  "footer.link.dapp-bay": "DappBay",
+
+  "footer.build.title": "Build",
+  "footer.link.developers": "Developers",
+  "footer.link.sdks": "SDKs",
+  "footer.link.whitepaper": "Whitepaper",
+  "footer.link.forum": "Build N’ Build Forum",
+  "footer.link.bridge": "Bridges",
+
+  "footer.participate.title": "Participate",
+  "footer.link.events": "Events",
+  "footer.link.mvb": "MVB Program",
+  "footer.link.hackathon": "Hackathon",
+  "footer.link.developer-programs": "Developer Programs",
+  "footer.link.martians-program": "Martians Program",
+  "footer.link.bug-bounty": "Bug Bounty",
+
+  "footer.about.title": "About",
+  "footer.link.privacy-policy": "Privacy Policy ",
+  "footer.link.terms-of-use": "Terms of Use",
+  "footer.link.careers": "Careers",
+  "footer.link.verification": "Verification",
+  "footer.link.contact-us": "Contact Us"
+}
