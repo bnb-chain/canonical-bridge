@@ -14,10 +14,7 @@
     "ethers": "^5.7.2",
     "typescript": "^5"
   },
-  "devDependencies": {
-    "@bnb-chain/eslint-config": "workspace:*",
-    "@bnb-chain/prettier-config": "workspace:*"
-  },
+  "devDependencies": {},
   "eslintConfig": {
     "extends": [
       "@bnb-chain/eslint-config/next"

@@ -416,6 +416,30 @@
     {
       "packageName": "@bridge/wallet",
       "projectFolder": "packages/wallet"
+    },
+    {
+      "packageName": "bnb-chain-bridge-sdk",
+      "projectFolder": "apps/bnb-chain-bridge-sdk"
     }
+    // {
+    //   "packageName": "bnb-chain-bridge",
+    //   "projectFolder": "apps/bnb-chain-bridge"
+    // },
+    // {
+    //   "packageName": "@bnb-chain/eslint-config",
+    //   "projectFolder": "packages/eslint-config"
+    // },
+    // {
+    //   "packageName": "@bnb-chain/icons",
+    //   "projectFolder": "packages/icons"
+    // },
+    // {
+    //   "packageName": "@bnb-chain/space",
+    //   "projectFolder": "packages/space"
+    // },
+    // {
+    //   "packageName": "@bnb-chain/prettier-config",
+    //   "projectFolder": "packages/prettier-config"
+    // }
   ]
 }
