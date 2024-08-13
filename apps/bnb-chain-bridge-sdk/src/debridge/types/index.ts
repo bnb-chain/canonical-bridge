@@ -20,7 +20,7 @@ export interface DeBridgeTransferConfigs {
 }
 
 // https://deswap.debridge.finance/v1.0/#/DLN
-export type QuoteResponse = {
+export type DeBridgeCreateQuoteResponse = {
   estimation: {
     srcChainTokenIn: {
       address: `0x${string}`;
@@ -56,8 +56,8 @@ export type QuoteResponse = {
     recommendedSlippage: number;
   };
   tx: {
-    allowanceTarget: `0x${string}`;
-    allowanceValue: string;
+    allowanceTarget?: `0x${string}`;
+    allowanceValue?: string;
     data: `0x${string}`;
     to: `0x${string}`; // Bridge address
     value: string;
