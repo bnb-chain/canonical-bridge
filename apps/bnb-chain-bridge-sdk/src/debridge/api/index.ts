@@ -1,4 +1,4 @@
 export * from './createDeBridgeTxQuote';
 export * from './getDeBridgeEstimatedFees';
-export * from './getDebridgeOrder';
-export * from './getDeBridgeTxQuote';
+export * from './getDeBridgeOrder';
+export * from './getDeBridgeStatsHistory';
