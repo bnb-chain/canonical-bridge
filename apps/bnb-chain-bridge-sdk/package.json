@@ -14,7 +14,6 @@
     "@ethersproject/abstract-signer": "^5.7.0",
     "@ethersproject/transactions": "^5.7.0",
     "axios": "~0.27.2",
-    "ethers": "^5.7.2",
     "viem": "~2.0.0",
     "typescript": "^5"
   },

@@ -14,12 +14,6 @@ import {
   StarGateToken,
   StarGateTransferConfigs,
 } from '../../stargate/types';
-import { BigNumber, Contract, Signer } from 'ethers';
-import type {
-  Provider,
-  TransactionReceipt,
-  TransactionResponse,
-} from '@ethersproject/abstract-provider'
 
 export type BridgeType = 'cBridge' | 'deBridge' | 'stargate';
 
@@ -112,34 +106,3 @@ export interface IEvmConnectData {
   rpc: string;
   symbol: string;
 }
-
-/**
- * Stuff that can be coerced into an address.
- */
-export type AddressLike = string | Contract
-
-/**
- * Stuff that can be coerced into a transaction.
- */
-export type TransactionLike = string | TransactionReceipt | TransactionResponse
-
-/**
- * Stuff that can be coerced into a number.
- */
-export type NumberLike = string | number | BigNumber
-
-
-/**
- * Stuff that can be coerced into a provider.
- */
-export type ProviderLike = string | Provider
-
-/**
- * Stuff that can be coerced into a signer.
- */
-export type SignerLike = string | Signer
-
-/**
- * Stuff that can be coerced into a signer or provider.
- */
-export type SignerOrProviderLike = SignerLike | ProviderLike

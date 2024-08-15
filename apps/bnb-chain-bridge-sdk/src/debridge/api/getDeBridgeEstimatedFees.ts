@@ -1,5 +1,5 @@
 // import { createDeBridgeTxQuote } from '@/src/debridge/api/createDeBridgeTxQuote';
-// import { ethers } from 'ethers';
+
 
 /**
  * Get estimated fees from transaction quote API
@@ -19,7 +19,7 @@ export const getDeBridgeEstimatedFees = async () => {
   //   const deBridgeParams = {
   //     srcChainId: fromChain.id,
   //     srcChainTokenIn: selectedToken?.address as `0x${string}`,
-  //     srcChainTokenInAmount: ethers.utils.parseUnits(sendValue, selectedToken.decimal),
+  //     srcChainTokenInAmount: parseUnits(sendValue, selectedToken.decimal),
   //     dstChainId: toChain.id,
   //     dstChainTokenOut: toTokenInfo?.rawData.deBridge?.address,
   //     prependOperatingExpenses: false,
