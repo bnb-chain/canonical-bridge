@@ -1,4 +1,3 @@
-// import { ethers } from 'ethers';
 
 export const loadBridgeFees = async () => {
   // const promiseArr = [];
@@ -34,7 +33,7 @@ export const loadBridgeFees = async () => {
   //       // dispatch(setEstimatedAmount({ deBridge: debridgeEst.value }));
   //       valueArr.push({
   //         type: 'deBridge',
-  //         value: ethers.utils.formatUnits(
+  //         value: formatUnits(
   //           BigInt(debridgeEst.value?.estimation.dstChainTokenOut.amount),
   //           getToDecimals()['deBridge'],
   //         ),
@@ -46,7 +45,7 @@ export const loadBridgeFees = async () => {
   //       // dispatch(setEstimatedAmount({ cBridge: cbridgeEst.value }));
   //       valueArr.push({
   //         type: 'cBridge',
-  //         value: ethers.utils.formatUnits(
+  //         value: formatUnits(
   //           BigInt(cbridgeEst.value?.estimated_receive_amt),
   //           getToDecimals()['cBridge'],
   //         ),
@@ -57,7 +56,7 @@ export const loadBridgeFees = async () => {
   //     if (stargateEst.value) {
   //       valueArr.push({
   //         type: 'stargate',
-  //         value: ethers.utils.formatUnits(
+  //         value: formatUnits(
   //           stargateEst.value?.quoteOFT?.[2].amountReceivedLD,
   //           selectedToken?.rawData.stargate?.decimals || 18,
   //         ),

@@ -22,9 +22,6 @@ importers:
       axios:
         specifier: ~0.27.2
         version: 0.27.2
-      ethers:
-        specifier: ^5.7.2
-        version: 5.7.2
       typescript:
         specifier: ^5
         version: 5.5.4
