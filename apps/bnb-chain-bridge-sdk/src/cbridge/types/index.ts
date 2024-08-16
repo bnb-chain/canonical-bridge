@@ -68,21 +68,6 @@ export interface CBridgeTransferConfigs {
   }[];
 }
 
-export interface CBridgeEstimateAmountResponse {
-  err: object;
-  eq_value_token_amt: string;
-  bridge_rate: number;
-  perc_fee: string;
-  base_fee: string;
-  slippage_tolerance: number;
-  max_slippage: number;
-  estimated_receive_amt: string;
-  drop_gas_amt: string;
-  op_fee_rebate: number;
-  op_fee_rebate_portion: number;
-  op_fee_rebate_end_time: string;
-}
-
 export interface CBridgeTransferStatusResponse {
   err: object;
   status: number;
@@ -147,6 +132,21 @@ export type CBridgeEstimateAmountRequest = {
   is_pegged?: boolean;
 };
 
+export interface CBridgeEstimateAmountResponse {
+  err: object;
+  eq_value_token_amt: string;
+  bridge_rate: number;
+  perc_fee: string;
+  base_fee: string;
+  slippage_tolerance: number;
+  max_slippage: number;
+  estimated_receive_amt: string;
+  drop_gas_amt: string;
+  op_fee_rebate: number;
+  op_fee_rebate_portion: number;
+  op_fee_rebate_end_time: string;
+}
+
 export interface CBridgeBurnConfig {
   chain_id: number;
   token: CBridgeToken;
@@ -173,9 +173,4 @@ export interface CBridgeGetSupportedFuncParams {
   peggedPairConfigs: CBridgePeggedPairConfig[];
   burnPairConfigs: CBridgeBurnPairConfig[];
   data: CBridgeTransferConfigs;
-}
-
-export interface ICBridgeMaxMinSendAmt {
-  max: bigint;
-  min: bigint;
 }
