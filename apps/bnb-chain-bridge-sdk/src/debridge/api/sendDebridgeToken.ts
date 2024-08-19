@@ -1,4 +1,4 @@
-import { type WalletClient, type PublicClient } from 'viem';
+import { type WalletClient, type PublicClient, Hash } from 'viem';
 
 interface ISendDebridgeTokenInput {
   walletClient: WalletClient;
@@ -9,6 +9,16 @@ interface ISendDebridgeTokenInput {
   address: `0x${string}`;
 }
 
+/**
+ * Send token via DeBridge
+ * @param {WalletClient} walletClient Wallet client
+ * @param {PublicClient} publicClient Wallet client
+ * @param {Address} bridgeAddress Bridge address
+ * @param {String} data Transaction data
+ * @param {BigInt} amount Send amount
+ * @param {Address} address wallet/account address
+ * @returns {Hash} transaction hash
+ */
 export const sendDebridgeToken = async ({
   walletClient,
   publicClient,
@@ -16,7 +26,7 @@ export const sendDebridgeToken = async ({
   data,
   amount,
   address,
-}: ISendDebridgeTokenInput) => {
+}: ISendDebridgeTokenInput): Promise<Hash> => {
   try {
     const hash = await walletClient.sendTransaction({
       to: bridgeAddress as `0x${string}`,

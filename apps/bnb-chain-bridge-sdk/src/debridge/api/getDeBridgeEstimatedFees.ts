@@ -11,15 +11,14 @@ interface IDeBridgeEstimatedFeesInput {
   affiliateFeePercent?: number;
   prependOperatingExpenses?: boolean;
 }
-
 /**
  * Get estimated fees from transaction quote API
- * @param fromChainId - Chain ID of the source chain
- * @param fromTokenAddress - Address of ERC20 token on the source chain
- * @param amount - Send amount
- * @param toChainId - Chain ID of the destination chain
- * @param toTokenAddress - Address of ERC20 token on the destination chain
- * @param userAddress - user address
+ * @param {number} fromChainId - Chain ID of the source chain
+ * @param {Address} fromTokenAddress - Address of ERC20 token on the source chain
+ * @param {BigInt} amount - Send amount
+ * @param {number} toChainId - Chain ID of the destination chain
+ * @param {Address} toTokenAddress - Address of ERC20 token on the destination chain
+ * @param {Address} userAddress - user/account address
  */
 export const getDeBridgeEstimatedFees = async ({
   fromChainId,

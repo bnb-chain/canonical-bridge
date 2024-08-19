@@ -1,4 +1,4 @@
-import { type WalletClient, type PublicClient } from 'viem';
+import { type WalletClient, type PublicClient, Hash } from 'viem';
 
 interface ISendCBridgeToken {
   walletClient: WalletClient;
@@ -10,6 +10,17 @@ interface ISendCBridgeToken {
   args: any;
 }
 
+/**
+ * Send token through CBridge
+ * @param {WalletClient} walletClient Wallet client
+ * @param {PublicClient} publicClient Wallet client
+ * @param {Address} bridgeAddress Bridge address
+ * @param {Object[]} bridgeABI Bridge ABI
+ * @param {String} functionName Function name
+ * @param {Address} address wallet/account address
+ * @param {Object[]} args Function arguments
+ * @returns
+ */
 export const sendCBridgeToken = async ({
   walletClient,
   publicClient,
@@ -18,7 +29,7 @@ export const sendCBridgeToken = async ({
   functionName,
   address,
   args,
-}: ISendCBridgeToken) => {
+}: ISendCBridgeToken): Promise<Hash> => {
   try {
     const cBridgeArgs = {
       address: bridgeAddress,

@@ -1,7 +1,7 @@
 import { STARGATE_POOL } from '@/src/stargate/abi/stargatePool';
 import { getStargateQuoteOFT } from '@/src/stargate/api/getStargateQuoteOFT';
 import { getStargateQuoteSend } from '@/src/stargate/api/getStargateQuoteSend';
-import { type WalletClient, type PublicClient, pad } from 'viem';
+import { type WalletClient, type PublicClient, pad, Hash } from 'viem';
 
 interface ISendTokenInput {
   walletClient: WalletClient;
@@ -12,7 +12,17 @@ interface ISendTokenInput {
   receiver: `0x${string}`;
   amount: bigint;
 }
-
+/**
+ * Send token through Stargate bridge
+ * @param {WalletClient} walletClient Wallet client
+ * @param {PublicClient} publicClient Public client
+ * @param {Address} bridgeAddress Bridge address
+ * @param {Address} tokenAddress ERC-20 token address
+ * @param {Number} endPointId Stargate end point ID
+ * @param {Address} receiver Receiver address
+ * @param {BigInt} amount Send amount
+ * @returns {Hash} transaction hash
+ */
 export const sendStargateToken = async ({
   walletClient,
   publicClient,
@@ -21,7 +31,7 @@ export const sendStargateToken = async ({
   endPointId,
   receiver,
   amount,
-}: ISendTokenInput) => {
+}: ISendTokenInput): Promise<Hash> => {
   const sendParams = {
     dstEid: endPointId,
     to: pad(receiver, { size: 32 }) as `0x${string}`,
