@@ -1,3 +1,5 @@
+import { PublicClient, WalletClient } from 'viem';
+
 export interface CBridgeChain {
   id: number;
   name: string;
@@ -173,4 +175,50 @@ export interface CBridgeGetSupportedFuncParams {
   peggedPairConfigs: CBridgePeggedPairConfig[];
   burnPairConfigs: CBridgeBurnPairConfig[];
   data: CBridgeTransferConfigs;
+}
+
+export interface CBridgeSendRangeInput {
+  bridgeAddress: `0x${string}`;
+  tokenAddress: `0x${string}`;
+  isPegged?: boolean;
+  client: PublicClient;
+}
+
+export interface ISendCBridgeToken {
+  walletClient: WalletClient;
+  publicClient: PublicClient;
+  bridgeAddress: string;
+  bridgeABI: any;
+  functionName: string;
+  address: `0x${string}`;
+  args: any;
+}
+
+export interface IGetCBridgeTransferAddressInput {
+  fromChainId: number;
+  isPegged: boolean;
+  peggedConfig: CBridgePeggedPairConfig;
+  chainConfig: CBridgeChain;
+}
+
+export interface IGetCBridgeTransferParamsInput {
+  amount: bigint;
+  isPegged: boolean;
+  toChainId: number;
+  address: `0x${string}`;
+  tokenAddress: `0x${string}`;
+  maxSlippage: number;
+  transferType: 'deposit' | 'withdraw';
+  peggedConfig: CBridgePeggedPairConfig;
+}
+
+export interface IGetCBridgeABI {
+  isPegged: boolean;
+  transferType: 'deposit' | 'withdraw';
+  peggedConfig?: CBridgePeggedPairConfig;
+}
+
+export interface IGetCBridgeTransferFunction {
+  isPegged: boolean;
+  transferType: 'deposit' | 'withdraw';
 }

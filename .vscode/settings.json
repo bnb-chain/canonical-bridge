@@ -53,6 +53,7 @@
     "onflow",
     "protobuf",
     "reduxjs",
+    "stargate",
     "tanstack",
     "unauthenticate",
     "Wagmi",

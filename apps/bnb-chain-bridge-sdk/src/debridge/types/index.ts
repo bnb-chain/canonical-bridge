@@ -1,3 +1,5 @@
+import { WalletClient, PublicClient } from 'viem';
+
 export interface DeBridgeChain {
   chainId: number;
   chainName: string;
@@ -77,4 +79,24 @@ export interface DeBridgeGetSupportedFuncParams {
   toChainId?: number;
   fromTokenSymbol?: string;
   data: DeBridgeTransferConfigs;
+}
+
+export interface IDeBridgeEstimatedFeesInput {
+  fromChainId: number;
+  fromTokenAddress: `0x${string}`;
+  amount: bigint;
+  toChainId: number;
+  toTokenAddress: `0x${string}`;
+  userAddress: `0x${string}`;
+  affiliateFeePercent?: number;
+  prependOperatingExpenses?: boolean;
+}
+
+export interface ISendDebridgeTokenInput {
+  walletClient: WalletClient;
+  publicClient: PublicClient;
+  bridgeAddress: string;
+  data: `0x${string}`;
+  amount: bigint;
+  address: `0x${string}`;
 }
