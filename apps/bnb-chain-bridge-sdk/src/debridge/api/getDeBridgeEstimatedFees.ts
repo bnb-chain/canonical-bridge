@@ -1,9 +1,9 @@
-import { createDeBridgeTxQuote } from "@/src/debridge/api/createDeBridgeTxQuote";
-import { DeBridgeCreateQuoteResponse } from "@/src/debridge/types";
+import { createDeBridgeTxQuote } from '@/src/debridge/api/createDeBridgeTxQuote';
+import { DeBridgeCreateQuoteResponse } from '@/src/debridge/types';
 
-interface IDeBridgeEstimatedFeesInput { 
+interface IDeBridgeEstimatedFeesInput {
   fromChainId: number;
-  fromTokenAddress: `0x${string}`
+  fromTokenAddress: `0x${string}`;
   amount: bigint;
   toChainId: number;
   toTokenAddress: `0x${string}`;
@@ -11,45 +11,42 @@ interface IDeBridgeEstimatedFeesInput {
   affiliateFeePercent?: number;
   prependOperatingExpenses?: boolean;
 }
-
 /**
  * Get estimated fees from transaction quote API
- * @param fromChainId - Chain ID of the source chain
- * @param fromTokenAddress - Address of ERC20 token on the source chain
- * @param amount - Send amount
- * @param toChainId - Chain ID of the destination chain
- * @param toTokenAddress - Address of ERC20 token on the destination chain
- * @param userAddress - user address
+ * @param {number} fromChainId - Chain ID of the source chain
+ * @param {Address} fromTokenAddress - Address of ERC20 token on the source chain
+ * @param {BigInt} amount - Send amount
+ * @param {number} toChainId - Chain ID of the destination chain
+ * @param {Address} toTokenAddress - Address of ERC20 token on the destination chain
+ * @param {Address} userAddress - user/account address
  */
 export const getDeBridgeEstimatedFees = async ({
-  fromChainId, fromTokenAddress, amount, toChainId, toTokenAddress, userAddress, affiliateFeePercent = 0, prependOperatingExpenses = false
-} : IDeBridgeEstimatedFeesInput): Promise<DeBridgeCreateQuoteResponse | null> => {
-  if (
-    !fromChainId ||
-    !toChainId ||
-    !fromChainId || !fromTokenAddress || !Number(amount) || !toChainId || !toTokenAddress || !userAddress
-  ) {
-    return null;
-  }
+  fromChainId,
+  fromTokenAddress,
+  amount,
+  toChainId,
+  toTokenAddress,
+  userAddress,
+  affiliateFeePercent = 0,
+  prependOperatingExpenses = false,
+}: IDeBridgeEstimatedFeesInput): Promise<DeBridgeCreateQuoteResponse | null> => {
   try {
     const deBridgeParams = {
       srcChainId: fromChainId,
-      srcChainTokenIn: fromTokenAddress as `0x${string}`,
+      srcChainTokenIn: fromTokenAddress,
       srcChainTokenInAmount: amount,
       dstChainId: toChainId,
       dstChainTokenOut: toTokenAddress,
-      prependOperatingExpenses: prependOperatingExpenses,
-      affiliateFeePercent: affiliateFeePercent,
+      prependOperatingExpenses,
+      affiliateFeePercent,
       dstChainTokenOutRecipient: userAddress,
       dstChainOrderAuthorityAddress: userAddress,
-      srcChainOrderAuthorityAddress: userAddress
+      srcChainOrderAuthorityAddress: userAddress,
     } as any;
     const urlParams = new URLSearchParams(deBridgeParams as any);
     const deBridgeQuote = await createDeBridgeTxQuote(urlParams);
     return deBridgeQuote;
   } catch (error: any) {
-    // eslint-disable-next-line no-console
-    console.log('Failed to get DeBridge Estimated Fees', error);
-    return null;
+    throw new Error('Failed to get DeBridge Estimated Fees', error);
   }
 };

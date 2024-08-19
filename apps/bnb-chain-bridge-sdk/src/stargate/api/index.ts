@@ -1,3 +1,4 @@
 export * from './getStargateBusQueueTime';
-export * from './getStargateOFTQuote';
-export * from './sendToken';
+export * from './getStargateQuoteOFT';
+export * from './getStargateQuoteSend';
+export * from './sendStargateToken';

@@ -1,6 +1,14 @@
-import { stargateApiClient } from "@/src/stargate/client";
-import { IStarGateBusDriveSettings } from "@/src/stargate/types";
+import { stargateApiClient } from '@/src/stargate/client';
+import { IStarGateBusDriveSettings } from '@/src/stargate/types';
 
-export const getStargateBusQueueTime = async (fromEndpointId: string, toEndpointId: string) => {  
-  return (await stargateApiClient.get<IStarGateBusDriveSettings>(`${fromEndpointId}/${toEndpointId}`)).data;
-}
+// https://mainnet.stargate-api.com/v1/swagger
+export const getStargateBusQueueTime = async (
+  fromEndpointId: string,
+  toEndpointId: string
+) => {
+  return (
+    await stargateApiClient.get<IStarGateBusDriveSettings>(
+      `${fromEndpointId}/${toEndpointId}`
+    )
+  ).data;
+};
