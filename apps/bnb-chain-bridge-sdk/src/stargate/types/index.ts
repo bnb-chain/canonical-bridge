@@ -1,3 +1,5 @@
+import { PublicClient, WalletClient } from 'viem';
+
 export interface StarGateToken {
   address: string;
   bridgeAddress: string;
@@ -37,4 +39,31 @@ export interface IStarGateBusDriveSettings {
   avgWaitTime: number;
   maxWaitTime: number;
   passengersToDrive: number;
+}
+
+export interface IStargateQuoteOFT {
+  publicClient: PublicClient;
+  bridgeAddress: `0x${string}`;
+  endPointId: number;
+  receiver: `0x${string}`;
+  amount: bigint;
+}
+
+export interface IStargateOFTQuote {
+  publicClient: PublicClient;
+  bridgeAddress: `0x${string}`;
+  endPointId: number;
+  receiver: `0x${string}`;
+  amount: bigint;
+  minAmount: bigint;
+}
+
+export interface ISendTokenInput {
+  walletClient: WalletClient;
+  publicClient: PublicClient;
+  bridgeAddress: `0x${string}`;
+  tokenAddress: `0x${string}`;
+  endPointId: number;
+  receiver: `0x${string}`;
+  amount: bigint;
 }

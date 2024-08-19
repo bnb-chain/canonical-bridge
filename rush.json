@@ -418,7 +418,7 @@
       "projectFolder": "packages/wallet"
     },
     {
-      "packageName": "bnb-chain-bridge-sdk",
+      "packageName": "@bnb-chain/bridge-sdk",
       "projectFolder": "apps/bnb-chain-bridge-sdk"
     }
     // {
