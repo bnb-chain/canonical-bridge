@@ -36,6 +36,5 @@ export const getCBridgeSendRange = async ({
       `Failed to get cBridge minimum and maximum transfer amount:`,
       error
     );
-    return null;
   }
 };
