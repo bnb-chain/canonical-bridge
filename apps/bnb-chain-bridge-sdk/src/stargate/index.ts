@@ -35,7 +35,7 @@ export class Stargate {
   }
 
   // https://mainnet.stargate-api.com/v1/swagger
-  async getStargateBusQueueTime(fromEndpointId: string, toEndpointId: string) {
+  async getBusQueueTime(fromEndpointId: string, toEndpointId: string) {
     return (
       await this.client!.get<IStarGateBusDriveSettings>(
         `${fromEndpointId}/${toEndpointId}`
@@ -44,7 +44,7 @@ export class Stargate {
   }
 
   // https://stargateprotocol.gitbook.io/stargate/v/v2-developer-docs/integrate-with-stargate/estimating-fees#quoteoft
-  async getStargateQuoteOFT({
+  async getQuoteOFT({
     publicClient,
     bridgeAddress,
     endPointId,
@@ -75,7 +75,7 @@ export class Stargate {
   }
 
   // https://stargateprotocol.gitbook.io/stargate/v/v2-developer-docs/integrate-with-stargate/estimating-fees#quotesend
-  async getStargateQuoteSend({
+  async getQuoteSend({
     publicClient,
     bridgeAddress,
     endPointId,
@@ -116,7 +116,7 @@ export class Stargate {
    * @param {BigInt} amount Send amount
    * @returns {Hash} transaction hash
    */
-  async sendStargateToken({
+  async sendToken({
     walletClient,
     publicClient,
     bridgeAddress,
@@ -135,7 +135,7 @@ export class Stargate {
       oftCmd: '0x01' as `0x${string}`, // '0x01' for bus, '' for taxi
     };
     try {
-      const quoteOFTResponse = await this.getStargateQuoteOFT({
+      const quoteOFTResponse = await this.getQuoteOFT({
         publicClient,
         bridgeAddress,
         endPointId,
@@ -145,7 +145,7 @@ export class Stargate {
       if (quoteOFTResponse?.[2].amountReceivedLD) {
         sendParams.minAmountLD = BigInt(quoteOFTResponse[2].amountReceivedLD);
       }
-      const quoteSendResponse = await this.getStargateQuoteSend({
+      const quoteSendResponse = await this.getQuoteSend({
         publicClient,
         bridgeAddress,
         endPointId,

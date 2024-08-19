@@ -45,7 +45,7 @@ export class DeBridge {
   }
 
   // https://deswap.debridge.finance/v1.0/#/DLN/DlnOrderControllerV10_createOrder
-  async createDeBridgeTxQuote(urlParams: any) {
+  async createTxQuote(urlParams: any) {
     return (
       await this.client!.get<DeBridgeCreateQuoteResponse>(
         `/dln/order/create-tx?${urlParams.toString()}`
@@ -62,7 +62,7 @@ export class DeBridge {
    * @param {Address} toTokenAddress - Address of ERC20 token on the destination chain
    * @param {Address} userAddress - user/account address
    */
-  async getDeBridgeEstimatedFees({
+  async getEstimatedFees({
     fromChainId,
     fromTokenAddress,
     amount,
@@ -86,7 +86,7 @@ export class DeBridge {
         srcChainOrderAuthorityAddress: userAddress,
       } as any;
       const urlParams = new URLSearchParams(deBridgeParams as any);
-      const deBridgeQuote = await this.createDeBridgeTxQuote(urlParams);
+      const deBridgeQuote = await this.createTxQuote(urlParams);
       return deBridgeQuote;
     } catch (error: any) {
       throw new Error(`Failed to get DeBridge Estimated Fees: ${error}`);
@@ -94,12 +94,12 @@ export class DeBridge {
   }
 
   // https://deswap.debridge.finance/v1.0/#/DLN/DlnOrderControllerV10_getOrder
-  async getDeBridgeOrder(id: string) {
+  async getOrder(id: string) {
     return (await this.client!.get(`/dln/order/${id}`)).data;
   }
 
   // https://stats-api.dln.trade/swagger/index.html
-  async getDeBridgeStatsHistory(
+  async getStatsHistory(
     address: string,
     pageId = 0,
     pageSize = 20,
@@ -127,7 +127,7 @@ export class DeBridge {
    * @param {Address} address wallet/account address
    * @returns {Hash} transaction hash
    */
-  async sendDebridgeToken({
+  async sendToken({
     walletClient,
     publicClient,
     bridgeAddress,
