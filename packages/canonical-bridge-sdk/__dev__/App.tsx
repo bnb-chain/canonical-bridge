@@ -11,7 +11,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useAccount, useDisconnect } from 'wagmi';
 import { chains } from './chains';
 
-import { BridgeSDK, cBridgeConfig, deBridgeConfig, stargateConfig } from '@/index';
+import { CanonicalBridgeSDK, cBridgeConfig, deBridgeConfig, stargateConfig } from '@/index';
 import { ChainConfig } from './types';
 
 function getEvmChains(chainConfigs: ChainConfig[]) {
@@ -42,7 +42,7 @@ const config: WalletKitConfig = {
   walletConfig: {
     autoConnect: true,
     metadata: {
-      name: 'bridge sdk',
+      name: 'canonical bridge sdk',
     },
     evmConfig: {
       wallets: [metaMask(), trustWallet(), walletConnect()],
@@ -89,7 +89,7 @@ function ConnectButton() {
 }
 
 function Example() {
-  const bridgeSDK = new BridgeSDK({
+  const bridgeSDK = new CanonicalBridgeSDK({
     bridgeConfigs: [
       cBridgeConfig({
         endpoint: 'https://cbridge-prod2.celer.app',
