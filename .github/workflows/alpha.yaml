@@ -7,6 +7,7 @@ on:
 jobs:
   release:
     name: release
+    if: github.repository == 'bnb-chain/multichain-bridge'
     timeout-minutes: 10
     runs-on: ubuntu-latest
     steps:
