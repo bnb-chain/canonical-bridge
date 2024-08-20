@@ -1,5 +1,5 @@
 {
-  "name": "walletkit",
+  "name": "multichain-bridge",
   "version": "0.0.0",
   "author": "bnb-chain",
   "private": true,
@@ -12,6 +12,7 @@
     "build": "pnpm --F @bnb-chain/* build",
     "ci:enter": "pnpm changeset pre enter alpha || true",
     "ci:exit": "pnpm changeset pre exit || true",
+    "ci:version": "pnpm changeset version",
     "ci:publish": "pnpm changeset publish",
     "ci:alpha-version": "pnpm ci:enter && pnpm ci:version",
     "ci:stable-version": "pnpm ci:exit && pnpm ci:version"
