@@ -1,14 +1,14 @@
 {
-  "name": "@bnb-chain/bridge-sdk",
-  "version": "0.0.2",
+  "name": "@bnb-chain/canonical-bridge-sdk",
+  "version": "0.0.0",
   "description": "bnb chain bridge aggregator sdk",
   "author": "bnb-chain",
   "private": false,
-  "license": "ISC",
+  "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/bnb-chain/multichain-bridge.git",
-    "directory": "packages/bridge-sdk"
+    "url": "git+https://github.com/bnb-chain/canonical-bridge.git",
+    "directory": "packages/canonical-bridge-sdk"
   },
   "keywords": [
     "bridge",

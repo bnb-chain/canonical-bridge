@@ -10,16 +10,16 @@ import { DeBridge, DeBridgeConfig } from '@/debridge';
 import { Stargate } from '@/stargate';
 import { Hash } from 'viem';
 
-export interface BridgeSDKOptions<T extends BaseBridgeConfig> {
+export interface CanonicalBridgeSDKOptions<T extends BaseBridgeConfig> {
   bridgeConfigs: T[];
 }
 
-export class BridgeSDK {
+export class CanonicalBridgeSDK {
   cBridge!: CBridge;
   deBridge!: DeBridge;
   stargate!: Stargate;
 
-  constructor(options: BridgeSDKOptions<BaseBridgeConfig>) {
+  constructor(options: CanonicalBridgeSDKOptions<BaseBridgeConfig>) {
     const cBridgeConfig = options.bridgeConfigs.find((item) => item.bridgeType === 'cBridge');
 
     const deBridgeConfig = options.bridgeConfigs.find((item) => item.bridgeType === 'deBridge');
