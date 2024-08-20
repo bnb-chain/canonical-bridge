@@ -1,0 +1,10 @@
+{
+  "mode": "pre",
+  "tag": "alpha",
+  "initialVersions": {
+    "@bnb-chain/bridge-sdk": "0.0.1"
+  },
+  "changesets": [
+    "spicy-drinks-try"
+  ]
+}
