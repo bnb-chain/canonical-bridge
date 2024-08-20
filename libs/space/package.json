@@ -1,0 +1,54 @@
+{
+  "name": "@bnb-chain/space",
+  "module": "./dist/index.js",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "license": "MIT",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "dev": "start-storybook -p 3000 --no-manager-cache --no-open",
+    "build": "tsc",
+    "build-storybook": "build-storybook"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "devDependencies": {
+    "@chakra-ui/storybook-addon": "~4.0.16",
+    "@storybook/addon-a11y": "~6.5.16",
+    "@storybook/addon-actions": "~6.5.16",
+    "@storybook/addon-essentials": "~6.5.16",
+    "@storybook/addon-storysource": "~6.5.16",
+    "@storybook/addons": "~6.5.16",
+    "@storybook/builder-webpack5": "~6.5.16",
+    "@storybook/manager-webpack5": "~6.5.16",
+    "@storybook/react": "~6.5.16",
+    "@storybook/theming": "~6.5.16",
+    "@types/big.js": "~6.1.6",
+    "@types/react": "~18.0.12",
+    "@types/react-dom": "~18.0.5"
+  },
+  "dependencies": {
+    "@bnb-chain/icons": "workspace:*",
+    "@chakra-ui/anatomy": "~2.1.1",
+    "@chakra-ui/breakpoint-utils": "~2.0.8",
+    "@chakra-ui/react": "~2.7.0",
+    "@chakra-ui/styled-system": "~2.9.1",
+    "@chakra-ui/theme-tools": "~2.0.18",
+    "@directus/sdk": "~16.1.0",
+    "@emotion/css": "~11.13.0",
+    "@emotion/react": "~11.13.0",
+    "@emotion/styled": "~11.13.0",
+    "@types/lodash-es": "~4.17.6",
+    "big.js": "~6.2.1",
+    "framer-motion": "~10.2.5",
+    "lodash-es": "~4.17.21",
+    "polished": "^4",
+    "react": "~18.2.0",
+    "react-dom": "~18.2.0",
+    "react-intl": "~6.0.4",
+    "react-select": "~5.8.0",
+    "use-debounce": "~9.0.4"
+  }
+}

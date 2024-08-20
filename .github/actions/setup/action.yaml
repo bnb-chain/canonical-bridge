@@ -1,0 +1,39 @@
+name: 'setup'
+description: Prepare the environment
+
+inputs:
+  npm_token:
+    description: 'npm token'
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - name: Setup node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: 16
+
+    - name: Setup pnpm
+      uses: pnpm/action-setup@v2
+      id: pnpm-install
+      with:
+        version: 8
+        run_install: false
+
+    - name: Setup pnpm config
+      shell: bash
+      run: pnpm config set store-dir .pnpm-store
+
+    - name: Install dependencies
+      shell: bash
+      run: pnpm install
+
+    - name: Creating .npmrc
+      shell: bash
+      run: |
+        cat << EOF > "$HOME/.npmrc"
+          //registry.npmjs.org/:_authToken=$NPM_TOKEN
+        EOF
+      env:
+        NPM_TOKEN: ${{ inputs.npm_token }}
