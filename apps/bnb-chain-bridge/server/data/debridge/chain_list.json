@@ -1,0 +1,52 @@
+{
+  "chains": [
+    {
+      "chainId": 1,
+      "chainName": "Ethereum"
+    },
+    {
+      "chainId": 10,
+      "chainName": "Optimism"
+    },
+    {
+      "chainId": 56,
+      "chainName": "BSC"
+    },
+    {
+      "chainId": 137,
+      "chainName": "Polygon"
+    },
+    {
+      "chainId": 8453,
+      "chainName": "Base"
+    },
+    {
+      "chainId": 42161,
+      "chainName": "Arbitrum"
+    },
+    {
+      "chainId": 43114,
+      "chainName": "Avalanche"
+    },
+    {
+      "chainId": 59144,
+      "chainName": "Linea"
+    },
+    {
+      "chainId": 7565164,
+      "chainName": "Solana"
+    },
+    {
+      "chainId": 100000001,
+      "chainName": "Neon"
+    },
+    {
+      "chainId": 100000002,
+      "chainName": "Gnosis"
+    },
+    {
+      "chainId": 100000003,
+      "chainName": "LightLink"
+    }
+  ]
+}

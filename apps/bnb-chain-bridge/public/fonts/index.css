@@ -1,0 +1,48 @@
+@font-face {
+  font-family: 'Zen Dots';
+  font-display: swap;
+  src: url('./zendots.regular.ttf') format('truetype');
+  font-weight: 400;
+}
+@font-face {
+  font-family: 'Space Grotesk';
+  font-display: swap;
+  src: url('./SpaceGrotesk.light.ttf') format('truetype');
+  font-weight: 300;
+}
+@font-face {
+  font-family: 'Space Grotesk';
+  font-display: swap;
+  src: url('./SpaceGrotesk.regular.ttf') format('truetype');
+  font-weight: 400;
+}
+@font-face {
+  font-family: 'Space Grotesk';
+  font-display: swap;
+  src: url('./SpaceGrotesk.medium.ttf') format('truetype');
+  font-weight: 500;
+}
+@font-face {
+  font-family: 'Space Grotesk';
+  font-display: swap;
+  src: url('./SpaceGrotesk.semibold.ttf') format('truetype');
+  font-weight: 600;
+}
+@font-face {
+  font-family: 'Space Grotesk';
+  font-display: swap;
+  src: url('./SpaceGrotesk.bold.ttf') format('truetype');
+  font-weight: 700;
+}
+:root {
+  font-family: 'Space Grotesk', Poppins, -apple-system, '.SFNSText-Regular', 'San Francisco',
+    BlinkMacSystemFont, '.PingFang-SC-Regular', 'Microsoft YaHei', 'Segoe UI', 'Helvetica Neue',
+    Helvetica, Arial, sans-serif, 'Zen Dots';
+}
+
+body,
+*,
+*::before,
+*::after {
+  font-family: inherit;
+}

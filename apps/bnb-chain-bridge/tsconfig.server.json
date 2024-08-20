@@ -1,0 +1,18 @@
+{
+  "extends": "./tsconfig.json",
+  "tsc-alias": {
+    "resolveFullPaths": true
+  },
+  "compilerOptions": {
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "noEmit": false,
+    "outDir": "dist",
+    "paths": {
+      "@/*": ["./*"],
+      "@/server/*": ["./server/*"]
+    }
+  },
+  "include": ["server/**/*.ts"],
+  "exclude": ["node_modules", "dist"]
+}

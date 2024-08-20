@@ -40,17 +40,17 @@
     "viem": "~2.0.0"
   },
   "devDependencies": {
+    "@node-real/walletkit": "2.3.0-alpha.2",
+    "@tanstack/react-query": "^5",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
     "@vitejs/plugin-react": "^4.2.0",
+    "react": "^18",
+    "react-dom": "^18",
     "rollup-plugin-peer-deps-external": "^2.2.4",
     "typescript": "^5",
     "vite": "^4.5.0",
     "vite-plugin-dts": "^3.6.3",
-    "react": "^18",
-    "react-dom": "^18",
-    "@types/react": "^18",
-    "@types/react-dom": "^18",
-    "wagmi": "^2",
-    "@node-real/walletkit": "2.3.0-alpha.2",
-    "@tanstack/react-query": "^5"
+    "wagmi": "^2"
   }
 }
