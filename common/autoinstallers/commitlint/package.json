@@ -1,0 +1,9 @@
+{
+  "name": "commitlint",
+  "dependencies": {
+    "@commitlint/config-conventional": "^16.0.0",
+    "@microsoft/rush-lib": "^5.112.2",
+    "commitlint": "^16.0.2",
+    "execa": "^5.1.1"
+  }
+}

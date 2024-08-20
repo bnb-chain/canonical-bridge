@@ -9,4 +9,4 @@ jobs:
     uses: bnb-chain/github-workflow/.github/workflows/fe-qa-cicd-ap.yml@main
     secrets: inherit
     with:
-      app_name: multichain-bridge-ui
+      app_name: bnb-chain-bridge

@@ -11,7 +11,12 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useAccount, useDisconnect } from 'wagmi';
 import { chains } from './chains';
 
-import { CanonicalBridgeSDK, cBridgeConfig, deBridgeConfig, stargateConfig } from '@/index';
+import {
+  CanonicalBridgeSDK,
+  cBridgeConfig,
+  deBridgeConfig,
+  stargateConfig,
+} from '@/index';
 import { ChainConfig } from './types';
 
 function getEvmChains(chainConfigs: ChainConfig[]) {
@@ -99,7 +104,8 @@ function Example() {
         statsEndpoint: 'https://stats-api.dln.trade/api',
       }),
       stargateConfig({
-        endpoint: 'https://mainnet.stargate-api.com/v1/buses/bus-drive-settings',
+        endpoint:
+          'https://mainnet.stargate-api.com/v1/buses/bus-drive-settings',
       }),
     ],
   });
