@@ -1,4 +1,4 @@
-# multichain-bridge
+# canonical-bridge
 
 
 ## Release steps
