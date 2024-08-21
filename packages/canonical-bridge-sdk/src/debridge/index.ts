@@ -48,7 +48,7 @@ export class DeBridge {
   async createTxQuote(urlParams: any) {
     return (
       await this.client!.get<DeBridgeCreateQuoteResponse>(
-        `/dln/order/create-tx?${urlParams.toString()}`,
+        `/dln/order/create-tx?${urlParams.toString()}`
       )
     ).data;
   }
@@ -104,7 +104,7 @@ export class DeBridge {
     pageId = 0,
     pageSize = 20,
     fromChainIds: number[] = [],
-    toChainIds: number[] = [],
+    toChainIds: number[] = []
   ) {
     return (
       await this.statsClient!.post('/Orders/filteredList', {
@@ -120,7 +120,6 @@ export class DeBridge {
   /**
    * Send token via DeBridge
    * @param {WalletClient} walletClient Wallet client
-   * @param {PublicClient} publicClient Wallet client
    * @param {Address} bridgeAddress Bridge address
    * @param {String} data Transaction data
    * @param {BigInt} amount Send amount
@@ -129,7 +128,6 @@ export class DeBridge {
    */
   async sendToken({
     walletClient,
-    publicClient,
     bridgeAddress,
     data,
     amount,
@@ -142,9 +140,6 @@ export class DeBridge {
         value: amount,
         account: address,
         chain: walletClient.chain,
-      });
-      await publicClient.waitForTransactionReceipt({
-        hash: hash,
       });
       return hash;
     } catch (error) {

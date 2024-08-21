@@ -12,7 +12,9 @@ import { Hash, pad } from 'viem';
 
 export * from './types';
 
-export function stargateConfig(options: BaseBridgeConfigOptions): BaseBridgeConfig {
+export function stargateConfig(
+  options: BaseBridgeConfigOptions
+): BaseBridgeConfig {
   return {
     bridgeType: 'stargate',
     timeout: CLIENT_TIME_OUT,
@@ -34,8 +36,11 @@ export class Stargate {
 
   // https://mainnet.stargate-api.com/v1/swagger
   async getBusQueueTime(fromEndpointId: string, toEndpointId: string) {
-    return (await this.client!.get<IStarGateBusDriveSettings>(`${fromEndpointId}/${toEndpointId}`))
-      .data;
+    return (
+      await this.client!.get<IStarGateBusDriveSettings>(
+        `${fromEndpointId}/${toEndpointId}`
+      )
+    ).data;
   }
 
   // https://stargateprotocol.gitbook.io/stargate/v/v2-developer-docs/integrate-with-stargate/estimating-fees#quoteoft
@@ -162,9 +167,6 @@ export class Stargate {
       };
       const hash = await walletClient?.writeContract({
         ...(sendTokenArgs as any),
-      });
-      await publicClient.waitForTransactionReceipt({
-        hash: hash as `0x${string}`,
       });
       return hash;
     } catch (error: any) {
