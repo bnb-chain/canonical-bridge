@@ -110,7 +110,5 @@ function Example() {
     ],
   });
 
-  console.log(bridgeSDK);
-
   return null;
 }

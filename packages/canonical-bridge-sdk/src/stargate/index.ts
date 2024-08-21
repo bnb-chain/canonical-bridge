@@ -1,12 +1,18 @@
 import { CLIENT_TIME_OUT } from '@/core/constants';
-import { BaseBridgeConfig, BaseBridgeConfigOptions } from '@/core/types';
+import {
+  BaseBridgeConfig,
+  BaseBridgeConfigOptions,
+  CreateAdapterParameters,
+} from '@/core/types';
 import { STARGATE_POOL } from '@/stargate/abi/stargatePool';
 import {
   ISendTokenInput,
   IStarGateBusDriveSettings,
   IStargateOFTQuote,
   IStargateQuoteOFT,
+  StarGateTransferConfigs,
 } from '@/stargate/types';
+import { createAdapter } from '@/stargate/utils/createAdapter';
 import axios, { AxiosInstance } from 'axios';
 import { Hash, pad } from 'viem';
 
@@ -178,5 +184,9 @@ export class Stargate {
     } catch (error: any) {
       throw new Error(`Failed to send token: ${error}`);
     }
+  }
+
+  createAdapter(params: CreateAdapterParameters<StarGateTransferConfigs>) {
+    return createAdapter(params);
   }
 }

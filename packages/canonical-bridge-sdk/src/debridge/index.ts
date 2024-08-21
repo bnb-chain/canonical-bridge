@@ -1,7 +1,13 @@
+import { createAdapter } from '@/debridge/utils/createAdapter';
 import { CLIENT_TIME_OUT } from '@/core/constants';
-import { BaseBridgeConfigOptions, BaseBridgeConfig } from '@/core/types';
+import {
+  BaseBridgeConfigOptions,
+  BaseBridgeConfig,
+  CreateAdapterParameters,
+} from '@/core/types';
 import {
   DeBridgeCreateQuoteResponse,
+  DeBridgeTransferConfigs,
   IDeBridgeEstimatedFeesInput,
   ISendDebridgeTokenInput,
 } from '@/debridge/types';
@@ -145,5 +151,9 @@ export class DeBridge {
     } catch (error) {
       throw new Error(`Failed to send DeBridge token: ${error}`);
     }
+  }
+
+  createAdapter(params: CreateAdapterParameters<DeBridgeTransferConfigs>) {
+    return createAdapter(params);
   }
 }

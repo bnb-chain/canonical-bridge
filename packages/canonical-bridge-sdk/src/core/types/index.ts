@@ -31,3 +31,26 @@ export interface IGetTokenBalanceInput {
   tokenAddress: `0x${string}`;
   owner: `0x${string}`;
 }
+
+export interface NativeCurrency {
+  name: string;
+  symbol: string;
+  decimals: number;
+}
+
+export interface TransferTokenPair {
+  fromTokenAddress: string;
+  toTokenAddress: string;
+  fromToken: any;
+  toToken: any;
+  isPegged?: boolean;
+  peggedConfig?: any;
+}
+
+export interface CreateAdapterParameters<T> {
+  configs: T;
+  excludedChains?: number[];
+  excludedTokens?: Record<number, string[]>;
+  nativeCurrencies?: Record<number, NativeCurrency>;
+  bridgedTokenGroups?: string[][];
+}
