@@ -1,7 +1,13 @@
-import { Button, Flex, theme, useIntl } from '@bnb-chain/space';
+import { Button, ButtonProps, Flex, theme, useIntl } from '@bnb-chain/space';
 import { useCallback, useState } from 'react';
-import { useAccount, useBalance, usePublicClient, useWalletClient } from 'wagmi';
-import { formatUnits } from 'viem';
+import {
+  useAccount,
+  useBalance,
+  usePublicClient,
+  useSendTransaction,
+  useWalletClient,
+} from 'wagmi';
+import { Address, formatUnits } from 'viem';
 
 import { useAppSelector } from '@/core/store/hooks';
 import { useCBridgeTransferParams } from '@/modules/bridges/cbridge/hooks/useCBridgeTransferParams';
@@ -34,7 +40,7 @@ export function TransferButton({
   const { address } = useAccount();
   const publicClient = usePublicClient();
   const { sendToken } = useStarGateTransfer();
-  const { formatMessage } = useIntl();
+  const { sendTransactionAsync } = useSendTransaction();
 
   const { data: balance } = useBalance({ address: address as `0x${string}` });
 
@@ -56,13 +62,13 @@ export function TransferButton({
   const sendTx = useCallback(async () => {
     if (
       !walletClient ||
+      !publicClient ||
       !selectedToken ||
       !address ||
       !transferActionInfo ||
       !transferActionInfo.bridgeType ||
       !transferActionInfo.bridgeAddress ||
-      allowance === null ||
-      !publicClient
+      allowance === null
     ) {
       return;
     }
@@ -132,8 +138,8 @@ export function TransferButton({
           if (balance && balance?.value < BigInt(transferActionInfo.value)) {
             throw new Error('Could not cover deBridge Protocol Fee. Insufficient balance.');
           }
-          const { hash: deBridgeHash } = await sendTransaction({
-            to: transferActionInfo.bridgeAddress as string,
+          const deBridgeHash = await sendTransactionAsync({
+            to: transferActionInfo.bridgeAddress as Address,
             data: transferActionInfo.data,
             value: BigInt(transferActionInfo.value),
           });
@@ -187,44 +193,51 @@ export function TransferButton({
       setIsLoading(false);
     }
   }, [
-    address,
-    balance,
-    cBridgeArgs,
-    stargateArgs,
+    walletClient,
     publicClient,
     selectedToken,
+    address,
     transferActionInfo,
-    walletClient,
     allowance,
-    onOpenApproveModal,
-    onOpenSubmittedModal,
-    onCloseConfirmingModal,
-    onOpenConfirmingModal,
-    onOpenFailedModal,
-    sendValue,
     setHash,
     setChosenBridge,
+    sendValue,
+    onOpenConfirmingModal,
+    cBridgeArgs,
+    stargateArgs,
+    onOpenApproveModal,
+    onCloseConfirmingModal,
+    onOpenSubmittedModal,
+    fromChain?.name,
+    toChain?.name,
+    onOpenFailedModal,
+    balance,
+    sendTransactionAsync,
     sendToken,
-    fromChain,
-    toChain,
   ]);
 
   return (
+    <StyledTransferButton
+      onClick={sendTx}
+      isDisabled={
+        isLoading ||
+        isGlobalFeeLoading ||
+        !sendValue ||
+        !Number(sendValue) ||
+        !transferActionInfo ||
+        !isTransferable
+      }
+    />
+  );
+}
+
+export function StyledTransferButton(props: ButtonProps) {
+  const { ...restProps } = props;
+  const { formatMessage } = useIntl();
+
+  return (
     <Flex flexDir="column" w={'100%'}>
-      <Button
-        onClick={sendTx}
-        size={'lg'}
-        h={theme.sizes['14']}
-        w="100%"
-        isDisabled={
-          isLoading ||
-          isGlobalFeeLoading ||
-          !sendValue ||
-          !Number(sendValue) ||
-          !transferActionInfo ||
-          !isTransferable
-        }
-      >
+      <Button size={'lg'} h={theme.sizes['14']} w="100%" {...restProps}>
         {formatMessage({ id: 'transfer.button.confirm' })}
       </Button>
     </Flex>
