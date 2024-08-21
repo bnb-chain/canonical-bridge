@@ -2,7 +2,6 @@ import { useAccount, usePublicClient, useWalletClient } from 'wagmi';
 import { useCallback } from 'react';
 import { parseUnits } from 'viem';
 
-import { STARGATE_POOL } from '@/modules/bridges/stargate/abi/stargatePool';
 import { useAppDispatch, useAppSelector } from '@/core/store/hooks';
 import { setEstimatedAmount, setReceiveValue } from '@/modules/transfer/action';
 import { toObject } from '@/core/utils/string';
@@ -10,7 +9,7 @@ import { useDebounce } from '@/core/hooks/useDebounce';
 import { DEBOUNCE_DELAY, DEFAULT_ADDRESS } from '@/core/constants';
 import { useToTokenInfo } from '@/modules/transfer/hooks/useToTokenInfo';
 import { useStarGateTransferParams } from '@/modules/bridges/stargate/hooks/useStarGateTransferParams';
-import { stargateInstance } from '@/modules/bridges/stargate/sdk-instance';
+import { bridgeSDK } from '@/core/constants/bridgeSDK';
 
 export const useStarGateTransfer = () => {
   const { data: walletClient } = useWalletClient();
@@ -44,7 +43,7 @@ export const useStarGateTransfer = () => {
     try {
       const bridgeAddress = selectedToken.rawData.stargate?.bridgeAddress as `0x${string}`;
 
-      const quoteOFTResponse = await stargateInstance.getQuoteOFT({
+      const quoteOFTResponse = await bridgeSDK.stargate.getQuoteOFT({
         publicClient: publicClient,
         bridgeAddress,
         endPointId: args.dstEid,
@@ -86,7 +85,14 @@ export const useStarGateTransfer = () => {
 
   const sendToken = useCallback(
     async ({ onOpenFailedModal }: { onOpenFailedModal: () => void }) => {
-      if (!address || !estimatedAmount?.stargate || !args || !selectedToken || !publicClient)
+      if (
+        !address ||
+        !estimatedAmount?.stargate ||
+        !args ||
+        !selectedToken ||
+        !publicClient ||
+        !walletClient
+      )
         return;
       try {
         const bridgeAddress = selectedToken.rawData.stargate?.bridgeAddress as `0x${string}`;
@@ -95,34 +101,15 @@ export const useStarGateTransfer = () => {
         if (amountReceivedLD) {
           sendParams.minAmountLD = BigInt(amountReceivedLD);
         }
-
-        const quoteSendResponse = await stargateInstance.getQuoteSend({
+        const hash = await bridgeSDK.stargate.sendToken({
+          walletClient: walletClient,
           publicClient: publicClient,
           bridgeAddress,
-          endPointId: sendParams.dstEid,
-          receiver: address || DEFAULT_ADDRESS,
+          tokenAddress: selectedToken.address as `0x${string}`,
+          endPointId: args.dstEid,
+          receiver: address,
           amount: parseUnits(sendValue, selectedToken.decimal),
-          minAmount: sendParams.minAmountLD,
         });
-
-        let nativeFee = quoteSendResponse!.nativeFee;
-        if (
-          selectedToken.rawData.stargate?.address === '0x0000000000000000000000000000000000000000'
-        ) {
-          nativeFee += sendParams.amountLD;
-        }
-        const sendTokenArgs = {
-          address: bridgeAddress,
-          abi: STARGATE_POOL,
-          functionName: 'sendToken',
-          args: [sendParams, quoteSendResponse, address],
-          value: nativeFee,
-          account: address,
-        };
-        const hash = await walletClient?.writeContract({
-          ...(sendTokenArgs as any),
-        });
-
         const tx = await publicClient.waitForTransactionReceipt({
           hash: hash as `0x${string}`,
         });

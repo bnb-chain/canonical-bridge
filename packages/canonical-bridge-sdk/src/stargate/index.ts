@@ -35,7 +35,13 @@ export class Stargate {
   }
 
   // https://mainnet.stargate-api.com/v1/swagger
-  async getBusQueueTime(fromEndpointId: string, toEndpointId: string) {
+  async getBusQueueTime({
+    fromEndpointId,
+    toEndpointId,
+  }: {
+    fromEndpointId: string;
+    toEndpointId: string;
+  }) {
     return (
       await this.client!.get<IStarGateBusDriveSettings>(
         `${fromEndpointId}/${toEndpointId}`

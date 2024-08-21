@@ -197,8 +197,8 @@ export interface ISendCBridgeToken {
 export interface IGetCBridgeTransferAddressInput {
   fromChainId: number;
   isPegged: boolean;
-  peggedConfig: CBridgePeggedPairConfig;
-  chainConfig: CBridgeChain;
+  peggedConfig?: CBridgePeggedPairConfig;
+  chainConfig?: CBridgeChain;
 }
 
 export interface IGetCBridgeTransferParamsInput {
@@ -210,6 +210,7 @@ export interface IGetCBridgeTransferParamsInput {
   maxSlippage: number;
   transferType: 'deposit' | 'withdraw';
   peggedConfig: CBridgePeggedPairConfig;
+  nonce: number;
 }
 
 export interface IGetCBridgeABI {

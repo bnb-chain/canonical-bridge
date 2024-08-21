@@ -1,10 +1,6 @@
-import { cBridgeApiClient } from '@/modules/bridges/cbridge/client';
+import { bridgeSDK } from '@/core/constants/bridgeSDK';
 import { CBridgeEstimateAmountRequest } from '@/modules/bridges/cbridge/types';
 
 export const getCBridgeEstimateAmount = async (params: CBridgeEstimateAmountRequest) => {
-  return (
-    await cBridgeApiClient.get(`v2/estimateAmt`, {
-      params,
-    })
-  ).data;
+  return await bridgeSDK.cBridge.getEstimatedAmount(params);
 };

@@ -17,6 +17,7 @@ import { useStarGateTransferParams } from '@/modules/bridges/stargate/hooks/useS
 import { useStarGateWaitTime } from '@/modules/bridges/stargate/hooks/useStarGateWaitTime';
 import { formatEstimatedTime } from '@/core/utils/time';
 import { DEFAULT_ADDRESS } from '@/core/constants';
+import { bridgeSDK } from '@/core/constants/bridgeSDK';
 
 export const StarGateOption = () => {
   const dispatch = useAppDispatch();
@@ -51,32 +52,36 @@ export const StarGateOption = () => {
 
   useEffect(() => {
     let mount = true;
-    if (!mount || !args) {
+    if (!mount || !args || !publicClient) {
       return;
     }
     (async () => {
       try {
         const receiver = address || DEFAULT_ADDRESS;
         const bridgeAddress = selectedToken?.rawData.stargate?.bridgeAddress as `0x${string}`;
-        const quoteOFTResponse = await publicClient?.readContract({
-          address: bridgeAddress,
-          abi: STARGATE_POOL,
-          functionName: 'quoteOFT',
-          args: [args] as any, // false for not paying lzToken
+        const quoteOFTResponse = await bridgeSDK.stargate.getQuoteOFT({
+          publicClient: publicClient,
+          bridgeAddress,
+          endPointId: args.dstEid,
+          receiver: receiver,
+          amount: args.amountLD,
         });
 
         if (quoteOFTResponse?.[2].amountReceivedLD) {
           args.minAmountLD = BigInt(quoteOFTResponse[2].amountReceivedLD);
         }
-        const quoteSendResponse = await publicClient?.readContract({
-          address: bridgeAddress,
-          abi: STARGATE_POOL,
-          functionName: 'quoteSend',
-          args: [args, false] as any, // false for not paying lzToken
+
+        const quoteSendResponse = await bridgeSDK.stargate.getQuoteSend({
+          publicClient: publicClient,
+          bridgeAddress,
+          endPointId: args.dstEid,
+          amount: args.amountLD,
+          minAmount: args.minAmountLD,
+          receiver,
         });
 
         // eslint-disable-next-line no-console
-        console.log('native fee', quoteSendResponse, 'chainId', publicClient?.chain);
+        // console.log('native fee', quoteSendResponse, 'chainId', publicClient?.chain);
         setNativeFee(quoteSendResponse!.nativeFee);
         if (!allowance) return;
         let nativeFee = quoteSendResponse!.nativeFee;
@@ -93,8 +98,8 @@ export const StarGateOption = () => {
           value: nativeFee,
           account: receiver,
         };
-        const gas = await publicClient!.estimateContractGas(sendTokenArgs as any);
-        const gasPrice = await publicClient!.getGasPrice();
+        const gas = await publicClient.estimateContractGas(sendTokenArgs as any);
+        const gasPrice = await publicClient.getGasPrice();
         if (gas && gasPrice) {
           setGasFee({
             gas,

@@ -56,8 +56,8 @@ export type QuoteResponse = {
     recommendedSlippage: number;
   };
   tx: {
-    allowanceTarget: `0x${string}`;
-    allowanceValue: string;
+    allowanceTarget?: `0x${string}`;
+    allowanceValue?: string;
     data: `0x${string}`;
     to: `0x${string}`; // Bridge address
     value: string;

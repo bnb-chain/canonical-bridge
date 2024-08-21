@@ -7,7 +7,6 @@ import { setError, setTransferActionInfo } from '@/modules/transfer/action';
 import { InfoRow } from '@/modules/transfer/components/InfoRow';
 import { useToTokenInfo } from '@/modules/transfer/hooks/useToTokenInfo';
 import { useGetNativeToken } from '@/modules/transfer/hooks/useGetNativeToken';
-import { ERC20_TOKEN } from '@/core/contract/abi';
 import { useDebounce } from '@/core/hooks/useDebounce';
 import { useAppDispatch, useAppSelector } from '@/core/store/hooks';
 import { DEBOUNCE_DELAY } from '@/core/constants';
@@ -15,6 +14,7 @@ import { AdditionalDetails } from '@/modules/transfer/components/TransferOvervie
 import { env } from '@/core/configs/env';
 import { formatNumber } from '@/core/utils/number';
 import { formatEstimatedTime } from '@/core/utils/time';
+import { bridgeSDK } from '@/core/constants/bridgeSDK';
 export const DeBridgeOption = () => {
   const nativeToken = useGetNativeToken();
   const { colorMode } = useColorMode();
@@ -63,11 +63,11 @@ export const DeBridgeOption = () => {
         dispatch(setError(''));
         if (estimatedAmount['deBridge']?.tx && address && publicClient) {
           // Check whether token allowance is enough before getting gas estimation
-          const allowance = await publicClient.readContract({
-            address: selectedToken?.address as `0x${string}`,
-            abi: ERC20_TOKEN,
-            functionName: 'allowance',
-            args: [address as `0x${string}`, estimatedAmount['deBridge'].tx.to],
+          const allowance = await bridgeSDK.getTokenAllowance({
+            publicClient: publicClient,
+            tokenAddress: selectedToken?.address as `0x${string}`,
+            owner: address as `0x${string}`,
+            spender: estimatedAmount['deBridge'].tx.to,
           });
 
           if (allowance < parseUnits(debouncedSendValue, selectedToken.decimal)) {

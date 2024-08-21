@@ -3,12 +3,12 @@ import { useCallback, useState } from 'react';
 import { useAccount, useBalance, usePublicClient, useWalletClient } from 'wagmi';
 import { formatUnits } from 'viem';
 
-import { deBridgeInstance } from '@/modules/bridges/debridge/sdk-instance';
 import { useAppSelector } from '@/core/store/hooks';
 import { useCBridgeTransferParams } from '@/modules/bridges/cbridge/hooks/useCBridgeTransferParams';
 import { useGetAllowance } from '@/core/contract/hooks/useGetAllowance';
 import { useStarGateTransferParams } from '@/modules/bridges/stargate/hooks/useStarGateTransferParams';
 import { useStarGateTransfer } from '@/modules/bridges/stargate/hooks/useStarGateTransfer';
+import { bridgeSDK } from '@/core/constants/bridgeSDK';
 
 export function TransferButton({
   onOpenSubmittedModal,
@@ -83,12 +83,14 @@ export function TransferButton({
       onOpenConfirmingModal();
       if (transferActionInfo.bridgeType === 'cBridge' && cBridgeArgs) {
         try {
-          const gas = await publicClient.estimateContractGas(cBridgeArgs as any);
-          const gasPrice = await publicClient.getGasPrice();
-          const cBridgeHash = await walletClient.writeContract({
-            ...(cBridgeArgs as any),
-            gas,
-            gasPrice,
+          const cBridgeHash = await bridgeSDK.cBridge.sendToken({
+            walletClient,
+            publicClient,
+            bridgeAddress: transferActionInfo.bridgeAddress as string,
+            bridgeABI: cBridgeArgs.abi,
+            functionName: cBridgeArgs.functionName,
+            address,
+            args: cBridgeArgs.args,
           });
           await publicClient.waitForTransactionReceipt({
             hash: cBridgeHash,
@@ -111,7 +113,7 @@ export function TransferButton({
           if (balance && balance?.value < BigInt(transferActionInfo.value)) {
             throw new Error('Could not cover deBridge Protocol Fee. Insufficient balance.');
           }
-          const deBridgeHash = await deBridgeInstance.sendToken({
+          const deBridgeHash = await bridgeSDK.deBridge.sendToken({
             walletClient,
             bridgeAddress: transferActionInfo.bridgeAddress as string,
             data: transferActionInfo.data as `0x${string}`,

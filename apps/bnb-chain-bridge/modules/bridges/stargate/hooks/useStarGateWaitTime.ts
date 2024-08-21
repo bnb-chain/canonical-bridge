@@ -2,8 +2,8 @@ import { useQuery } from '@tanstack/react-query';
 
 import { useAppSelector } from '@/core/store/hooks';
 import { IStarGateBusDriveSettings } from '@/modules/bridges/stargate/types';
-import { stargateApiClient } from '@/modules/bridges/stargate/client';
 import { useToTokenInfo } from '@/modules/transfer/hooks/useToTokenInfo';
+import { bridgeSDK } from '@/core/constants/bridgeSDK';
 
 export const useStarGateWaitTime = () => {
   const selectedToken = useAppSelector((state) => state.transfer.selectedToken);
@@ -16,7 +16,10 @@ export const useStarGateWaitTime = () => {
   return useQuery<IStarGateBusDriveSettings>({
     queryKey: ['stargate-bus-wait-time', fromEndpointId, toEndpointId],
     queryFn: async () => {
-      return (await stargateApiClient.get(`${fromEndpointId}/${toEndpointId}`)).data;
+      return await bridgeSDK.stargate.getBusQueueTime({
+        fromEndpointId: String(fromEndpointId),
+        toEndpointId: String(toEndpointId),
+      });
     },
     enabled: !!fromEndpointId && !!toEndpointId && isMainnet,
     staleTime: 1000 * 30,

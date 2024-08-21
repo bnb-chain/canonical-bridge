@@ -45,7 +45,7 @@ export const useLoadingBridgeFees = () => {
       } else {
         promiseArr.push(new Promise((reject) => reject(null)));
       }
-      const response = await Promise.allSettled(promiseArr);
+      const response = await Promise.allSettled<any>(promiseArr);
       // eslint-disable-next-line no-console
       console.log('API response deBridge[0], cBridge[1], stargate[2]', response);
       const debridgeEst = response?.[0];

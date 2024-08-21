@@ -71,7 +71,7 @@ export class DeBridge {
     userAddress,
     affiliateFeePercent = 0,
     prependOperatingExpenses = false,
-  }: IDeBridgeEstimatedFeesInput): Promise<DeBridgeCreateQuoteResponse | null> {
+  }: IDeBridgeEstimatedFeesInput): Promise<DeBridgeCreateQuoteResponse> {
     try {
       const deBridgeParams = {
         srcChainId: fromChainId,

@@ -20,7 +20,9 @@ import { PEGGED_TOKEN_BRIDGE_V2 } from '@/cbridge/abi/peggedTokenBridgeV2';
 
 export * from './types';
 
-export function cBridgeConfig(options: BaseBridgeConfigOptions): BaseBridgeConfig {
+export function cBridgeConfig(
+  options: BaseBridgeConfigOptions
+): BaseBridgeConfig {
   return {
     bridgeType: 'cBridge',
     timeout: CLIENT_TIME_OUT,
@@ -75,7 +77,9 @@ export class CBridge {
         max: maxAmount,
       };
     } catch (error: any) {
-      throw new Error(`Failed to get cBridge minimum and maximum transfer amount: ${error}`);
+      throw new Error(
+        `Failed to get cBridge minimum and maximum transfer amount: ${error}`
+      );
     }
   }
 
@@ -162,6 +166,7 @@ export class CBridge {
    * @param maxSlippage Maximum slippage
    * @param transferType Transfer type - deposit | withdraw
    * @param peggedConfig Pegged pair configuration
+   * @param nonce Nonce current timestamp
    */
   getTransferParams({
     amount,
@@ -172,17 +177,17 @@ export class CBridge {
     maxSlippage,
     transferType,
     peggedConfig,
+    nonce,
   }: IGetCBridgeTransferParamsInput) {
-    const nonce = new Date().getTime();
     return isPegged === false
       ? [address, tokenAddress, amount, toChainId, nonce, maxSlippage]
       : transferType === 'deposit'
-        ? [tokenAddress, amount, toChainId, address as `0x${string}`, nonce]
-        : transferType === 'withdraw'
-          ? peggedConfig?.bridge_version === 0
-            ? [tokenAddress, amount, address as `0x${string}`, nonce]
-            : [tokenAddress, amount, toChainId, address as `0x${string}`, nonce]
-          : null;
+      ? [tokenAddress, amount, toChainId, address as `0x${string}`, nonce]
+      : transferType === 'withdraw'
+      ? peggedConfig?.bridge_version === 0
+        ? [tokenAddress, amount, address as `0x${string}`, nonce]
+        : [tokenAddress, amount, toChainId, address as `0x${string}`, nonce]
+      : null;
   }
 
   /**
@@ -196,14 +201,14 @@ export class CBridge {
     return isPegged === false || !peggedConfig
       ? POOL_TRANSFER_BRIDGE
       : transferType === 'deposit'
-        ? peggedConfig?.vault_version === 0
-          ? ORIGINAL_TOKEN_VAULT
-          : ORIGINAL_TOKEN_VAULT_V2
-        : transferType === 'withdraw'
-          ? peggedConfig?.bridge_version === 0
-            ? PEGGED_TOKEN_BRIDGE
-            : PEGGED_TOKEN_BRIDGE_V2
-          : (undefined as any);
+      ? peggedConfig?.vault_version === 0
+        ? ORIGINAL_TOKEN_VAULT
+        : ORIGINAL_TOKEN_VAULT_V2
+      : transferType === 'withdraw'
+      ? peggedConfig?.bridge_version === 0
+        ? PEGGED_TOKEN_BRIDGE
+        : PEGGED_TOKEN_BRIDGE_V2
+      : (undefined as any);
   }
 
   /**
@@ -215,9 +220,9 @@ export class CBridge {
     return isPegged === false
       ? 'send'
       : transferType === 'deposit'
-        ? 'deposit'
-        : transferType === 'withdraw'
-          ? 'burn'
-          : '';
+      ? 'deposit'
+      : transferType === 'withdraw'
+      ? 'burn'
+      : '';
   }
 }

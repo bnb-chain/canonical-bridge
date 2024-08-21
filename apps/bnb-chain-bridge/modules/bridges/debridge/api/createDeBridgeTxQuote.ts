@@ -1,5 +1,10 @@
-import { deBridgeApiClient } from '@/modules/bridges/debridge/client';
+import { bridgeSDK } from '@/core/constants/bridgeSDK';
 // TODO: Remove any
 export const createDeBridgeTxQuote = async (urlParams: any) => {
-  return (await deBridgeApiClient.get(`/dln/order/create-tx?${urlParams.toString()}`)).data;
+  try {
+    return await bridgeSDK.deBridge.createTxQuote(urlParams.toString());
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.error('Error creating DeBridge transaction quote', error);
+  }
 };
