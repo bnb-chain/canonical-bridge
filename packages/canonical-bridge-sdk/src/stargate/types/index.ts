@@ -1,4 +1,4 @@
-import { PublicClient, WalletClient } from 'viem';
+import { type PublicClient, type WalletClient } from 'viem';
 
 export interface StarGateToken {
   address: string;

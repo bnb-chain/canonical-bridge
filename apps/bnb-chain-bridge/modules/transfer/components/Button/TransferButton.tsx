@@ -9,7 +9,6 @@ import { useCBridgeTransferParams } from '@/modules/bridges/cbridge/hooks/useCBr
 import { useGetAllowance } from '@/core/contract/hooks/useGetAllowance';
 import { useStarGateTransferParams } from '@/modules/bridges/stargate/hooks/useStarGateTransferParams';
 import { useStarGateTransfer } from '@/modules/bridges/stargate/hooks/useStarGateTransfer';
-import { reportEvent } from '@/core/utils/ga';
 
 export function TransferButton({
   onOpenSubmittedModal,
@@ -43,8 +42,6 @@ export function TransferButton({
   const selectedToken = useAppSelector((state) => state.transfer.selectedToken);
   const isGlobalFeeLoading = useAppSelector((state) => state.transfer.isGlobalFeeLoading);
   const isTransferable = useAppSelector((state) => state.transfer.isTransferable);
-  const fromChain = useAppSelector((state) => state.transfer.fromChain);
-  const toChain = useAppSelector((state) => state.transfer.toChain);
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -101,15 +98,6 @@ export function TransferButton({
             setHash(cBridgeHash);
             setChosenBridge('cBridge');
             onOpenSubmittedModal();
-            reportEvent({
-              name: 'bridge_transaction_success',
-              data: {
-                pair: `${fromChain?.name}, ${toChain?.name}`,
-                token: selectedToken?.symbol,
-                amount: sendValue,
-                bridge_route: 'cbridge',
-              },
-            });
           }
           // eslint-disable-next-line no-console
           console.log('cBridge tx', cBridgeHash);
@@ -117,15 +105,6 @@ export function TransferButton({
           // eslint-disable-next-line no-console
           console.log(e);
           onOpenFailedModal();
-          reportEvent({
-            name: 'bridge_transaction_fail',
-            data: {
-              pair: `${fromChain?.name}, ${toChain?.name}`,
-              token: selectedToken?.symbol,
-              amount: sendValue,
-              bridge_route: 'cbridge',
-            },
-          });
         }
       } else if (transferActionInfo.bridgeType === 'deBridge' && transferActionInfo.value) {
         try {
@@ -147,29 +126,11 @@ export function TransferButton({
             setChosenBridge('deBridge');
             setHash(deBridgeHash);
             onOpenSubmittedModal();
-            reportEvent({
-              name: 'bridge_transaction_success',
-              data: {
-                pair: `${fromChain?.name}, ${toChain?.name}`,
-                token: selectedToken?.symbol,
-                amount: sendValue,
-                bridge_route: 'debridge',
-              },
-            });
           }
         } catch (e) {
           // eslint-disable-next-line no-console
           console.log(e);
           onOpenFailedModal();
-          reportEvent({
-            name: 'bridge_transaction_fail',
-            data: {
-              pair: `${fromChain?.name}, ${toChain?.name}`,
-              token: selectedToken?.symbol,
-              amount: sendValue,
-              bridge_route: 'debridge',
-            },
-          });
         }
       } else if (transferActionInfo.bridgeType === 'stargate' && stargateArgs) {
         const stargateHash = await sendToken({ onOpenFailedModal });
@@ -204,8 +165,6 @@ export function TransferButton({
     onOpenApproveModal,
     onCloseConfirmingModal,
     onOpenSubmittedModal,
-    fromChain?.name,
-    toChain?.name,
     onOpenFailedModal,
     balance,
     sendToken,

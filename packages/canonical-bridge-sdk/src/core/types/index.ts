@@ -1,4 +1,4 @@
-import { PublicClient, WalletClient } from 'viem';
+import { type PublicClient, type WalletClient } from 'viem';
 
 export type BridgeType = 'cBridge' | 'deBridge' | 'stargate';
 

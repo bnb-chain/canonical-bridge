@@ -1,4 +1,4 @@
-import { WalletClient } from 'viem';
+import { type WalletClient } from 'viem';
 
 export interface DeBridgeChain {
   chainId: number;
