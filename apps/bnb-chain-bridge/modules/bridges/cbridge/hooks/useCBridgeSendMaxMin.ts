@@ -1,9 +1,8 @@
-import { ethers } from 'ethers';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
+import { usePublicClient } from 'wagmi';
 
-import { CBRIDGE } from '@/modules/bridges/cbridge/abi/bridge';
 import { ICBridgeMaxMinSendAmt } from '@/modules/bridges/cbridge/types';
-import { useAppSelector } from '@/core/store/hooks';
+import { bridgeSDK } from '@/core/constants/bridgeSDK';
 
 export const useCBridgeSendMaxMin = ({
   bridgeAddress,
@@ -18,30 +17,20 @@ export const useCBridgeSendMaxMin = ({
     min: 0n,
     max: 0n,
   });
+  const publicClient = usePublicClient();
   const [error, setError] = useState<string | null>(null);
 
-  const fromChain = useAppSelector((state) => state.transfer.fromChain);
-  const rpcLink = fromChain?.rpcUrl;
-
-  const rpcProvider = useMemo(
-    () => (rpcLink ? new ethers.providers.JsonRpcProvider(rpcLink, 'any') : null),
-    [rpcLink],
-  );
-  const contractInst = useMemo(
-    () =>
-      rpcProvider && bridgeAddress
-        ? new ethers.Contract(bridgeAddress, CBRIDGE, rpcProvider)
-        : null,
-    [bridgeAddress, rpcProvider],
-  );
   useEffect(() => {
     (async () => {
       try {
-        if (!contractInst || isPegged) {
+        if (isPegged || !publicClient) {
           return;
         }
-        const min = await contractInst.minSend(tokenAddress);
-        const max = await contractInst.maxSend(tokenAddress);
+        const { min, max } = await bridgeSDK.cBridge.getSendRange({
+          bridgeAddress,
+          tokenAddress,
+          client: publicClient,
+        });
 
         setMinMaxSendAmt({
           min,
@@ -53,7 +42,7 @@ export const useCBridgeSendMaxMin = ({
         console.log('error', error);
       }
     })();
-  }, [tokenAddress, contractInst, isPegged]);
+  }, [tokenAddress, isPegged, bridgeAddress, publicClient]);
 
   return {
     minMaxSendAmt,

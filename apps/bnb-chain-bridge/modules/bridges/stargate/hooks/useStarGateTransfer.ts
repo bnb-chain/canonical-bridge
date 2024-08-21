@@ -1,15 +1,15 @@
 import { useAccount, usePublicClient, useWalletClient } from 'wagmi';
 import { useCallback } from 'react';
+import { parseUnits } from 'viem';
 
-import { STARGATE_POOL } from '@/modules/bridges/stargate/abi/stargatePool';
 import { useAppDispatch, useAppSelector } from '@/core/store/hooks';
 import { setEstimatedAmount, setReceiveValue } from '@/modules/transfer/action';
 import { toObject } from '@/core/utils/string';
 import { useDebounce } from '@/core/hooks/useDebounce';
-import { DEBOUNCE_DELAY } from '@/core/constants';
+import { DEBOUNCE_DELAY, DEFAULT_ADDRESS } from '@/core/constants';
 import { useToTokenInfo } from '@/modules/transfer/hooks/useToTokenInfo';
 import { useStarGateTransferParams } from '@/modules/bridges/stargate/hooks/useStarGateTransferParams';
-import { reportEvent } from '@/core/utils/ga';
+import { bridgeSDK } from '@/core/constants/bridgeSDK';
 
 export const useStarGateTransfer = () => {
   const { data: walletClient } = useWalletClient();
@@ -35,17 +35,20 @@ export const useStarGateTransfer = () => {
       !selectedToken ||
       !debouncedSendValue ||
       !Number(debouncedSendValue) ||
-      !toTokenInfo
+      !toTokenInfo ||
+      !publicClient
     ) {
       return;
     }
     try {
       const bridgeAddress = selectedToken.rawData.stargate?.bridgeAddress as `0x${string}`;
-      const quoteOFTResponse = await publicClient?.readContract({
-        address: bridgeAddress,
-        abi: STARGATE_POOL,
-        functionName: 'quoteOFT',
-        args: [args] as any,
+
+      const quoteOFTResponse = await bridgeSDK.stargate.getQuoteOFT({
+        publicClient: publicClient,
+        bridgeAddress,
+        endPointId: args.dstEid,
+        receiver: address || DEFAULT_ADDRESS,
+        amount: parseUnits(debouncedSendValue, selectedToken.decimal),
       });
 
       dispatch(setEstimatedAmount({ stargate: toObject(quoteOFTResponse) }));
@@ -77,11 +80,19 @@ export const useStarGateTransfer = () => {
     toTokenInfo,
     dispatch,
     publicClient,
+    address,
   ]);
 
   const sendToken = useCallback(
     async ({ onOpenFailedModal }: { onOpenFailedModal: () => void }) => {
-      if (!address || !estimatedAmount?.stargate || !args || !selectedToken || !publicClient)
+      if (
+        !address ||
+        !estimatedAmount?.stargate ||
+        !args ||
+        !selectedToken ||
+        !publicClient ||
+        !walletClient
+      )
         return;
       try {
         const bridgeAddress = selectedToken.rawData.stargate?.bridgeAddress as `0x${string}`;
@@ -90,43 +101,17 @@ export const useStarGateTransfer = () => {
         if (amountReceivedLD) {
           sendParams.minAmountLD = BigInt(amountReceivedLD);
         }
-
-        const quoteSendResponse = await publicClient?.readContract({
-          address: bridgeAddress,
-          abi: STARGATE_POOL,
-          functionName: 'quoteSend',
-          args: [sendParams, false] as any, // false for not paying lzToken
+        const hash = await bridgeSDK.stargate.sendToken({
+          walletClient: walletClient,
+          publicClient: publicClient,
+          bridgeAddress,
+          tokenAddress: selectedToken.address as `0x${string}`,
+          endPointId: args.dstEid,
+          receiver: address,
+          amount: parseUnits(sendValue, selectedToken.decimal),
         });
-
-        let nativeFee = quoteSendResponse!.nativeFee;
-        if (
-          selectedToken.rawData.stargate?.address === '0x0000000000000000000000000000000000000000'
-        ) {
-          nativeFee += sendParams.amountLD;
-        }
-        const sendTokenArgs = {
-          address: bridgeAddress,
-          abi: STARGATE_POOL,
-          functionName: 'sendToken',
-          args: [sendParams, quoteSendResponse, address],
-          value: nativeFee,
-          account: address,
-        };
-        const hash = await walletClient?.writeContract({
-          ...(sendTokenArgs as any),
-        });
-
         const tx = await publicClient.waitForTransactionReceipt({
           hash: hash as `0x${string}`,
-        });
-        reportEvent({
-          name: 'bridge_transaction_success',
-          data: {
-            pair: `${fromChain?.name || ''}, ${toChain?.name || ''}`,
-            token: selectedToken?.symbol || '',
-            amount: sendValue,
-            bridge_route: 'stargate',
-          },
         });
         // eslint-disable-next-line no-console
         console.log('send token response', tx);
@@ -135,28 +120,9 @@ export const useStarGateTransfer = () => {
         // eslint-disable-next-line no-console
         console.log(e, e.message);
         onOpenFailedModal();
-        reportEvent({
-          name: 'bridge_transaction_fail',
-          data: {
-            pair: `${fromChain?.name}, ${toChain?.name}`,
-            token: selectedToken?.symbol,
-            amount: sendValue,
-            bridge_route: 'stargate',
-          },
-        });
       }
     },
-    [
-      address,
-      args,
-      estimatedAmount,
-      publicClient,
-      selectedToken,
-      walletClient,
-      fromChain,
-      toChain,
-      sendValue,
-    ],
+    [address, args, estimatedAmount, publicClient, selectedToken, walletClient, sendValue],
   );
 
   return {

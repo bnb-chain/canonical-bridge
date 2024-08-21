@@ -19,12 +19,20 @@ export class CanonicalBridgeSDK {
   deBridge!: DeBridge;
   stargate!: Stargate;
 
-  constructor(options: CanonicalBridgeSDKOptions<BaseBridgeConfig>) {
-    const cBridgeConfig = options.bridgeConfigs.find((item) => item.bridgeType === 'cBridge');
+  constructor(
+    options: CanonicalBridgeSDKOptions<BaseBridgeConfig | DeBridgeConfig>
+  ) {
+    const cBridgeConfig = options.bridgeConfigs.find(
+      (item) => item.bridgeType === 'cBridge'
+    );
 
-    const deBridgeConfig = options.bridgeConfigs.find((item) => item.bridgeType === 'deBridge');
+    const deBridgeConfig = options.bridgeConfigs.find(
+      (item) => item.bridgeType === 'deBridge'
+    );
 
-    const stargateConfig = options.bridgeConfigs.find((item) => item.bridgeType === 'stargate');
+    const stargateConfig = options.bridgeConfigs.find(
+      (item) => item.bridgeType === 'stargate'
+    );
 
     if (cBridgeConfig) {
       this.cBridge = new CBridge(cBridgeConfig);

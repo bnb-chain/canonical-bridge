@@ -13,6 +13,7 @@
     "config:chain-info": "tsx __scripts__/chain-info/index.ts"
   },
   "dependencies": {
+    "@bnb-chain/canonical-bridge-sdk": "workspace:*",
     "@bnb-chain/icons": "workspace:*",
     "@bnb-chain/space": "workspace:*",
     "@emotion/react": "^11",

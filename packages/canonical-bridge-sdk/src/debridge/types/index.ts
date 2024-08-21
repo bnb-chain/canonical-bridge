@@ -1,4 +1,4 @@
-import { WalletClient, PublicClient } from 'viem';
+import { type WalletClient } from 'viem';
 
 export interface DeBridgeChain {
   chainId: number;
@@ -94,7 +94,6 @@ export interface IDeBridgeEstimatedFeesInput {
 
 export interface ISendDebridgeTokenInput {
   walletClient: WalletClient;
-  publicClient: PublicClient;
   bridgeAddress: string;
   data: `0x${string}`;
   amount: bigint;

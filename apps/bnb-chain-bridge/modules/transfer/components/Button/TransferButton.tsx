@@ -1,20 +1,14 @@
 import { Button, ButtonProps, Flex, theme, useIntl } from '@bnb-chain/space';
 import { useCallback, useState } from 'react';
-import {
-  useAccount,
-  useBalance,
-  usePublicClient,
-  useSendTransaction,
-  useWalletClient,
-} from 'wagmi';
-import { Address, formatUnits } from 'viem';
+import { useAccount, useBalance, usePublicClient, useWalletClient } from 'wagmi';
+import { formatUnits } from 'viem';
 
 import { useAppSelector } from '@/core/store/hooks';
 import { useCBridgeTransferParams } from '@/modules/bridges/cbridge/hooks/useCBridgeTransferParams';
 import { useGetAllowance } from '@/core/contract/hooks/useGetAllowance';
 import { useStarGateTransferParams } from '@/modules/bridges/stargate/hooks/useStarGateTransferParams';
 import { useStarGateTransfer } from '@/modules/bridges/stargate/hooks/useStarGateTransfer';
-import { reportEvent } from '@/core/utils/ga';
+import { bridgeSDK } from '@/core/constants/bridgeSDK';
 
 export function TransferButton({
   onOpenSubmittedModal,
@@ -40,7 +34,6 @@ export function TransferButton({
   const { address } = useAccount();
   const publicClient = usePublicClient();
   const { sendToken } = useStarGateTransfer();
-  const { sendTransactionAsync } = useSendTransaction();
 
   const { data: balance } = useBalance({ address: address as `0x${string}` });
 
@@ -49,8 +42,6 @@ export function TransferButton({
   const selectedToken = useAppSelector((state) => state.transfer.selectedToken);
   const isGlobalFeeLoading = useAppSelector((state) => state.transfer.isGlobalFeeLoading);
   const isTransferable = useAppSelector((state) => state.transfer.isTransferable);
-  const fromChain = useAppSelector((state) => state.transfer.fromChain);
-  const toChain = useAppSelector((state) => state.transfer.toChain);
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -92,12 +83,14 @@ export function TransferButton({
       onOpenConfirmingModal();
       if (transferActionInfo.bridgeType === 'cBridge' && cBridgeArgs) {
         try {
-          const gas = await publicClient.estimateContractGas(cBridgeArgs as any);
-          const gasPrice = await publicClient.getGasPrice();
-          const cBridgeHash = await walletClient.writeContract({
-            ...(cBridgeArgs as any),
-            gas,
-            gasPrice,
+          const cBridgeHash = await bridgeSDK.cBridge.sendToken({
+            walletClient,
+            publicClient,
+            bridgeAddress: transferActionInfo.bridgeAddress as string,
+            bridgeABI: cBridgeArgs.abi,
+            functionName: cBridgeArgs.functionName,
+            address,
+            args: cBridgeArgs.args,
           });
           await publicClient.waitForTransactionReceipt({
             hash: cBridgeHash,
@@ -107,15 +100,6 @@ export function TransferButton({
             setHash(cBridgeHash);
             setChosenBridge('cBridge');
             onOpenSubmittedModal();
-            reportEvent({
-              name: 'bridge_transaction_success',
-              data: {
-                pair: `${fromChain?.name}, ${toChain?.name}`,
-                token: selectedToken?.symbol,
-                amount: sendValue,
-                bridge_route: 'cbridge',
-              },
-            });
           }
           // eslint-disable-next-line no-console
           console.log('cBridge tx', cBridgeHash);
@@ -123,25 +107,18 @@ export function TransferButton({
           // eslint-disable-next-line no-console
           console.log(e);
           onOpenFailedModal();
-          reportEvent({
-            name: 'bridge_transaction_fail',
-            data: {
-              pair: `${fromChain?.name}, ${toChain?.name}`,
-              token: selectedToken?.symbol,
-              amount: sendValue,
-              bridge_route: 'cbridge',
-            },
-          });
         }
       } else if (transferActionInfo.bridgeType === 'deBridge' && transferActionInfo.value) {
         try {
           if (balance && balance?.value < BigInt(transferActionInfo.value)) {
             throw new Error('Could not cover deBridge Protocol Fee. Insufficient balance.');
           }
-          const deBridgeHash = await sendTransactionAsync({
-            to: transferActionInfo.bridgeAddress as Address,
-            data: transferActionInfo.data,
-            value: BigInt(transferActionInfo.value),
+          const deBridgeHash = await bridgeSDK.deBridge.sendToken({
+            walletClient,
+            bridgeAddress: transferActionInfo.bridgeAddress as string,
+            data: transferActionInfo.data as `0x${string}`,
+            amount: BigInt(transferActionInfo.value),
+            address,
           });
           await publicClient.waitForTransactionReceipt({
             hash: deBridgeHash,
@@ -151,29 +128,11 @@ export function TransferButton({
             setChosenBridge('deBridge');
             setHash(deBridgeHash);
             onOpenSubmittedModal();
-            reportEvent({
-              name: 'bridge_transaction_success',
-              data: {
-                pair: `${fromChain?.name}, ${toChain?.name}`,
-                token: selectedToken?.symbol,
-                amount: sendValue,
-                bridge_route: 'debridge',
-              },
-            });
           }
         } catch (e) {
           // eslint-disable-next-line no-console
           console.log(e);
           onOpenFailedModal();
-          reportEvent({
-            name: 'bridge_transaction_fail',
-            data: {
-              pair: `${fromChain?.name}, ${toChain?.name}`,
-              token: selectedToken?.symbol,
-              amount: sendValue,
-              bridge_route: 'debridge',
-            },
-          });
         }
       } else if (transferActionInfo.bridgeType === 'stargate' && stargateArgs) {
         const stargateHash = await sendToken({ onOpenFailedModal });
@@ -208,11 +167,8 @@ export function TransferButton({
     onOpenApproveModal,
     onCloseConfirmingModal,
     onOpenSubmittedModal,
-    fromChain?.name,
-    toChain?.name,
     onOpenFailedModal,
     balance,
-    sendTransactionAsync,
     sendToken,
   ]);
 

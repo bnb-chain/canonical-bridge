@@ -1,7 +1,7 @@
 import { useAccount, usePublicClient, useWalletClient } from 'wagmi';
 import { useCallback, useState } from 'react';
 
-import { ERC20_TOKEN } from '../abi/erc20Token';
+import { bridgeSDK } from '@/core/constants/bridgeSDK';
 
 export const useApprove = () => {
   const { address } = useAccount();
@@ -15,11 +15,12 @@ export const useApprove = () => {
 
       try {
         setIsLoadingApprove(true);
-        const hash = await walletClient?.writeContract({
-          address: tokenAddress as `0x${string}`,
-          abi: ERC20_TOKEN,
-          functionName: 'approve',
-          args: [spender, amount as bigint],
+        const hash = await bridgeSDK.approveToken({
+          walletClient,
+          tokenAddress: tokenAddress as `0x${string}`,
+          amount,
+          address,
+          spender,
         });
         // TODO: There is a time gap between the transaction is sent and getting the latest allowance.
         // May need to adjust allowance refetching interval period.
