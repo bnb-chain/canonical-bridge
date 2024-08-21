@@ -1,6 +1,6 @@
 import { Box, Flex, theme, useColorMode, useIntl } from '@bnb-chain/space';
 
-import { RefreshingButton } from '@/modules/transfer/components/Button/RefreshingButton';
+// import { RefreshingButton } from '@/modules/transfer/components/Button/RefreshingButton';
 import { FromSection } from '@/modules/transfer/components/FromSection';
 import { ExchangeChain } from '@/modules/transfer/components/Button/ExchangeChain';
 import { ToSection } from '@/modules/transfer/components/ToSection';
@@ -34,9 +34,9 @@ export function TransferPage() {
         <Box as="h1" fontSize={theme.sizes['5']} fontWeight={500}>
           {formatMessage({ id: 'main.title' })}
         </Box>
-        <Box left={`calc(100% + ${theme.sizes['8']})`} top={0} position={'absolute'}>
+        {/* <Box left={`calc(100% + ${theme.sizes['8']})`} top={0} position={'absolute'}>
           <RefreshingButton />
-        </Box>
+        </Box> */}
         <FromSection />
         <ExchangeChain />
         <ToSection />

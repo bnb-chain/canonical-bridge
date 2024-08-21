@@ -1,14 +1,9 @@
 import { Button, ButtonProps, Flex, theme, useIntl } from '@bnb-chain/space';
 import { useCallback, useState } from 'react';
-import {
-  useAccount,
-  useBalance,
-  usePublicClient,
-  useSendTransaction,
-  useWalletClient,
-} from 'wagmi';
-import { Address, formatUnits } from 'viem';
+import { useAccount, useBalance, usePublicClient, useWalletClient } from 'wagmi';
+import { formatUnits } from 'viem';
 
+import { deBridgeInstance } from '@/modules/bridges/debridge/sdk-instance';
 import { useAppSelector } from '@/core/store/hooks';
 import { useCBridgeTransferParams } from '@/modules/bridges/cbridge/hooks/useCBridgeTransferParams';
 import { useGetAllowance } from '@/core/contract/hooks/useGetAllowance';
@@ -40,7 +35,6 @@ export function TransferButton({
   const { address } = useAccount();
   const publicClient = usePublicClient();
   const { sendToken } = useStarGateTransfer();
-  const { sendTransactionAsync } = useSendTransaction();
 
   const { data: balance } = useBalance({ address: address as `0x${string}` });
 
@@ -138,10 +132,12 @@ export function TransferButton({
           if (balance && balance?.value < BigInt(transferActionInfo.value)) {
             throw new Error('Could not cover deBridge Protocol Fee. Insufficient balance.');
           }
-          const deBridgeHash = await sendTransactionAsync({
-            to: transferActionInfo.bridgeAddress as Address,
-            data: transferActionInfo.data,
-            value: BigInt(transferActionInfo.value),
+          const deBridgeHash = await deBridgeInstance.sendToken({
+            walletClient,
+            bridgeAddress: transferActionInfo.bridgeAddress as string,
+            data: transferActionInfo.data as `0x${string}`,
+            amount: BigInt(transferActionInfo.value),
+            address,
           });
           await publicClient.waitForTransactionReceipt({
             hash: deBridgeHash,
@@ -212,7 +208,6 @@ export function TransferButton({
     toChain?.name,
     onOpenFailedModal,
     balance,
-    sendTransactionAsync,
     sendToken,
   ]);
 
