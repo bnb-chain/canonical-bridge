@@ -23,9 +23,7 @@ export const useCBridgeSendMaxMin = ({
   useEffect(() => {
     (async () => {
       try {
-        if (isPegged || !publicClient) {
-          return;
-        }
+        if (isPegged || !publicClient || !bridgeAddress || !tokenAddress) return;
         const { min, max } = await bridgeSDK.cBridge.getSendRange({
           bridgeAddress,
           tokenAddress,

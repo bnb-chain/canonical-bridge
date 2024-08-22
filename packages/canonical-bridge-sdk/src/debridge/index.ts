@@ -94,18 +94,32 @@ export class DeBridge {
   }
 
   // https://deswap.debridge.finance/v1.0/#/DLN/DlnOrderControllerV10_getOrder
-  async getOrder(id: string) {
+  async getOrder({ id }: { id: string }) {
     return (await this.client!.get(`/dln/order/${id}`)).data;
   }
 
   // https://stats-api.dln.trade/swagger/index.html
-  async getStatsHistory(
-    address: string,
+  /**
+   * Get list of orders by filters
+   * @param address Account address
+   * @param pageId Page number
+   * @param pageSize Records per page
+   * @param fromChainIds Source chain IDs
+   * @param toChainIds Destination chain IDs
+   */
+  async getStatsHistory({
+    address,
     pageId = 0,
     pageSize = 20,
-    fromChainIds: number[] = [],
-    toChainIds: number[] = []
-  ) {
+    fromChainIds = [],
+    toChainIds = [],
+  }: {
+    address: string;
+    pageId: number;
+    pageSize: number;
+    fromChainIds: number[];
+    toChainIds: number[];
+  }) {
     return (
       await this.statsClient!.post('/Orders/filteredList', {
         filter: address,
