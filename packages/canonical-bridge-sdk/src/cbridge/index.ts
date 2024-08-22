@@ -149,10 +149,9 @@ export class CBridge {
     } else {
       if (chainConfig?.contract_addr) {
         return chainConfig?.contract_addr;
-      } else {
-        throw new Error('No cBridge bridge address found');
       }
     }
+    throw new Error('No cBridge bridge address found');
   }
 
   /**
