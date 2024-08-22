@@ -16,6 +16,7 @@ import {
   cBridgeConfig,
   deBridgeConfig,
   stargateConfig,
+  NativeCurrency,
 } from '@/index';
 import { ChainConfig } from './types';
 

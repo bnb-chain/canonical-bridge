@@ -10,6 +10,8 @@ import { DeBridge, DeBridgeConfig } from '@/debridge';
 import { Stargate } from '@/stargate';
 import { Hash } from 'viem';
 
+export * from './types';
+
 export interface CanonicalBridgeSDKOptions<T extends BaseBridgeConfig> {
   bridgeConfigs: T[];
 }

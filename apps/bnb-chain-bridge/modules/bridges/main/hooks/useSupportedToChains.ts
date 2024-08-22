@@ -1,8 +1,8 @@
 import { useMemo } from 'react';
 
 import { useBridgeConfigs } from '@/modules/bridges/main/providers/BridgeConfigsProvider';
-import { GetSupportedToChainsParams } from '@/modules/bridges/main/utils/createAdapter';
 import { useSavedValue } from '@/core/hooks/useSavedValue';
+import { GetSupportedToChainsParams } from '@/modules/bridges/main/utils/extendAdapters';
 
 export function useSupportedToChains(props: GetSupportedToChainsParams) {
   const { getSupportedToChains } = useBridgeConfigs();

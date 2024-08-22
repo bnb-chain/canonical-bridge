@@ -3,6 +3,7 @@ import {
   NativeCurrency,
   TransferTokenPair,
 } from '@/core/types';
+import { createBridgeAdapter } from '@/core/utils/createBridgeAdapter';
 import {
   DeBridgeChain,
   DeBridgeToken,
@@ -26,31 +27,33 @@ export function createAdapter({
     excludedTokens,
     nativeCurrencies,
   });
-  const relatedMap = getRelatedMap({
+  const transferMap = getTransferMap({
     chains,
     chainTokensMap,
     chainSymbolTokenMap,
     bridgedTokenGroups,
   });
   const supportedChains = chains.filter((chain) =>
-    relatedMap.has(chain.chainId)
+    transferMap.has(chain.chainId)
   );
 
   return {
-    bridgeType: 'deBridge',
-    supportedChains,
-    relatedMap,
-    getChainId(chain: DeBridgeChain) {
-      return chain.chainId;
-    },
-    getTokenInfo(token: DeBridgeToken) {
-      return {
-        name: token.name,
-        address: token.address,
-        decimal: token.decimals,
-        symbol: token.symbol,
-      };
-    },
+    ...createBridgeAdapter({
+      bridgeType: 'deBridge',
+      supportedChains,
+      transferMap,
+      getChainId(chain: DeBridgeChain) {
+        return chain.chainId;
+      },
+      getTokenInfo(token: DeBridgeToken) {
+        return {
+          name: token.name,
+          address: token.address,
+          decimal: token.decimals,
+          symbol: token.symbol,
+        };
+      },
+    }),
   };
 }
 
@@ -115,7 +118,7 @@ function getTokenConfigs(params: {
   };
 }
 
-function getRelatedMap(params: {
+function getTransferMap(params: {
   chains: DeBridgeChain[];
   chainTokensMap: Map<number, DeBridgeToken[]>;
   chainSymbolTokenMap: Map<number, Map<string, DeBridgeToken>>;
@@ -125,7 +128,7 @@ function getRelatedMap(params: {
     params;
 
   // [fromChainId][toChainId][tokenSymbol]{fromToken, toToken}
-  const relatedMap = new Map<
+  const transferMap = new Map<
     number,
     Map<number, Map<string, TransferTokenPair>>
   >();
@@ -153,7 +156,7 @@ function getRelatedMap(params: {
       if (fromChain.chainId !== toChain.chainId) {
         const fromTokens = chainTokensMap.get(fromChain.chainId) ?? [];
 
-        const relatedTokenMap = new Map<string, TransferTokenPair>();
+        const transferableTokenMap = new Map<string, TransferTokenPair>();
         fromTokens.forEach((fromToken) => {
           const toToken = getToToken(toChain.chainId, fromToken.symbol);
 
@@ -164,24 +167,24 @@ function getRelatedMap(params: {
               fromTokenAddress: fromToken.address,
               toTokenAddress: toToken.address,
             };
-            relatedTokenMap.set(fromToken.symbol, tokenPair);
+            transferableTokenMap.set(fromToken.symbol, tokenPair);
           }
         });
 
-        if (relatedTokenMap.size > 0) {
-          if (!relatedMap.has(fromChain.chainId)) {
-            relatedMap.set(
+        if (transferableTokenMap.size > 0) {
+          if (!transferMap.has(fromChain.chainId)) {
+            transferMap.set(
               fromChain.chainId,
               new Map<number, Map<string, TransferTokenPair>>()
             );
           }
-          relatedMap
+          transferMap
             .get(fromChain.chainId)
-            ?.set(toChain.chainId, relatedTokenMap);
+            ?.set(toChain.chainId, transferableTokenMap);
         }
       }
     });
   });
 
-  return relatedMap;
+  return transferMap;
 }

@@ -54,3 +54,16 @@ export interface CreateAdapterParameters<T> {
   nativeCurrencies?: Record<number, NativeCurrency>;
   bridgedTokenGroups?: string[][];
 }
+
+export interface BridgeAdapter<T = any, P = any> {
+  bridgeType: BridgeType;
+  supportedChains: T[];
+  transferMap: Map<number, Map<number, Map<string, TransferTokenPair>>>;
+  getChainId: (chain: T) => number;
+  getTokenInfo: (token: P) => {
+    name: string;
+    address: string;
+    decimal: number;
+    symbol: string;
+  };
+}

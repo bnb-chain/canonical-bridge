@@ -1,10 +1,10 @@
 import { env } from '@/core/configs/env';
 import { BridgeToken } from '@/modules/bridges';
-import { isAvailableChainOrToken } from '@/modules/bridges/main/utils/isAvailableChainOrToken';
 import {
   CreateAdapterFuncReturnType,
   GetSupportedTokensParams,
-} from '@/modules/bridges/main/utils/createAdapter';
+} from '@/modules/bridges/main/utils/extendAdapters';
+import { isAvailableChainOrToken } from '@/modules/bridges/main/utils/isAvailableChainOrToken';
 
 export interface MergeSupportedTokensFuncParams {
   adapters: CreateAdapterFuncReturnType[];
@@ -44,7 +44,7 @@ export function mergeSupportedTokens(params: MergeSupportedTokensFuncParams) {
             [bridgeType]: isAvailable,
           },
           peggedRawData: {
-            [bridgeType]: item.peggedPair,
+            [bridgeType]: item.peggedConfig,
           },
         };
         tokens.push(bridgeToken);

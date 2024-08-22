@@ -10,6 +10,7 @@ import {
   NativeCurrency,
   TransferTokenPair,
 } from '@/core/types';
+import { createBridgeAdapter } from '@/core/utils/createBridgeAdapter';
 
 export function createAdapter({
   configs,
@@ -39,30 +40,32 @@ export function createAdapter({
 
   const burnPairConfigs = getBurnPairConfigs(peggedPairConfigs);
 
-  const relatedMap = getRelatedMap({
+  const transferMap = getTransferMap({
     chains,
     peggedPairConfigs,
     chainTokensMap,
     chainSymbolTokenMap,
   });
 
-  const supportedChains = chains.filter((chain) => relatedMap.has(chain.id));
+  const supportedChains = chains.filter((chain) => transferMap.has(chain.id));
 
   return {
-    bridgeType: 'cBridge',
-    supportedChains,
-    relatedMap,
-    getChainId(chain: CBridgeChain) {
-      return chain.id;
-    },
-    getTokenInfo(token: CBridgeToken) {
-      return {
-        name: token.name,
-        address: token.token.address,
-        decimal: token.token.decimal,
-        symbol: token.token.symbol,
-      };
-    },
+    ...createBridgeAdapter({
+      bridgeType: 'cBridge',
+      supportedChains,
+      transferMap,
+      getChainId(chain: CBridgeChain) {
+        return chain.id;
+      },
+      getTokenInfo(token: CBridgeToken) {
+        return {
+          name: token.name,
+          address: token.token.address,
+          decimal: token.token.decimal,
+          symbol: token.token.symbol,
+        };
+      },
+    }),
     getPeggedPairConfigs() {
       return peggedPairConfigs;
     },
@@ -227,7 +230,7 @@ function getBurnPairConfigs(peggedPairConfigs: CBridgePeggedPairConfig[]) {
   return burnPairConfigs;
 }
 
-function getRelatedMap(params: {
+function getTransferMap(params: {
   chains: CBridgeChain[];
   peggedPairConfigs: CBridgePeggedPairConfig[];
   chainTokensMap: Map<number, CBridgeToken[]>;
@@ -237,7 +240,7 @@ function getRelatedMap(params: {
     params;
 
   // [fromChainId][toChainId][tokenSymbol]{fromToken, toToken, isPegged, peggedConfig}
-  const relatedMap = new Map<
+  const transferMap = new Map<
     number,
     Map<number, Map<string, TransferTokenPair>>
   >();
@@ -247,7 +250,7 @@ function getRelatedMap(params: {
       if (fromChain.id !== toChain.id) {
         const fromTokens = chainTokensMap.get(fromChain.id) ?? [];
 
-        const relatedTokenMap = new Map<string, TransferTokenPair>();
+        const transferableTokenMap = new Map<string, TransferTokenPair>();
         fromTokens.forEach((fromToken) => {
           const toToken = chainSymbolTokenMap
             .get(toChain.id)
@@ -259,18 +262,18 @@ function getRelatedMap(params: {
               fromToken,
               toToken,
             };
-            relatedTokenMap.set(fromToken.token.symbol, tokenPair);
+            transferableTokenMap.set(fromToken.token.symbol, tokenPair);
           }
         });
 
-        if (relatedTokenMap.size > 0) {
-          if (!relatedMap.has(fromChain.id)) {
-            relatedMap.set(
+        if (transferableTokenMap.size > 0) {
+          if (!transferMap.has(fromChain.id)) {
+            transferMap.set(
               fromChain.id,
               new Map<number, Map<string, TransferTokenPair>>()
             );
           }
-          relatedMap.get(fromChain.id)?.set(toChain.id, relatedTokenMap);
+          transferMap.get(fromChain.id)?.set(toChain.id, transferableTokenMap);
         }
       }
     });
@@ -284,10 +287,10 @@ function getRelatedMap(params: {
     item: CBridgePeggedPairConfig
   ) => {
     if (
-      !relatedMap.get(fromChainId)?.get(toChainId)?.get(fromToken.token.symbol)
+      !transferMap.get(fromChainId)?.get(toChainId)?.get(fromToken.token.symbol)
     ) {
-      if (!relatedMap.has(fromChainId)) {
-        relatedMap.set(
+      if (!transferMap.has(fromChainId)) {
+        transferMap.set(
           fromChainId,
           new Map<number, Map<string, TransferTokenPair>>()
         );
@@ -302,15 +305,15 @@ function getRelatedMap(params: {
         peggedConfig: item,
       };
 
-      if (relatedMap.get(fromChainId)?.get(toChainId)) {
-        relatedMap
+      if (transferMap.get(fromChainId)?.get(toChainId)) {
+        transferMap
           .get(fromChainId)
           ?.get(toChainId)
           ?.set(fromToken.token.symbol, peggedTokenPair);
       } else {
-        const relatedTokenMap = new Map<string, TransferTokenPair>();
-        relatedTokenMap.set(fromToken.token.symbol, peggedTokenPair);
-        relatedMap.get(fromChainId)?.set(toChainId, relatedTokenMap);
+        const transferableTokenMap = new Map<string, TransferTokenPair>();
+        transferableTokenMap.set(fromToken.token.symbol, peggedTokenPair);
+        transferMap.get(fromChainId)?.set(toChainId, transferableTokenMap);
       }
     }
   };
@@ -326,5 +329,5 @@ function getRelatedMap(params: {
     addPeggedTokenPair(toChainId, toToken, fromChainId, fromToken, item);
   });
 
-  return relatedMap;
+  return transferMap;
 }
