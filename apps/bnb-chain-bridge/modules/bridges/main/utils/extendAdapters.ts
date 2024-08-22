@@ -1,5 +1,6 @@
+import { BridgeAdapter, TransferTokenPair } from '@bnb-chain/canonical-bridge-sdk';
+
 import { isSameAddress } from '@/core/utils/address';
-import { BridgeType } from '@/modules/bridges/main/types';
 
 export interface GetSupportedFromChainsParams {
   toChainId?: number;
@@ -23,36 +24,16 @@ export interface GetSelectedTokenPairParams {
   tokenAddress?: string;
 }
 
-export interface BaseTokenPair {
-  fromTokenAddress: string;
-  toTokenAddress: string;
-  fromToken: any;
-  toToken: any;
-  isPegged?: boolean;
-  peggedPair?: any;
+export type CreateAdapterFuncReturnType = ReturnType<typeof extendAdapter>;
+
+export function extendAdapters(adapters: BridgeAdapter[]) {
+  return adapters.map((adapter) => extendAdapter(adapter));
 }
 
-export interface BaseTokenInfo {
-  name: string;
-  symbol: string;
-  address: string;
-  decimal: number;
-}
+function extendAdapter(params: BridgeAdapter) {
+  const { supportedChains, transferMap, ...restParams } = params;
 
-interface CreateAdapterParams<T, P extends BaseTokenPair> {
-  bridgeType: BridgeType;
-  supportedChains: T[];
-  relatedMap: Map<number, Map<number, Map<string, P>>>;
-  getChainId: (chain: any) => number;
-  getTokenInfo: (token: any) => BaseTokenInfo;
-}
-
-export type CreateAdapterFuncReturnType = ReturnType<typeof createAdapter>;
-
-export function createAdapter<T, P extends BaseTokenPair>(params: CreateAdapterParams<T, P>) {
-  const { supportedChains, relatedMap, ...restParams } = params;
-
-  const supportedChainIds = new Set(relatedMap.keys());
+  const supportedChainIds = new Set(transferMap.keys());
 
   return {
     isSelfChainId(chainId: number) {
@@ -65,7 +46,7 @@ export function createAdapter<T, P extends BaseTokenPair>(params: CreateAdapterP
       if (toChainId) {
         if (this.isSelfChainId(toChainId)) {
           const availableChainIds = new Set<number>();
-          relatedMap.forEach((toMap, fromChainId) => {
+          transferMap.forEach((toMap, fromChainId) => {
             if (toMap.has(toChainId)) {
               availableChainIds.add(fromChainId);
             }
@@ -96,7 +77,7 @@ export function createAdapter<T, P extends BaseTokenPair>(params: CreateAdapterP
         if (this.isSelfChainId(fromChainId)) {
           if (tokenSymbol && tokenAddress) {
             const availableChainIds = new Set<number>();
-            const toMap = relatedMap.get(fromChainId);
+            const toMap = transferMap.get(fromChainId);
             toMap?.forEach((tokenPairMap, toChainId) => {
               const tokenPair = tokenPairMap.get(tokenSymbol);
               if (isSameAddress(tokenPair?.fromTokenAddress, tokenAddress)) {
@@ -109,7 +90,7 @@ export function createAdapter<T, P extends BaseTokenPair>(params: CreateAdapterP
               chains: supportedChains,
             };
           } else {
-            const toChainIds = relatedMap.get(fromChainId)?.keys() ?? [];
+            const toChainIds = transferMap.get(fromChainId)?.keys() ?? [];
             const availableChainIds = new Set([...toChainIds]);
             return {
               availableChainIds,
@@ -140,9 +121,9 @@ export function createAdapter<T, P extends BaseTokenPair>(params: CreateAdapterP
         };
       }
 
-      const pickMap = new Map<string, P>();
+      const pickMap = new Map<string, TransferTokenPair>();
 
-      const toMap = relatedMap.get(fromChainId);
+      const toMap = transferMap.get(fromChainId);
       toMap?.forEach((tokenPairMap) => {
         tokenPairMap.forEach((tokenPair, symbol) => {
           pickMap.set(symbol, tokenPair);
@@ -153,7 +134,7 @@ export function createAdapter<T, P extends BaseTokenPair>(params: CreateAdapterP
 
       if (toChainId) {
         if (this.isSelfChainId(toChainId)) {
-          const tokenPairMap = relatedMap.get(fromChainId)?.get(toChainId);
+          const tokenPairMap = transferMap.get(fromChainId)?.get(toChainId);
           const availableTokens = new Set<string>(tokenPairMap ? tokenPairMap.keys() : []);
 
           tokenPairMap?.forEach((tokenPair, symbol) => {
@@ -196,7 +177,7 @@ export function createAdapter<T, P extends BaseTokenPair>(params: CreateAdapterP
         };
       }
 
-      const tokenPair = relatedMap.get(fromChainId)?.get(toChainId)?.get(tokenSymbol);
+      const tokenPair = transferMap.get(fromChainId)?.get(toChainId)?.get(tokenSymbol);
       if (isSameAddress(tokenPair?.fromTokenAddress, tokenAddress)) {
         return {
           tokenPair,

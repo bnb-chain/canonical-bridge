@@ -7,7 +7,7 @@ import {
   CreateAdapterFuncReturnType,
   GetSupportedFromChainsParams,
   GetSupportedToChainsParams,
-} from '@/modules/bridges/main/utils/createAdapter';
+} from '@/modules/bridges/main/utils/extendAdapters';
 
 export interface MergeSupportedChainsFuncParams {
   direction: 'from' | 'to';

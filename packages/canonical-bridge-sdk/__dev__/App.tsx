@@ -16,6 +16,7 @@ import {
   cBridgeConfig,
   deBridgeConfig,
   stargateConfig,
+  NativeCurrency,
 } from '@/index';
 import { ChainConfig } from './types';
 
@@ -109,8 +110,6 @@ function Example() {
       }),
     ],
   });
-
-  console.log(bridgeSDK);
 
   return null;
 }

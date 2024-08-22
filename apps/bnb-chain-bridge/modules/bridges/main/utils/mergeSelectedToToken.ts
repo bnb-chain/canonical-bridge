@@ -3,7 +3,7 @@ import { env } from '@/core/configs/env';
 import {
   CreateAdapterFuncReturnType,
   GetSelectedTokenPairParams,
-} from '@/modules/bridges/main/utils/createAdapter';
+} from '@/modules/bridges/main/utils/extendAdapters';
 
 export interface MergeToTokenFuncParams {
   adapters: CreateAdapterFuncReturnType[];
@@ -20,7 +20,7 @@ export function mergeSelectedToToken(params: MergeToTokenFuncParams) {
 
     const toToken = tokenPair?.toToken;
     const isPegged = !!tokenPair?.isPegged;
-    const peggedPair = tokenPair?.peggedPair;
+    const peggedPair = tokenPair?.peggedConfig;
 
     const formatted = toToken ? adapter.getTokenInfo(toToken) : undefined;
 

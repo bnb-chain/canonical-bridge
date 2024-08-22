@@ -4,37 +4,56 @@ import {
   CBridgePeggedPairConfig,
   CBridgeToken,
   CBridgeTransferConfigs,
-} from '@/modules/bridges/cbridge/types';
-import { BridgeConfigsResponse, ChainConfig } from '@/modules/bridges';
-import { BaseTokenPair, createAdapter } from '@/modules/bridges/main/utils/createAdapter';
+} from '@/cbridge/types';
+import {
+  CreateAdapterParameters,
+  NativeCurrency,
+  TransferTokenPair,
+} from '@/core/types';
+import { createBridgeAdapter } from '@/core/utils/createBridgeAdapter';
 
-export function createCBridgeAdapter(
-  data: BridgeConfigsResponse['cBridge'],
-  nativeCurrencyMap: Map<number, ChainConfig['nativeCurrency']>,
-) {
-  const { chains, chainMap } = getChainConfigs(data.configs, data.exclude.chains);
-  const { chainTokensMap, chainSymbolTokenMap } = getTokenConfigs(
-    data.configs,
+export function createAdapter({
+  configs,
+  excludedChains = [],
+  excludedTokens = {},
+  nativeCurrencies = {},
+  bridgedTokenGroups = [],
+}: CreateAdapterParameters<CBridgeTransferConfigs>) {
+  const { chains, chainMap } = getChainConfigs({
+    configs,
+    excludedChains,
+  });
+
+  const { chainTokensMap, chainSymbolTokenMap } = getTokenConfigs({
+    configs,
     chainMap,
-    nativeCurrencyMap,
-    data.exclude.tokens,
-  );
-  const peggedPairConfigs = getPeggedPairConfigs(
-    data,
+    nativeCurrencies,
+    excludedTokens,
+  });
+
+  const peggedPairConfigs = getPeggedPairConfigs({
+    peggedPairConfigs: configs.pegged_pair_configs,
     chainMap,
-    nativeCurrencyMap,
-    data.exclude.tokens,
-  );
+    nativeCurrencies,
+    excludedTokens,
+  });
+
   const burnPairConfigs = getBurnPairConfigs(peggedPairConfigs);
 
-  const relatedMap = getRelatedMap(chains, peggedPairConfigs, chainTokensMap, chainSymbolTokenMap);
-  const supportedChains = chains.filter((chain) => relatedMap.has(chain.id));
+  const transferMap = getTransferMap({
+    chains,
+    peggedPairConfigs,
+    chainTokensMap,
+    chainSymbolTokenMap,
+  });
+
+  const supportedChains = chains.filter((chain) => transferMap.has(chain.id));
 
   return {
-    ...createAdapter({
+    ...createBridgeAdapter({
       bridgeType: 'cBridge',
       supportedChains,
-      relatedMap,
+      transferMap,
       getChainId(chain: CBridgeChain) {
         return chain.id;
       },
@@ -56,17 +75,23 @@ export function createCBridgeAdapter(
   };
 }
 
-function getChainConfigs(configs: CBridgeTransferConfigs, excludedChains: number[]) {
+function getChainConfigs(params: {
+  configs: CBridgeTransferConfigs;
+  excludedChains: number[];
+}) {
+  const { configs, excludedChains } = params;
   const { chains, chain_token, pegged_pair_configs } = configs;
 
   const filteredChains = chains.filter((chain) => {
     const isExcludedChain = excludedChains.includes(chain.id);
-    const hasEnabledToken = chain_token[chain.id]?.token?.some((e) => !e.token.xfer_disabled);
+    const hasEnabledToken = chain_token[chain.id]?.token?.some(
+      (e) => !e.token.xfer_disabled
+    );
     const hasPeggedToken = pegged_pair_configs.some(
       (e) =>
         (e.org_chain_id === chain.id || e.pegged_chain_id === chain.id) &&
         !e.org_token.token.xfer_disabled &&
-        !e.pegged_token.token.xfer_disabled,
+        !e.pegged_token.token.xfer_disabled
     );
     return !isExcludedChain && (hasEnabledToken || hasPeggedToken);
   });
@@ -82,12 +107,13 @@ function getChainConfigs(configs: CBridgeTransferConfigs, excludedChains: number
   };
 }
 
-function getTokenConfigs(
-  configs: CBridgeTransferConfigs,
-  chainMap: Map<number, CBridgeChain>,
-  nativeCurrencyMap: Map<number, ChainConfig['nativeCurrency']>,
-  excludedTokenMap: Record<number, string[]>,
-) {
+function getTokenConfigs(params: {
+  configs: CBridgeTransferConfigs;
+  chainMap: Map<number, CBridgeChain>;
+  excludedTokens: Record<number, string[]>;
+  nativeCurrencies: Record<number, NativeCurrency>;
+}) {
+  const { configs, chainMap, nativeCurrencies, excludedTokens } = params;
   const { chain_token } = configs;
 
   const chainTokensMap = new Map<number, CBridgeToken[]>();
@@ -97,8 +123,11 @@ function getTokenConfigs(
 
     const filteredTokens = tokens.filter((token) => {
       const isEnabledToken = !token.token.xfer_disabled;
-      const isNativeToken = nativeCurrencyMap.get(chainId)?.symbol === token.token.symbol;
-      const isExcludedToken = excludedTokenMap?.[chainId]?.includes(token.token.symbol);
+      const isNativeToken =
+        nativeCurrencies[chainId]?.symbol === token.token.symbol;
+      const isExcludedToken = excludedTokens?.[chainId]?.includes(
+        token.token.symbol
+      );
       return isEnabledToken && !isNativeToken && !isExcludedToken;
     });
 
@@ -119,26 +148,30 @@ function getTokenConfigs(
   };
 }
 
-function getPeggedPairConfigs(
-  data: BridgeConfigsResponse['cBridge'],
-  chainMap: Map<number, CBridgeChain>,
-  nativeCurrencyMap: Map<number, ChainConfig['nativeCurrency']>,
-  excludedTokenMap: Record<number, string[]>,
-) {
-  const { pegged_pair_configs } = data.configs;
+function getPeggedPairConfigs(params: {
+  peggedPairConfigs: CBridgePeggedPairConfig[];
+  chainMap: Map<number, CBridgeChain>;
+  excludedTokens: Record<number, string[]>;
+  nativeCurrencies: Record<number, NativeCurrency>;
+}) {
+  const { peggedPairConfigs, chainMap, excludedTokens, nativeCurrencies } =
+    params;
 
   const isAvailablePair = (chainId: number, token: CBridgeToken) => {
     const hasChain = chainMap.has(chainId);
     const isEnabledToken = !token.token.xfer_disabled;
-    const isNativeToken = nativeCurrencyMap.get(chainId)?.symbol === token.token.symbol;
-    const isExcludedToken = excludedTokenMap?.[chainId]?.includes(token.token.symbol);
+    const isNativeToken =
+      nativeCurrencies[chainId]?.symbol === token.token.symbol;
+    const isExcludedToken = excludedTokens[chainId]?.includes(
+      token.token.symbol
+    );
     return hasChain && isEnabledToken && !isNativeToken && !isExcludedToken;
   };
 
-  const filteredPeggedPairConfigs = pegged_pair_configs.filter(
+  const filteredPeggedPairConfigs = peggedPairConfigs.filter(
     (item) =>
       isAvailablePair(item.org_chain_id, item.org_token) &&
-      isAvailablePair(item.pegged_chain_id, item.pegged_token),
+      isAvailablePair(item.pegged_chain_id, item.pegged_token)
   );
 
   return filteredPeggedPairConfigs;
@@ -197,23 +230,31 @@ function getBurnPairConfigs(peggedPairConfigs: CBridgePeggedPairConfig[]) {
   return burnPairConfigs;
 }
 
-function getRelatedMap(
-  chains: CBridgeChain[],
-  peggedPairConfigs: CBridgePeggedPairConfig[],
-  chainTokensMap: Map<number, CBridgeToken[]>,
-  chainSymbolTokenMap: Map<number, Map<string, CBridgeToken>>,
-) {
-  // [fromChainId][toChainId][tokenSymbol]{fromToken, toToken, isPegged, peggedPair}
-  const relatedMap = new Map<number, Map<number, Map<string, BaseTokenPair>>>();
+function getTransferMap(params: {
+  chains: CBridgeChain[];
+  peggedPairConfigs: CBridgePeggedPairConfig[];
+  chainTokensMap: Map<number, CBridgeToken[]>;
+  chainSymbolTokenMap: Map<number, Map<string, CBridgeToken>>;
+}) {
+  const { chains, peggedPairConfigs, chainTokensMap, chainSymbolTokenMap } =
+    params;
+
+  // [fromChainId][toChainId][tokenSymbol]{fromToken, toToken, isPegged, peggedConfig}
+  const transferMap = new Map<
+    number,
+    Map<number, Map<string, TransferTokenPair>>
+  >();
 
   chains.forEach((fromChain) => {
     chains.forEach((toChain) => {
       if (fromChain.id !== toChain.id) {
         const fromTokens = chainTokensMap.get(fromChain.id) ?? [];
 
-        const relatedTokenMap = new Map<string, BaseTokenPair>();
+        const transferableTokenMap = new Map<string, TransferTokenPair>();
         fromTokens.forEach((fromToken) => {
-          const toToken = chainSymbolTokenMap.get(toChain.id)?.get(fromToken.token.symbol);
+          const toToken = chainSymbolTokenMap
+            .get(toChain.id)
+            ?.get(fromToken.token.symbol);
           if (toToken) {
             const tokenPair = {
               fromTokenAddress: fromToken.token.address,
@@ -221,15 +262,18 @@ function getRelatedMap(
               fromToken,
               toToken,
             };
-            relatedTokenMap.set(fromToken.token.symbol, tokenPair);
+            transferableTokenMap.set(fromToken.token.symbol, tokenPair);
           }
         });
 
-        if (relatedTokenMap.size > 0) {
-          if (!relatedMap.has(fromChain.id)) {
-            relatedMap.set(fromChain.id, new Map<number, Map<string, BaseTokenPair>>());
+        if (transferableTokenMap.size > 0) {
+          if (!transferMap.has(fromChain.id)) {
+            transferMap.set(
+              fromChain.id,
+              new Map<number, Map<string, TransferTokenPair>>()
+            );
           }
-          relatedMap.get(fromChain.id)?.set(toChain.id, relatedTokenMap);
+          transferMap.get(fromChain.id)?.set(toChain.id, transferableTokenMap);
         }
       }
     });
@@ -240,28 +284,36 @@ function getRelatedMap(
     fromToken: CBridgeToken,
     toChainId: number,
     toToken: CBridgeToken,
-    item: CBridgePeggedPairConfig,
+    item: CBridgePeggedPairConfig
   ) => {
-    if (!relatedMap.get(fromChainId)?.get(toChainId)?.get(fromToken.token.symbol)) {
-      if (!relatedMap.has(fromChainId)) {
-        relatedMap.set(fromChainId, new Map<number, Map<string, BaseTokenPair>>());
+    if (
+      !transferMap.get(fromChainId)?.get(toChainId)?.get(fromToken.token.symbol)
+    ) {
+      if (!transferMap.has(fromChainId)) {
+        transferMap.set(
+          fromChainId,
+          new Map<number, Map<string, TransferTokenPair>>()
+        );
       }
 
-      const peggedTokenPair = {
+      const peggedTokenPair: TransferTokenPair = {
         fromTokenAddress: fromToken.token.address,
         toTokenAddress: toToken.token.address,
         fromToken,
         toToken,
         isPegged: true,
-        peggedPair: item,
+        peggedConfig: item,
       };
 
-      if (relatedMap.get(fromChainId)?.get(toChainId)) {
-        relatedMap.get(fromChainId)?.get(toChainId)?.set(fromToken.token.symbol, peggedTokenPair);
+      if (transferMap.get(fromChainId)?.get(toChainId)) {
+        transferMap
+          .get(fromChainId)
+          ?.get(toChainId)
+          ?.set(fromToken.token.symbol, peggedTokenPair);
       } else {
-        const relatedTokenMap = new Map<string, BaseTokenPair>();
-        relatedTokenMap.set(fromToken.token.symbol, peggedTokenPair);
-        relatedMap.get(fromChainId)?.set(toChainId, relatedTokenMap);
+        const transferableTokenMap = new Map<string, TransferTokenPair>();
+        transferableTokenMap.set(fromToken.token.symbol, peggedTokenPair);
+        transferMap.get(fromChainId)?.set(toChainId, transferableTokenMap);
       }
     }
   };
@@ -277,5 +329,5 @@ function getRelatedMap(
     addPeggedTokenPair(toChainId, toToken, fromChainId, fromToken, item);
   });
 
-  return relatedMap;
+  return transferMap;
 }

@@ -1,10 +1,15 @@
-import { BaseBridgeConfig, BaseBridgeConfigOptions } from '@/core/types';
+import {
+  BaseBridgeConfig,
+  BaseBridgeConfigOptions,
+  CreateAdapterParameters,
+} from '@/core/types';
 import { CLIENT_TIME_OUT } from '@/core/constants';
 import axios, { AxiosInstance } from 'axios';
 import {
   CBridgeEstimateAmountRequest,
   CBridgeEstimateAmountResponse,
   CBridgeSendRangeInput,
+  CBridgeTransferConfigs,
   IGetCBridgeABI,
   IGetCBridgeTransferAddressInput,
   IGetCBridgeTransferFunction,
@@ -17,6 +22,7 @@ import { ORIGINAL_TOKEN_VAULT } from '@/cbridge/abi/originalTokenVault';
 import { ORIGINAL_TOKEN_VAULT_V2 } from '@/cbridge/abi/originalTokenVaultV2';
 import { PEGGED_TOKEN_BRIDGE } from '@/cbridge/abi/peggedTokenBridge';
 import { PEGGED_TOKEN_BRIDGE_V2 } from '@/cbridge/abi/peggedTokenBridgeV2';
+import { createAdapter } from '@/cbridge/utils/createAdapter';
 
 export * from './types';
 
@@ -224,5 +230,9 @@ export class CBridge {
       : transferType === 'withdraw'
       ? 'burn'
       : '';
+  }
+
+  createAdapter(params: CreateAdapterParameters<CBridgeTransferConfigs>) {
+    return createAdapter(params);
   }
 }

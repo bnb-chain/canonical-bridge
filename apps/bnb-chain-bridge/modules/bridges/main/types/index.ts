@@ -1,22 +1,18 @@
 import {
+  BridgeType,
   CBridgeChain,
   CBridgePeggedPairConfig,
   CBridgeToken,
   CBridgeTransferConfigs,
-} from '@/modules/bridges/cbridge/types';
-import {
   DeBridgeChain,
   DeBridgeToken,
   DeBridgeTransferConfigs,
-  QuoteResponse,
-} from '@/modules/bridges/debridge/types';
-import {
   StarGateChain,
   StarGateToken,
   StarGateTransferConfigs,
-} from '@/modules/bridges/stargate/types';
+} from '@bnb-chain/canonical-bridge-sdk';
 
-export type BridgeType = 'cBridge' | 'deBridge' | 'stargate';
+import { QuoteResponse } from '@/modules/bridges/debridge/types';
 
 export type WalletType =
   | 'metaMask'

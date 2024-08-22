@@ -1,4 +1,5 @@
 import React, { useContext, useMemo } from 'react';
+import { NativeCurrency } from '@bnb-chain/canonical-bridge-sdk';
 
 import {
   BridgeChain,
@@ -11,17 +12,16 @@ import { useFetchBridgeConfigs } from '@/modules/bridges/main/api/useFetchBridge
 import { mergeSupportedChains } from '@/modules/bridges/main/utils/mergeSupportedChains';
 import { mergeSupportedTokens } from '@/modules/bridges/main/utils/mergeSupportedTokens';
 import { mergeSelectedToToken } from '@/modules/bridges/main/utils/mergeSelectedToToken';
-import { createCBridgeAdapter } from '@/modules/bridges/cbridge/utils/createCBridgeAdapter';
-import { createDeBridgeAdapter } from '@/modules/bridges/debridge/utils/createDeBridgeAdapter';
-import { createStarGateAdapter } from '@/modules/bridges/stargate/utils/createStarGateAdapter';
 import { useAppSelector } from '@/core/store/hooks';
-import { getNativeTokenMap } from '@/modules/bridges/main/utils/getNativeTokenMap';
+import { getNativeCurrencies } from '@/modules/bridges/main/utils/getNativeCurrencies';
+import { bridgeSDK } from '@/core/constants/bridgeSDK';
 import {
+  extendAdapters,
   GetSelectedTokenPairParams,
   GetSupportedFromChainsParams,
   GetSupportedToChainsParams,
   GetSupportedTokensParams,
-} from '@/modules/bridges/main/utils/createAdapter';
+} from '@/modules/bridges/main/utils/extendAdapters';
 
 export interface BridgeConfigsContextProps {
   isReady: boolean;
@@ -30,7 +30,7 @@ export interface BridgeConfigsContextProps {
   peggedPairConfigs: CBridgePeggedPairConfig[];
   burnPairConfigs: CBridgeBurnPairConfig[];
   chainConfigs: ChainConfig[];
-  nativeCurrencyMap: Map<number, ChainConfig['nativeCurrency']>;
+  nativeCurrencies: Record<number, NativeCurrency>;
   getSupportedFromChains: (params: GetSupportedFromChainsParams) => BridgeChain[];
   getSupportedToChains: (params: GetSupportedToChainsParams) => BridgeChain[];
   getSupportedTokens: (params: GetSupportedTokensParams) => BridgeToken[];
@@ -53,7 +53,7 @@ const DEFAULT_CONTEXT: BridgeConfigsContextProps = {
   peggedPairConfigs: [],
   burnPairConfigs: [],
   chainConfigs: [],
-  nativeCurrencyMap: new Map<number, ChainConfig['nativeCurrency']>(),
+  nativeCurrencies: {},
   getSupportedFromChains: () => [],
   getSupportedToChains: () => [],
   getSupportedTokens: () => [],
@@ -80,10 +80,33 @@ export function BridgeConfigsProvider(props: BridgeConfigsProviderProps) {
       };
     }
 
-    const nativeCurrencyMap = getNativeTokenMap(chainConfigs);
-    const cBridgeAdapter = createCBridgeAdapter(data.cBridge, nativeCurrencyMap);
-    const deBridgeAdapter = createDeBridgeAdapter(data.deBridge, nativeCurrencyMap);
-    const stargateAdapter = createStarGateAdapter(data.stargate, nativeCurrencyMap);
+    const nativeCurrencies = getNativeCurrencies(chainConfigs);
+
+    const cBridgeAdapter = bridgeSDK.cBridge.createAdapter({
+      configs: data.cBridge.configs,
+      excludedChains: data.cBridge.exclude.chains,
+      excludedTokens: data.cBridge.exclude.tokens,
+      bridgedTokenGroups: data.cBridge.bridgedTokenGroups,
+      nativeCurrencies,
+    });
+
+    const deBridgeAdapter = bridgeSDK.deBridge.createAdapter({
+      configs: data.deBridge.configs,
+      excludedChains: data.deBridge.exclude.chains,
+      excludedTokens: data.deBridge.exclude.tokens,
+      bridgedTokenGroups: data.deBridge.bridgedTokenGroups,
+      nativeCurrencies,
+    });
+
+    const stargateAdapter = bridgeSDK.stargate.createAdapter({
+      configs: data.stargate.configs,
+      excludedChains: data.stargate.exclude.chains,
+      excludedTokens: data.stargate.exclude.tokens,
+      bridgedTokenGroups: data.stargate.bridgedTokenGroups,
+      nativeCurrencies,
+    });
+
+    const adapters = extendAdapters([cBridgeAdapter, deBridgeAdapter, stargateAdapter]);
 
     return {
       isReady: true,
@@ -91,7 +114,7 @@ export function BridgeConfigsProvider(props: BridgeConfigsProviderProps) {
       defaultWallets: data.defaultWallets,
 
       chainConfigs,
-      nativeCurrencyMap,
+      nativeCurrencies,
 
       peggedPairConfigs: cBridgeAdapter.getPeggedPairConfigs(),
       burnPairConfigs: cBridgeAdapter.getBurnPairConfigs(),
@@ -99,7 +122,7 @@ export function BridgeConfigsProvider(props: BridgeConfigsProviderProps) {
       getSupportedFromChains: (params: GetSupportedFromChainsParams) => {
         return mergeSupportedChains({
           direction: 'from',
-          adapters: [cBridgeAdapter, deBridgeAdapter, stargateAdapter],
+          adapters,
           adapterParams: params,
           chainOrder: data.order.chain,
           defaultWallets: data.defaultWallets,
@@ -109,7 +132,7 @@ export function BridgeConfigsProvider(props: BridgeConfigsProviderProps) {
       getSupportedToChains: (params: GetSupportedToChainsParams) => {
         return mergeSupportedChains({
           direction: 'to',
-          adapters: [cBridgeAdapter, deBridgeAdapter, stargateAdapter],
+          adapters,
           adapterParams: params,
           chainOrder: data.order.chain,
           defaultWallets: data.defaultWallets,
@@ -118,14 +141,14 @@ export function BridgeConfigsProvider(props: BridgeConfigsProviderProps) {
       },
       getSupportedTokens: (params: GetSupportedTokensParams) => {
         return mergeSupportedTokens({
-          adapters: [cBridgeAdapter, deBridgeAdapter, stargateAdapter],
+          adapters,
           adapterParams: params,
           tokenOrder: data.order.token,
         });
       },
       getSelectedToToken: (params: GetSelectedTokenPairParams) => {
         return mergeSelectedToToken({
-          adapters: [cBridgeAdapter, deBridgeAdapter, stargateAdapter],
+          adapters,
           adapterParams: params,
         });
       },

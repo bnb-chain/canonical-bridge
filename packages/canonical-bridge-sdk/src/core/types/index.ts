@@ -31,3 +31,39 @@ export interface IGetTokenBalanceInput {
   tokenAddress: `0x${string}`;
   owner: `0x${string}`;
 }
+
+export interface NativeCurrency {
+  name: string;
+  symbol: string;
+  decimals: number;
+}
+
+export interface TransferTokenPair {
+  fromTokenAddress: string;
+  toTokenAddress: string;
+  fromToken: any;
+  toToken: any;
+  isPegged?: boolean;
+  peggedConfig?: any;
+}
+
+export interface CreateAdapterParameters<T> {
+  configs: T;
+  excludedChains?: number[];
+  excludedTokens?: Record<number, string[]>;
+  nativeCurrencies?: Record<number, NativeCurrency>;
+  bridgedTokenGroups?: string[][];
+}
+
+export interface BridgeAdapter<T = any, P = any> {
+  bridgeType: BridgeType;
+  supportedChains: T[];
+  transferMap: Map<number, Map<number, Map<string, TransferTokenPair>>>;
+  getChainId: (chain: T) => number;
+  getTokenInfo: (token: P) => {
+    name: string;
+    address: string;
+    decimal: number;
+    symbol: string;
+  };
+}
