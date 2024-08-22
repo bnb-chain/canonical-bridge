@@ -208,18 +208,18 @@ export interface IGetCBridgeTransferParamsInput {
   address: `0x${string}`;
   tokenAddress: `0x${string}`;
   maxSlippage: number;
-  transferType: 'deposit' | 'withdraw';
-  peggedConfig: CBridgePeggedPairConfig;
+  transferType?: 'deposit' | 'withdraw';
+  peggedConfig?: CBridgePeggedPairConfig;
   nonce: number;
 }
 
 export interface IGetCBridgeABI {
   isPegged: boolean;
-  transferType: 'deposit' | 'withdraw';
+  transferType?: 'deposit' | 'withdraw';
   peggedConfig?: CBridgePeggedPairConfig;
 }
 
 export interface IGetCBridgeTransferFunction {
   isPegged: boolean;
-  transferType: 'deposit' | 'withdraw';
+  transferType?: 'deposit' | 'withdraw';
 }

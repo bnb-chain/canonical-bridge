@@ -46,15 +46,7 @@ export const useCBridgeTransferParams = () => {
   }, [selectedToken, fromChain?.id]);
 
   const argument = useMemo(() => {
-    if (
-      !sendValue ||
-      sendValue === '0' ||
-      !toChain ||
-      !selectedToken ||
-      !selectedToken.peggedRawData.cBridge ||
-      !transferType ||
-      !address
-    ) {
+    if (!sendValue || sendValue === '0' || !toChain || !selectedToken || !address) {
       return null;
     }
     const nonce = new Date().getTime();
@@ -89,7 +81,7 @@ export const useCBridgeTransferParams = () => {
       tokenAddress: selectedToken?.address as `0x${string}`,
       address: address as `0x${string}`,
       maxSlippage: max_slippage,
-      transferType,
+      transferType: transferType ? transferType : undefined,
       peggedConfig: selectedToken.peggedRawData.cBridge,
       nonce,
     });
@@ -98,17 +90,17 @@ export const useCBridgeTransferParams = () => {
   // Arguments for bridge smart contract
   const args = useMemo(() => {
     const peggedConfig = selectedToken?.peggedRawData?.cBridge;
-    if (!argument || (isPegged && !transferType) || !address || !bridgeAddress || !transferType) {
+    if (!argument || (isPegged && !transferType) || !address || !bridgeAddress) {
       return null;
     }
     const abi = bridgeSDK.cBridge.getABI({
       isPegged,
-      transferType,
+      transferType: transferType || undefined,
       peggedConfig,
     });
     const functionName = bridgeSDK.cBridge.getTransferFunction({
       isPegged,
-      transferType,
+      transferType: transferType || undefined,
     });
     return {
       address: bridgeAddress as `0x${string}`,
