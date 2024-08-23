@@ -1,0 +1,17 @@
+{
+  "name": "@bnb-chain/canonical-bridge-sdk",
+  "entries": [
+    {
+      "version": "0.0.11",
+      "tag": "@bnb-chain/canonical-bridge-sdk_v0.0.11",
+      "date": "Fri, 23 Aug 2024 10:29:02 GMT",
+      "comments": {
+        "patch": [
+          {
+            "comment": "test: test release notes"
+          }
+        ]
+      }
+    }
+  ]
+}
