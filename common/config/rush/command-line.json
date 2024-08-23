@@ -63,7 +63,7 @@
       "name": "changeset",
       "commandKind": "global",
       "summary": "Create changeset",
-      "shellCommand": "rush change -b origin/main"
+      "shellCommand": "node .release/scripts/changeset.js"
     }
   ],
   "parameters": []

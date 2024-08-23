@@ -1,18 +1,7 @@
-# Change Log - @bnb-chain/canonical-bridge-sdk
+# @bnb-chain/canonical-bridge-sdk
 
-This log was last generated on Fri, 23 Aug 2024 10:41:13 GMT and should not be manually modified.
+## 0.0.13
 
-## 0.0.12
-Fri, 23 Aug 2024 10:41:13 GMT
+### Patch Changes
 
-### Patches
-
-- test
-
-## 0.0.11
-Fri, 23 Aug 2024 10:29:02 GMT
-
-### Patches
-
-- test: test release notes
-
+- 0607c48: test

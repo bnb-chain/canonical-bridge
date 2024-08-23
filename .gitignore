@@ -72,4 +72,4 @@ common/autoinstallers/*/.npmrc
 # local env files
 .env*.local
 
-apps/bug-bounty/src/Application/Runtime
+.pnpm-store

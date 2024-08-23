@@ -1,13 +1,29 @@
 name: 'setup'
 description: Prepare the environment
 
+inputs:
+  npm_token:
+    description: 'npm token'
+    required: true
+
 runs:
-  using: 'composite'
+  using: composite
   steps:
-    - name: Install Node.js
-      uses: actions/setup-node@v4
+    - name: Setup node.js
+      uses: actions/setup-node@v3
       with:
         node-version: 20
+
+    - name: Setup pnpm
+      uses: pnpm/action-setup@v2
+      id: pnpm-install
+      with:
+        version: 9
+        run_install: false
+
+    - name: Setup pnpm config
+      shell: bash
+      run: pnpm config set store-dir .pnpm-store
 
     - name: Cache pnpm
       uses: actions/cache@v4
@@ -16,7 +32,17 @@ runs:
           common/temp/pnpm-store
         key: ${{ runner.os }}-${{ hashFiles('**/pnpm-lock.yaml') }}
 
-    - name: Install dependencies
+    - name: Install & build
       shell: bash
       run: |
-        node common/scripts/install-run-rush.js install
+        node common/scripts/install-run-rush.js install -t @bnb-chain/canonical-bridge-sdk
+        node common/scripts/install-run-rush.js build -t @bnb-chain/canonical-bridge-sdk
+
+    - name: Creating .npmrc
+      shell: bash
+      run: |
+        cat << EOF > "$HOME/.npmrc"
+          //registry.npmjs.org/:_authToken=$NPM_TOKEN
+        EOF
+      env:
+        NPM_TOKEN: ${{ inputs.npm_token }}

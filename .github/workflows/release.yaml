@@ -6,8 +6,6 @@ on:
       - closed
     branches:
       - main
-      - wenty/test
-
 jobs:
   release:
     name: release
@@ -21,47 +19,17 @@ jobs:
           fetch-depth: 0
 
       - uses: ./.github/actions/setup
-
-      - name: Check changeset
-        shell: bash
-        id: 'changeset'
-        run: |
-          result=$(test -d common/changes && find common/changes -maxdepth 5 -type f) || true
-          if [[ ! -z "$result" ]]; then
-            echo shouldPublish=true >> $GITHUB_OUTPUT
-          fi
-
-      - name: Apply changeset
-        if: steps.changeset.outputs.shouldPublish
-        shell: bash
-        run: |
-          node common/scripts/install-run-rush.js build
-          node common/scripts/install-run-rush.js publish --apply
-          node common/scripts/install-run-rush.js update
-
-      - name: Create PR
-        if: steps.changeset.outputs.shouldPublish
-        uses: peter-evans/create-pull-request@v4
         with:
-          commit-message: 'chore: Update versions'
+          npm_token: ${{ secrets.NPM_TOKEN }}
+
+      - name: Create and publish versions
+        uses: changesets/action@v1
+        with:
+          version: pnpm ci:stable-version
+          publish: pnpm ci:publish
+          commit: 'chore: Update versions'
           title: 'chore: Update versions'
-          delete-branch: true
-          branch: 'release'
-
-      - name: Release
-        if: github.event.pull_request.merged == true && github.head_ref == 'release'
-        id: 'release'
-        run: |
-          node common/scripts/install-run-rush.js build
-          cat << EOF > "./common/config/rush/.npmrc-publish"
-            //registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}
-          EOF
-          git config user.name github-actions[bot]
-          git config user.email github-actions[bot]@users.noreply.github.com
-          node common/scripts/install-run-rush.js publish --include-all --publish --target-branch ${{github.base_ref}}
-          echo shouldGenerateReleaseNotes=true >> $GITHUB_OUTPUT
-
-      - uses: release-drafter/release-drafter@v6
-        if: steps.release.outputs.shouldGenerateReleaseNotes
+          cwd: '.release'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
