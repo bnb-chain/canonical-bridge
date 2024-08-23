@@ -64,12 +64,6 @@
       "commandKind": "global",
       "summary": "Create changeset",
       "shellCommand": "rush change -b origin/main"
-    },
-    {
-      "name": "ci:verify",
-      "commandKind": "global",
-      "summary": "Verify changeset",
-      "shellCommand": "rush change --verify -b origin/main"
     }
   ],
   "parameters": []

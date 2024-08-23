@@ -26,9 +26,8 @@ jobs:
         shell: bash
         id: 'changeset'
         run: |
-          result=$(node common/scripts/install-run-rush.js ci:verify 2>&1) || true
-
-          if [[ $result == *"Found change file"* ]]; then
+          result=$(test -d common/changes && find common/changes -maxdepth 5 -type f)
+          if [[ ! -z "$result" ]]; then
             echo shouldPublish=true >> $GITHUB_OUTPUT
           fi
 
