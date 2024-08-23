@@ -1,0 +1,10 @@
+{
+  "changes": [
+    {
+      "packageName": "@bnb-chain/canonical-bridge-sdk",
+      "comment": "test",
+      "type": "patch"
+    }
+  ],
+  "packageName": "@bnb-chain/canonical-bridge-sdk"
+}
