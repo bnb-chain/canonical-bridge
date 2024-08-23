@@ -14,7 +14,7 @@ This SDK integrates API and methods from multiple cross-chain bridges, such as c
 
 ## Usage
 
-```
+```js
 import { CanonicalBridgeSDK } from '@bnb-chain/canonical-bridge-sdk';
 
 /**
@@ -33,7 +33,7 @@ const bridgeSDK = new CanonicalBridgeSDK({
       endpoint: env.DEBRIDGE_ENDPOINT,
       statsEndpoint: env.DEBRIDGE_STATS_ENDPOINT,
       timeout: 5000,
-    }
+    },
   ],
 });
 
@@ -48,4 +48,4 @@ const order = await bridgeSDK.deBridge.getOrder({
 
 ## License
 
-The contents of this repo are made available under the MIT License.
+The contents of this repo are made available under the [MIT License](./LICENSE).

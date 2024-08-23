@@ -167,6 +167,7 @@ export class DeBridge {
     }
   }
 
+  /** @see createAdapter for implementation details */
   createAdapter(params: CreateAdapterParameters<DeBridgeTransferConfigs>) {
     return createAdapter(params);
   }

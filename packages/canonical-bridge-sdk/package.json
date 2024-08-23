@@ -1,6 +1,6 @@
 {
   "name": "@bnb-chain/canonical-bridge-sdk",
-  "version": "0.0.0",
+  "version": "0.0.10",
   "description": "bnb chain bridge aggregator sdk",
   "author": "bnb-chain",
   "private": false,
@@ -33,9 +33,6 @@
     "build": "vite build"
   },
   "dependencies": {
-    "@ethersproject/abstract-provider": "^5.7.0",
-    "@ethersproject/abstract-signer": "^5.7.0",
-    "@ethersproject/transactions": "^5.7.0",
     "axios": "~0.27.2",
     "viem": "~2.0.0"
   },

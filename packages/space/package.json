@@ -5,6 +5,7 @@
   "types": "./dist/index.d.ts",
   "license": "MIT",
   "version": "0.0.1",
+  "private": true,
   "scripts": {
     "dev": "start-storybook -p 3000 --no-manager-cache --no-open",
     "build": "tsc",

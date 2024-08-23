@@ -46,7 +46,7 @@
       "summary": "Lint commit message",
       "autoinstallerName": "commitlint",
       "shellCommand": "node common/autoinstallers/commitlint/src/index.js"
-    }
+    },
     // {
     //   "commandKind": "bulk",
     //   "name": "rebuild",
@@ -58,7 +58,19 @@
     //   "incremental": false,
     //   "allowWarningsInSuccessfulBuild": true,
     //   "safeForSimultaneousRushProcesses": false
-    // }
+    // },
+    {
+      "name": "changeset",
+      "commandKind": "global",
+      "summary": "Create changeset",
+      "shellCommand": "rush change -b origin/main"
+    },
+    {
+      "name": "ci:verify",
+      "commandKind": "global",
+      "summary": "Verify changeset",
+      "shellCommand": "rush change --verify -b origin/main"
+    }
   ],
   "parameters": []
 }

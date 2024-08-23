@@ -1,4 +1,4 @@
-import { Flex, theme, useColorMode, useHasMounted, useIntl } from '@bnb-chain/space';
+import { Flex, theme, useColorMode, useIntl } from '@bnb-chain/space';
 
 import { IconImage } from '@/core/components/IconImage';
 import { useCurrentWallet } from '@/modules/wallet/hooks/useCurrentWallet';

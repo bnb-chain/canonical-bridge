@@ -220,15 +220,6 @@ importers:
 
   ../../packages/canonical-bridge-sdk:
     dependencies:
-      '@ethersproject/abstract-provider':
-        specifier: ^5.7.0
-        version: 5.7.0
-      '@ethersproject/abstract-signer':
-        specifier: ^5.7.0
-        version: 5.7.0
-      '@ethersproject/transactions':
-        specifier: ^5.7.0
-        version: 5.7.0
       axios:
         specifier: ~0.27.2
         version: 0.27.2

@@ -231,6 +231,7 @@ export class CBridge {
       : '';
   }
 
+  /** @see createAdapter for implementation details */
   createAdapter(params: CreateAdapterParameters<CBridgeTransferConfigs>) {
     return createAdapter(params);
   }

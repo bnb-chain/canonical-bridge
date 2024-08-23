@@ -1,19 +1,5 @@
 import { ChainConfig } from '@/modules/bridges';
 
-// TODO
-function getEthRpcUrl() {
-  const isQAorProd = process.env.NODE_ENV === 'production';
-  const NETWORK = process.env.NEXT_PUBLIC_NETWORK;
-  const BASE_PATH = process.env.NEXT_PUBLIC_BASE_PATH;
-
-  if (isQAorProd) {
-    return NETWORK === 'testnet'
-      ? `https://home.fe.kfkshore.org/en${BASE_PATH}/rpc/eth-mainnet`
-      : `https://www.bnbchain.org/en${BASE_PATH}/rpc/eth-mainnet`;
-  }
-  return 'https://ethereum-rpc.publicnode.com/';
-}
-
 export const chains: ChainConfig[] = [
   {
     id: 1,
@@ -23,7 +9,7 @@ export const chains: ChainConfig[] = [
       symbol: 'ETH',
       decimals: 18,
     },
-    rpcUrl: getEthRpcUrl(), // TODO
+    rpcUrl: 'https://ethereum-rpc.publicnode.com/', // TODO
     explorer: {
       name: 'Etherscan',
       url: 'https://etherscan.io',

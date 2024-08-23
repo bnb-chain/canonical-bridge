@@ -62,7 +62,11 @@ export interface CBridgeTransferConfigs {
   };
   farming_reward_contract_addr: string;
   pegged_pair_configs: CBridgePeggedPairConfig[];
-  blocked_bridge_direct: string[];
+  blocked_bridge_direct: {
+    symbol: string;
+    src_chain_id: string;
+    dst_chain_id: string;
+  }[];
   redirect_to_aggregators_config: {
     symbol: string;
     src_chain_id: string;

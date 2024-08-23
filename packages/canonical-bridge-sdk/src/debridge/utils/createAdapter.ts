@@ -10,6 +10,17 @@ import {
   DeBridgeTransferConfigs,
 } from '@/debridge/types';
 
+/**
+ * Create a bridge adapter based on provided configurations
+ *
+ * @param {DeBridgeTransferConfigs}         configs deBridge transfer configs
+ * @param {number[]}                        [excludedChains] Optional chain IDs that should be excluded
+ * @param {Record<number, string[]>}        [excludedTokens] Optional tokens that should be excluded
+ * @param {Record<number, NativeCurrency>}  [nativeCurrencies] Optional nativeCurrencies, the information to exclude native tokens
+ * @param {string[][]}                      [bridgedTokenGroups] Optional bridgedTokenGroups, tokens within a group can be swapped with each other
+ *
+ * @returns An adapter object contains normalized configuration of the bridge
+ */
 export function createAdapter({
   configs,
   excludedChains = [],
@@ -57,6 +68,9 @@ export function createAdapter({
   };
 }
 
+/**
+ * Get available chains
+ */
 function getChainConfigs(params: {
   configs: DeBridgeTransferConfigs;
   excludedChains: number[];
@@ -81,6 +95,9 @@ function getChainConfigs(params: {
   };
 }
 
+/**
+ * Get available tokens
+ */
 function getTokenConfigs(params: {
   configs: DeBridgeTransferConfigs;
   chainMap: Map<number, DeBridgeChain>;
@@ -118,6 +135,9 @@ function getTokenConfigs(params: {
   };
 }
 
+/**
+ * Exhaust all transferable cases and return a transfer map containing all possible transaction paths
+ */
 function getTransferMap(params: {
   chains: DeBridgeChain[];
   chainTokensMap: Map<number, DeBridgeToken[]>;

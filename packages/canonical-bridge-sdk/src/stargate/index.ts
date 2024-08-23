@@ -186,6 +186,7 @@ export class Stargate {
     }
   }
 
+  /** @see createAdapter for implementation details */
   createAdapter(params: CreateAdapterParameters<StarGateTransferConfigs>) {
     return createAdapter(params);
   }

@@ -12,6 +12,17 @@ import {
 } from '@/core/types';
 import { createBridgeAdapter } from '@/core/utils/createBridgeAdapter';
 
+/**
+ * Create a bridge adapter based on provided configurations
+ *
+ * @param {CBridgeTransferConfigs}          configs cBridge transfer configs
+ * @param {number[]}                        [excludedChains] Optional chain IDs that should be excluded
+ * @param {Record<number, string[]>}        [excludedTokens] Optional tokens that should be excluded
+ * @param {Record<number, NativeCurrency>}  [nativeCurrencies] Optional nativeCurrencies, the information to exclude native tokens
+ * @param {string[][]}                      [bridgedTokenGroups] Optional bridgedTokenGroups, tokens within a group can be swapped with each other
+ *
+ * @returns An adapter object contains normalized configuration of the bridge
+ */
 export function createAdapter({
   configs,
   excludedChains = [],
@@ -45,6 +56,7 @@ export function createAdapter({
     peggedPairConfigs,
     chainTokensMap,
     chainSymbolTokenMap,
+    bridgedTokenGroups,
   });
 
   const supportedChains = chains.filter((chain) => transferMap.has(chain.id));
@@ -75,6 +87,9 @@ export function createAdapter({
   };
 }
 
+/**
+ * Get available chains
+ */
 function getChainConfigs(params: {
   configs: CBridgeTransferConfigs;
   excludedChains: number[];
@@ -107,6 +122,9 @@ function getChainConfigs(params: {
   };
 }
 
+/**
+ * Get available tokens
+ */
 function getTokenConfigs(params: {
   configs: CBridgeTransferConfigs;
   chainMap: Map<number, CBridgeChain>;
@@ -148,6 +166,9 @@ function getTokenConfigs(params: {
   };
 }
 
+/**
+ * Get available pegged pair configs
+ */
 function getPeggedPairConfigs(params: {
   peggedPairConfigs: CBridgePeggedPairConfig[];
   chainMap: Map<number, CBridgeChain>;
@@ -177,6 +198,9 @@ function getPeggedPairConfigs(params: {
   return filteredPeggedPairConfigs;
 }
 
+/**
+ * Get available burn pair configs
+ */
 function getBurnPairConfigs(peggedPairConfigs: CBridgePeggedPairConfig[]) {
   const burnPairConfigs: CBridgeBurnPairConfig[] = [];
 
@@ -230,11 +254,15 @@ function getBurnPairConfigs(peggedPairConfigs: CBridgePeggedPairConfig[]) {
   return burnPairConfigs;
 }
 
+/**
+ * Exhaust all transferable cases and return a transfer map containing all possible transaction paths
+ */
 function getTransferMap(params: {
   chains: CBridgeChain[];
   peggedPairConfigs: CBridgePeggedPairConfig[];
   chainTokensMap: Map<number, CBridgeToken[]>;
   chainSymbolTokenMap: Map<number, Map<string, CBridgeToken>>;
+  bridgedTokenGroups: string[][];
 }) {
   const { chains, peggedPairConfigs, chainTokensMap, chainSymbolTokenMap } =
     params;
