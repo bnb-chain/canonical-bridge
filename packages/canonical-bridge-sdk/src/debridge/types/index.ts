@@ -18,7 +18,7 @@ export interface DeBridgeToken {
 
 export interface DeBridgeTransferConfigs {
   chains: DeBridgeChain[];
-  chain_token: Record<number, DeBridgeToken[]>;
+  tokens: Record<number, DeBridgeToken[]>;
 }
 
 // https://deswap.debridge.finance/v1.0/#/DLN

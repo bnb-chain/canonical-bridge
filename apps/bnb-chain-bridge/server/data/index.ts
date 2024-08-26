@@ -22,7 +22,7 @@ import starGateConfigs from './stargate/stargate-configs.json';
 
 const deBridgeConfigs = {
   chains: deBridgeChainList.chains,
-  chain_token: {
+  tokens: {
     1: Object.values(deBridgeTokenList1.tokens),
     10: Object.values(deBridgeTokenList10.tokens),
     56: Object.values(deBridgeTokenList56.tokens),

@@ -76,11 +76,11 @@ function getChainConfigs(params: {
   excludedChains: number[];
 }) {
   const { configs, excludedChains } = params;
-  const { chains, chain_token } = configs;
+  const { chains, tokens } = configs;
 
   const filteredChains = chains.filter((chain) => {
     const isExcludedChain = excludedChains.includes(chain.chainId);
-    const hasToken = chain_token[chain.chainId]?.length > 0;
+    const hasToken = tokens[chain.chainId]?.length > 0;
     return !isExcludedChain && hasToken;
   });
 
@@ -105,14 +105,14 @@ function getTokenConfigs(params: {
   nativeCurrencies: Record<number, NativeCurrency>;
 }) {
   const { configs, chainMap, excludedTokens, nativeCurrencies } = params;
-  const { chain_token } = configs;
+  const { tokens } = configs;
 
   const chainTokensMap = new Map<number, DeBridgeToken[]>();
   const chainSymbolTokenMap = new Map<number, Map<string, DeBridgeToken>>();
-  Object.entries(chain_token).forEach(([id, tokens]) => {
+  Object.entries(tokens).forEach(([id, chainTokens]) => {
     const chainId = Number(id);
 
-    const filteredTokens = tokens.filter((token) => {
+    const filteredTokens = chainTokens.filter((token) => {
       const isNativeToken = nativeCurrencies[chainId]?.symbol === token.symbol;
       const isExcludedToken = excludedTokens[chainId]?.includes(token.symbol);
       return !isNativeToken && !isExcludedToken;
