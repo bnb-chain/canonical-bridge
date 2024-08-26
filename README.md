@@ -12,6 +12,10 @@ This SDK integrates API and methods from multiple cross-chain bridges, such as c
 
 ## Installation
 
+```bash
+npm install @bnb-chain/canonical-bridge-sdk viem@^2
+```
+
 ## Usage
 
 ```js
