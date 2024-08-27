@@ -1,6 +1,6 @@
 import { type PublicClient, type WalletClient } from 'viem';
 
-export type BridgeType = 'cBridge' | 'deBridge' | 'stargate';
+export type BridgeType = 'cBridge' | 'deBridge' | 'stargate' | 'layerZero';
 
 export interface BaseBridgeConfigOptions {
   timeout?: number;
