@@ -17,8 +17,10 @@ import deBridgeTokenList7565164 from './debridge/token_list/chain_id_7565164.jso
 import deBridgeTokenList100000001 from './debridge/token_list/chain_id_100000001.json';
 import deBridgeTokenList100000002 from './debridge/token_list/chain_id_100000002.json';
 import deBridgeTokenList100000003 from './debridge/token_list/chain_id_100000003.json';
-//stargate
+// stargate
 import starGateConfigs from './stargate/stargate-configs.json';
+// layerZero
+import layerZeroConfigs from './layerzero/layerzero-configs.json';
 
 const deBridgeConfigs = {
   chains: deBridgeChainList.chains,
@@ -153,5 +155,13 @@ export const bridgeConfigs: BridgeConfigsResponse = {
       ['USDT', 'm.USDT'],
       ['USDC', 'USDC.e'],
     ],
+  },
+  layerZero: {
+    configs: layerZeroConfigs,
+    exclude: {
+      chains: [],
+      tokens: {},
+    },
+    bridgedTokenGroups: [],
   },
 };

@@ -17,6 +17,7 @@ import { useLoadingBridgeFees } from '@/modules/transfer/hooks/useLoadingBridgeF
 import { StarGateOption } from '@/modules/transfer/components/TransferOverview/StarGateOption';
 import { DeBridgeSolanaOption } from '@/modules/transfer/solana/DeBridgeSolanaOption';
 import { useSolanaTransferInfo } from '@/modules/transfer/hooks/useSolanaTransferInfo';
+import { LayerZeroOption } from '@/modules/transfer/components/TransferOverview/LayerZeroOption';
 
 export function TransferOverview() {
   const { colorMode } = useColorMode();
@@ -96,6 +97,9 @@ export function TransferOverview() {
         Number(estimatedAmount['stargate']?.[2]?.amountReceivedLD) > 0
       ) {
         bridges.push(<StarGateOption key={'stargate-option'} />);
+      }
+      if (bridge === 'layerZero' && Number(estimatedAmount['layerZero']) > 0) {
+        bridges.push(<LayerZeroOption key={'layerZero-option'} />);
       }
     }
     return bridges;

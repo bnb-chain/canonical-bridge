@@ -1,4 +1,4 @@
-import { LayerZeroV1 } from '@/layerZero';
+import { LayerZero } from '@/layerZero';
 import { CBridge } from '@/cbridge';
 import { ERC20_TOKEN } from '@/core/abi/erc20Token';
 import {
@@ -21,7 +21,7 @@ export class CanonicalBridgeSDK {
   cBridge!: CBridge;
   deBridge!: DeBridge;
   stargate!: Stargate;
-  layerZeroV1!: LayerZeroV1;
+  layerZero!: LayerZero;
 
   constructor(
     options: CanonicalBridgeSDKOptions<BaseBridgeConfig | DeBridgeConfig>
@@ -52,7 +52,7 @@ export class CanonicalBridgeSDK {
       this.stargate = new Stargate(stargateConfig);
     }
     if (layerZeroConfig) {
-      this.layerZeroV1 = new LayerZeroV1();
+      this.layerZero = new LayerZero();
     }
   }
 

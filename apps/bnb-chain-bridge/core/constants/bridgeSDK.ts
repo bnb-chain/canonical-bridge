@@ -26,5 +26,9 @@ export const bridgeSDK = new CanonicalBridgeSDK({
       endpoint: STARGATE_QUEUE_URL,
       timeout: CLIENT_TIME_OUT,
     },
+    {
+      bridgeType: 'layerZero',
+      endpoint: '',
+    },
   ],
 });

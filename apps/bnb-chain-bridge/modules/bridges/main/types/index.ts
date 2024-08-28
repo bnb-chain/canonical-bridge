@@ -10,6 +10,9 @@ import {
   StarGateChain,
   StarGateToken,
   StarGateTransferConfigs,
+  LayerZeroToken,
+  LayerZeroTransferConfigs,
+  LayerZeroChain,
 } from '@bnb-chain/canonical-bridge-sdk';
 
 import { QuoteResponse } from '@/modules/bridges/debridge/types';
@@ -33,11 +36,13 @@ export interface BridgeChain {
     cBridge?: boolean;
     deBridge?: boolean;
     stargate?: boolean;
+    layerZero?: boolean;
   };
   rawData: {
     cBridge?: CBridgeChain;
     deBridge?: DeBridgeChain;
     stargate?: StarGateChain;
+    layerZero?: LayerZeroChain;
   };
   chainType: ChainType;
   explorerUrl: string;
@@ -56,11 +61,13 @@ export interface BridgeToken {
     cBridge?: boolean;
     deBridge?: boolean;
     stargate?: boolean;
+    layerZero?: boolean;
   };
   rawData: {
     cBridge?: CBridgeToken;
     deBridge?: DeBridgeToken;
     stargate?: StarGateToken;
+    layerZero?: LayerZeroToken;
   };
   isPegged: boolean;
   peggedRawData: {
@@ -115,6 +122,14 @@ export interface BridgeConfigsResponse {
     };
     bridgedTokenGroups: Array<string[]>;
   };
+  layerZero: {
+    configs: LayerZeroTransferConfigs;
+    exclude: {
+      chains: number[];
+      tokens: Record<number, string[]>;
+    };
+    bridgedTokenGroups: Array<string[]>;
+  };
 }
 
 export interface TransferActionInfo {
@@ -129,12 +144,14 @@ export interface ReceiveValue {
   deBridge?: string;
   cBridge?: string;
   stargate?: string;
+  layerZero?: string;
 }
 
 export interface IEstimatedAmount {
   cBridge?: any;
   deBridge?: QuoteResponse;
   stargate?: any; // TODO: response from quoteOFT
+  layerZero?: any;
 }
 
 export interface ChainConfig {

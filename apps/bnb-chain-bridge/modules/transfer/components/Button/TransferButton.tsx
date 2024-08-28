@@ -1,7 +1,7 @@
 import { Button, ButtonProps, Flex, theme, useIntl } from '@bnb-chain/space';
 import { useCallback, useState } from 'react';
 import { useAccount, useBalance, usePublicClient, useWalletClient } from 'wagmi';
-import { formatUnits } from 'viem';
+import { formatUnits, parseUnits } from 'viem';
 
 import { useAppSelector } from '@/core/store/hooks';
 import { useCBridgeTransferParams } from '@/modules/bridges/cbridge/hooks/useCBridgeTransferParams';
@@ -42,6 +42,7 @@ export function TransferButton({
   const selectedToken = useAppSelector((state) => state.transfer.selectedToken);
   const isGlobalFeeLoading = useAppSelector((state) => state.transfer.isGlobalFeeLoading);
   const isTransferable = useAppSelector((state) => state.transfer.isTransferable);
+  const toToken = useAppSelector((state) => state.transfer.toToken);
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -67,7 +68,10 @@ export function TransferButton({
       setHash(null);
       setChosenBridge('');
       setIsLoading(true);
-      if (Number(sendValue) > Number(formatUnits(allowance, selectedToken?.decimal))) {
+      if (
+        Number(sendValue) > Number(formatUnits(allowance, selectedToken?.decimal)) &&
+        transferActionInfo.bridgeAddress !== selectedToken?.address // doesn't need approve for OFT
+      ) {
         // eslint-disable-next-line no-console
         console.log(
           'sendValue',
@@ -142,6 +146,21 @@ export function TransferButton({
           setHash(stargateHash);
           onOpenSubmittedModal();
         }
+      } else if (transferActionInfo.bridgeType === 'layerZero') {
+        const layerZeroHash = await bridgeSDK.layerZero.sendToken({
+          bridgeAddress: transferActionInfo.bridgeAddress as `0x${string}`,
+          dstEndpoint: toToken?.rawData.layerZero?.endpointID as number,
+          userAddress: address,
+          amount: parseUnits(sendValue, selectedToken.decimal),
+          walletClient,
+          publicClient,
+        });
+        if (layerZeroHash) {
+          onCloseConfirmingModal();
+          setChosenBridge('layerZero');
+          setHash(layerZeroHash);
+          onOpenSubmittedModal();
+        }
       }
     } catch (e: any) {
       // eslint-disable-next-line no-console
@@ -170,6 +189,7 @@ export function TransferButton({
     onOpenFailedModal,
     balance,
     sendToken,
+    toToken,
   ]);
 
   return (

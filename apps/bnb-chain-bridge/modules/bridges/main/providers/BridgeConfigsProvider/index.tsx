@@ -106,7 +106,20 @@ export function BridgeConfigsProvider(props: BridgeConfigsProviderProps) {
       nativeCurrencies,
     });
 
-    const adapters = extendAdapters([cBridgeAdapter, deBridgeAdapter, stargateAdapter]);
+    const layerZeroAdapter = bridgeSDK.layerZero.createAdapter({
+      configs: data.layerZero.configs,
+      excludedChains: data.layerZero.exclude.chains,
+      excludedTokens: data.layerZero.exclude.tokens,
+      bridgedTokenGroups: data.layerZero.bridgedTokenGroups,
+      nativeCurrencies,
+    });
+
+    const adapters = extendAdapters([
+      cBridgeAdapter,
+      deBridgeAdapter,
+      stargateAdapter,
+      layerZeroAdapter,
+    ]);
 
     return {
       isReady: true,

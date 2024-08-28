@@ -1,10 +1,11 @@
 import { useCallback } from 'react';
-import { formatUnits } from 'viem';
+import { formatUnits, parseUnits } from 'viem';
 
 import { useAppDispatch, useAppSelector } from '@/core/store/hooks';
 import {
   setEstimatedAmount,
   setIsGlobalFeeLoading,
+  setReceiveValue,
   setTransferActionInfo,
 } from '@/modules/transfer/action';
 import { useGetDebridgeEstimateAmount } from '@/modules/bridges/debridge/hooks/useGetDebridgeEstimateAmount';
@@ -12,18 +13,24 @@ import { useGetCbridgeEstimateAmount } from '@/modules/bridges/cbridge/hooks/use
 import { useCBridgeTransferParams } from '@/modules/bridges/cbridge/hooks/useCBridgeTransferParams';
 import { useStarGateTransfer } from '@/modules/bridges/stargate/hooks/useStarGateTransfer';
 import { useToTokenInfo } from '@/modules/transfer/hooks/useToTokenInfo';
+import { useGetLayerZeroFees } from '@/modules/bridges/layerZero/hooks/useGetLayerZeroFee';
+import { useDebounce } from '@/core/hooks/useDebounce';
+import { DEBOUNCE_DELAY } from '@/core/constants';
 
 export const useLoadingBridgeFees = () => {
   const dispatch = useAppDispatch();
   const { getCBridgeEstimated } = useGetCbridgeEstimateAmount();
   const { getDeBridgeEstimate } = useGetDebridgeEstimateAmount();
+  const { getLayerZeroEstimateFees } = useGetLayerZeroFees();
   const { getQuoteOFT } = useStarGateTransfer();
   const { bridgeAddress: cBridgeAddress } = useCBridgeTransferParams();
   const { getToDecimals } = useToTokenInfo();
 
   const toToken = useAppSelector((state) => state.transfer.toToken);
   const selectedToken = useAppSelector((state) => state.transfer.selectedToken);
+  const sendValue = useAppSelector((state) => state.transfer.sendValue);
 
+  const debouncedSendValue = useDebounce(sendValue, DEBOUNCE_DELAY);
   const loadingBridgeFees = useCallback(async () => {
     dispatch(setIsGlobalFeeLoading(true));
     dispatch(setEstimatedAmount(undefined));
@@ -45,16 +52,23 @@ export const useLoadingBridgeFees = () => {
       } else {
         promiseArr.push(new Promise((reject) => reject(null)));
       }
+      if (toToken?.rawData.layerZero) {
+        promiseArr.push(getLayerZeroEstimateFees());
+      } else {
+        promiseArr.push(new Promise((reject) => reject(null)));
+      }
       const response = await Promise.allSettled<any>(promiseArr);
       // eslint-disable-next-line no-console
-      console.log('API response deBridge[0], cBridge[1], stargate[2]', response);
+      console.log('API response deBridge[0], cBridge[1], stargate[2], layerZero[3]', response);
       const debridgeEst = response?.[0];
       const cbridgeEst = response?.[1];
       const stargateEst = response?.[2];
+      const layerZeroEst = response?.[3];
       if (
         debridgeEst?.status === 'fulfilled' &&
         cbridgeEst?.status === 'fulfilled' &&
-        stargateEst?.status === 'fulfilled'
+        stargateEst?.status === 'fulfilled' &&
+        layerZeroEst?.status === 'fulfilled'
       ) {
         if (debridgeEst.value) {
           dispatch(setEstimatedAmount({ deBridge: debridgeEst.value }));
@@ -91,6 +105,19 @@ export const useLoadingBridgeFees = () => {
         } else {
           dispatch(setEstimatedAmount({ stargate: undefined }));
         }
+        if (layerZeroEst.value) {
+          valueArr.push({
+            type: 'layerZero',
+            value: debouncedSendValue,
+          });
+          dispatch(
+            setReceiveValue({
+              layerZero: String(parseUnits(debouncedSendValue, getToDecimals()['layerZero'])),
+            }),
+          );
+        } else {
+          dispatch(setEstimatedAmount({ layerZero: undefined }));
+        }
         if (valueArr.length > 0) {
           const maxEntry = valueArr.reduce((max, entry) =>
             Number(entry['value']) > Number(max['value']) ? entry : max,
@@ -125,6 +152,13 @@ export const useLoadingBridgeFees = () => {
                   bridgeAddress: selectedToken?.rawData.stargate?.bridgeAddress as `0x${string}`,
                 }),
               );
+            } else if (maxEntry.type === 'layerZero') {
+              dispatch(
+                setTransferActionInfo({
+                  bridgeType: 'layerZero',
+                  bridgeAddress: selectedToken?.rawData.layerZero?.bridgeAddress as `0x${string}`,
+                }),
+              );
             }
           }
         }
@@ -140,13 +174,17 @@ export const useLoadingBridgeFees = () => {
     dispatch,
     getCBridgeEstimated,
     getDeBridgeEstimate,
+    getLayerZeroEstimateFees,
     getQuoteOFT,
     getToDecimals,
     selectedToken?.rawData.stargate?.bridgeAddress,
+    selectedToken?.rawData.layerZero?.bridgeAddress,
     selectedToken?.rawData.stargate?.decimals,
     toToken?.rawData.cBridge,
     toToken?.rawData.deBridge,
     toToken?.rawData.stargate,
+    toToken?.rawData.layerZero,
+    debouncedSendValue,
   ]);
 
   return {

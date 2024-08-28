@@ -1,9 +1,15 @@
+import { CreateAdapterParameters } from '@/core';
 import { CAKE_PROXY_OFT_ABI } from '@/layerZero/abi/cakeProxyOFT';
-import { IGetEstimateFeeInput, ISendCakeTokenInput } from '@/layerZero/types';
+import {
+  IGetEstimateFeeInput,
+  ISendCakeTokenInput,
+  LayerZeroTransferConfigs,
+} from '@/layerZero/types';
+import { createAdapter } from '@/layerZero/utils/createAdapter';
 import { encodePacked, Hash, pad } from 'viem';
 
-// LayerZero V1
-export class LayerZeroV1 {
+export * from './types';
+export class LayerZero {
   /**
    * Send token through layerZero V1 OFT
    * https://docs.layerzero.network/v1/developers/evm/evm-guides/advanced/relayer-adapter-parameters
@@ -121,5 +127,10 @@ export class LayerZeroV1 {
     } catch (error: any) {
       throw new Error(`Failed to get estimate fee ${error}`);
     }
+  }
+
+  /** @see createAdapter for implementation details */
+  createAdapter(params: CreateAdapterParameters<LayerZeroTransferConfigs>) {
+    return createAdapter(params);
   }
 }
