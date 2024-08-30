@@ -52,4 +52,4 @@ const order = await bridgeSDK.deBridge.getOrder({
 
 ## License
 
-The contents of this repo are made available under the [MIT License](./LICENSE).
+The contents of this repo are made available under the [MIT License](https://github.com/bnb-chain/canonical-bridge/tree/main/LICENSE).
