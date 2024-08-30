@@ -29,6 +29,7 @@ export interface LayerZeroToken {
   decimals: number;
   symbol: string;
   endpointID: number;
+  version: number; // LayerZero version
 }
 
 export interface LayerZeroChain {
