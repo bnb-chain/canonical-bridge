@@ -12,6 +12,10 @@ This SDK integrates API and methods from multiple cross-chain bridges, such as c
 
 ## Installation
 
+```bash
+npm install @bnb-chain/canonical-bridge-sdk viem@^2
+```
+
 ## Usage
 
 ```js
@@ -48,4 +52,4 @@ const order = await bridgeSDK.deBridge.getOrder({
 
 ## License
 
-The contents of this repo are made available under the [MIT License](./LICENSE).
+The contents of this repo are made available under the [MIT License](https://github.com/bnb-chain/canonical-bridge/tree/main/LICENSE).
