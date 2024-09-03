@@ -8,7 +8,6 @@ import { useToTokenInfo } from '@/modules/transfer/hooks/useToTokenInfo';
 import { useGetNativeToken } from '@/modules/transfer/hooks/useGetNativeToken';
 import { useGetAllowance } from '@/core/contract/hooks/useGetAllowance';
 import { DEFAULT_ADDRESS } from '@/core/constants';
-import { bridgeSDK } from '@/core/constants/bridgeSDK';
 import { setTransferActionInfo } from '@/modules/transfer/action';
 import { AdditionalDetails } from '@/modules/transfer/components/TransferOverview/AdditionalDetails';
 import { InfoRow } from '@/modules/transfer/components/InfoRow';
@@ -27,8 +26,9 @@ export const LayerZeroOption = () => {
   const selectedToken = useAppSelector((state) => state.transfer.selectedToken);
   const sendValue = useAppSelector((state) => state.transfer.sendValue);
   const transferActionInfo = useAppSelector((state) => state.transfer.transferActionInfo);
-  const estimatedAmount = useAppSelector((state) => state.transfer.estimatedAmount);
+  const receiveValue = useAppSelector((state) => state.transfer.receiveValue);
   const publicClient = usePublicClient({ chainId: fromChain?.id });
+  const estimatedAmount = useAppSelector((state) => state.transfer.estimatedAmount);
 
   const { allowance } = useGetAllowance({
     tokenAddress: selectedToken?.rawData.layerZero?.address
@@ -54,22 +54,13 @@ export const LayerZeroOption = () => {
     }
     (async () => {
       try {
-        const receiver = address || DEFAULT_ADDRESS;
         const bridgeAddress = selectedToken?.rawData.layerZero?.bridgeAddress as `0x${string}`;
         const amount = parseUnits(
           sendValue,
           selectedToken?.rawData?.layerZero?.decimals ?? (18 as number),
         );
-
-        const fees = await bridgeSDK.layerZero.getEstimateFee({
-          bridgeAddress,
-          userAddress: receiver,
-          dstEndpoint: toTokenInfo?.rawData.layerZero?.endpointID as number,
-          amount,
-          publicClient: publicClient,
-        });
-
-        setNativeFee(fees?.[0] ?? 0n);
+        const nativeFee = BigInt(estimatedAmount?.layerZero);
+        setNativeFee(nativeFee ?? 0n);
 
         const address32Bytes = pad(address || DEFAULT_ADDRESS, { size: 32 });
         const adapterParams = encodePacked(['uint16', 'uint256'], [1, 200000n]);
@@ -78,7 +69,6 @@ export const LayerZeroOption = () => {
           '0x0000000000000000000000000000000000000000', // zroPaymentAddress
           adapterParams,
         ];
-        const nativeFee = fees[0];
         const cakeArgs = {
           address: bridgeAddress,
           abi: CAKE_PROXY_OFT_ABI,
@@ -116,7 +106,17 @@ export const LayerZeroOption = () => {
     return () => {
       mount = false;
     };
-  }, [allowance, dispatch, publicClient, address, selectedToken, sendValue, toTokenInfo, balance]);
+  }, [
+    allowance,
+    dispatch,
+    publicClient,
+    address,
+    selectedToken,
+    sendValue,
+    toTokenInfo,
+    balance,
+    estimatedAmount,
+  ]);
 
   const setSelectBridge = useCallback(() => {
     if (!selectedToken?.rawData.layerZero?.bridgeAddress) return;
@@ -170,8 +170,8 @@ export const LayerZeroOption = () => {
         borderRadius={'100px'}
         fontSize={theme.sizes['3.5']}
       >
-        {estimatedAmount && estimatedAmount?.['layerZero'] && toTokenInfo && Number(sendValue) > 0
-          ? `~${formatNumber(Number(estimatedAmount?.['layerZero']), 8)} ${toTokenInfo.symbol}`
+        {receiveValue && receiveValue?.['layerZero'] && toTokenInfo && Number(sendValue) > 0
+          ? `~${formatNumber(Number(receiveValue?.['layerZero']), 8)} ${toTokenInfo.symbol}`
           : '-'}
       </Box>
 
