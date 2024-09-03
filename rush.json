@@ -28,6 +28,10 @@
       "projectFolder": "apps/bnb-chain-bridge"
     },
     {
+      "packageName": "canonical-bridge-server",
+      "projectFolder": "apps/canonical-bridge-server"
+    },
+    {
       "packageName": "@bnb-chain/eslint-config",
       "projectFolder": "packages/eslint-config"
     },
@@ -46,6 +50,11 @@
     {
       "packageName": "@bnb-chain/canonical-bridge-sdk",
       "projectFolder": "packages/canonical-bridge-sdk",
+      "shouldPublish": true
+    },
+    {
+      "packageName": "@bnb-chain/canonical-bridge-widget",
+      "projectFolder": "packages/canonical-bridge-widget",
       "shouldPublish": true
     }
   ]
