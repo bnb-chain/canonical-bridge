@@ -106,15 +106,29 @@ export class CBridge {
     walletClient,
     publicClient,
     bridgeAddress,
-    bridgeABI,
-    functionName,
+    fromChainId,
     address,
+    isPegged,
+    peggedConfig,
     args,
   }: ISendCBridgeToken): Promise<Hash> {
     try {
+      const transferType = this.getTransferType({
+        peggedConfig,
+        fromChainId,
+      });
+      const ABI = this.getABI({
+        isPegged,
+        transferType,
+        peggedConfig,
+      });
+      const functionName = this.getTransferFunction({
+        isPegged,
+        transferType,
+      });
       const cBridgeArgs = {
         address: bridgeAddress,
-        abi: bridgeABI,
+        abi: ABI,
         functionName,
         account: address,
         args,
@@ -258,7 +272,7 @@ export class CBridge {
   }
 
   /**
-   * Get cBridge data type
+   * Generate cBridge transfer arguments
    */
   getArguments({
     isPegged,

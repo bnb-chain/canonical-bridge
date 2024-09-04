@@ -1,15 +1,18 @@
 import { LayerZero } from '@/layerZero';
-import { CBridge } from '@/cbridge';
+import { CBridge, CBridgePeggedPairConfig } from '@/cbridge';
 import { ERC20_TOKEN } from '@/core/abi/erc20Token';
 import {
   BaseBridgeConfig,
+  BridgeAddress,
+  BridgeEndpointId,
+  BridgeType,
   IApproveTokenInput,
   IGetAllowanceInput,
   IGetTokenBalanceInput,
 } from '@/core/types';
 import { DeBridge, DeBridgeConfig } from '@/debridge';
 import { Stargate } from '@/stargate';
-import { Hash } from 'viem';
+import { Hash, type PublicClient, type WalletClient } from 'viem';
 
 export * from './types';
 
@@ -136,6 +139,211 @@ export class CanonicalBridgeSDK {
       return balance;
     } catch (error: any) {
       throw new Error(`Failed to get token balance: ${error}`);
+    }
+  }
+
+  async loadBridgeFees({
+    bridgeType,
+    fromChainId,
+    fromTokenAddress,
+    fromAccount,
+    toChainId,
+    sendValue,
+    fromTokenSymbol,
+    publicClient,
+    endPointId,
+    bridgeAddress,
+    toTokenAddress,
+    toAccount,
+    isPegged,
+    slippage,
+  }: {
+    bridgeType: BridgeType[];
+    fromChainId: number;
+    fromTokenAddress: `0x${string}`;
+    fromAccount: `0x${string}`;
+    toChainId: number;
+    sendValue: bigint;
+    fromTokenSymbol: string;
+    publicClient: PublicClient;
+    endPointId?: BridgeEndpointId;
+    bridgeAddress?: BridgeAddress;
+    toTokenAddress?: `0x${string}`;
+    toAccount?: `0x${string}`;
+    isPegged?: boolean;
+    slippage?: number;
+  }) {
+    const promiseArr = [];
+    if (
+      this.deBridge &&
+      toAccount &&
+      toTokenAddress &&
+      bridgeType.includes('deBridge')
+    ) {
+      const debridgeFeeAPICall = await this.deBridge.getEstimatedFees({
+        fromChainId,
+        fromTokenAddress,
+        amount: sendValue,
+        toChainId,
+        toTokenAddress,
+        userAddress: toAccount,
+      });
+      promiseArr.push(debridgeFeeAPICall);
+    } else {
+      promiseArr.push(promiseArr.push(new Promise((reject) => reject(null))));
+    }
+    if (this.cBridge && slippage && bridgeType.includes('cBridge')) {
+      const cBridgeFeeAPICall = await this.cBridge.getEstimatedAmount({
+        src_chain_id: fromChainId,
+        dst_chain_id: toChainId,
+        token_symbol: fromTokenSymbol,
+        amt: String(sendValue),
+        user_addr: fromAccount,
+        slippage_tolerance: slippage,
+        is_pegged: isPegged,
+      });
+      promiseArr.push(cBridgeFeeAPICall);
+    } else {
+      promiseArr.push(promiseArr.push(new Promise((reject) => reject(null))));
+    }
+    if (
+      this.stargate &&
+      bridgeAddress?.stargate &&
+      endPointId?.layerZeroV2 &&
+      bridgeType.includes('stargate')
+    ) {
+      const stargateFeeAPICall = await this.stargate.getQuoteOFT({
+        publicClient: publicClient,
+        bridgeAddress: bridgeAddress.stargate,
+        endPointId: endPointId.layerZeroV2,
+        receiver: fromAccount,
+        amount: sendValue,
+      });
+      promiseArr.push(stargateFeeAPICall);
+    } else {
+      promiseArr.push(promiseArr.push(new Promise((reject) => reject(null))));
+    }
+    if (
+      this.layerZero &&
+      bridgeAddress?.layerZero &&
+      endPointId?.layerZeroV1 &&
+      bridgeType.includes('layerZero')
+    ) {
+      const layerZeroFeeAPICall = this.layerZero.getEstimateFee({
+        bridgeAddress: bridgeAddress.layerZero,
+        amount: sendValue,
+        dstEndpoint: endPointId.layerZeroV1,
+        userAddress: fromAccount,
+        publicClient,
+      });
+      promiseArr.push(layerZeroFeeAPICall);
+    } else {
+      promiseArr.push(promiseArr.push(new Promise((reject) => reject(null))));
+    }
+    return await Promise.allSettled<any>(promiseArr);
+  }
+
+  async sendToken({
+    bridgeType,
+    fromChainId,
+    amount,
+    userAddress,
+    tokenAddress,
+    toChainId,
+    bridgeAddress,
+    walletClient,
+    publicClient,
+    isPegged,
+    slippage,
+    peggedConfig,
+    deBridgeData,
+    bridgeEndPointId,
+  }: {
+    fromAccount: `0x${string}`;
+    fromChainId: number;
+    amount: bigint;
+    toChainId: number;
+    bridgeAddress: `0x${string}`;
+    userAddress: `0x${string}`;
+    tokenAddress: `0x${string}`;
+    walletClient: WalletClient;
+    publicClient: PublicClient;
+    bridgeType: BridgeType;
+    isPegged?: boolean;
+    slippage?: number;
+    peggedConfig?: CBridgePeggedPairConfig;
+    deBridgeData?: `0x${string}`;
+    bridgeEndPointId?: BridgeEndpointId;
+  }) {
+    if (this.deBridge && bridgeType === 'deBridge' && deBridgeData) {
+      return await this.deBridge.sendToken({
+        walletClient,
+        bridgeAddress,
+        data: deBridgeData,
+        amount,
+        address: userAddress,
+      });
+    }
+    if (this.cBridge && bridgeType === 'cBridge' && isPegged && slippage) {
+      try {
+        const transferType = this.cBridge.getTransferType({
+          peggedConfig,
+          fromChainId,
+        });
+        const nonce = new Date().getTime();
+        const transferArgs = this.cBridge.getTransferParams({
+          amount,
+          isPegged,
+          toChainId,
+          tokenAddress,
+          address: userAddress,
+          maxSlippage: slippage,
+          transferType: transferType,
+          peggedConfig: peggedConfig,
+          nonce,
+        });
+        return await this.cBridge.sendToken({
+          walletClient,
+          publicClient,
+          bridgeAddress,
+          fromChainId,
+          address: userAddress,
+          isPegged,
+          peggedConfig,
+          args: transferArgs,
+        });
+      } catch (e) {
+        throw new Error(`Failed to send token ${e}`);
+      }
+    }
+    if (
+      this.stargate &&
+      bridgeType === 'stargate' &&
+      bridgeEndPointId?.layerZeroV2
+    ) {
+      return await this.stargate.sendToken({
+        walletClient,
+        publicClient,
+        bridgeAddress,
+        tokenAddress,
+        endPointId: bridgeEndPointId?.layerZeroV2,
+        receiver: userAddress,
+        amount,
+      });
+    }
+    if (
+      this.layerZero &&
+      bridgeType === 'layerZero' &&
+      bridgeEndPointId?.layerZeroV1
+    ) {
+      return await this.layerZero.sendToken({
+        userAddress,
+        bridgeAddress,
+        amount,
+        dstEndpoint: bridgeEndPointId?.layerZeroV1 as number,
+        publicClient,
+        walletClient,
+      });
     }
   }
 }
