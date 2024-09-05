@@ -3,7 +3,7 @@ import { parseUnits } from 'viem';
 import { useAccount } from 'wagmi';
 
 import { getCBridgeEstimateAmount } from '@/modules/bridges/cbridge/api/getCBridgeEstimateAmount';
-import { setEstimatedAmount, setReceiveValue } from '@/modules/transfer/action';
+import { setEstimatedAmount } from '@/modules/transfer/action';
 import { useDebounce } from '@/core/hooks/useDebounce';
 import { useAppDispatch, useAppSelector } from '@/core/store/hooks';
 import { DEBOUNCE_DELAY } from '@/core/constants';
@@ -29,11 +29,6 @@ export const useGetCbridgeEstimateAmount = () => {
       !debouncedSendValue ||
       !Number(debouncedSendValue)
     ) {
-      dispatch(
-        setReceiveValue({
-          cBridge: undefined,
-        }),
-      );
       dispatch(setEstimatedAmount({ cBridge: undefined }));
       return;
     }
@@ -52,28 +47,10 @@ export const useGetCbridgeEstimateAmount = () => {
       const cBridgeEstimated = await getCBridgeEstimateAmount(cBridgeParams);
       // console.log('cBridgeEstimated', cBridgeEstimated);
       dispatch(setEstimatedAmount({ cBridge: cBridgeEstimated }));
-      if (Number(cBridgeEstimated?.estimated_receive_amt) > 0) {
-        dispatch(
-          setReceiveValue({
-            cBridge: cBridgeEstimated.estimated_receive_amt,
-          }),
-        );
-      } else {
-        dispatch(
-          setReceiveValue({
-            cBridge: undefined,
-          }),
-        );
-      }
       return cBridgeEstimated;
     } catch (error: any) {
       // eslint-disable-next-line no-console
       console.log(error, error.message);
-      dispatch(
-        setReceiveValue({
-          cBridge: undefined,
-        }),
-      );
       dispatch(setEstimatedAmount({ cBridge: undefined }));
       return null;
     }

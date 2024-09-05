@@ -43,6 +43,7 @@ export function TransferButton({
   const isGlobalFeeLoading = useAppSelector((state) => state.transfer.isGlobalFeeLoading);
   const isTransferable = useAppSelector((state) => state.transfer.isTransferable);
   const toToken = useAppSelector((state) => state.transfer.toToken);
+  const fromChain = useAppSelector((state) => state.transfer.fromChain);
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -85,15 +86,16 @@ export function TransferButton({
         return;
       }
       onOpenConfirmingModal();
-      if (transferActionInfo.bridgeType === 'cBridge' && cBridgeArgs) {
+      if (transferActionInfo.bridgeType === 'cBridge' && cBridgeArgs && fromChain) {
         try {
           const cBridgeHash = await bridgeSDK.cBridge.sendToken({
             walletClient,
             publicClient,
             bridgeAddress: transferActionInfo.bridgeAddress as string,
-            bridgeABI: cBridgeArgs.abi,
-            functionName: cBridgeArgs.functionName,
+            fromChainId: fromChain?.id,
+            isPegged: selectedToken.isPegged,
             address,
+            peggedConfig: selectedToken?.peggedRawData.cBridge,
             args: cBridgeArgs.args,
           });
           await publicClient.waitForTransactionReceipt({
@@ -190,6 +192,7 @@ export function TransferButton({
     balance,
     sendToken,
     toToken,
+    fromChain,
   ]);
 
   return (

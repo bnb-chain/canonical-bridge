@@ -118,7 +118,7 @@ export const LayerZeroOption = () => {
     };
   }, [allowance, dispatch, publicClient, address, selectedToken, sendValue, toTokenInfo, balance]);
 
-  const setSelectBridge = useCallback(() => {
+  const onSelectBridge = useCallback(() => {
     if (!selectedToken?.rawData.layerZero?.bridgeAddress) return;
     const bridgeAddress = selectedToken.rawData.layerZero.bridgeAddress;
     dispatch(
@@ -150,7 +150,7 @@ export const LayerZeroOption = () => {
       _hover={{
         borderColor: theme.colors[colorMode].support.brand['3'],
       }}
-      onClick={setSelectBridge}
+      onClick={onSelectBridge}
       position={'relative'}
     >
       <Flex flexDir={'row'} gap={theme.sizes['2']}>

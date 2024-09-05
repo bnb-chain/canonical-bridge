@@ -67,3 +67,13 @@ export interface BridgeAdapter<T = any, P = any> {
     symbol: string;
   };
 }
+
+export interface BridgeEndpointId {
+  layerZeroV1?: number;
+  layerZeroV2?: number;
+}
+
+export interface BridgeAddress {
+  stargate?: `0x${string}`;
+  layerZero?: `0x${string}`;
+}

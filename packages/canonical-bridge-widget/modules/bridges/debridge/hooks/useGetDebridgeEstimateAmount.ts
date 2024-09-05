@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 import { parseUnits } from 'viem';
 
 import { createDeBridgeTxQuote } from '@/modules/bridges/debridge/api';
-import { setEstimatedAmount, setReceiveValue } from '@/modules/transfer/action';
+import { setEstimatedAmount } from '@/modules/transfer/action';
 import { useAppDispatch, useAppSelector } from '@/core/store/hooks';
 import { useToTokenInfo } from '@/modules/transfer/hooks/useToTokenInfo';
 import { DEBRIDGE_ACCESS_TOKEN } from '@/core/constants';
@@ -31,11 +31,6 @@ export const useGetDebridgeEstimateAmount = () => {
       !Number(sendValue) ||
       (isSolanaTransfer && !isAvailableAccount)
     ) {
-      dispatch(
-        setReceiveValue({
-          deBridge: undefined,
-        }),
-      );
       dispatch(setEstimatedAmount({ deBridge: undefined }));
       return null;
     }
@@ -62,28 +57,12 @@ export const useGetDebridgeEstimateAmount = () => {
 
       // console.log('deBridgeQuote', deBridgeQuote);
       dispatch(setEstimatedAmount({ deBridge: deBridgeQuote }));
-      if (Number(deBridgeQuote?.estimation.dstChainTokenOut.amount) > 0) {
-        dispatch(
-          setReceiveValue({
-            deBridge: deBridgeQuote?.estimation.dstChainTokenOut.amount,
-          }),
-        );
-      } else {
-        dispatch(
-          setReceiveValue({
-            deBridge: undefined,
-          }),
-        );
-      }
+
       return deBridgeQuote;
     } catch (error: any) {
       // eslint-disable-next-line no-console
       console.log(error, error.message);
-      dispatch(
-        setReceiveValue({
-          deBridge: undefined,
-        }),
-      );
+
       dispatch(setEstimatedAmount({ deBridge: undefined }));
       return null;
     }

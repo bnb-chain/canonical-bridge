@@ -22,6 +22,7 @@ import { formatNumber } from '@/core/utils/number';
 import { useToTokenDisplayedInfo } from '@/modules/transfer/hooks/useToTokenDisplayedInfo';
 import { useSetSelectInfo } from '@/modules/transfer/hooks/useSetSelectInfo';
 import { ToAccount } from '@/modules/transfer/components/ToAccount';
+import { useGetReceiveAmount } from '@/modules/transfer/hooks/useGetReceiveAmount';
 
 export function ToSection() {
   const { isOpen, onClose, onOpen } = useDisclosure();
@@ -30,12 +31,12 @@ export function ToSection() {
   const { setSelectInfo } = useSetSelectInfo();
 
   const toChain = useAppSelector((state) => state.transfer.toChain);
-  const receiveValue = useAppSelector((state) => state.transfer.receiveValue);
   const transferActionInfo = useAppSelector((state) => state.transfer.transferActionInfo);
 
   const { toTokenInfo, getToDecimals, getToTokenAddress } = useToTokenInfo();
   const { colorMode } = useColorMode();
   const toTokenDisplayedInfo = useToTokenDisplayedInfo();
+  const { getReceiveAmount } = useGetReceiveAmount();
 
   const onSelectSource = (chain: BridgeChain) => {
     setSelectInfo({
@@ -48,12 +49,12 @@ export function ToSection() {
   const isGlobalFeeLoading = useAppSelector((state) => state.transfer.isGlobalFeeLoading);
 
   const receiveAmt = useMemo(() => {
-    if (receiveValue && transferActionInfo && transferActionInfo.bridgeType) {
+    if (transferActionInfo && transferActionInfo.bridgeType) {
       const bridgeType = transferActionInfo.bridgeType;
-      return receiveValue[bridgeType];
+      return getReceiveAmount(bridgeType);
     }
     return null;
-  }, [receiveValue, transferActionInfo]);
+  }, [transferActionInfo, getReceiveAmount]);
 
   const bridgeType = transferActionInfo?.bridgeType;
   const tokenAddress = (bridgeType && getToTokenAddress()?.[bridgeType]) || '';

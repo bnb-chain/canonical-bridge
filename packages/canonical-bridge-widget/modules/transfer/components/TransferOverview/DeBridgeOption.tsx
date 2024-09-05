@@ -120,7 +120,7 @@ export const DeBridgeOption = () => {
     chain?.id,
   ]);
 
-  const setSelectBridge = useCallback(() => {
+  const onSelectBridge = useCallback(() => {
     if (!estimatedAmount || !estimatedAmount?.['deBridge']?.tx) {
       return;
     }
@@ -209,7 +209,7 @@ export const DeBridgeOption = () => {
       _hover={{
         borderColor: theme.colors[colorMode].support.brand['3'],
       }}
-      onClick={setSelectBridge}
+      onClick={onSelectBridge}
     >
       <Flex flexDir={'row'} gap={theme.sizes['2']} alignItems={'center'}>
         <Image

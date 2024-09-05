@@ -140,13 +140,6 @@ export interface TransferActionInfo {
   orderId?: string; // deBridge order id. May be used for tracking history
 }
 
-export interface ReceiveValue {
-  deBridge?: string;
-  cBridge?: string;
-  stargate?: string;
-  layerZero?: string;
-}
-
 export interface IEstimatedAmount {
   cBridge?: any;
   deBridge?: QuoteResponse;

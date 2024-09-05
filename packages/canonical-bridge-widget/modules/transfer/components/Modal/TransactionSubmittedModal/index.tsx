@@ -4,12 +4,7 @@ import { useAccount } from 'wagmi';
 import { StateModal, StateModalProps } from '@/core/components/StateModal';
 import { useAppDispatch } from '@/core/store/hooks';
 import { EXPLORER_URL } from '@/core/constants';
-import {
-  setEstimatedAmount,
-  setReceiveValue,
-  setSendValue,
-  setTransferActionInfo,
-} from '@/modules/transfer/action';
+import { setEstimatedAmount, setSendValue, setTransferActionInfo } from '@/modules/transfer/action';
 import { ExLinkIcon } from '@/core/components/icons/ExLinkIcon';
 import { useCurrentWallet } from '@/modules/wallet/hooks/useCurrentWallet';
 
@@ -28,7 +23,7 @@ export function TransactionSubmittedModal(
       description={formatMessage({ id: 'modal.submit.desc' })}
       onButtonClick={() => {
         dispatch(setSendValue(''));
-        dispatch(setReceiveValue(undefined));
+
         dispatch(setEstimatedAmount(undefined));
         dispatch(setTransferActionInfo(undefined));
       }}
@@ -56,7 +51,6 @@ export function TransactionSubmittedModal(
           lineHeight={1.5}
           onClick={() => {
             dispatch(setSendValue(''));
-            dispatch(setReceiveValue(undefined));
             dispatch(setEstimatedAmount(undefined));
             dispatch(setTransferActionInfo(undefined));
             restProps.onClose();

@@ -110,7 +110,7 @@ export function TransferOverview() {
   }
 
   return selectedToken && sendValue && receiveValue && Object.keys(receiveValue)?.length > 0 ? (
-    <Flex flexDir={'column'} gap={theme.sizes['3']} mt={theme.sizes['6']}>
+    <Flex minW={'382px'} flexDir={'column'} gap={theme.sizes['3']} mt={theme.sizes['6']}>
       <Box color={theme.colors[colorMode].text.tertiary} fontSize={theme.sizes['3.5']}>
         {formatMessage({ id: 'route.title' })}
       </Box>

@@ -7,7 +7,7 @@ export const en = {
   'header.network-status.wrong': 'Wrong network',
 
   'support.stargate.soon': 'We will support Stargate soon',
-  'route.title': 'Bridge Route',
+  'route.title': 'Select Bridge Routes',
   'from.section.title': 'From',
   'to.section.title': 'To',
   'to.section.estimated-amount': 'Est. Amount Receive',

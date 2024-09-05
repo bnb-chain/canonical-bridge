@@ -6,8 +6,10 @@ import {
 import { CLIENT_TIME_OUT } from '@/core/constants';
 import axios, { AxiosInstance } from 'axios';
 import {
+  CBridgeChain,
   CBridgeEstimateAmountRequest,
   CBridgeEstimateAmountResponse,
+  CBridgePeggedPairConfig,
   CBridgeSendRangeInput,
   CBridgeTransferConfigs,
   IGetCBridgeABI,
@@ -104,15 +106,29 @@ export class CBridge {
     walletClient,
     publicClient,
     bridgeAddress,
-    bridgeABI,
-    functionName,
+    fromChainId,
     address,
+    isPegged,
+    peggedConfig,
     args,
   }: ISendCBridgeToken): Promise<Hash> {
     try {
+      const transferType = this.getTransferType({
+        peggedConfig,
+        fromChainId,
+      });
+      const ABI = this.getABI({
+        isPegged,
+        transferType,
+        peggedConfig,
+      });
+      const functionName = this.getTransferFunction({
+        isPegged,
+        transferType,
+      });
       const cBridgeArgs = {
         address: bridgeAddress,
-        abi: bridgeABI,
+        abi: ABI,
         functionName,
         account: address,
         args,
@@ -234,5 +250,86 @@ export class CBridge {
   /** @see createAdapter for implementation details */
   createAdapter(params: CreateAdapterParameters<CBridgeTransferConfigs>) {
     return createAdapter(params);
+  }
+
+  /**
+   * Get transfer type
+   */
+  getTransferType({
+    peggedConfig,
+    fromChainId,
+  }: {
+    fromChainId: number;
+    peggedConfig?: CBridgePeggedPairConfig;
+  }) {
+    if (peggedConfig?.org_chain_id === fromChainId) {
+      return 'deposit';
+    }
+    if (peggedConfig?.pegged_chain_id === fromChainId) {
+      return 'withdraw';
+    }
+    return undefined;
+  }
+
+  /**
+   * Generate cBridge transfer arguments
+   */
+  getArguments({
+    isPegged,
+    peggedConfig,
+    chainConfig,
+    amount,
+    fromChainId,
+    toChainId,
+    tokenAddress,
+    userAddress,
+    maxSlippage,
+    nonce,
+  }: {
+    isPegged: boolean;
+    peggedConfig?: CBridgePeggedPairConfig;
+    chainConfig?: CBridgeChain;
+    amount: bigint;
+    fromChainId: number;
+    toChainId: number;
+    tokenAddress: `0x${string}`;
+    userAddress: `0x${string}`;
+    maxSlippage: number;
+    nonce: number;
+  }) {
+    const transferType = this.getTransferType({
+      peggedConfig,
+      fromChainId,
+    });
+    const functionName = this.getTransferFunction({ isPegged });
+    const bridgeABI = this.getABI({
+      isPegged,
+      transferType: transferType,
+      peggedConfig,
+    });
+    const bridgeAddress = this.getTransferAddress({
+      fromChainId: toChainId,
+      isPegged,
+      peggedConfig,
+      chainConfig,
+    });
+    const args = this.getTransferParams({
+      amount,
+      isPegged,
+      toChainId,
+      tokenAddress,
+      address: userAddress,
+      maxSlippage,
+      transferType,
+      peggedConfig,
+      nonce,
+    });
+    return {
+      address: bridgeAddress as `0x${string}`,
+      abi: bridgeABI,
+      functionName: functionName,
+      account: userAddress as `0x${string}`,
+      args: args,
+    };
   }
 }
