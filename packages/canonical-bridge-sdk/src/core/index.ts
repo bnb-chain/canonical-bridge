@@ -142,6 +142,10 @@ export class CanonicalBridgeSDK {
     }
   }
 
+  /**
+   * To load all bridge fees at once and return the fee information in the specified order
+   * [deBridge, cBridge, stargate, layerZero]
+   */
   async loadBridgeFees({
     bridgeType,
     fromChainId,
@@ -180,7 +184,7 @@ export class CanonicalBridgeSDK {
       toTokenAddress &&
       bridgeType.includes('deBridge')
     ) {
-      const debridgeFeeAPICall = await this.deBridge.getEstimatedFees({
+      const debridgeFeeAPICall = this.deBridge.getEstimatedFees({
         fromChainId,
         fromTokenAddress,
         amount: sendValue,
@@ -190,10 +194,10 @@ export class CanonicalBridgeSDK {
       });
       promiseArr.push(debridgeFeeAPICall);
     } else {
-      promiseArr.push(promiseArr.push(new Promise((reject) => reject(null))));
+      promiseArr.push(new Promise((reject) => reject(null)));
     }
     if (this.cBridge && slippage && bridgeType.includes('cBridge')) {
-      const cBridgeFeeAPICall = await this.cBridge.getEstimatedAmount({
+      const cBridgeFeeAPICall = this.cBridge.getEstimatedAmount({
         src_chain_id: fromChainId,
         dst_chain_id: toChainId,
         token_symbol: fromTokenSymbol,
@@ -204,7 +208,7 @@ export class CanonicalBridgeSDK {
       });
       promiseArr.push(cBridgeFeeAPICall);
     } else {
-      promiseArr.push(promiseArr.push(new Promise((reject) => reject(null))));
+      promiseArr.push(new Promise((reject) => reject(null)));
     }
     if (
       this.stargate &&
@@ -212,7 +216,7 @@ export class CanonicalBridgeSDK {
       endPointId?.layerZeroV2 &&
       bridgeType.includes('stargate')
     ) {
-      const stargateFeeAPICall = await this.stargate.getQuoteOFT({
+      const stargateFeeAPICall = this.stargate.getQuoteOFT({
         publicClient: publicClient,
         bridgeAddress: bridgeAddress.stargate,
         endPointId: endPointId.layerZeroV2,
@@ -221,7 +225,7 @@ export class CanonicalBridgeSDK {
       });
       promiseArr.push(stargateFeeAPICall);
     } else {
-      promiseArr.push(promiseArr.push(new Promise((reject) => reject(null))));
+      promiseArr.push(new Promise((reject) => reject(null)));
     }
     if (
       this.layerZero &&
@@ -238,7 +242,7 @@ export class CanonicalBridgeSDK {
       });
       promiseArr.push(layerZeroFeeAPICall);
     } else {
-      promiseArr.push(promiseArr.push(new Promise((reject) => reject(null))));
+      promiseArr.push(new Promise((reject) => reject(null)));
     }
     return await Promise.allSettled<any>(promiseArr);
   }
