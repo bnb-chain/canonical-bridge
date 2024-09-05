@@ -243,6 +243,9 @@ export class CanonicalBridgeSDK {
     return await Promise.allSettled<any>(promiseArr);
   }
 
+  /**
+   * Send token through different bridge mode
+   */
   async sendToken({
     bridgeType,
     fromChainId,
@@ -253,70 +256,87 @@ export class CanonicalBridgeSDK {
     bridgeAddress,
     walletClient,
     publicClient,
-    isPegged,
     slippage,
     peggedConfig,
-    deBridgeData,
     bridgeEndPointId,
+    debridgeOpts,
+    cBridgeOpts,
   }: {
-    fromAccount: `0x${string}`;
+    bridgeType: BridgeType;
     fromChainId: number;
     amount: bigint;
-    toChainId: number;
-    bridgeAddress: `0x${string}`;
     userAddress: `0x${string}`;
     tokenAddress: `0x${string}`;
+    toChainId: number;
+    bridgeAddress: `0x${string}`;
     walletClient: WalletClient;
     publicClient: PublicClient;
-    bridgeType: BridgeType;
-    isPegged?: boolean;
     slippage?: number;
     peggedConfig?: CBridgePeggedPairConfig;
     deBridgeData?: `0x${string}`;
     bridgeEndPointId?: BridgeEndpointId;
+    debridgeOpts?: {
+      data?: `0x${string}`;
+    };
+    cBridgeOpts?: {
+      isPegged?: boolean;
+    };
   }) {
-    if (this.deBridge && bridgeType === 'deBridge' && deBridgeData) {
+    // deBridge
+    if (
+      this.deBridge &&
+      bridgeType === 'deBridge' &&
+      debridgeOpts &&
+      debridgeOpts?.data
+    ) {
+      if (!debridgeOpts?.data) {
+        throw new Error('Invalid deBridge data');
+      }
       return await this.deBridge.sendToken({
         walletClient,
         bridgeAddress,
-        data: deBridgeData,
+        data: debridgeOpts?.data,
         amount,
         address: userAddress,
       });
     }
-    if (this.cBridge && bridgeType === 'cBridge' && isPegged && slippage) {
-      try {
-        const transferType = this.cBridge.getTransferType({
-          peggedConfig,
-          fromChainId,
-        });
-        const nonce = new Date().getTime();
-        const transferArgs = this.cBridge.getTransferParams({
-          amount,
-          isPegged,
-          toChainId,
-          tokenAddress,
-          address: userAddress,
-          maxSlippage: slippage,
-          transferType: transferType,
-          peggedConfig: peggedConfig,
-          nonce,
-        });
-        return await this.cBridge.sendToken({
-          walletClient,
-          publicClient,
-          bridgeAddress,
-          fromChainId,
-          address: userAddress,
-          isPegged,
-          peggedConfig,
-          args: transferArgs,
-        });
-      } catch (e) {
-        throw new Error(`Failed to send token ${e}`);
-      }
+    // cBridge
+    else if (
+      this.cBridge &&
+      bridgeType === 'cBridge' &&
+      cBridgeOpts &&
+      cBridgeOpts?.isPegged &&
+      slippage
+    ) {
+      const transferType = this.cBridge.getTransferType({
+        peggedConfig,
+        fromChainId,
+      });
+      const nonce = new Date().getTime();
+      const transferArgs = this.cBridge.getTransferParams({
+        amount,
+        isPegged: cBridgeOpts.isPegged,
+        toChainId,
+        tokenAddress,
+        address: userAddress,
+        maxSlippage: slippage,
+        transferType: transferType,
+        peggedConfig: peggedConfig,
+        nonce,
+      });
+      return await this.cBridge.sendToken({
+        walletClient,
+        publicClient,
+        bridgeAddress,
+        fromChainId,
+        address: userAddress,
+        isPegged: cBridgeOpts.isPegged,
+        peggedConfig,
+        args: transferArgs,
+      });
     }
-    if (
+    // stargate
+    else if (
       this.stargate &&
       bridgeType === 'stargate' &&
       bridgeEndPointId?.layerZeroV2
@@ -331,7 +351,8 @@ export class CanonicalBridgeSDK {
         amount,
       });
     }
-    if (
+    // May implement LayerZero v2 in the future
+    else if (
       this.layerZero &&
       bridgeType === 'layerZero' &&
       bridgeEndPointId?.layerZeroV1
@@ -344,6 +365,8 @@ export class CanonicalBridgeSDK {
         publicClient,
         walletClient,
       });
+    } else {
+      throw new Error('Invalid bridge inputs');
     }
   }
 }
