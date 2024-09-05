@@ -3,7 +3,6 @@ import { createReducer } from '@reduxjs/toolkit';
 import * as actions from '@/modules/transfer/action';
 import {
   BridgeChain,
-  ReceiveValue,
   BridgeToken,
   TransferActionInfo,
   IEstimatedAmount,
@@ -13,7 +12,6 @@ export type TransferState = {
   fromChain?: BridgeChain;
   sendValue: string;
   toChain?: BridgeChain;
-  receiveValue?: ReceiveValue;
   selectedToken?: BridgeToken;
   toToken?: BridgeToken;
   slippage: number;
@@ -32,7 +30,6 @@ const initStates: TransferState = {
   fromChain: undefined,
   sendValue: '',
   toChain: undefined,
-  receiveValue: undefined,
   selectedToken: undefined,
   slippage: 10000, // 1% for cBridge
   transferActionInfo: undefined,
@@ -68,10 +65,6 @@ export default createReducer(initStates, (builder) => {
   builder.addCase(actions.setToChain, (state, { payload }) => ({
     ...state,
     toChain: payload,
-  }));
-  builder.addCase(actions.setReceiveValue, (state, { payload }) => ({
-    ...state,
-    receiveValue: { ...state.receiveValue, ...payload },
   }));
 
   builder.addCase(actions.setSlippage, (state, { payload }) => ({

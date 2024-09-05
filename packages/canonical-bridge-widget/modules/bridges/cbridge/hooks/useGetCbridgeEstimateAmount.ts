@@ -3,7 +3,7 @@ import { parseUnits } from 'viem';
 import { useAccount } from 'wagmi';
 
 import { getCBridgeEstimateAmount } from '@/modules/bridges/cbridge/api/getCBridgeEstimateAmount';
-import { setEstimatedAmount, setReceiveValue } from '@/modules/transfer/action';
+import { setEstimatedAmount } from '@/modules/transfer/action';
 import { useDebounce } from '@/core/hooks/useDebounce';
 import { useAppDispatch, useAppSelector } from '@/core/store/hooks';
 import { DEBOUNCE_DELAY } from '@/core/constants';

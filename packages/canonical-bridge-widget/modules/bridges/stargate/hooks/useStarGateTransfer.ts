@@ -3,7 +3,7 @@ import { useCallback } from 'react';
 import { parseUnits } from 'viem';
 
 import { useAppDispatch, useAppSelector } from '@/core/store/hooks';
-import { setEstimatedAmount, setReceiveValue } from '@/modules/transfer/action';
+import { setEstimatedAmount } from '@/modules/transfer/action';
 import { toObject } from '@/core/utils/string';
 import { useDebounce } from '@/core/hooks/useDebounce';
 import { DEBOUNCE_DELAY, DEFAULT_ADDRESS } from '@/core/constants';

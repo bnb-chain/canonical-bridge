@@ -18,6 +18,7 @@ import { useDebounce } from '@/core/hooks/useDebounce';
 import { DEBOUNCE_DELAY, DEFAULT_ADDRESS } from '@/core/constants';
 import { bridgeSDK } from '@/core/constants/bridgeSDK';
 import { toObject } from '@/core/utils/string';
+import { QuoteResponse } from '@/modules/bridges/debridge/types';
 
 export const useLoadingBridgeFees = () => {
   const dispatch = useAppDispatch();
@@ -46,7 +47,7 @@ export const useLoadingBridgeFees = () => {
     dispatch(setEstimatedAmount(undefined));
     const valueArr = [];
     try {
-      const response = await bridgeSDK.loadBridgeFees({
+      const response = (await bridgeSDK.loadBridgeFees({
         bridgeType: ['cBridge', 'deBridge', 'stargate', 'layerZero'],
         fromChainId: fromChain.id,
         fromTokenAddress: selectedToken.address as `0x${string}`,
@@ -67,7 +68,7 @@ export const useLoadingBridgeFees = () => {
         toAccount: address,
         isPegged: selectedToken?.isPegged,
         slippage: max_slippage,
-      });
+      })) as any;
       // eslint-disable-next-line no-console
       console.log('API response deBridge[0], cBridge[1], stargate[2], layerZero[3]', response);
 

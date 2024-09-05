@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 import { parseUnits } from 'viem';
 
 import { createDeBridgeTxQuote } from '@/modules/bridges/debridge/api';
-import { setEstimatedAmount, setReceiveValue } from '@/modules/transfer/action';
+import { setEstimatedAmount } from '@/modules/transfer/action';
 import { useAppDispatch, useAppSelector } from '@/core/store/hooks';
 import { useToTokenInfo } from '@/modules/transfer/hooks/useToTokenInfo';
 import { DEBRIDGE_ACCESS_TOKEN } from '@/core/constants';
