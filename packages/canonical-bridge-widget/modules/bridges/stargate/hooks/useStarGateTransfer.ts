@@ -52,19 +52,6 @@ export const useStarGateTransfer = () => {
       });
 
       dispatch(setEstimatedAmount({ stargate: toObject(quoteOFTResponse) }));
-      if (Number(quoteOFTResponse?.[2].amountReceivedLD) > 0) {
-        dispatch(
-          setReceiveValue({
-            stargate: String(quoteOFTResponse?.[2].amountReceivedLD),
-          }),
-        );
-      } else {
-        dispatch(
-          setReceiveValue({
-            stargate: undefined,
-          }),
-        );
-      }
       return { quoteOFT: quoteOFTResponse };
     } catch (error: any) {
       // eslint-disable-next-line no-console

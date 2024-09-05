@@ -69,7 +69,7 @@ export const CBridgeOption = () => {
     };
   }, [debouncedArguments, allowance, dispatch, publicClient]);
 
-  const setSelectBridge = useCallback(() => {
+  const onSelectBridge = useCallback(() => {
     dispatch(
       setTransferActionInfo({
         bridgeType: 'cBridge',
@@ -99,7 +99,7 @@ export const CBridgeOption = () => {
       _hover={{
         borderColor: theme.colors[colorMode].support.brand['3'],
       }}
-      onClick={setSelectBridge}
+      onClick={onSelectBridge}
       position={'relative'}
     >
       <Flex flexDir={'row'} gap={theme.sizes['2']}>

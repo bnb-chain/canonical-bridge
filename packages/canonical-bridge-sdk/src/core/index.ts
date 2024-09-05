@@ -244,7 +244,7 @@ export class CanonicalBridgeSDK {
     } else {
       promiseArr.push(new Promise((reject) => reject(null)));
     }
-    return await Promise.allSettled<any>(promiseArr);
+    return await Promise.allSettled(promiseArr);
   }
 
   /**

@@ -28,7 +28,7 @@ export function TransactionSubmittedModal(
       description={formatMessage({ id: 'modal.submit.desc' })}
       onButtonClick={() => {
         dispatch(setSendValue(''));
-        dispatch(setReceiveValue(undefined));
+
         dispatch(setEstimatedAmount(undefined));
         dispatch(setTransferActionInfo(undefined));
       }}
@@ -56,7 +56,6 @@ export function TransactionSubmittedModal(
           lineHeight={1.5}
           onClick={() => {
             dispatch(setSendValue(''));
-            dispatch(setReceiveValue(undefined));
             dispatch(setEstimatedAmount(undefined));
             dispatch(setTransferActionInfo(undefined));
             restProps.onClose();

@@ -31,11 +31,6 @@ export const useGetDebridgeEstimateAmount = () => {
       !Number(sendValue) ||
       (isSolanaTransfer && !isAvailableAccount)
     ) {
-      dispatch(
-        setReceiveValue({
-          deBridge: undefined,
-        }),
-      );
       dispatch(setEstimatedAmount({ deBridge: undefined }));
       return null;
     }
@@ -62,28 +57,12 @@ export const useGetDebridgeEstimateAmount = () => {
 
       // console.log('deBridgeQuote', deBridgeQuote);
       dispatch(setEstimatedAmount({ deBridge: deBridgeQuote }));
-      if (Number(deBridgeQuote?.estimation.dstChainTokenOut.amount) > 0) {
-        dispatch(
-          setReceiveValue({
-            deBridge: deBridgeQuote?.estimation.dstChainTokenOut.amount,
-          }),
-        );
-      } else {
-        dispatch(
-          setReceiveValue({
-            deBridge: undefined,
-          }),
-        );
-      }
+
       return deBridgeQuote;
     } catch (error: any) {
       // eslint-disable-next-line no-console
       console.log(error, error.message);
-      dispatch(
-        setReceiveValue({
-          deBridge: undefined,
-        }),
-      );
+
       dispatch(setEstimatedAmount({ deBridge: undefined }));
       return null;
     }
