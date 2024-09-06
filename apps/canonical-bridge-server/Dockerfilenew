@@ -8,6 +8,8 @@ COPY --from=builder /bin/sleep /usr/local/bin/sleep
 
 WORKDIR /opt/deploy/apps/canonical-bridge-server
 
+RUN npx prisma generate
+
 EXPOSE 3000
 
 ENV NODE_ENV production

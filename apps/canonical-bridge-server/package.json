@@ -16,6 +16,7 @@
     "lint-staged": "lint-staged",
     "prisma:init": "npx prisma init",
     "prisma:format": "npx prisma format",
+    "prisma:generate": "npx prisma generate",
     "prisma:migrate:div": "npx dotenv -e .env -- npx prisma migrate dev"
   },
   "dependencies": {
