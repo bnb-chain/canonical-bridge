@@ -12,6 +12,7 @@ import {
   CBridgePeggedPairConfig,
   CBridgeSendRangeInput,
   CBridgeTransferConfigs,
+  CBridgeTransferEstimatedTime,
   IGetCBridgeABI,
   IGetCBridgeTransferAddressInput,
   IGetCBridgeTransferFunction,
@@ -56,6 +57,33 @@ export class CBridge {
       await this.client!.get<CBridgeEstimateAmountResponse>(`v2/estimateAmt`, {
         params,
       })
+    ).data;
+  }
+
+  /**
+   * Get estimated waiting time for cross-chain transfer
+   *
+   * @param number    srcChainId source chain ID
+   * @param number    dstChainId destination chain ID
+   */
+  async getEstimatedWaitingTime({
+    srcChainId,
+    dstChainId,
+  }: {
+    srcChainId: number;
+    dstChainId: number;
+  }) {
+    const params = {
+      src_chain_id: srcChainId,
+      dst_chain_id: dstChainId,
+    };
+    return (
+      await this.client!.get<CBridgeTransferEstimatedTime>(
+        `v2/getLatest7DayTransferLatencyForQuery`,
+        {
+          params,
+        }
+      )
     ).data;
   }
 
@@ -148,6 +176,7 @@ export class CBridge {
 
   /**
    * Get cBridge contract address from cross chain transfer
+   *
    * @param fromChainId Chain ID of the source chain
    * @param isPegged Pool-based transfer(xLiquidity) - false
    *                 Canonical Mapping Transfer(xAsset) - true
@@ -178,6 +207,7 @@ export class CBridge {
 
   /**
    * Get cBridge transfer parameters
+   *
    * @param amount Send amount
    * @param isPegged Pool-based transfer(xLiquidity) - false
    *                Canonical Mapping Transfer(xAsset) - true
@@ -213,6 +243,7 @@ export class CBridge {
 
   /**
    * Get cross chain transfer ABI
+   *
    * @param isPegged Pool-based transfer(xLiquidity) - false
    *               Canonical Mapping Transfer(xAsset) - true
    * @param transferType Transfer type - deposit | withdraw
@@ -234,6 +265,7 @@ export class CBridge {
 
   /**
    * Get cross chain transfer function name
+   *
    * @param isPegged
    * @returns string
    */

@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import { formatUnits, parseUnits } from 'viem';
 import { useAccount, usePublicClient } from 'wagmi';
-import { BridgeType } from '@bnb-chain/canonical-bridge-sdk';
+import { BridgeType, DeBridgeCreateQuoteResponse } from '@bnb-chain/canonical-bridge-sdk';
 
 import { useAppDispatch, useAppSelector } from '@/core/store/hooks';
 import {
@@ -15,6 +15,7 @@ import { useDebounce } from '@/core/hooks/useDebounce';
 import { DEBOUNCE_DELAY, DEFAULT_ADDRESS } from '@/core/constants';
 import { bridgeSDK } from '@/core/constants/bridgeSDK';
 import { toObject } from '@/core/utils/string';
+
 const availableBridgeTypes: BridgeType[] = ['deBridge', 'cBridge', 'stargate', 'layerZero'];
 
 export const useLoadingBridgeFees = () => {
@@ -71,13 +72,18 @@ export const useLoadingBridgeFees = () => {
       // eslint-disable-next-line no-console
       console.log('API response deBridge[0], cBridge[1], stargate[2], layerZero[3]', response);
 
-      const [debridgeEst, cbridgeEst, stargateEst, layerZeroEst] = response;
+      const [debridgeEst, cbridgeEst, stargateEst, layerZeroEst] = response as any;
       if (debridgeEst.status === 'fulfilled' && debridgeEst?.value) {
-        dispatch(setEstimatedAmount({ deBridge: debridgeEst.value }));
+        dispatch(
+          setEstimatedAmount({ deBridge: debridgeEst.value as DeBridgeCreateQuoteResponse }),
+        );
         valueArr.push({
           type: 'deBridge',
           value: formatUnits(
-            BigInt(debridgeEst.value?.estimation.dstChainTokenOut.amount),
+            BigInt(
+              (debridgeEst.value as DeBridgeCreateQuoteResponse)?.estimation.dstChainTokenOut
+                .amount,
+            ),
             getToDecimals()['deBridge'],
           ),
         });

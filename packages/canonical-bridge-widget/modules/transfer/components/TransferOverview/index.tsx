@@ -97,7 +97,7 @@ export function TransferOverview() {
   }, [options, bridgeType]);
 
   return (
-    <Flex flexDir="column" maxW="384px" ml={theme.sizes['6']} gap={theme.sizes['6']}>
+    <Flex flexDir="column" ml={theme.sizes['6']} gap={theme.sizes['6']}>
       {showRoute && (
         <Box overflow={'hidden'}>
           <Box
@@ -105,6 +105,7 @@ export function TransferOverview() {
             py={theme.sizes['6']}
             borderRadius={theme.sizes['6']}
             background={theme.colors[colorMode].layer['3'].default}
+            minW="384px"
           >
             <Flex flexDir={'column'} gap={theme.sizes['3']}>
               <Flex
@@ -122,7 +123,7 @@ export function TransferOverview() {
                 }}
               >
                 {formatMessage({ id: 'route.title' })}
-                <RefreshingButton />
+                {/* <RefreshingButton /> */}
               </Flex>
               <Box
                 px={theme.sizes['6']}

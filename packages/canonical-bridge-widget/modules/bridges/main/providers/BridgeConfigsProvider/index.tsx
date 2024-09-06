@@ -45,10 +45,6 @@ const DEFAULT_CONTEXT: BridgeConfigsContextProps = {
       pc: [],
       mobile: [],
     },
-    solana: {
-      pc: [],
-      mobile: [],
-    },
   },
   peggedPairConfigs: [],
   burnPairConfigs: [],

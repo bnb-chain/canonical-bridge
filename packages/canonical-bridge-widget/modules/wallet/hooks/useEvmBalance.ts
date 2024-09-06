@@ -13,7 +13,7 @@ export function useEvmBalance(address?: Address, enabled = true) {
   const { chain } = useAccount();
 
   return useQuery<FormattedBalance>({
-    queryKey: ['solana:getBalance', address],
+    queryKey: ['evm:getBalance', address],
     refetchInterval: 1000 * 5,
     enabled: !!address && enabled && !!chain,
     queryFn: async () => {

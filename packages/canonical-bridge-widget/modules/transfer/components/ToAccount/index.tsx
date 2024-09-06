@@ -13,9 +13,8 @@ import { ChangeEvent, useRef, useState } from 'react';
 
 import { useAppDispatch, useAppSelector } from '@/core/store/hooks';
 import { setToAccount } from '@/modules/transfer/action';
-import { useSolanaTransferInfo } from '@/modules/transfer/hooks/useSolanaTransferInfo';
 import { ErrorIcon } from '@/core/components/icons/ErrorIcon';
-import { CorrectIcon } from '@/core/components/icons/CorrectIcon';
+// import { CorrectIcon } from '@/core/components/icons/CorrectIcon';
 
 export function ToAccount(props: FlexProps) {
   const { colorMode } = useColorMode();
@@ -23,7 +22,6 @@ export function ToAccount(props: FlexProps) {
   const dispatch = useAppDispatch();
 
   const toAccount = useAppSelector((state) => state.transfer.toAccount);
-  const { isSolanaTransfer, isAvailableAccount } = useSolanaTransferInfo();
 
   const timerRef = useRef<any>();
   const [inputValue, setInputValue] = useState(toAccount.address);
@@ -41,11 +39,7 @@ export function ToAccount(props: FlexProps) {
     }, 500);
   };
 
-  if (!isSolanaTransfer) {
-    return null;
-  }
-
-  const isInvalid = !isAvailableAccount && !!toAccount.address;
+  const isInvalid = !!toAccount.address;
 
   return (
     <Flex
@@ -80,10 +74,9 @@ export function ToAccount(props: FlexProps) {
             borderColor: theme.colors[colorMode].support.danger[3],
           }}
         />
-        {(isInvalid || isAvailableAccount) && (
+        {isInvalid && (
           <InputRightElement h="100%" w="auto" pr={theme.sizes['4']} pl={theme.sizes['2']}>
-            {isInvalid && <ErrorIcon boxSize={theme.sizes['4']} />}
-            {isAvailableAccount && <CorrectIcon boxSize={theme.sizes['4']} />}
+            <ErrorIcon boxSize={theme.sizes['4']} />
           </InputRightElement>
         )}
       </InputGroup>

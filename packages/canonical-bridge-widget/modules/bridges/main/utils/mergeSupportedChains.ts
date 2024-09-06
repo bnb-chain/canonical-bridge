@@ -109,7 +109,7 @@ function formatChainInfo(params: {
   const explorerUrl = chain?.explorer.url?.replace(/\/$/, '') ?? '';
   const tmpUrlPattern = explorerUrl ? `${explorerUrl}/token/{0}` : '';
   const tokenUrlPattern = chain?.explorer?.tokenUrlPattern || tmpUrlPattern;
-  const chainType: ChainType = chain?.chainType ?? 'evm';
+  const chainType: ChainType = 'evm';
 
   const pcWallets = chain?.wallets?.pc ?? defaultWallets[chainType].pc;
   const mobileWallets = chain?.wallets?.mobile ?? defaultWallets[chainType].mobile;
