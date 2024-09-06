@@ -1,6 +1,7 @@
 import { useCallback } from 'react';
 import { formatUnits, parseUnits } from 'viem';
 import { useAccount, usePublicClient } from 'wagmi';
+import { BridgeType } from '@bnb-chain/canonical-bridge-sdk';
 
 import { useAppDispatch, useAppSelector } from '@/core/store/hooks';
 import {
@@ -8,15 +9,13 @@ import {
   setIsGlobalFeeLoading,
   setTransferActionInfo,
 } from '@/modules/transfer/action';
-// import { useGetDebridgeEstimateAmount } from '@/modules/bridges/debridge/hooks/useGetDebridgeEstimateAmount';
-// import { useGetCbridgeEstimateAmount } from '@/modules/bridges/cbridge/hooks/useGetCbridgeEstimateAmount';
-// import { useStarGateTransfer } from '@/modules/bridges/stargate/hooks/useStarGateTransfer';
 import { useCBridgeTransferParams } from '@/modules/bridges/cbridge/hooks/useCBridgeTransferParams';
 import { useToTokenInfo } from '@/modules/transfer/hooks/useToTokenInfo';
 import { useDebounce } from '@/core/hooks/useDebounce';
 import { DEBOUNCE_DELAY, DEFAULT_ADDRESS } from '@/core/constants';
 import { bridgeSDK } from '@/core/constants/bridgeSDK';
 import { toObject } from '@/core/utils/string';
+const availableBridgeTypes: BridgeType[] = ['deBridge', 'cBridge', 'stargate', 'layerZero'];
 
 export const useLoadingBridgeFees = () => {
   const dispatch = useAppDispatch();
@@ -39,10 +38,16 @@ export const useLoadingBridgeFees = () => {
     }
     dispatch(setIsGlobalFeeLoading(true));
     dispatch(setEstimatedAmount(undefined));
+    const bridgeTypeList: BridgeType[] = [];
     const valueArr = [];
+    availableBridgeTypes.forEach((bridge) => {
+      if (selectedToken.available[bridge]) {
+        bridgeTypeList.push(bridge);
+      }
+    });
     try {
-      const response = (await bridgeSDK.loadBridgeFees({
-        bridgeType: ['cBridge', 'deBridge', 'stargate', 'layerZero'],
+      const response = await bridgeSDK.loadBridgeFees({
+        bridgeType: bridgeTypeList,
         fromChainId: fromChain.id,
         fromTokenAddress: selectedToken.address as `0x${string}`,
         fromAccount: address || DEFAULT_ADDRESS,
@@ -62,7 +67,7 @@ export const useLoadingBridgeFees = () => {
         toAccount: address,
         isPegged: selectedToken?.isPegged,
         slippage: max_slippage,
-      })) as any;
+      });
       // eslint-disable-next-line no-console
       console.log('API response deBridge[0], cBridge[1], stargate[2], layerZero[3]', response);
 
@@ -117,13 +122,12 @@ export const useLoadingBridgeFees = () => {
         dispatch(setEstimatedAmount({ layerZero: undefined }));
       }
       if (valueArr.length > 0) {
-        const maxEntry = valueArr.reduce((max, entry) =>
+        const highestValue = valueArr.reduce((max, entry) =>
           Number(entry['value']) > Number(max['value']) ? entry : max,
         );
-        // eslint-disable-next-line no-console
-        console.log('max amount', maxEntry, Number(maxEntry.value));
-        if (Number(maxEntry.value) > 0) {
-          if (maxEntry.type === 'deBridge' && debridgeEst.status === 'fulfilled') {
+
+        if (Number(highestValue.value) > 0) {
+          if (highestValue.type === 'deBridge' && debridgeEst.status === 'fulfilled') {
             dispatch(
               setTransferActionInfo({
                 bridgeType: 'deBridge',
@@ -133,7 +137,7 @@ export const useLoadingBridgeFees = () => {
                 orderId: debridgeEst.value.orderId,
               }),
             );
-          } else if (maxEntry.type === 'cBridge' && cBridgeAddress) {
+          } else if (highestValue.type === 'cBridge' && cBridgeAddress) {
             dispatch(
               setTransferActionInfo({
                 bridgeType: 'cBridge',
@@ -141,7 +145,7 @@ export const useLoadingBridgeFees = () => {
               }),
             );
           } else if (
-            maxEntry.type === 'stargate' &&
+            highestValue.type === 'stargate' &&
             selectedToken?.rawData.stargate?.bridgeAddress
           ) {
             dispatch(
@@ -150,7 +154,7 @@ export const useLoadingBridgeFees = () => {
                 bridgeAddress: selectedToken?.rawData.stargate?.bridgeAddress as `0x${string}`,
               }),
             );
-          } else if (maxEntry.type === 'layerZero') {
+          } else if (highestValue.type === 'layerZero') {
             dispatch(
               setTransferActionInfo({
                 bridgeType: 'layerZero',
@@ -160,6 +164,7 @@ export const useLoadingBridgeFees = () => {
           }
         }
       }
+      // eslint-disable-next-line
     } catch (error: any) {
       // eslint-disable-next-line no-console
       console.log(error, error.message);

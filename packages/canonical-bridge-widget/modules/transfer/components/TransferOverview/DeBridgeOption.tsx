@@ -236,7 +236,8 @@ export const DeBridgeOption = () => {
       >
         {estimatedAmount?.['deBridge'] &&
         toTokenInfo &&
-        Number(estimatedAmount?.['deBridge']?.estimation?.dstChainTokenOut?.amount) > 0
+        Number(estimatedAmount?.['deBridge']?.estimation?.dstChainTokenOut?.amount) > 0 &&
+        !!getToDecimals().deBridge
           ? `~${formatNumber(
               Number(
                 formatUnits(
