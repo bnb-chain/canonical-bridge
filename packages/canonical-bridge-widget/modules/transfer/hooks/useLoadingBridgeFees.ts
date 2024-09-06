@@ -10,26 +10,19 @@ import {
 } from '@/modules/transfer/action';
 // import { useGetDebridgeEstimateAmount } from '@/modules/bridges/debridge/hooks/useGetDebridgeEstimateAmount';
 // import { useGetCbridgeEstimateAmount } from '@/modules/bridges/cbridge/hooks/useGetCbridgeEstimateAmount';
-import { useCBridgeTransferParams } from '@/modules/bridges/cbridge/hooks/useCBridgeTransferParams';
 // import { useStarGateTransfer } from '@/modules/bridges/stargate/hooks/useStarGateTransfer';
+import { useCBridgeTransferParams } from '@/modules/bridges/cbridge/hooks/useCBridgeTransferParams';
 import { useToTokenInfo } from '@/modules/transfer/hooks/useToTokenInfo';
-// import { useGetLayerZeroFees } from '@/modules/bridges/layerZero/hooks/useGetLayerZeroFee';
 import { useDebounce } from '@/core/hooks/useDebounce';
 import { DEBOUNCE_DELAY, DEFAULT_ADDRESS } from '@/core/constants';
 import { bridgeSDK } from '@/core/constants/bridgeSDK';
 import { toObject } from '@/core/utils/string';
-import { QuoteResponse } from '@/modules/bridges/debridge/types';
 
 export const useLoadingBridgeFees = () => {
   const dispatch = useAppDispatch();
-  // const { getCBridgeEstimated } = useGetCbridgeEstimateAmount();
-  // const { getDeBridgeEstimate } = useGetDebridgeEstimateAmount();
-  // const { getLayerZeroEstimateFees } = useGetLayerZeroFees();
-  // const { getQuoteOFT } = useStarGateTransfer();
   const { bridgeAddress: cBridgeAddress } = useCBridgeTransferParams();
   const { getToDecimals } = useToTokenInfo();
   const { address } = useAccount();
-  const publicClient = usePublicClient();
 
   const toToken = useAppSelector((state) => state.transfer.toToken);
   const selectedToken = useAppSelector((state) => state.transfer.selectedToken);
@@ -38,6 +31,7 @@ export const useLoadingBridgeFees = () => {
   const toChain = useAppSelector((state) => state.transfer.toChain);
   const max_slippage = useAppSelector((state) => state.transfer.slippage);
 
+  const publicClient = usePublicClient({ chainId: fromChain?.id });
   const debouncedSendValue = useDebounce(sendValue, DEBOUNCE_DELAY);
   const loadingBridgeFees = useCallback(async () => {
     if (!selectedToken || !publicClient || !fromChain || !toChain || !debouncedSendValue) {

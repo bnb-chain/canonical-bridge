@@ -21,7 +21,6 @@ export const CBridgeOption = () => {
   const dispatch = useAppDispatch();
   const { colorMode } = useColorMode();
   const { toTokenInfo, getToDecimals } = useToTokenInfo();
-  const publicClient = usePublicClient();
 
   const { args, bridgeAddress } = useCBridgeTransferParams();
   const { formatMessage } = useIntl();
@@ -31,6 +30,7 @@ export const CBridgeOption = () => {
   const sendValue = useAppSelector((state) => state.transfer.sendValue);
   const transferActionInfo = useAppSelector((state) => state.transfer.transferActionInfo);
   const estimatedAmount = useAppSelector((state) => state.transfer.estimatedAmount);
+  const publicClient = usePublicClient({ chainId: fromChain?.id });
 
   const [gasFee, setGasFee] = useState<{
     gas: bigint;

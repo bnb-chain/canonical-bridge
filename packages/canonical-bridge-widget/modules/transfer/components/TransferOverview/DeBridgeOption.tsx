@@ -19,7 +19,6 @@ export const DeBridgeOption = () => {
   const nativeToken = useGetNativeToken();
   const { colorMode } = useColorMode();
   const dispatch = useAppDispatch();
-  const publicClient = usePublicClient();
   const { address, chain } = useAccount();
   const { toTokenInfo, getToDecimals } = useToTokenInfo();
   const { formatMessage } = useIntl();
@@ -31,6 +30,7 @@ export const DeBridgeOption = () => {
   const transferActionInfo = useAppSelector((state) => state.transfer.transferActionInfo);
   const estimatedAmount = useAppSelector((state) => state.transfer.estimatedAmount);
 
+  const publicClient = usePublicClient({ chainId: fromChain?.id });
   const [gasInfo, setGasInfo] = useState<{ gas: bigint; gasPrice: bigint }>({
     gas: 0n,
     gasPrice: 0n,
