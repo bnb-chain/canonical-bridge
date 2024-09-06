@@ -37,6 +37,7 @@ export const useGetAllowance = ({
     address: tokenAddress,
     functionName: 'allowance',
     args: [address as `0x${string}`, sender],
+    chainId: fromChain?.id,
     query: {
       staleTime: 8000,
       enabled:

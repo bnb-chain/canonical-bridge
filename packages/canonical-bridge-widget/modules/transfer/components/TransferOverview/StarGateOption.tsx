@@ -116,7 +116,7 @@ export const StarGateOption = () => {
     };
   }, [allowance, dispatch, publicClient, address, selectedToken, sendValue, toTokenInfo, args]);
 
-  const setSelectBridge = useCallback(() => {
+  const onSelectBridge = useCallback(() => {
     if (!selectedToken?.rawData.stargate?.bridgeAddress) return;
     const bridgeAddress = selectedToken.rawData.stargate.bridgeAddress;
     dispatch(
@@ -154,7 +154,7 @@ export const StarGateOption = () => {
       _hover={{
         borderColor: theme.colors[colorMode].support.brand['3'],
       }}
-      onClick={setSelectBridge}
+      onClick={onSelectBridge}
       position={'relative'}
     >
       <Flex flexDir={'row'} gap={theme.sizes['2']}>

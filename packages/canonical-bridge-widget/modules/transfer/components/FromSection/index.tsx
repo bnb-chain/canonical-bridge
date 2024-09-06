@@ -16,7 +16,6 @@ import { SelectSourceModal } from '@/modules/transfer/components/SelectModal/Sel
 import { useAppDispatch, useAppSelector } from '@/core/store/hooks';
 import { BridgeChain, BridgeToken, formatTokenUrl } from '@/modules/bridges';
 import { useSetSelectInfo } from '@/modules/transfer/hooks/useSetSelectInfo';
-import { SolanaTokenBalance } from '@/modules/transfer/solana/SolanaTokenBalance';
 
 const handleKeyPress = (e: React.KeyboardEvent) => {
   // only allow number and decimal
@@ -166,7 +165,7 @@ export function FromSection() {
                 step={'0.000000001'}
                 onWheel={(e: any) => e.target.blur()}
               />
-              {fromChain?.chainType === 'solana' ? <SolanaTokenBalance /> : <TokenBalance />}
+              <TokenBalance />
             </Flex>
           </Flex>
         </Flex>

@@ -3,6 +3,7 @@ import { usePublicClient } from 'wagmi';
 
 import { ICBridgeMaxMinSendAmt } from '@/modules/bridges/cbridge/types';
 import { bridgeSDK } from '@/core/constants/bridgeSDK';
+import { useAppSelector } from '@/core/store/hooks';
 
 export const useCBridgeSendMaxMin = ({
   bridgeAddress,
@@ -13,11 +14,12 @@ export const useCBridgeSendMaxMin = ({
   tokenAddress: `0x${string}`;
   isPegged?: boolean;
 }) => {
+  const fromChain = useAppSelector((state) => state.transfer.fromChain);
   const [minMaxSendAmt, setMinMaxSendAmt] = useState<ICBridgeMaxMinSendAmt>({
     min: 0n,
     max: 0n,
   });
-  const publicClient = usePublicClient();
+  const publicClient = usePublicClient({ chainId: fromChain?.id });
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {

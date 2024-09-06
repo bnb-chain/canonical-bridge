@@ -45,12 +45,10 @@ export const useCBridgeTransferParams = () => {
     return '';
   }, [selectedToken, fromChain?.id]);
 
-  const argument = useMemo(() => {
-    if (!sendValue || sendValue === '0' || !toChain || !selectedToken || !address) {
-      return null;
+  const amount = useMemo(() => {
+    if (!selectedToken) {
+      return 0n;
     }
-    const nonce = new Date().getTime();
-
     let amount = 0n;
     try {
       if (selectedToken.isPegged === false) {
@@ -69,11 +67,18 @@ export const useCBridgeTransferParams = () => {
           selectedToken?.peggedRawData?.cBridge?.pegged_token.token.decimal as number,
         );
       }
+      return amount;
     } catch (e: any) {
       // eslint-disable-next-line no-console
       console.log(e);
     }
+  }, [selectedToken, sendValue, transferType]);
 
+  const argument = useMemo(() => {
+    if (!sendValue || sendValue === '0' || !toChain || !selectedToken || !address || !amount) {
+      return null;
+    }
+    const nonce = new Date().getTime();
     return bridgeSDK.cBridge.getTransferParams({
       amount,
       isPegged,
@@ -85,30 +90,45 @@ export const useCBridgeTransferParams = () => {
       peggedConfig: selectedToken.peggedRawData.cBridge,
       nonce,
     });
-  }, [sendValue, toChain, selectedToken, address, isPegged, transferType, max_slippage]);
+  }, [sendValue, toChain, selectedToken, address, isPegged, transferType, max_slippage, amount]);
 
   // Arguments for bridge smart contract
   const args = useMemo(() => {
     const peggedConfig = selectedToken?.peggedRawData?.cBridge;
-    if (!argument || (isPegged && !transferType) || !address || !bridgeAddress) {
+    if (
+      !argument ||
+      (isPegged && !transferType) ||
+      !address ||
+      !bridgeAddress ||
+      !amount ||
+      !toChain
+    ) {
       return null;
     }
-    const abi = bridgeSDK.cBridge.getABI({
+    const nonce = new Date().getTime();
+    return bridgeSDK.cBridge.getArguments({
       isPegged,
-      transferType: transferType || undefined,
       peggedConfig,
+      chainConfig: fromChain?.rawData?.cBridge,
+      amount: amount,
+      toChainId: toChain.id,
+      fromChainId: fromChain?.id as number,
+      tokenAddress: selectedToken?.address as `0x${string}`,
+      userAddress: address,
+      maxSlippage: max_slippage,
+      nonce,
     });
-    const functionName = bridgeSDK.cBridge.getTransferFunction({
-      isPegged,
-      transferType: transferType || undefined,
-    });
-    return {
-      address: bridgeAddress as `0x${string}`,
-      abi: abi,
-      functionName: functionName,
-      account: address as `0x${string}`,
-      args: argument,
-    };
-  }, [bridgeAddress, transferType, selectedToken, isPegged, address, argument]);
+  }, [
+    bridgeAddress,
+    transferType,
+    selectedToken,
+    isPegged,
+    address,
+    argument,
+    amount,
+    fromChain,
+    toChain,
+    max_slippage,
+  ]);
   return { args, bridgeAddress };
 };

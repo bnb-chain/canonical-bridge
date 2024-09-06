@@ -7,14 +7,9 @@ import {
   binanceWeb3Wallet,
   okxWallet,
 } from '@node-real/walletkit/evm';
-import {
-  trustWallet as solanaTrustWallet,
-  phantomWallet as solanaPhantomWallet,
-} from '@node-real/walletkit/solana';
 
 import { APP_NAME } from '@/core/configs/app';
 import { ChainConfig, useBridgeConfigs } from '@/modules/bridges';
-import { env } from '@/core/configs/env';
 
 export function WalletProvider(props: PropsWithChildren) {
   const { children } = props;
@@ -32,10 +27,6 @@ export function WalletProvider(props: PropsWithChildren) {
           initialChainId: 1,
           wallets: [metaMask(), trustWallet(), binanceWeb3Wallet(), okxWallet(), walletConnect()],
           chains: getEvmChains(chainConfigs),
-        },
-        solanaConfig: {
-          rpcUrl: env.SOLANA_RPC_ENDPOINT,
-          wallets: [solanaTrustWallet(), solanaPhantomWallet()],
         },
       },
       appearance: {

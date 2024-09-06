@@ -19,7 +19,6 @@ export const DeBridgeOption = () => {
   const nativeToken = useGetNativeToken();
   const { colorMode } = useColorMode();
   const dispatch = useAppDispatch();
-  const publicClient = usePublicClient();
   const { address, chain } = useAccount();
   const { toTokenInfo, getToDecimals } = useToTokenInfo();
   const { formatMessage } = useIntl();
@@ -31,6 +30,7 @@ export const DeBridgeOption = () => {
   const transferActionInfo = useAppSelector((state) => state.transfer.transferActionInfo);
   const estimatedAmount = useAppSelector((state) => state.transfer.estimatedAmount);
 
+  const publicClient = usePublicClient({ chainId: fromChain?.id });
   const [gasInfo, setGasInfo] = useState<{ gas: bigint; gasPrice: bigint }>({
     gas: 0n,
     gasPrice: 0n,
@@ -120,7 +120,7 @@ export const DeBridgeOption = () => {
     chain?.id,
   ]);
 
-  const setSelectBridge = useCallback(() => {
+  const onSelectBridge = useCallback(() => {
     if (!estimatedAmount || !estimatedAmount?.['deBridge']?.tx) {
       return;
     }
@@ -209,7 +209,7 @@ export const DeBridgeOption = () => {
       _hover={{
         borderColor: theme.colors[colorMode].support.brand['3'],
       }}
-      onClick={setSelectBridge}
+      onClick={onSelectBridge}
     >
       <Flex flexDir={'row'} gap={theme.sizes['2']} alignItems={'center'}>
         <Image
@@ -236,7 +236,8 @@ export const DeBridgeOption = () => {
       >
         {estimatedAmount?.['deBridge'] &&
         toTokenInfo &&
-        Number(estimatedAmount?.['deBridge']?.estimation?.dstChainTokenOut?.amount) > 0
+        Number(estimatedAmount?.['deBridge']?.estimation?.dstChainTokenOut?.amount) > 0 &&
+        !!getToDecimals().deBridge
           ? `~${formatNumber(
               Number(
                 formatUnits(

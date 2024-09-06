@@ -6,7 +6,8 @@
         "bridgeAddress": "0x152649eA73beAb28c5b49B26eb48f7EAD6d4c898",
         "decimals": 18,
         "symbol": "CAKE",
-        "endpointID": 101
+        "endpointID": 101,
+        "version": 1
       }
     ],
     "56": [
@@ -15,7 +16,8 @@
         "bridgeAddress": "0xb274202daBA6AE180c665B4fbE59857b7c3a8091",
         "decimals": 18,
         "symbol": "CAKE",
-        "endpointID": 102
+        "endpointID": 102,
+        "version": 1
       }
     ],
     "204": [
@@ -24,7 +26,8 @@
         "bridgeAddress": "0x2779106e4F4A8A28d77A24c18283651a2AE22D1C",
         "decimals": 18,
         "symbol": "CAKE",
-        "endpointID": 202
+        "endpointID": 202,
+        "version": 1
       }
     ],
     "324": [
@@ -33,7 +36,8 @@
         "bridgeAddress": "0x3a287a06c66f9e95a56327185ca2bdf5f031cecd",
         "decimals": 18,
         "symbol": "CAKE",
-        "endpointID": 165
+        "endpointID": 165,
+        "version": 1
       }
     ],
     "1101": [
@@ -42,7 +46,8 @@
         "bridgeAddress": "0x0D1E753a25eBda689453309112904807625bEFBe",
         "decimals": 18,
         "symbol": "CAKE",
-        "endpointID": 158
+        "endpointID": 158,
+        "version": 1
       }
     ],
     "8453": [
@@ -51,7 +56,8 @@
         "bridgeAddress": "0x3055913c90Fcc1A6CE9a358911721eEb942013A1",
         "decimals": 18,
         "symbol": "CAKE",
-        "endpointID": 184
+        "endpointID": 184,
+        "version": 1
       }
     ],
     "42161": [
@@ -60,7 +66,8 @@
         "bridgeAddress": "0x1b896893dfc86bb67Cf57767298b9073D2c1bA2c",
         "decimals": 18,
         "symbol": "CAKE",
-        "endpointID": 110
+        "endpointID": 110,
+        "version": 1
       }
     ],
     "59144": [
@@ -69,7 +76,8 @@
         "bridgeAddress": "0x0D1E753a25eBda689453309112904807625bEFBe",
         "decimals": 18,
         "symbol": "CAKE",
-        "endpointID": 183
+        "endpointID": 183,
+        "version": 1
       }
     ]
   },

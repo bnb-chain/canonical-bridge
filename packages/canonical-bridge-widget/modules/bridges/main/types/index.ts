@@ -13,18 +13,10 @@ import {
   LayerZeroToken,
   LayerZeroTransferConfigs,
   LayerZeroChain,
+  DeBridgeCreateQuoteResponse,
 } from '@bnb-chain/canonical-bridge-sdk';
 
-import { QuoteResponse } from '@/modules/bridges/debridge/types';
-
-export type WalletType =
-  | 'metaMask'
-  | 'trust'
-  | 'walletConnect'
-  | 'okxWallet'
-  | 'binanceWeb3Wallet'
-  | 'solana:phantom'
-  | 'solana:trust';
+export type WalletType = 'metaMask' | 'trust' | 'walletConnect' | 'okxWallet' | 'binanceWeb3Wallet';
 
 export type ChainType = 'evm' | 'solana';
 
@@ -89,10 +81,10 @@ export interface BridgeConfigsResponse {
       pc: WalletType[];
       mobile: WalletType[];
     };
-    solana: {
-      pc: WalletType[];
-      mobile: WalletType[];
-    };
+    // solana: {
+    //   pc: WalletType[];
+    //   mobile: WalletType[];
+    // };
   };
   order: {
     chain: number[];
@@ -140,16 +132,9 @@ export interface TransferActionInfo {
   orderId?: string; // deBridge order id. May be used for tracking history
 }
 
-export interface ReceiveValue {
-  deBridge?: string;
-  cBridge?: string;
-  stargate?: string;
-  layerZero?: string;
-}
-
 export interface IEstimatedAmount {
   cBridge?: any;
-  deBridge?: QuoteResponse;
+  deBridge?: DeBridgeCreateQuoteResponse;
   stargate?: any; // TODO: response from quoteOFT
   layerZero?: any;
 }

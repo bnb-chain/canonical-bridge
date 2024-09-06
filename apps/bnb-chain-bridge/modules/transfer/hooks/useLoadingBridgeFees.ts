@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import { formatUnits, parseUnits } from 'viem';
+import { formatUnits } from 'viem';
 
 import { useAppDispatch, useAppSelector } from '@/core/store/hooks';
 import {
@@ -110,9 +110,10 @@ export const useLoadingBridgeFees = () => {
             type: 'layerZero',
             value: debouncedSendValue,
           });
+          dispatch(setEstimatedAmount({ layerZero: Number(layerZeroEst.value[0]) }));
           dispatch(
             setReceiveValue({
-              layerZero: String(parseUnits(debouncedSendValue, getToDecimals()['layerZero'])),
+              layerZero: debouncedSendValue,
             }),
           );
         } else {

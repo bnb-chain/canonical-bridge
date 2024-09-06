@@ -399,15 +399,6 @@ importers:
       '@sentry/tracing':
         specifier: ~7.23.0
         version: 7.23.0
-      '@solana/spl-token':
-        specifier: ~0.4.8
-        version: 0.4.8(@solana/web3.js@1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.9))(bufferutil@4.0.8)(typescript@5.5.4)(utf-8-validate@5.0.9)
-      '@solana/wallet-adapter-react':
-        specifier: ~0.15.35
-        version: 0.15.35(@solana/web3.js@1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.9))(bs58@5.0.0)(react-native@0.74.3(@babel/core@7.24.9(supports-color@8.1.1))(@babel/preset-env@7.18.10(@babel/core@7.24.9(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@18.0.12)(bufferutil@4.0.8)(react@18.2.0)(supports-color@8.1.1)(utf-8-validate@5.0.9))(react@18.2.0)
-      '@solana/web3.js':
-        specifier: ~1.95.2
-        version: 1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.9)
       '@tanstack/react-query':
         specifier: ~5.36.0
         version: 5.36.2(react@18.2.0)

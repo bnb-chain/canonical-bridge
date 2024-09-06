@@ -74,13 +74,6 @@ export type DeBridgeCreateQuoteResponse = {
   orderId: string;
 };
 
-export interface DeBridgeGetSupportedFuncParams {
-  fromChainId?: number;
-  toChainId?: number;
-  fromTokenSymbol?: string;
-  data: DeBridgeTransferConfigs;
-}
-
 export interface IDeBridgeEstimatedFeesInput {
   fromChainId: number;
   fromTokenAddress: `0x${string}`;

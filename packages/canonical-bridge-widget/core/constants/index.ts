@@ -23,7 +23,7 @@ export const nativeTokenMap = {
   42161: 'ETH',
   43114: 'ETH',
   59144: 'ETH',
-  7565164: 'SOL',
+  // 7565164: 'SOL',
   100000001: 'NEON',
   1380012617: 'ETH',
 };

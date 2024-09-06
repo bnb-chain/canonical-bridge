@@ -192,9 +192,10 @@ export interface ISendCBridgeToken {
   walletClient: WalletClient;
   publicClient: PublicClient;
   bridgeAddress: string;
-  bridgeABI: any;
-  functionName: string;
+  fromChainId: number;
   address: `0x${string}`;
+  peggedConfig?: CBridgePeggedPairConfig;
+  isPegged: boolean;
   args: any;
 }
 
