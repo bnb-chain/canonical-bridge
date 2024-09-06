@@ -33,10 +33,6 @@
       "chainName": "Linea"
     },
     {
-      "chainId": 7565164,
-      "chainName": "Solana"
-    },
-    {
       "chainId": 100000001,
       "chainName": "Neon"
     },

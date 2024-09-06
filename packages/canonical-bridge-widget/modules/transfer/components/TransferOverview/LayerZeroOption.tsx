@@ -1,4 +1,4 @@
-import { Box, Flex, theme, useColorMode } from '@bnb-chain/space';
+import { Box, Flex, theme, useColorMode, Image } from '@bnb-chain/space';
 import { useCallback, useEffect, useState } from 'react';
 import { formatUnits, parseUnits, encodePacked, pad } from 'viem';
 import { useAccount, usePublicClient } from 'wagmi';
@@ -15,11 +15,12 @@ import { InfoRow } from '@/modules/transfer/components/InfoRow';
 import { formatNumber } from '@/core/utils/number';
 import { CAKE_PROXY_OFT_ABI } from '@/modules/bridges/layerZero/abi/cakeProxyOFT';
 import { useGetTokenBalance } from '@/core/contract/hooks/useGetTokenBalance';
+import { env } from '@/core/configs/env';
 
 export const LayerZeroOption = () => {
   const dispatch = useAppDispatch();
   const { colorMode } = useColorMode();
-  const { toTokenInfo } = useToTokenInfo();
+  const { toTokenInfo, getToDecimals } = useToTokenInfo();
   const nativeToken = useGetNativeToken();
   const { address } = useAccount();
 
@@ -154,6 +155,13 @@ export const LayerZeroOption = () => {
       position={'relative'}
     >
       <Flex flexDir={'row'} gap={theme.sizes['2']}>
+        <Image
+          src={`${env.ASSET_PREFIX}/images/layerZeroIcon.png`}
+          alt="layerZero"
+          w={theme.sizes['5']}
+          h={theme.sizes['5']}
+          borderRadius={'100%'}
+        />
         <Box fontSize={theme.sizes['3.5']} fontWeight={500} lineHeight={theme.sizes['5']}>
           {'LayerZero'}
         </Box>
@@ -170,8 +178,17 @@ export const LayerZeroOption = () => {
         borderRadius={'100px'}
         fontSize={theme.sizes['3.5']}
       >
-        {estimatedAmount && estimatedAmount?.['layerZero'] && toTokenInfo && Number(sendValue) > 0
-          ? `~${formatNumber(Number(estimatedAmount?.['layerZero']), 8)} ${toTokenInfo.symbol}`
+        {estimatedAmount &&
+        estimatedAmount?.['layerZero'] &&
+        toTokenInfo &&
+        Number(sendValue) > 0 &&
+        !!getToDecimals()['layerZero']
+          ? `~${formatNumber(
+              Number(
+                formatUnits(BigInt(estimatedAmount?.['layerZero']), getToDecimals()['layerZero']),
+              ),
+              8,
+            )} ${toTokenInfo.symbol}`
           : '-'}
       </Box>
 
@@ -185,12 +202,12 @@ export const LayerZeroOption = () => {
           }
         />
       ) : null}
-      {!!gasFee?.gas && !!gasFee?.gasPrice ? (
+      {!!gasFee?.gas && !!gasFee?.gasPrice && toTokenInfo ? (
         <AdditionalDetails>
           <InfoRow
             label={'Gas Fee'}
             value={`${formatNumber(
-              Number(formatUnits(gasFee?.gas * gasFee?.gasPrice, 18)),
+              Number(formatUnits(gasFee?.gas * gasFee?.gasPrice, toTokenInfo.decimal)),
               8,
             )} ${nativeToken}`}
           />

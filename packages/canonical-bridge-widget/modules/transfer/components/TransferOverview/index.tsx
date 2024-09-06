@@ -14,8 +14,6 @@ import { DEBOUNCE_DELAY } from '@/core/constants';
 import { useDebounce } from '@/core/hooks/useDebounce';
 import { useLoadingBridgeFees } from '@/modules/transfer/hooks/useLoadingBridgeFees';
 import { StarGateOption } from '@/modules/transfer/components/TransferOverview/StarGateOption';
-import { DeBridgeSolanaOption } from '@/modules/transfer/solana/DeBridgeSolanaOption';
-import { useSolanaTransferInfo } from '@/modules/transfer/hooks/useSolanaTransferInfo';
 import { LayerZeroOption } from '@/modules/transfer/components/TransferOverview/LayerZeroOption';
 import { useGetReceiveAmount } from '@/modules/transfer/hooks/useGetReceiveAmount';
 import { RefreshingButton } from '@/modules/transfer/components/Button/RefreshingButton';
@@ -31,7 +29,6 @@ export function TransferOverview() {
   const sendValue = useAppSelector((state) => state.transfer.sendValue);
   const estimatedAmount = useAppSelector((state) => state.transfer.estimatedAmount);
   const toChain = useAppSelector((state) => state.transfer.toChain);
-  const fromChain = useAppSelector((state) => state.transfer.fromChain);
   const toTokenInfo = useAppSelector((state) => state.transfer.toToken);
   const bridgeType = useAppSelector((state) => state.transfer.transferActionInfo)?.bridgeType;
 
@@ -39,14 +36,8 @@ export function TransferOverview() {
 
   const debouncedSendValue = useDebounce(sendValue, DEBOUNCE_DELAY);
 
-  const { isSolanaTransfer, isAvailableAccount } = useSolanaTransferInfo();
-
   useEffect(() => {
     if (sendValue === debouncedSendValue) {
-      if (isSolanaTransfer && !isAvailableAccount) {
-        return;
-      }
-
       dispatch(setTransferActionInfo(undefined));
       if (!selectedToken || !Number(debouncedSendValue)) {
         dispatch(setEstimatedAmount(undefined));
@@ -56,15 +47,7 @@ export function TransferOverview() {
       loadingBridgeFees();
       dispatch(setIsRefreshing(true));
     }
-  }, [
-    selectedToken,
-    debouncedSendValue,
-    dispatch,
-    sendValue,
-    isSolanaTransfer,
-    isAvailableAccount,
-    loadingBridgeFees,
-  ]);
+  }, [selectedToken, debouncedSendValue, dispatch, sendValue, loadingBridgeFees]);
 
   const sortedReceivedAmt = useMemo(() => getSortedReceiveAmount(), [getSortedReceiveAmount]);
   const options = useMemo(() => {
@@ -87,13 +70,7 @@ export function TransferOverview() {
         estimatedAmount?.['deBridge']?.estimation?.dstChainTokenOut?.amount &&
         Number(estimatedAmount?.['deBridge']?.estimation?.dstChainTokenOut?.amount) > 0
       ) {
-        if (fromChain?.chainType === 'solana') {
-          if (isAvailableAccount) {
-            bridges.push(<DeBridgeSolanaOption key={'debridge-solana-option'} />);
-          }
-        } else {
-          bridges.push(<DeBridgeOption key={'debridge-option'} />);
-        }
+        bridges.push(<DeBridgeOption key={'debridge-option'} />);
       }
       if (
         bridge === 'stargate' &&
@@ -107,13 +84,7 @@ export function TransferOverview() {
       }
     }
     return bridges;
-  }, [
-    sortedReceivedAmt,
-    debouncedSendValue,
-    estimatedAmount,
-    fromChain?.chainType,
-    isAvailableAccount,
-  ]);
+  }, [sortedReceivedAmt, debouncedSendValue, estimatedAmount]);
 
   const showRoute = selectedToken && sendValue && toTokenInfo;
 
@@ -123,14 +94,10 @@ export function TransferOverview() {
     return options.sort((a) => {
       return a.key === bridgeType ? -1 : 0;
     });
-  }, [options]);
-
-  if ((isSolanaTransfer && !isAvailableAccount) || !toChain) {
-    return null;
-  }
+  }, [options, bridgeType]);
 
   return (
-    <Flex flexDir="column" maxW="384px" ml={theme.sizes['6']} gap={theme.sizes['6']}>
+    <Flex flexDir="column" ml={theme.sizes['6']} gap={theme.sizes['6']}>
       {showRoute && (
         <Box overflow={'hidden'}>
           <Box
@@ -138,6 +105,7 @@ export function TransferOverview() {
             py={theme.sizes['6']}
             borderRadius={theme.sizes['6']}
             background={theme.colors[colorMode].layer['3'].default}
+            minW="384px"
           >
             <Flex flexDir={'column'} gap={theme.sizes['3']}>
               <Flex
@@ -155,7 +123,7 @@ export function TransferOverview() {
                 }}
               >
                 {formatMessage({ id: 'route.title' })}
-                <RefreshingButton />
+                {/* <RefreshingButton /> */}
               </Flex>
               <Box
                 px={theme.sizes['6']}

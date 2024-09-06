@@ -21,7 +21,6 @@ export const CBridgeOption = () => {
   const dispatch = useAppDispatch();
   const { colorMode } = useColorMode();
   const { toTokenInfo, getToDecimals } = useToTokenInfo();
-  const publicClient = usePublicClient();
 
   const { args, bridgeAddress } = useCBridgeTransferParams();
   const { formatMessage } = useIntl();
@@ -31,6 +30,7 @@ export const CBridgeOption = () => {
   const sendValue = useAppSelector((state) => state.transfer.sendValue);
   const transferActionInfo = useAppSelector((state) => state.transfer.transferActionInfo);
   const estimatedAmount = useAppSelector((state) => state.transfer.estimatedAmount);
+  const publicClient = usePublicClient({ chainId: fromChain?.id });
 
   const [gasFee, setGasFee] = useState<{
     gas: bigint;
@@ -51,6 +51,7 @@ export const CBridgeOption = () => {
     }
     (async () => {
       try {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const gas = await publicClient.estimateContractGas(debouncedArguments as any);
         const gasPrice = await publicClient.getGasPrice();
         if (gas && gasPrice) {
@@ -59,6 +60,7 @@ export const CBridgeOption = () => {
             gasPrice,
           });
         }
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (error: any) {
         // eslint-disable-next-line no-console
         console.log(error, error.message, debouncedArguments);
@@ -120,12 +122,16 @@ export const CBridgeOption = () => {
         borderRadius={'100px'}
         fontSize={theme.sizes['3.5']}
       >
-        {estimatedAmount && estimatedAmount?.['cBridge'] && toTokenInfo && Number(sendValue) > 0
+        {estimatedAmount &&
+        estimatedAmount?.['cBridge'] &&
+        toTokenInfo &&
+        Number(sendValue) > 0 &&
+        !!getToDecimals()['cBridge']
           ? `~${formatNumber(
               Number(
                 formatUnits(
                   estimatedAmount?.['cBridge']?.estimated_receive_amt,
-                  getToDecimals()['cBridge'] || 18,
+                  getToDecimals()['cBridge'],
                 ),
               ),
               8,

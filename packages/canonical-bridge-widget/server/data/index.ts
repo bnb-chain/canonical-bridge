@@ -54,14 +54,10 @@ export const bridgeConfigs: BridgeConfigsResponse = {
       pc: ['trust', 'metaMask', 'okxWallet', 'binanceWeb3Wallet', 'walletConnect'],
       mobile: ['trust', 'metaMask', 'okxWallet', 'binanceWeb3Wallet', 'walletConnect'],
     },
-    solana: {
-      pc: ['solana:trust', 'solana:phantom'],
-      mobile: ['solana:trust', 'solana:phantom'],
-    },
   },
   order: {
-    // [Ethereum, Arbitrum, Base, Tron, Solana, Polygon, Avalanche, Blast, Linea, Optimism]
-    chain: [56, 204, 1, 42161, 8453, 1000, 7565164, 137, 43114, 81457, 59144, 10],
+    // [BSC, opBNB, Ethereum, Arbitrum, Base, Tron, Polygon, Avalanche, Blast, Linea, Optimism]
+    chain: [56, 204, 1, 42161, 8453, 1000, 137, 43114, 81457, 59144, 10],
     token: [
       'USDC',
       'USDT',
