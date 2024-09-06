@@ -28,7 +28,8 @@
     "staking-ui",
     "bnb-chain-bridge",
     "staking-ui",
-    "portal-ui"
+    "portal-ui",
+    "canonical-bridge-server"
   ],
 
   /**
@@ -79,33 +80,15 @@
    * Customize how Rush projects are processed during deployment.
    */
   "projectSettings": [
-    {
+//    {
       //   /**
       //    * The full package name of the project, which must be declared in rush.json.
       //    */
-      "projectName": "greenfield-ui",
+//      "projectName": "opbnb-ui",
       // # Fix Python 3 symlink error.
       // # https://github.com/microsoft/rushstack/issues/4421
-      "dependenciesToExclude": ["wagmi", "@totejs/walletkit"]
-    },
-    {
-      //   /**
-      //    * The full package name of the project, which must be declared in rush.json.
-      //    */
-      "projectName": "opbnb-ui",
-      // # Fix Python 3 symlink error.
-      // # https://github.com/microsoft/rushstack/issues/4421
-      "dependenciesToExclude": ["wagmi", "connectkit"]
-    },
-    {
-      //   /**
-      //    * The full package name of the project, which must be declared in rush.json.
-      //    */
-      "projectName": "staking-ui",
-      // # Fix Python 3 symlink error.
-      // # https://github.com/microsoft/rushstack/issues/4421
-      "dependenciesToExclude": ["wagmi", "@totejs/walletkit"]
-    }
+//      "dependenciesToExclude": ["wagmi", "connectkit"]
+//    },
   ]
   // "dependencySettings": [
   //   {

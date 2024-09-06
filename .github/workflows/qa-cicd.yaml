@@ -1,0 +1,10 @@
+name: qa-cicd-by-comment
+
+on:
+  issue_comment:
+    types: [created]
+
+jobs:
+  cicd-ap-pr:
+    uses: bnb-chain/github-workflow/.github/workflows/fe-qa-cicd-ap.yml@main
+    secrets: inherit
