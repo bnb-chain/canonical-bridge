@@ -6,7 +6,7 @@ import { Prisma } from '@prisma/client';
 export class DatabaseService {
   private logger = new Logger(DatabaseService.name);
 
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(private prismaService: PrismaService) {}
 
   async createTokens(tokens: Prisma.TokenCreateManyInput[]) {
     return this.prismaService.token.createMany({
@@ -28,5 +28,9 @@ export class DatabaseService {
       take: limit,
       orderBy: { updateAt: 'asc' },
     });
+  }
+
+  async getAllTokens() {
+    return this.prismaService.token.findMany();
   }
 }

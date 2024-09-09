@@ -1,10 +1,9 @@
-import { Inject, Injectable, Logger, OnModuleInit } from '@nestjs/common';
+import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
-import { CACHE_KEY, JOB_KEY, Queues, Tasks } from '@/common/constants';
+import { JOB_KEY, Queues, Tasks } from '@/common/constants';
 import { Queue } from 'bullmq';
 import { ITokenJob } from '@/module/token/token.interface';
 import { InjectQueue } from '@nestjs/bullmq';
-import { Cache, CACHE_MANAGER } from '@nestjs/cache-manager';
 import { TokenService } from '@/module/token/token.service';
 
 @Injectable()
@@ -13,7 +12,6 @@ export class TokenSchedule implements OnModuleInit {
 
   constructor(
     @InjectQueue(Queues.SyncToken) private syncToken: Queue<ITokenJob>,
-    @Inject(CACHE_MANAGER) private cache: Cache,
     private tokensService: TokenService,
   ) {}
 
@@ -40,14 +38,10 @@ export class TokenSchedule implements OnModuleInit {
   }
 
   async onModuleInit() {
-    const init = await this.cache.get<boolean>(CACHE_KEY.TOKEN_CORN_INIT);
-    if (!init) {
-      await this.syncCmcTokens();
-      await this.cache.set(CACHE_KEY.TOKEN_CORN_INIT, true);
-    }
+    await this.syncCmcTokens();
     const jobs = await this.syncToken.getFailed();
     jobs.forEach((job) => job?.retry());
     if (!jobs.length) return;
-    this.logger.log(`Retrying failed jobs[${jobs.length}]`);
+    this.logger.log(`Retrying failed token jobs[${jobs.length}]`);
   }
 }

@@ -37,8 +37,4 @@ export class TokenService {
     const tokens = await this.databaseService.getTokens(PRICE_REQUEST_LIMIT);
     return tokens.map((token) => token.id).join(',');
   }
-
-  getTokens() {
-    return this.databaseService.getTokens(PRICE_REQUEST_LIMIT);
-  }
 }

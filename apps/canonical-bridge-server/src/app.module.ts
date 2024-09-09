@@ -18,9 +18,11 @@ import { REDIS_HOST, REDIS_PORT } from './common/constants';
 import { TokenModule } from './module/token/token.module';
 import { BullModule } from '@nestjs/bullmq';
 import { Web3Module } from '@/shared/web3/web3.module';
+import { BridgeModule } from '@/module/bridge/bridge.module';
 
 @Module({
   imports: [
+    BridgeModule,
     Web3Module,
     TokenModule,
     DatabaseModule,

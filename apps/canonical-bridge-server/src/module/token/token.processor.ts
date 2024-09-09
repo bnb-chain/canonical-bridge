@@ -25,7 +25,6 @@ export class TokenProcessor extends WorkerHost {
       case Tasks.fetchPrice:
         return this.fetchPrice(job);
       default:
-        return;
     }
   }
 
@@ -47,6 +46,6 @@ export class TokenProcessor extends WorkerHost {
   async fetchPrice(job: Job<ITokenJob>) {
     const tokens = await this.web3Service.getCryptoCurrencyQuotes(job.data.ids);
 
-    this.tokenService.syncTokenPrice(tokens);
+    await this.tokenService.syncTokenPrice(tokens);
   }
 }
