@@ -1,4 +1,4 @@
-import { Box, BoxProps, Flex, theme, useColorMode } from '@bnb-chain/space';
+import { Box, BoxProps, Flex, theme, useColorMode, useIntl } from '@bnb-chain/space';
 import { useEffect, useState } from 'react';
 import { formatUnits } from 'viem';
 import { useAccount, useBalance } from 'wagmi';
@@ -121,25 +121,22 @@ export interface StyledTokenBalanceInfoProps {
 export function StyledTokenBalance(props: StyledTokenBalanceInfoProps) {
   const { error, balance, selectedToken, setMaxAmount } = props;
   const { colorMode } = useColorMode();
+  const { formatMessage } = useIntl();
 
   return (
-    <Flex flex={1} flexDir={'column'} fontSize={theme.sizes['3']}>
-      <Flex gap={theme.sizes['2']}>
+    <Flex flex={1} flexDir={'column'} fontSize={'12px'}>
+      <Flex gap={'8px'}>
         <Flex color={theme.colors[colorMode].text.tertiary} flexDir={'row'} alignItems={'center'}>
           {error ? (
             <WarningTriangleIcon
-              w={theme.sizes['4']}
-              h={theme.sizes['4']}
-              mr={theme.sizes['1']}
+              w={'16px'}
+              h={'16px'}
+              mr={'4px'}
               color={theme.colors[colorMode].support.danger[3]}
             />
           ) : null}
-          Balance:
-          <Box
-            ml={theme.sizes['1']}
-            color={theme.colors[colorMode].text.secondary}
-            fontWeight={500}
-          >
+          {formatMessage({ id: 'from.section.balance.title' })}
+          <Box ml={'4px'} color={theme.colors[colorMode].text.secondary} fontWeight={500}>
             {Number(formatUnits(balance, selectedToken?.decimal))}
           </Box>
         </Flex>
@@ -148,11 +145,11 @@ export function StyledTokenBalance(props: StyledTokenBalanceInfoProps) {
             onClick={setMaxAmount}
             color={theme.colors[colorMode].button.brand.default}
             cursor={'pointer'}
-            fontSize={theme.sizes['3.5']}
+            fontSize={'14px'}
             fontWeight={500}
-            pb={`${theme.sizes['0.25']}`}
+            pb={`1px`}
           >
-            Max
+            {formatMessage({ id: 'from.section.balance.button.max' })}
           </Box>
         ) : null}
       </Flex>
@@ -240,9 +237,9 @@ export function ErrorMsg(props: BoxProps) {
   return (
     <Box
       color={theme.colors[colorMode].support.danger[3]}
-      fontSize={theme.sizes['3']}
+      fontSize={'12px'}
       fontWeight={400}
-      lineHeight={theme.sizes['4']}
+      lineHeight={'16px'}
       {...props}
     />
   );

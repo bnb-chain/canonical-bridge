@@ -1,4 +1,4 @@
-import { Button, Flex, theme } from '@bnb-chain/space';
+import { Button, Flex } from '@bnb-chain/space';
 
 import { ProfileMenu } from '@/core/components/ProfileMenu';
 import { useWalletModal } from '@/modules/wallet/hooks/useWalletModal';
@@ -17,7 +17,7 @@ export const HeaderInfo = () => {
   }
 
   return (
-    <Flex alignItems="center" gap={theme.sizes['4']}>
+    <Flex alignItems="center" gap={'16px'}>
       {!isConnected && (
         <Button size="lg" onClick={() => onOpen()}>
           Connect Wallet

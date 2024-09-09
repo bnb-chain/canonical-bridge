@@ -9,6 +9,8 @@ export const en = {
   'support.stargate.soon': 'We will support Stargate soon',
   'route.title': 'Select Bridge Routes',
   'from.section.title': 'From',
+  'from.section.balance.title': 'Balance:',
+  'from.section.balance.button.max': 'Max',
   'to.section.title': 'To',
   'to.section.estimated-amount': 'Est. Amount Receive',
   'to.section.account.label': 'Destination Address',
@@ -23,6 +25,7 @@ export const en = {
   'route.option.stargate.title': 'Stargate:',
   'route.option.info.estimated-time': 'Est. Time:',
   'route.option.info.gas-fee': 'Gas Fee:',
+  'route.option.info.native-fee': 'Native Fee:',
   'route.option.info.debridge-fee': 'deBridge Fee:',
   'route.option.info.market-maker-fee': 'Market Maker Gas Costs:',
   'route.option.info.base-fee': 'Base Fee:',
@@ -50,6 +53,13 @@ export const en = {
   'modal.submit.button.view-tx': 'View Transaction',
   'modal.submit.button.close': 'Make Another Transaction',
 
+  'select-modal.select.network.title': 'Select Network',
+  'select-modal.select.token.title': 'Select Token',
+  'select-modal.select.no-result.title': 'No result found',
+  'select-modal.select.no-result.warning':
+    'Try adjusting your search request to find what you’re looking for',
+  'select-modal.select.tag.unavailable': 'Unavailable',
+  'select-modal.select.network.select-first': 'Select a network first',
   'select-modal.token.unavailable-tooltip':
     'This token is not supported by the source or destination network you’ve selected. Please change the network settings.',
   'select-modal.src.network.unavailable-tooltip':
@@ -59,4 +69,5 @@ export const en = {
 
   'wallet.error.switch-network':
     'An error occurred when attempting to switch the network. Please select another network or try again.',
+  'wallet.button.disconnect': 'Disconnect Wallet',
 };

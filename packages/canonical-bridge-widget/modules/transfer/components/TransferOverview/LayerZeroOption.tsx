@@ -1,4 +1,4 @@
-import { Box, Flex, theme, useColorMode, Image } from '@bnb-chain/space';
+import { Box, Flex, theme, useColorMode, Image, useIntl } from '@bnb-chain/space';
 import { useCallback, useEffect, useState } from 'react';
 import { formatUnits, parseUnits, encodePacked, pad } from 'viem';
 import { useAccount, usePublicClient } from 'wagmi';
@@ -23,6 +23,7 @@ export const LayerZeroOption = () => {
   const { toTokenInfo, getToDecimals } = useToTokenInfo();
   const nativeToken = useGetNativeToken();
   const { address } = useAccount();
+  const { formatMessage } = useIntl();
 
   const fromChain = useAppSelector((state) => state.transfer.fromChain);
   const selectedToken = useAppSelector((state) => state.transfer.selectedToken);
@@ -134,7 +135,7 @@ export const LayerZeroOption = () => {
     <Flex
       flex={1}
       flexDir={'column'}
-      gap={theme.sizes['1']}
+      gap={'4px'}
       border={`1px solid`}
       height={'fit-content'}
       borderColor={
@@ -145,8 +146,8 @@ export const LayerZeroOption = () => {
       background={
         transferActionInfo?.bridgeType === 'layerZero' ? 'rgba(255, 233, 0, 0.06);' : 'none'
       }
-      borderRadius={theme.sizes['4']}
-      padding={theme.sizes['3']}
+      borderRadius={'16px'}
+      padding={'12px'}
       cursor={'pointer'}
       _hover={{
         borderColor: theme.colors[colorMode].support.brand['3'],
@@ -154,29 +155,29 @@ export const LayerZeroOption = () => {
       onClick={onSelectBridge}
       position={'relative'}
     >
-      <Flex flexDir={'row'} gap={theme.sizes['2']}>
+      <Flex flexDir={'row'} gap={'8px'}>
         <Image
           src={`${env.ASSET_PREFIX}/images/layerZeroIcon.png`}
           alt="layerZero"
-          w={theme.sizes['5']}
-          h={theme.sizes['5']}
+          w={'20px'}
+          h={'20px'}
           borderRadius={'100%'}
         />
-        <Box fontSize={theme.sizes['3.5']} fontWeight={500} lineHeight={theme.sizes['5']}>
+        <Box fontSize={'14px'} fontWeight={500} lineHeight={'20px'}>
           {'LayerZero'}
         </Box>
       </Flex>
 
       <Box
-        px={theme.sizes['2']}
-        py={theme.sizes['1']}
-        mt={theme.sizes['1']}
-        mb={theme.sizes['2']}
+        px={'8px'}
+        py={'4px'}
+        mt={'4px'}
+        mb={'8px'}
         width={'fit-content'}
         fontWeight={500}
         background={theme.colors[colorMode].layer['4'].default}
         borderRadius={'100px'}
-        fontSize={theme.sizes['3.5']}
+        fontSize={'14px'}
       >
         {estimatedAmount &&
         estimatedAmount?.['layerZero'] &&
@@ -194,7 +195,7 @@ export const LayerZeroOption = () => {
 
       {nativeFee ? (
         <InfoRow
-          label={'Native Fee'}
+          label={formatMessage({ id: 'route.option.info.native-fee' })}
           value={
             toTokenInfo
               ? `${formatNumber(Number(formatUnits(nativeFee, 18)), 8)} ${nativeToken}`
@@ -205,7 +206,7 @@ export const LayerZeroOption = () => {
       {!!gasFee?.gas && !!gasFee?.gasPrice && toTokenInfo ? (
         <AdditionalDetails>
           <InfoRow
-            label={'Gas Fee'}
+            label={formatMessage({ id: 'route.option.info.gas-fee' })}
             value={`${formatNumber(
               Number(formatUnits(gasFee?.gas * gasFee?.gasPrice, toTokenInfo.decimal)),
               8,

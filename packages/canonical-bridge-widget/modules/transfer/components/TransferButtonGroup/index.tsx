@@ -1,4 +1,4 @@
-import { Flex, theme, useDisclosure } from '@bnb-chain/space';
+import { Flex, useDisclosure } from '@bnb-chain/space';
 import { useState } from 'react';
 
 import { TransferButton } from '@/modules/transfer/components/Button/TransferButton';
@@ -35,7 +35,7 @@ export const TransferButtonGroup = () => {
 
   return (
     <>
-      <Flex gap={theme.sizes['1']}>
+      <Flex gap={'4px'}>
         <WalletButtonWrapper>
           <TransferButton
             onOpenSubmittedModal={onOpenSubmittedModal}

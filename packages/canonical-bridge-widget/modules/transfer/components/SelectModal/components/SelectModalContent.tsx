@@ -5,7 +5,7 @@ export function SelectModalContent(props: ModalContentProps) {
   return (
     <ModalContent
       background={theme.colors[colorMode].background['2']}
-      borderRadius={theme.sizes['6']}
+      borderRadius={'36px'}
       p={0}
       h={640}
       overflow="hidden"

@@ -190,7 +190,7 @@ export const DeBridgeOption = () => {
   return (
     <Flex
       flex={1}
-      gap={theme.sizes['1']}
+      gap={'4px'}
       flexDir={'column'}
       height={'fit-content'}
       border={`1px solid`}
@@ -202,8 +202,8 @@ export const DeBridgeOption = () => {
       background={
         transferActionInfo?.bridgeType === 'deBridge' ? 'rgba(255, 233, 0, 0.06);' : 'none'
       }
-      borderRadius={theme.sizes['4']}
-      padding={`${theme.sizes['3']}`}
+      borderRadius={'16px'}
+      padding={`${'12px'}`}
       position={'relative'}
       cursor={'pointer'}
       _hover={{
@@ -211,28 +211,28 @@ export const DeBridgeOption = () => {
       }}
       onClick={onSelectBridge}
     >
-      <Flex flexDir={'row'} gap={theme.sizes['2']} alignItems={'center'}>
+      <Flex flexDir={'row'} gap={'8px'} alignItems={'center'}>
         <Image
           src={`${env.ASSET_PREFIX}/images/debridgeIcon.png`}
           alt="deBridge"
-          w={theme.sizes['5']}
-          h={theme.sizes['5']}
+          w={'20px'}
+          h={'20px'}
           borderRadius={'100%'}
         />
-        <Box fontSize={theme.sizes['3.5']} fontWeight={500} lineHeight={theme.sizes['5']}>
+        <Box fontSize={'14px'} fontWeight={500} lineHeight={'20px'}>
           {formatMessage({ id: 'route.option.deBridge.title' })}
         </Box>
       </Flex>
       <Box
-        px={theme.sizes['2']}
-        py={theme.sizes['1']}
-        mt={theme.sizes['1']}
-        mb={theme.sizes['2']}
+        px={'8px'}
+        py={'4px'}
+        mt={'4px'}
+        mb={'8px'}
         width={'fit-content'}
         fontWeight={500}
         background={theme.colors[colorMode].layer['4'].default}
         borderRadius={'100px'}
-        fontSize={theme.sizes['3.5']}
+        fontSize={'14px'}
       >
         {estimatedAmount?.['deBridge'] &&
         toTokenInfo &&

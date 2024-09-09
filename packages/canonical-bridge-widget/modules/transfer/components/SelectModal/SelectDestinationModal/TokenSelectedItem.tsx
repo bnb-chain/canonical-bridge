@@ -17,10 +17,10 @@ export function TokenSelectedItem(props: TokenSelectedItem) {
     <TokenListItem
       data={data}
       border={`1px solid ${theme.colors[colorMode].support.brand[3]}`}
-      borderRadius={theme.sizes['4']}
-      px={theme.sizes['5']}
-      py={theme.sizes['4']}
-      mb={theme.sizes['6']}
+      borderRadius={'16px'}
+      px={'20px'}
+      py={'16px'}
+      mb={'24px'}
       bg="rgba(255, 233, 0, 0.06)"
       _hover={{}}
       cursor="default"

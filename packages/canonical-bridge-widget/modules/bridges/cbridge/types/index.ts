@@ -124,11 +124,6 @@ export interface CBridgeTransferHistoryResponse {
   current_size: string;
 }
 
-export interface CBridgeTransferEstimatedTime {
-  err: object;
-  median_transfer_latency_in_second: number;
-}
-
 export type CBridgeTransactionResponse = {
   data: null | {
     gasFee: bigint;

@@ -10,21 +10,15 @@ export const NoRouteFound = () => {
     <Flex
       flexDir={'column'}
       w={'100%'}
-      gap={theme.sizes['2']}
+      gap={'8px'}
       background={theme.colors[colorMode].layer[3].default}
-      borderRadius={theme.sizes['4']}
-      p={theme.sizes['4']}
+      borderRadius={'16px'}
+      p={'16px'}
     >
       <Flex justifyContent={'center'}>
-        <RouteNotFoundIcon w={theme.sizes['10']} h={theme.sizes['10']} />
+        <RouteNotFoundIcon w={'40px'} h={'40px'} />
       </Flex>
-      <Typography
-        variant="body"
-        size={'md'}
-        textAlign={'center'}
-        fontWeight={500}
-        mx={theme.sizes['6']}
-      >
+      <Typography variant="body" size={'md'} textAlign={'center'} fontWeight={500} mx={'24px'}>
         {formatMessage({ id: 'route.no-found.title' })}
       </Typography>
 
@@ -32,7 +26,7 @@ export const NoRouteFound = () => {
         variant="body"
         size={'sm'}
         textAlign={'center'}
-        mx={theme.sizes['6']}
+        mx={'24px'}
         color={theme.colors[colorMode].text.secondary}
       >
         {formatMessage({ id: 'route.no-found.desc' })}

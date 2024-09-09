@@ -1,4 +1,4 @@
-import { Button, theme, useIntl } from '@bnb-chain/space';
+import { Button, useIntl } from '@bnb-chain/space';
 import { useAccount } from 'wagmi';
 
 import { StateModal, StateModalProps } from '@/core/components/StateModal';
@@ -39,7 +39,7 @@ export function TransactionSubmittedModal(
         }
       }}
       mainButtonProps={{
-        leftIcon: <ExLinkIcon w={theme.sizes['5']} h={theme.sizes['5']} />,
+        leftIcon: <ExLinkIcon w={'20px'} h={'20px'} />,
       }}
       mainButtonText={formatMessage({ id: 'modal.submit.button.view-tx' })}
       closeButton={
@@ -47,7 +47,7 @@ export function TransactionSubmittedModal(
           size="lg"
           variant={'outline'}
           w={'100%'}
-          fontSize={theme.sizes['4']}
+          fontSize={'16px'}
           lineHeight={1.5}
           onClick={() => {
             dispatch(setSendValue(''));

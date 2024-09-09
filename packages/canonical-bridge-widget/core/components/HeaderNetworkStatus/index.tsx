@@ -37,22 +37,22 @@ export function HeaderNetworkStatus() {
   return (
     <Flex
       h="40px"
-      pl={theme.sizes['2']}
-      pr={theme.sizes['4']}
+      pl={'8px'}
+      pr={'16px'}
       borderRadius="20px"
-      gap={theme.sizes['2']}
+      gap={'8px'}
       alignItems="center"
       minWidth="130px"
-      lineHeight={theme.sizes['4']}
+      lineHeight={'16px'}
       {...props}
     >
-      <IconImage src={iconUrl} boxSize={theme.sizes['6']} />
+      <IconImage src={iconUrl} boxSize={'24px'} />
       <Flex flexDir="column">
-        <Flex fontWeight={500} fontSize={theme.sizes['3.5']}>
+        <Flex fontWeight={500} fontSize={'14px'}>
           {chain.name}
         </Flex>
         {isWrongNetwork && (
-          <Flex fontSize={theme.sizes['3']} color={theme.colors[colorMode].support.warning[3]}>
+          <Flex fontSize={'12px'} color={theme.colors[colorMode].support.warning[3]}>
             {formatMessage({ id: 'header.network-status.wrong' })}
           </Flex>
         )}

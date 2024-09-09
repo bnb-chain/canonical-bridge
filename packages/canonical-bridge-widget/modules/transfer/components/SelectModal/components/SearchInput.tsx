@@ -46,7 +46,7 @@ export function SearchInput(props: SearchInputProps) {
     <InputGroup {...restProps}>
       <InputLeftElement
         justifyContent="flex-end"
-        pr={theme.sizes['2']}
+        pr={'8px'}
         color={theme.colors[colorMode].text.tertiary}
       >
         <SearchIcon />
@@ -64,12 +64,12 @@ export function SearchInput(props: SearchInputProps) {
       {value && (
         <InputRightElement
           justifyContent="flex-start"
-          pl={theme.sizes['2']}
+          pl={'8px'}
           color={theme.colors[colorMode].text.tertiary}
         >
           <Button
             variant="subtle"
-            boxSize={theme.sizes['4']}
+            boxSize={'16px'}
             borderRadius="full"
             minW={0}
             p={0}

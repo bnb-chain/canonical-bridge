@@ -29,8 +29,8 @@ export const CopyAddress = ({
     <Flex justifyContent={'center'} alignItems={'center'} position={'relative'} {...otherProps}>
       <CopyIcon
         color={theme.colors[colorMode].text.placeholder}
-        h={theme.sizes['5']}
-        w={theme.sizes['5']}
+        h={'20px'}
+        w={'20px'}
         cursor={'pointer'}
         _hover={{ color: theme.colors[colorMode].text.primary }}
         {...iconStyle}
@@ -41,14 +41,14 @@ export const CopyAddress = ({
       {hasCopied && (
         <Box
           position={'absolute'}
-          bottom={`calc(100% + ${theme.sizes['2']})`}
+          bottom={`calc(100% + 8px)`}
           left={'50%'}
           transform={'translateX(-50%)'}
           background={theme.colors[colorMode].layer.inverse}
-          padding={`${theme.sizes['1']} ${theme.sizes['2']}`}
-          borderRadius={theme.sizes['1']}
+          padding={`4px 8px`}
+          borderRadius={'4px'}
           color={theme.colors[colorMode].layer[3].default}
-          fontSize={theme.sizes['3']}
+          fontSize={'12px'}
           whiteSpace={'nowrap'}
           _after={{
             content: '""',
@@ -58,9 +58,9 @@ export const CopyAddress = ({
             transform: 'translateX(-50%)',
             width: 0,
             height: 0,
-            borderLeft: `${theme.sizes[1]} solid transparent`,
-            borderRight: `${theme.sizes[1]} solid transparent`,
-            borderTop: `${theme.sizes[1]} solid ${theme.colors[colorMode].layer.inverse}`,
+            borderLeft: `4px solid transparent`,
+            borderRight: `4px solid transparent`,
+            borderTop: `4px solid ${theme.colors[colorMode].layer.inverse}`,
           }}
           {...tooltipStyle}
         >

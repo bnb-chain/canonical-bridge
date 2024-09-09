@@ -12,13 +12,13 @@ export function InfoRow(props: InfoRowProps) {
   const { label, value, isLoading } = props;
   const { colorMode } = useColorMode();
   return (
-    <Flex alignItems="flex-start" flexDir={'column'} h={theme.sizes['8']} mb={theme.sizes['1']}>
+    <Flex alignItems="flex-start" flexDir={'column'} h={'32px'} mb={'4px'}>
       <Flex
         color={theme.colors[colorMode].text.tertiary}
-        fontSize={theme.sizes['3']}
+        fontSize={'12px'}
         fontWeight={400}
         whiteSpace={'nowrap'}
-        h={theme.sizes['4']}
+        h={'16px'}
       >
         {label}
       </Flex>
@@ -27,9 +27,9 @@ export function InfoRow(props: InfoRowProps) {
       ) : (
         <Flex
           whiteSpace={'nowrap'}
-          fontSize={theme.sizes['3.5']}
+          fontSize={'14px'}
           fontWeight={500}
-          h={theme.sizes['4']}
+          h={'16px'}
           color={theme.colors[colorMode].text.secondary}
         >
           {value}

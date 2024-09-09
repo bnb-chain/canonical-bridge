@@ -1,7 +1,6 @@
-import { useQuery } from '@tanstack/react-query';
+import { useEffect, useState } from 'react';
 
-import { cBridgeApiClient } from '@/modules/bridges/cbridge/client';
-import { CBridgeTransferEstimatedTime } from '@/modules/bridges/cbridge/types';
+import { bridgeSDK } from '@/core/constants/bridgeSDK';
 
 export const useFetchCBridgeTransferWaitingTime = ({
   srcChainId,
@@ -10,21 +9,21 @@ export const useFetchCBridgeTransferWaitingTime = ({
   srcChainId: number;
   dstChainId: number;
 }) => {
-  const params = {
-    src_chain_id: srcChainId,
-    dst_chain_id: dstChainId,
-  };
+  const [time, setTime] = useState<number | null>(null);
+  useEffect(() => {
+    (async () => {
+      try {
+        const estimatedTime = await bridgeSDK.cBridge.getEstimatedWaitingTime({
+          srcChainId,
+          dstChainId,
+        });
 
-  return useQuery<CBridgeTransferEstimatedTime>({
-    queryKey: ['cbridge/estimateTime', JSON.stringify(params)],
-    queryFn: async () => {
-      return (
-        await cBridgeApiClient.get(`v2/getLatest7DayTransferLatencyForQuery`, {
-          params,
-        })
-      ).data;
-    },
-    enabled: !!srcChainId && !!dstChainId,
-    staleTime: 1000 * 60 * 30,
-  });
+        setTime(estimatedTime.median_transfer_latency_in_second);
+      } catch (error: any) {
+        // eslint-disable-next-line no-console
+        console.log('error', error);
+      }
+    })();
+  }, [srcChainId, dstChainId]);
+  return { time };
 };

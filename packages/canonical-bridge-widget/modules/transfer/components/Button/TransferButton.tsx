@@ -1,4 +1,4 @@
-import { Button, ButtonProps, Flex, theme, useIntl } from '@bnb-chain/space';
+import { Button, ButtonProps, Flex, useIntl } from '@bnb-chain/space';
 import { useCallback, useState } from 'react';
 import { useAccount, useBalance, usePublicClient, useWalletClient } from 'wagmi';
 import { formatUnits, parseUnits } from 'viem';
@@ -6,8 +6,6 @@ import { formatUnits, parseUnits } from 'viem';
 import { useAppSelector } from '@/core/store/hooks';
 import { useCBridgeTransferParams } from '@/modules/bridges/cbridge/hooks/useCBridgeTransferParams';
 import { useGetAllowance } from '@/core/contract/hooks/useGetAllowance';
-import { useStarGateTransferParams } from '@/modules/bridges/stargate/hooks/useStarGateTransferParams';
-import { useStarGateTransfer } from '@/modules/bridges/stargate/hooks/useStarGateTransfer';
 import { bridgeSDK } from '@/core/constants/bridgeSDK';
 
 export function TransferButton({
@@ -29,11 +27,9 @@ export function TransferButton({
 }) {
   const { data: walletClient } = useWalletClient();
   const { args: cBridgeArgs } = useCBridgeTransferParams();
-  const { args: stargateArgs } = useStarGateTransferParams();
 
   const { address } = useAccount();
   const publicClient = usePublicClient();
-  const { sendToken } = useStarGateTransfer();
 
   const { data: balance } = useBalance({ address: address as `0x${string}` });
 
@@ -140,8 +136,16 @@ export function TransferButton({
           console.log(e);
           onOpenFailedModal();
         }
-      } else if (transferActionInfo.bridgeType === 'stargate' && stargateArgs) {
-        const stargateHash = await sendToken({ onOpenFailedModal });
+      } else if (transferActionInfo.bridgeType === 'stargate') {
+        const stargateHash = await bridgeSDK.stargate.sendToken({
+          walletClient,
+          publicClient,
+          bridgeAddress: transferActionInfo.bridgeAddress as `0x${string}`,
+          tokenAddress: selectedToken.address as `0x${string}`,
+          endPointId: toToken?.rawData.stargate?.endpointID as number,
+          receiver: address,
+          amount: parseUnits(sendValue, selectedToken.decimal),
+        });
         if (stargateHash) {
           onCloseConfirmingModal();
           setChosenBridge('stargate');
@@ -184,13 +188,12 @@ export function TransferButton({
     sendValue,
     onOpenConfirmingModal,
     cBridgeArgs,
-    stargateArgs,
+
     onOpenApproveModal,
     onCloseConfirmingModal,
     onOpenSubmittedModal,
     onOpenFailedModal,
     balance,
-    sendToken,
     toToken,
     fromChain,
   ]);
@@ -216,7 +219,7 @@ export function StyledTransferButton(props: ButtonProps) {
 
   return (
     <Flex flexDir="column" w={'100%'}>
-      <Button size={'lg'} h={theme.sizes['14']} w="100%" {...restProps}>
+      <Button size={'lg'} h={'64px'} w="100%" {...restProps}>
         {formatMessage({ id: 'transfer.button.confirm' })}
       </Button>
     </Flex>

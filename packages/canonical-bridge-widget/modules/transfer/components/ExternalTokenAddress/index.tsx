@@ -14,16 +14,12 @@ export const ExternalAddress = ({
   const { formatMessage } = useIntl();
 
   return (
-    <Flex
-      gap={theme.sizes['1']}
-      alignItems={'center'}
-      color={theme.colors[colorMode].text.placeholder}
-    >
+    <Flex gap={'4px'} alignItems={'center'} color={theme.colors[colorMode].text.placeholder}>
       <Typography variant="body" size={'sm'} flexDir={'row'}>
         {formatMessage({ id: 'main.address.link.text' })}
       </Typography>
       <Flex
-        gap={theme.sizes['1']}
+        gap={'4px'}
         alignItems={'center'}
         color={theme.colors[colorMode].text.placeholder}
         cursor={'pointer'}
@@ -40,7 +36,7 @@ export const ExternalAddress = ({
         <Typography variant="body" size={'sm'} flexDir={'row'} fontWeight={500}>
           {formatAppAddress({ address, transform: 'lowerCase' })}
         </Typography>
-        {tokenUrl && <ExLinkIcon w={theme.sizes['4']} h={theme.sizes['4']} />}
+        {tokenUrl && <ExLinkIcon w={'16px'} h={'16px'} />}
       </Flex>
     </Flex>
   );

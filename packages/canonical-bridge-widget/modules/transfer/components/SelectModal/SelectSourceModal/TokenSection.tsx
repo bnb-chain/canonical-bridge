@@ -38,41 +38,36 @@ export function TokenSection(props: TokenSectionProps) {
   const isNoResult = keyword.length && !filteredTokens.length;
 
   return (
-    <Flex flexDir="column" mt={theme.sizes['6']} flex={1} h="0px">
+    <Flex flexDir="column" mt={'24px'} flex={1} h="0px">
       <SearchInput
         isDisabled={showNetworkTips}
         placeholder="Search Token by name"
         onChange={onChangeKeyword}
       />
 
-      <SectionTitle mt={theme.sizes['5']}>Select Token</SectionTitle>
+      <SectionTitle mt={'20px'}>
+        {formatMessage({ id: 'select-modal.select.token.title' })}
+      </SectionTitle>
 
       {showNetworkTips ? (
         <Flex
           flexDir="column"
           alignItems="center"
-          py={theme.sizes['8']}
-          fontWeight={theme.fontWeights[400]}
-          lineHeight={theme.sizes['5']}
+          py={'32px'}
+          fontWeight={400}
+          lineHeight={'20px'}
           color={theme.colors[colorMode].text.secondary}
         >
-          <NoNetworkIcon mb={theme.sizes['4']} />
-          Select a network first
+          <NoNetworkIcon mb={'16px'} />
+          {formatMessage({ id: 'select-modal.select.network.select-first' })}
         </Flex>
       ) : isNoResult ? (
-        <NoResultFound py={theme.sizes['8']} />
+        <NoResultFound py={'32px'} />
       ) : (
-        <Flex
-          mt={theme.sizes['2']}
-          mx={`-${theme.sizes['5']}`}
-          flexDir="column"
-          flex={1}
-          h="0px"
-          overflowY="auto"
-        >
+        <Flex mt={'8px'} mx={`-${'20px'}`} flexDir="column" flex={1} h="0px" overflowY="auto">
           <VirtualList data={filteredTokens} itemHeight={60} itemKey="id">
             {(item) => (
-              <Box pb={theme.sizes['2']}>
+              <Box pb={'8px'}>
                 <TokenListItem
                   tokenUrl={formatTokenUrl(selectedNetwork?.tokenUrlPattern, item.address)}
                   key={item.address}

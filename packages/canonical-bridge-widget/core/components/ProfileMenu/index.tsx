@@ -8,6 +8,7 @@ import {
   TYPOGRAPHY_STYLES,
   theme,
   useColorMode,
+  useIntl,
 } from '@bnb-chain/space';
 import React from 'react';
 import { DisconnectIcon } from '@bnb-chain/icons';
@@ -21,8 +22,7 @@ import { WalletIcon } from '@/core/components/icons/WalletIcon';
 import { useCurrentWallet } from '@/modules/wallet/hooks/useCurrentWallet';
 
 export const ProfileMenu = () => {
-  // const { formatMessage } = useFormatMessage();
-  // const { locale } = useIntl();
+  const { formatMessage } = useIntl();
   const { colorMode } = useColorMode();
   const { address, balance, disconnect } = useCurrentWallet();
 
@@ -34,12 +34,12 @@ export const ProfileMenu = () => {
             flexShrink={0}
             border={'solid'}
             borderColor={theme.colors[colorMode].border['3']}
-            borderWidth={theme.sizes['0.25']}
-            borderRadius={theme.sizes['24']}
+            borderWidth={'1px'}
+            borderRadius={'96px'}
             h="min-content"
-            pl={{ base: theme.sizes['1'], md: theme.sizes['2'] }}
-            pr={{ base: theme.sizes['1'], md: theme.sizes['4'] }}
-            py={{ base: theme.sizes['1'], md: theme.sizes['2'] }}
+            pl={{ base: '4px', md: '8px' }}
+            pr={{ base: '4px', md: '16px' }}
+            py={{ base: '4px', md: '8px' }}
             color={theme.colors[colorMode].text.primary}
             background={
               isOpen
@@ -53,12 +53,8 @@ export const ProfileMenu = () => {
             fontWeight={500}
           >
             <Flex alignItems="center">
-              <Box mr={{ base: 0, md: theme.sizes['2'] }}>
-                <WalletIcon
-                  boxSize={theme.sizes['6']}
-                  color={theme.colors[colorMode].text.tertiary}
-                />
-                {/* <AccountAvatar size={theme.sizes['6']} address={address} /> */}
+              <Box mr={{ base: 0, md: '8px' }}>
+                <WalletIcon boxSize={'24px'} color={theme.colors[colorMode].text.tertiary} />
               </Box>
               {formatAppAddress({ address })}
             </Flex>
@@ -66,9 +62,9 @@ export const ProfileMenu = () => {
           <MenuList
             zIndex={1}
             color={theme.colors[colorMode].text.secondary}
-            borderRadius={theme.sizes['2']}
+            borderRadius={'8px'}
             overflow={'hidden'}
-            fontSize={theme.sizes['3.5']}
+            fontSize={'14px'}
             fontWeight={400}
           >
             <Box>
@@ -78,21 +74,21 @@ export const ProfileMenu = () => {
                 justifyContent={'center'}
                 alignItems={'center'}
                 position={'absolute'}
-                top={theme.sizes['12']}
+                top={'48px'}
                 left={'50%'}
                 transform={`translateX(-50%)`}
-                border={`${theme.sizes['0.5']} solid ${theme.colors[colorMode].layer['4'].default}`}
+                border={`2px solid ${theme.colors[colorMode].layer['4'].default}`}
               >
-                <AccountAvatar size={theme.sizes['16']} address={address} />
+                <AccountAvatar size={'64px'} address={address} />
               </Flex>
             </Box>
 
             <Flex
               justifyContent={'center'}
               alignItems={'center'}
-              pt={theme.sizes['12']}
-              pb={theme.sizes['1']}
-              gap={theme.sizes['2']}
+              pt={'48px'}
+              pb={'4px'}
+              gap={'8px'}
               color={theme.colors[colorMode].text.primary}
               background={theme.colors[colorMode].layer['4'].default}
               {...TYPOGRAPHY_STYLES['body']['lg']}
@@ -101,11 +97,11 @@ export const ProfileMenu = () => {
               {formatAppAddress({ address })}
               <CopyAddress
                 iconStyle={{
-                  height: theme.sizes['6'],
-                  width: theme.sizes['6'],
+                  height: '24px',
+                  width: '24px',
                 }}
-                h={theme.sizes['6']}
-                w={theme.sizes['6']}
+                h={'24px'}
+                w={'24px'}
                 content={address}
               />
             </Flex>
@@ -113,9 +109,9 @@ export const ProfileMenu = () => {
             {balance && (
               <Flex
                 alignItems={'center'}
-                px={theme.sizes['6']}
-                fontSize={theme.sizes['4']}
-                lineHeight={theme.sizes['6']}
+                px={'24px'}
+                fontSize={'16px'}
+                lineHeight={'24px'}
                 background={theme.colors[colorMode].layer['4'].default}
                 justifyContent={'center'}
                 color={theme.colors[colorMode].text.secondary}
@@ -125,11 +121,11 @@ export const ProfileMenu = () => {
             )}
             <Flex
               alignItems={'center'}
-              px={theme.sizes['6']}
-              pt={theme.sizes['6']}
-              pb={theme.sizes['8']}
-              fontSize={theme.sizes['4']}
-              lineHeight={theme.sizes['6']}
+              px={'24px'}
+              pt={'24px'}
+              pb={'32px'}
+              fontSize={'16px'}
+              lineHeight={'24px'}
               background={theme.colors[colorMode].layer['4'].default}
               justifyContent={'center'}
               color={theme.colors[colorMode].text.secondary}
@@ -137,12 +133,12 @@ export const ProfileMenu = () => {
               <Button
                 size={'lg'}
                 variant={'outline'}
-                leftIcon={<DisconnectIcon w={theme.sizes['6']} h={theme.sizes['6']} />}
+                leftIcon={<DisconnectIcon w={'24px'} h={'24px'} />}
                 onClick={() => {
                   disconnect();
                 }}
               >
-                Disconnect Wallet
+                {formatMessage({ id: 'wallet.button.disconnect' })}
               </Button>
             </Flex>
           </MenuList>

@@ -7,15 +7,15 @@ export const SupportSoon = () => {
   const { colorMode } = useColorMode();
   return (
     <Flex
-      mt={theme.sizes['4']}
+      mt={'16px'}
       flexDir={'row'}
       flexWrap={'nowrap'}
-      gap={theme.sizes['2']}
+      gap={'8px'}
       alignItems={'center'}
       flex={1}
       justifyContent={'center'}
     >
-      <InfoIcon w={theme.sizes['6']} h={theme.sizes['6']} />
+      <InfoIcon w={'24px'} h={'24px'} />
       <Typography size={'sm'} variant="body" color={theme.colors[colorMode].text.tertiary}>
         {formatMessage({ id: 'support.stargate.soon' })}
       </Typography>

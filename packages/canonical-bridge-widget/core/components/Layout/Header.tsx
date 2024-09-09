@@ -9,11 +9,11 @@ export function Header(props: FlexProps) {
   return (
     <Flex
       as="header"
-      h={theme.sizes['20']}
+      h={'80px'}
       borderBottom={`1px solid ${theme.colors[colorMode].border['3']}`}
       alignItems="center"
       justifyContent="space-between"
-      px={theme.sizes['16']}
+      px={'64px'}
       bg={theme.colors[colorMode].layer[2].default}
       {...props}
     >

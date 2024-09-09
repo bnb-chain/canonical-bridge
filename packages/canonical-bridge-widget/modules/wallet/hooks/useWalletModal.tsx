@@ -53,13 +53,13 @@ export function useUpdateWallets() {
                 {!isAvailable && (
                   <Flex
                     color={theme.colors.light.support.warning[3]}
-                    fontSize={theme.sizes['3.5']}
-                    lineHeight={theme.sizes['4']}
+                    fontSize={'14px'}
+                    lineHeight={'16px'}
                     fontWeight={400}
-                    gap={theme.sizes['1']}
+                    gap={'4px'}
                     textAlign="left"
                   >
-                    <NetworkIcon boxSize={theme.sizes['4']} />
+                    <NetworkIcon boxSize={'16px'} />
                     Incompatible with current network
                   </Flex>
                 )}

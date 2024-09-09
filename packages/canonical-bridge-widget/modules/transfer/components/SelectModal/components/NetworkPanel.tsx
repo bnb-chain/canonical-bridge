@@ -1,4 +1,4 @@
-import { FlexProps, Flex, theme, useColorMode, Box, Text, Space } from '@bnb-chain/space';
+import { FlexProps, Flex, theme, useColorMode, Box, Text, Space, useIntl } from '@bnb-chain/space';
 import { useState } from 'react';
 
 import { IconImage } from '@/core/components/IconImage';
@@ -18,7 +18,7 @@ interface NetworkPanelProps {
 
 export function NetworkPanel(props: NetworkPanelProps) {
   const { showTitle = false, networks = [], onSelect, unavailableTips } = props;
-
+  const { formatMessage } = useIntl();
   const [keyword, setKeyword] = useState('');
 
   const onChangeKeyword = (keyword: string) => {
@@ -37,25 +37,20 @@ export function NetworkPanel(props: NetworkPanelProps) {
       <SearchInput onChange={onChangeKeyword} placeholder="Search Network by name" />
 
       {showTitle ? (
-        <SectionTitle mt={theme.sizes['5']}>Select Network</SectionTitle>
+        <SectionTitle mt={'20px'}>
+          {formatMessage({ id: 'select-modal.select.network.title' })}
+        </SectionTitle>
       ) : (
-        <Space size={theme.sizes['3']} />
+        <Space size={'12px'} />
       )}
 
       {isNoResult ? (
-        <NoResultFound py={theme.sizes['12']} />
+        <NoResultFound py={'48px'} />
       ) : (
-        <Flex
-          flexDir="column"
-          flex={1}
-          h="0px"
-          mt={theme.sizes['2']}
-          overflowY="auto"
-          mx={`-${theme.sizes['5']}`}
-        >
+        <Flex flexDir="column" flex={1} h="0px" mt={'8px'} overflowY="auto" mx={`-${'20px'}`}>
           <VirtualList data={filteredNetworks} itemHeight={56} itemKey="id">
             {(item) => (
-              <Box pb={theme.sizes['2']}>
+              <Box pb={'8px'}>
                 <NetworkListItem
                   data={item}
                   onClick={() => onSelect(item)}
@@ -84,9 +79,9 @@ export function NetworkListItem(props: NetworkListItemProps) {
     <Flex
       alignItems="center"
       justifyContent="space-between"
-      py={theme.sizes['2']}
-      px={theme.sizes['5']}
-      gap={theme.sizes['3']}
+      py={'8px'}
+      px={'20px'}
+      gap={'12px'}
       transitionDuration="normal"
       transitionProperty="colors"
       cursor="pointer"
@@ -95,8 +90,8 @@ export function NetworkListItem(props: NetworkListItemProps) {
       }}
       {...restProps}
     >
-      <Flex alignItems="center" gap={theme.sizes['3']} overflow="hidden">
-        <IconImage src={data.icon} boxSize={theme.sizes['8']} alt={data.name} />
+      <Flex alignItems="center" gap={'12px'} overflow="hidden">
+        <IconImage src={data.icon} boxSize={'32px'} alt={data.name} />
         <Text textOverflow="ellipsis" overflow="hidden" whiteSpace="nowrap">
           {data.name}
         </Text>

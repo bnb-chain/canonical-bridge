@@ -94,12 +94,12 @@ export function FromSection() {
   };
 
   return (
-    <Flex flexDir="column" gap={theme.sizes['3']} mt={theme.sizes['6']}>
+    <Flex flexDir="column" gap={'12px'} mt={'24px'}>
       <Flex alignItems="center" justifyContent={'space-between'}>
         <Typography
           variant="body"
           size={'sm'}
-          lineHeight={theme.sizes['4']}
+          lineHeight={'16px'}
           color={theme.colors[colorMode].text.placeholder}
         >
           {formatMessage({ id: 'from.section.title' })}
@@ -114,29 +114,29 @@ export function FromSection() {
       <Flex
         flexDir="column"
         justifyContent="space-between"
-        borderRadius={theme.sizes['4']}
-        gap={theme.sizes['2']}
+        borderRadius={'16px'}
+        gap={'8px'}
         position={'relative'}
       >
         <Flex
           flexDir="column"
           justifyContent="space-between"
-          borderRadius={theme.sizes['4']}
+          borderRadius={'16px'}
           border={`1px solid ${
             !!error
               ? theme.colors[colorMode].support.danger['3']
               : theme.colors[colorMode].border['3']
           }`}
-          p={theme.sizes['2']}
-          gap={theme.sizes['2']}
+          p={'8px'}
+          gap={'8px'}
         >
-          <Flex gap={theme.sizes['6']}>
+          <Flex gap={'24px'}>
             <SelectButton network={fromChain} token={selectedToken} onClick={onOpen} />
             <Flex flex={1} flexDir={'column'} justifyContent={'center'}>
               <Input
                 value={sendValue}
                 color={theme.colors[colorMode].text.primary}
-                fontSize={theme.sizes['6']}
+                fontSize={'24px'}
                 onChange={onChangeSendValue}
                 placeholder={'0.0'}
                 border={'none'}
@@ -170,7 +170,7 @@ export function FromSection() {
           </Flex>
         </Flex>
         {error ? (
-          <ErrorMsg position={'absolute'} top={`calc(100% + ${theme.sizes['2']})`}>
+          <ErrorMsg position={'absolute'} top={`calc(100% + ${'8px'})`}>
             {error}
           </ErrorMsg>
         ) : null}

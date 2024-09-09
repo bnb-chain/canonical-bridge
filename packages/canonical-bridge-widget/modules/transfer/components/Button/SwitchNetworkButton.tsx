@@ -1,4 +1,4 @@
-import { Button, theme, useIntl } from '@bnb-chain/space';
+import { Button, useIntl } from '@bnb-chain/space';
 
 import { useAppSelector } from '@/core/store/hooks';
 import { useEvmSwitchChain } from '@/modules/wallet/hooks/useEvmSwitchChain';
@@ -12,7 +12,7 @@ export const SwitchNetworkButton = () => {
   return (
     <Button
       size="lg"
-      h={theme.sizes['14']}
+      h={'56px'}
       w="100%"
       onClick={() => {
         if (fromChain?.id && switchChain) {

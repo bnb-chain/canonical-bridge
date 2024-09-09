@@ -15,13 +15,12 @@ import { useToTokenInfo } from '@/modules/transfer/hooks/useToTokenInfo';
 import { SelectButton } from '@/modules/transfer/components/SelectButton';
 import { SelectDestinationModal } from '@/modules/transfer/components/SelectModal/SelectDestinationModal';
 import { useAppDispatch, useAppSelector } from '@/core/store/hooks';
-import { BridgeChain, formatTokenUrl } from '@/modules/bridges';
 import { setToChain } from '@/modules/transfer/action';
+import { BridgeChain, formatTokenUrl } from '@/modules/bridges';
 import { ExternalAddress } from '@/modules/transfer/components/ExternalTokenAddress';
 import { formatNumber } from '@/core/utils/number';
 import { useToTokenDisplayedInfo } from '@/modules/transfer/hooks/useToTokenDisplayedInfo';
 import { useSetSelectInfo } from '@/modules/transfer/hooks/useSetSelectInfo';
-import { ToAccount } from '@/modules/transfer/components/ToAccount';
 import { useGetReceiveAmount } from '@/modules/transfer/hooks/useGetReceiveAmount';
 
 export function ToSection() {
@@ -36,7 +35,6 @@ export function ToSection() {
   const { toTokenInfo, getToDecimals, getToTokenAddress } = useToTokenInfo();
   const { colorMode } = useColorMode();
   const toTokenDisplayedInfo = useToTokenDisplayedInfo();
-  const { getReceiveAmount } = useGetReceiveAmount();
 
   const onSelectSource = (chain: BridgeChain) => {
     setSelectInfo({
@@ -48,30 +46,33 @@ export function ToSection() {
   };
   const isGlobalFeeLoading = useAppSelector((state) => state.transfer.isGlobalFeeLoading);
 
+  const { getSortedReceiveAmount } = useGetReceiveAmount();
+
   const receiveAmt = useMemo(() => {
     if (transferActionInfo && transferActionInfo.bridgeType) {
       const bridgeType = transferActionInfo.bridgeType;
-      return getReceiveAmount(bridgeType);
+      const receiveValue = getSortedReceiveAmount();
+      return receiveValue[bridgeType];
     }
     return null;
-  }, [transferActionInfo, getReceiveAmount]);
+  }, [getSortedReceiveAmount, transferActionInfo]);
 
   const bridgeType = transferActionInfo?.bridgeType;
   const tokenAddress = (bridgeType && getToTokenAddress()?.[bridgeType]) || '';
 
   return (
     <>
-      <Flex flexDir="column">
+      <Flex flexDir="column" gap={'12px'} mt={`-${'20px'}`}>
         <Flex alignItems="center" justifyContent={'space-between'}>
           <Typography
             variant="body"
-            lineHeight={theme.sizes['5']}
+            lineHeight={'16px'}
             size={'sm'}
             color={theme.colors[colorMode].text.placeholder}
           >
             {formatMessage({ id: 'to.section.title' })}
           </Typography>
-          {tokenAddress && (
+          {tokenAddress && toChain && (
             <ExternalAddress
               address={tokenAddress}
               tokenUrl={formatTokenUrl(toChain?.tokenUrlPattern, tokenAddress)}
@@ -80,22 +81,21 @@ export function ToSection() {
         </Flex>
 
         <Flex
-          mt={theme.sizes['3']}
           flexDir="column"
           justifyContent="space-between"
-          borderRadius={theme.sizes['4']}
+          borderRadius={'16px'}
           border={`1px solid ${theme.colors[colorMode].border['3']}`}
-          p={theme.sizes['2']}
-          gap={theme.sizes['2']}
+          p={'8px'}
+          gap={'8px'}
         >
-          <Flex gap={theme.sizes['6']}>
+          <Flex gap={'24px'}>
             <SelectButton network={toChain} token={toTokenDisplayedInfo} onClick={onOpen} />
 
             <Flex flex={1} flexDir={'column'} alignItems={'flex-start'} justifyContent={'center'}>
               <Input
                 disabled={true}
                 color={theme.colors[colorMode].text.secondary}
-                fontSize={theme.sizes['6']}
+                fontSize={'24px'}
                 border={'none'}
                 placeholder="0.0"
                 _hover={{
@@ -134,7 +134,7 @@ export function ToSection() {
               {receiveAmt && (
                 <Box
                   textAlign={'left'}
-                  fontSize={theme.sizes['3']}
+                  fontSize={'12px'}
                   color={theme.colors[colorMode].text.tertiary}
                 >
                   {formatMessage({ id: 'to.section.estimated-amount' })}
@@ -143,8 +143,6 @@ export function ToSection() {
             </Flex>
           </Flex>
         </Flex>
-
-        <ToAccount mt={theme.sizes['6']} />
       </Flex>
 
       <SelectDestinationModal isOpen={isOpen} onClose={onClose} onSelect={onSelectSource} />

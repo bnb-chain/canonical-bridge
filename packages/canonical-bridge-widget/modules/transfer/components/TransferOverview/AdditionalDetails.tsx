@@ -8,8 +8,8 @@ export const AdditionalDetails = ({ children }: { children: ReactNode }) => {
   const [isOpen, setIsOpen] = useState(false);
   const { colorMode } = useColorMode();
   return (
-    <Flex flexDir={'column'} fontSize={theme.sizes['3.5']}>
-      <Flex flexDir={'column'} display={isOpen ? 'flex' : 'none'} gap={theme.sizes['1']}>
+    <Flex flexDir={'column'} fontSize={'14px'}>
+      <Flex flexDir={'column'} display={isOpen ? 'flex' : 'none'} gap={'4px'}>
         {children}
       </Flex>
       <Flex
@@ -27,8 +27,8 @@ export const AdditionalDetails = ({ children }: { children: ReactNode }) => {
             justifyContent={'center'}
             alignItems={'center'}
             borderRadius={'50%'}
-            w={theme.sizes['6']}
-            h={theme.sizes['6']}
+            w={'24px'}
+            h={'24px'}
             background={theme.colors[colorMode].button.primary.subtle}
             color={theme.colors[colorMode].button.primary.default}
             position={'absolute'}
@@ -40,15 +40,15 @@ export const AdditionalDetails = ({ children }: { children: ReactNode }) => {
               color: theme.colors[colorMode].text.inverse,
             }}
           >
-            <HideDetailsIcon w={theme.sizes['4']} h={theme.sizes['4']} />
+            <HideDetailsIcon w={'16px'} h={'16px'} />
           </Flex>
         ) : (
           <Flex
             justifyContent={'center'}
             alignItems={'center'}
             borderRadius={'50%'}
-            w={theme.sizes['6']}
-            h={theme.sizes['6']}
+            w={'24px'}
+            h={'24px'}
             background={theme.colors[colorMode].button.primary.subtle}
             color={theme.colors[colorMode].button.primary.default}
             _hover={{
@@ -60,7 +60,7 @@ export const AdditionalDetails = ({ children }: { children: ReactNode }) => {
             left={'50%'}
             transform={'translateX(-50%) translateY(50%)'}
           >
-            <ExpandDetailsIcon w={theme.sizes['4']} h={theme.sizes['4']} />
+            <ExpandDetailsIcon w={'16px'} h={'16px'} />
           </Flex>
         )}
       </Flex>

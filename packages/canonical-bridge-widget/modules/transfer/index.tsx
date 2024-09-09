@@ -14,20 +14,20 @@ export function TransferPage() {
   useDefaultSelectedInfo();
 
   return (
-    <Flex flexDir="row" mb={theme.sizes['40']} alignItems={'flex-start'}>
+    <Flex flexDir="row" mb={'160px'} alignItems={'flex-start'}>
       <Flex
         flexDir="column"
         background={theme.colors[colorMode].layer['2'].default}
         color={theme.colors[colorMode].text.primary}
-        boxShadow={`0 ${theme.sizes['6']} ${theme.sizes['16']} 0 rgba(0, 0, 0, 0.48)`}
-        borderRadius={theme.sizes['6']}
-        px={theme.sizes['6']}
-        py={theme.sizes['8']}
+        boxShadow={`0 ${'24px'} ${'64px'} 0 rgba(0, 0, 0, 0.48)`}
+        borderRadius={'24px'}
+        px={'24px'}
+        py={'32px'}
         w={'588px'}
-        gap={theme.sizes['4']}
+        gap={'16px'}
         position="relative"
       >
-        <Box as="h1" mb={theme.sizes['2']} fontSize={theme.sizes['5']} fontWeight={500}>
+        <Box as="h1" mb={'8px'} fontSize={'40px'} fontWeight={500}>
           {formatMessage({ id: 'main.title' })}
         </Box>
         <FromSection />

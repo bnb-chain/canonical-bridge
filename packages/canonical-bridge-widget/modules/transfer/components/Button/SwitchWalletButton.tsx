@@ -1,4 +1,4 @@
-import { Button, theme, useIntl } from '@bnb-chain/space';
+import { Button, useIntl } from '@bnb-chain/space';
 
 import { useWalletModal } from '@/modules/wallet/hooks/useWalletModal';
 
@@ -9,7 +9,7 @@ export function SwitchWalletButton() {
   return (
     <Button
       size="lg"
-      h={theme.sizes['14']}
+      h={'56px'}
       w="100%"
       colorScheme="warning"
       onClick={() => {

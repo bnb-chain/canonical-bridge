@@ -72,19 +72,19 @@ export function StateModal(props: StateModalProps) {
       <LightMode>
         <ModalOverlay />
 
-        <ModalContent borderRadius={theme.sizes['5']} maxW={'435px'}>
+        <ModalContent borderRadius={'20px'} maxW={'435px'}>
           <ModalCloseButton
-            top={theme.sizes['6']}
-            right={{ base: theme.sizes['6'], md: theme.sizes['6'] }}
+            top={'24px'}
+            right={{ base: '24px', md: '24px' }}
             onClick={onBeforeClose}
           >
-            <CloseIcon boxSize={theme.sizes['6']} />
+            <CloseIcon boxSize={'24px'} />
           </ModalCloseButton>
 
           <ModalBody
-            pt={theme.sizes['12']}
-            px={theme.sizes['10']}
-            pb={theme.sizes['6']}
+            pt={'48px'}
+            px={'40px'}
+            pb={'24px'}
             display="flex"
             flexDir="column"
             alignItems="center"
@@ -92,8 +92,8 @@ export function StateModal(props: StateModalProps) {
           >
             <Flex>{icon}</Flex>
             <Flex
-              mt={theme.sizes['6']}
-              fontSize={theme.sizes['6']}
+              mt={'24px'}
+              fontSize={'24px'}
               fontWeight={700}
               lineHeight="32px"
               color={theme.colors.light.text.primary}
@@ -102,7 +102,7 @@ export function StateModal(props: StateModalProps) {
             </Flex>
             {description && (
               <Flex
-                mt={theme.sizes['2']}
+                mt={'8px'}
                 textAlign="center"
                 color={theme.colors.light.text.tertiary}
                 display={'inline-block'}
@@ -114,18 +114,18 @@ export function StateModal(props: StateModalProps) {
           </ModalBody>
 
           <ModalFooter
-            px={theme.sizes['10']}
-            pb={theme.sizes['10']}
+            px={'40px'}
+            pb={'40px'}
             justifyContent="center"
             flexDir={'column'}
-            gap={theme.sizes['4']}
+            gap={'16px'}
             {...footerProps}
           >
             {mainButtonText && (
               <Button
                 size="lg"
                 w={'100%'}
-                fontSize={theme.sizes['4']}
+                fontSize={'16px'}
                 lineHeight={1.5}
                 onClick={onMainButtonClick}
                 {...mainButtonProps}
@@ -139,7 +139,7 @@ export function StateModal(props: StateModalProps) {
               <Button
                 size="lg"
                 w={'100%'}
-                fontSize={theme.sizes['4']}
+                fontSize={'16px'}
                 lineHeight={1.5}
                 onClick={onBeforeClose}
               >

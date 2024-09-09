@@ -3,7 +3,7 @@ import { BoxProps, ColorMode, theme } from '@bnb-chain/space';
 export function walletStyles(colorMode: ColorMode) {
   return {
     '.wk-modal': {
-      '--wk-radii-modal': theme.sizes['5'],
+      '--wk-radii-modal': '20px',
     },
     '.wk-modal-content': {
       width: { base: '100%', md: '435px' },
@@ -11,23 +11,23 @@ export function walletStyles(colorMode: ColorMode) {
     },
     '.wk-modal-header': {
       fontWeight: 700,
-      lineHeight: theme.sizes['8'],
+      lineHeight: '32px',
     },
     '.wk-modal-body': {
-      marginTop: theme.sizes['6'],
-      gap: theme.sizes['3'],
+      marginTop: '24px',
+      gap: '12px',
     },
     '.wk-modal-footer': {
-      marginTop: theme.sizes['6'],
+      marginTop: '24px',
     },
     '[data-layout="list"]': {
       '.wk-wallet-option': {
-        height: theme.sizes['16'],
+        height: '64px',
         border: `1px solid ${theme.colors.light.border[3]}`,
-        fontSize: theme.sizes['4'],
-        borderRadius: theme.sizes['2'],
-        pl: theme.sizes['5'],
-        pr: theme.sizes['3'],
+        fontSize: '16px',
+        borderRadius: '8px',
+        pl: '20px',
+        pr: '12px',
         w: '100%',
         lineHeight: 1.5,
         fontWeight: 500,
@@ -49,7 +49,7 @@ export function walletStyles(colorMode: ColorMode) {
     '.wk-nowallet-link': {
       fontWeight: 500,
       lineHeight: 1.5,
-      fontSize: theme.sizes['4'],
+      fontSize: '16px',
     },
   } as BoxProps['sx'];
 }

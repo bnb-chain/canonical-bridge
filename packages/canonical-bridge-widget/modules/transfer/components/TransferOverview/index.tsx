@@ -97,37 +97,37 @@ export function TransferOverview() {
   }, [options, bridgeType]);
 
   return (
-    <Flex flexDir="column" ml={theme.sizes['6']} gap={theme.sizes['6']}>
+    <Flex flexDir="column" ml={'24px'} gap={'24px'}>
       {showRoute && (
         <Box overflow={'hidden'}>
           <Box
             position={'relative'}
-            py={theme.sizes['6']}
-            borderRadius={theme.sizes['6']}
+            py={'24px'}
+            borderRadius={'24px'}
             background={theme.colors[colorMode].layer['3'].default}
             minW="384px"
           >
-            <Flex flexDir={'column'} gap={theme.sizes['3']}>
+            <Flex flexDir={'column'} gap={'12px'}>
               <Flex
                 justifyContent={'space-between'}
                 alignItems={'center'}
-                px={theme.sizes['6']}
+                px={'24px'}
                 color={theme.colors[colorMode].text.tertiary}
-                fontSize={theme.sizes['3.5']}
-                h={theme.sizes['8']}
+                fontSize={'14px'}
+                h={'32px'}
                 sx={{
                   svg: {
-                    w: theme.sizes['8'],
-                    h: theme.sizes['8'],
+                    w: '32px',
+                    h: '32px',
                   },
                 }}
               >
                 {formatMessage({ id: 'route.title' })}
-                {/* <RefreshingButton /> */}
+                <RefreshingButton />
               </Flex>
               <Box
-                px={theme.sizes['6']}
-                pb={theme.sizes['6']}
+                px={'24px'}
+                pb={'24px'}
                 flex={1}
                 overflow={'auto'}
                 overscrollBehavior={'contain'}
@@ -144,7 +144,7 @@ export function TransferOverview() {
                 ) : (
                   <Flex
                     flexDir={'column'}
-                    gap={theme.sizes['6']}
+                    gap={'24px'}
                     display={isGlobalFeeLoading ? 'none' : 'flex'}
                   >
                     {sortedOptions?.map((bridge: ReactNode) => {

@@ -12,11 +12,11 @@ export const ExchangeChain = () => {
       alignItems={'center'}
       borderRadius={'50%'}
       background={theme.colors[colorMode].button.primary.subtle}
-      w={theme.sizes['8']}
-      h={theme.sizes['8']}
+      w={'32px'}
+      h={'32px'}
       mt={'28px'}
     >
-      <ExchangeChainIcon h={theme.sizes['4']} w={theme.sizes['4']} />
+      <ExchangeChainIcon h={'16px'} w={'16px'} />
     </Flex>
   );
 };

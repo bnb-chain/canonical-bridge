@@ -16,15 +16,15 @@ export function SelectButton(props: SelectButtonProps) {
 
   return (
     <Button
-      borderRadius={theme.sizes['4']}
+      borderRadius={'16px'}
       flexShrink={0}
-      h={theme.sizes['16']}
-      px={theme.sizes['4']}
-      py={theme.sizes['3']}
+      h={'64px'}
+      px={'16px'}
+      py={'12px'}
       w={'100%'}
       maxW={'250px'}
       justifyContent={'space-between'}
-      gap={theme.sizes['2']}
+      gap={'8px'}
       background={theme.colors[colorMode].layer['3'].default}
       _hover={{
         background: theme.colors[colorMode].layer['3'].hover,
@@ -32,20 +32,20 @@ export function SelectButton(props: SelectButtonProps) {
       color={theme.colors[colorMode].text.primary}
       {...restProps}
     >
-      <Flex gap={theme.sizes['3']} alignItems={'center'} position={'relative'} overflow="hidden">
+      <Flex gap={'12px'} alignItems={'center'} position={'relative'} overflow="hidden">
         <IconImage
           src={token?.icon}
-          w={theme.sizes['8']}
-          h={theme.sizes['8']}
+          w={'32px'}
+          h={'32px'}
           fallbackBgColor={theme.colors[colorMode].support.primary[4]}
         />
         <IconImage
           src={network?.icon}
-          w={theme.sizes['4']}
-          h={theme.sizes['4']}
+          w={'16px'}
+          h={'16px'}
           position={'absolute'}
-          top={theme.sizes['5']}
-          left={theme.sizes['5']}
+          top={'20px'}
+          left={'20px'}
           fallbackBgColor={theme.colors[colorMode].support.primary[3]}
         />
         <Flex
@@ -62,24 +62,20 @@ export function SelectButton(props: SelectButtonProps) {
             },
           }}
         >
-          <Text fontSize={theme.sizes['4']} lineHeight={theme.sizes['6']}>
+          <Text fontSize={'16px'} lineHeight={'24px'}>
             {token?.symbol ?? 'Select Token'}
           </Text>
           <Text
-            fontSize={theme.sizes['3.5']}
+            fontSize={'14px'}
             fontWeight={400}
-            lineHeight={theme.sizes['4']}
+            lineHeight={'16px'}
             color={theme.colors[colorMode].text.placeholder}
           >
             {network?.name ?? 'Select Network'}
           </Text>
         </Flex>
       </Flex>
-      <CaretDownIcon
-        w={theme.sizes['6']}
-        h={theme.sizes['6']}
-        color={theme.colors[colorMode].text.secondary}
-      />
+      <CaretDownIcon w={'24px'} h={'24px'} color={theme.colors[colorMode].text.secondary} />
     </Button>
   );
 }

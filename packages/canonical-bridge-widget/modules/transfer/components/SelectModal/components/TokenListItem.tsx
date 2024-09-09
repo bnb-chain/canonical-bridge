@@ -22,9 +22,9 @@ export function TokenListItem(props: TokenListItemProps) {
     <Flex
       alignItems="center"
       justifyContent="space-between"
-      px={theme.sizes['5']}
-      py={theme.sizes['2']}
-      gap={theme.sizes['3']}
+      px={'20px'}
+      py={'8px'}
+      gap={'12px'}
       transitionDuration="normal"
       transitionProperty="colors"
       cursor="pointer"
@@ -33,16 +33,16 @@ export function TokenListItem(props: TokenListItemProps) {
       }}
       {...restProps}
     >
-      <Flex alignItems="center" gap={theme.sizes['3']} overflow="hidden">
-        <IconImage boxSize={theme.sizes['8']} src={data.icon} alt={data.name} />
-        <Flex flexDir="column" gap={theme.sizes['1']} overflow="hidden">
+      <Flex alignItems="center" gap={'12px'} overflow="hidden">
+        <IconImage boxSize={'32px'} src={data.icon} alt={data.name} />
+        <Flex flexDir="column" gap={'4px'} overflow="hidden">
           <Text textOverflow="ellipsis" overflow="hidden" whiteSpace="nowrap">
             {data.symbol}
           </Text>
           <Flex
             alignItems="center"
-            gap={theme.sizes['1']}
-            fontSize={theme.sizes['3']}
+            gap={'4px'}
+            fontSize={'12px'}
             color={theme.colors[colorMode].text.secondary}
           >
             {data.address ? (
@@ -62,7 +62,7 @@ export function TokenListItem(props: TokenListItemProps) {
                       : undefined
                   }
                 >
-                  {tokenUrl && <ExLinkIcon boxSize={theme.sizes['4']} />}
+                  {tokenUrl && <ExLinkIcon boxSize={'16px'} />}
                 </Link>
               </>
             ) : (

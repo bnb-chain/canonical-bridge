@@ -45,13 +45,13 @@ export function ToAccount(props: FlexProps) {
     <Flex
       flexDirection="column"
       color={theme.colors[colorMode].text.tertiary}
-      fontSize={theme.sizes['3.5']}
-      lineHeight={theme.sizes['4']}
+      fontSize={'14px'}
+      lineHeight={'16px'}
       fontWeight={400}
       {...props}
     >
       <Box>{formatMessage({ id: 'to.section.account.label' })}</Box>
-      <InputGroup alignItems="center" mt={theme.sizes['3']}>
+      <InputGroup alignItems="center" mt={'12px'}>
         <Input
           isInvalid={isInvalid}
           size={'lg'}
@@ -75,14 +75,14 @@ export function ToAccount(props: FlexProps) {
           }}
         />
         {isInvalid && (
-          <InputRightElement h="100%" w="auto" pr={theme.sizes['4']} pl={theme.sizes['2']}>
-            <ErrorIcon boxSize={theme.sizes['4']} />
+          <InputRightElement h="100%" w="auto" pr={'16px'} pl={'8px'}>
+            <ErrorIcon boxSize={'16px'} />
           </InputRightElement>
         )}
       </InputGroup>
 
       {isInvalid && (
-        <Flex mt={theme.sizes['2']} color={theme.colors[colorMode].support.danger[3]}>
+        <Flex mt={'8px'} color={theme.colors[colorMode].support.danger[3]}>
           {formatMessage({ id: 'to.section.account.invalid' })}
         </Flex>
       )}

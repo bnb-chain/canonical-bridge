@@ -1,4 +1,4 @@
-import { Button, Flex, theme } from '@bnb-chain/space';
+import { Button, Flex, useIntl } from '@bnb-chain/space';
 
 import {
   SOURCE_MAX_MORE_COUNT,
@@ -20,6 +20,7 @@ interface NetworkSectionProps {
 export function NetworkSection(props: NetworkSectionProps) {
   const { selectedNetwork, networks = [], onSelect, onShowMore } = props;
 
+  const { formatMessage } = useIntl();
   const showMoreButton = networks.length > SOURCE_MAX_RECENT_COUNT;
   const moreCount = networks.length - SOURCE_MAX_RECENT_COUNT;
 
@@ -32,9 +33,9 @@ export function NetworkSection(props: NetworkSectionProps) {
 
   return (
     <Flex flexDir="column">
-      <SectionTitle>Select Network</SectionTitle>
+      <SectionTitle>{formatMessage({ id: 'select-modal.select.network.title' })}</SectionTitle>
 
-      <Flex py={theme.sizes['2']} gap={theme.sizes['2']} flexWrap="wrap">
+      <Flex py={'8px'} gap={'8px'} flexWrap="wrap">
         {recentNetworks.map((item) => (
           <NetworkItem
             key={item.id}
@@ -45,7 +46,7 @@ export function NetworkSection(props: NetworkSectionProps) {
         ))}
 
         {showMoreButton && (
-          <Button variant="subtle" onClick={onShowMore} h={theme.sizes['8']} px={theme.sizes['3']}>
+          <Button variant="subtle" onClick={onShowMore} h={'32px'} px={'12px'}>
             {moreCount > SOURCE_MAX_MORE_COUNT ? `${SOURCE_MAX_MORE_COUNT}+` : moreCount} More
           </Button>
         )}

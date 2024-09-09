@@ -84,7 +84,7 @@ export const CBridgeOption = () => {
     <Flex
       flex={1}
       flexDir={'column'}
-      gap={theme.sizes['1']}
+      gap={'4px'}
       border={`1px solid`}
       height={'fit-content'}
       borderColor={
@@ -95,8 +95,8 @@ export const CBridgeOption = () => {
       background={
         transferActionInfo?.bridgeType === 'cBridge' ? 'rgba(255, 233, 0, 0.06);' : 'none'
       }
-      borderRadius={theme.sizes['4']}
-      padding={theme.sizes['3']}
+      borderRadius={'16px'}
+      padding={'12px'}
       cursor={'pointer'}
       _hover={{
         borderColor: theme.colors[colorMode].support.brand['3'],
@@ -104,23 +104,23 @@ export const CBridgeOption = () => {
       onClick={onSelectBridge}
       position={'relative'}
     >
-      <Flex flexDir={'row'} gap={theme.sizes['2']}>
-        <CBridgeIcon w={theme.sizes['5']} h={theme.sizes['5']} />
-        <Box fontSize={theme.sizes['3.5']} fontWeight={500} lineHeight={theme.sizes['5']}>
+      <Flex flexDir={'row'} gap={'8px'}>
+        <CBridgeIcon w={'20px'} h={'20px'} />
+        <Box fontSize={'14px'} fontWeight={500} lineHeight={'20px'}>
           {formatMessage({ id: 'route.option.cBridge.title' })}
         </Box>
       </Flex>
 
       <Box
-        px={theme.sizes['2']}
-        py={theme.sizes['1']}
-        mt={theme.sizes['1']}
-        mb={theme.sizes['2']}
+        px={'8px'}
+        py={'4px'}
+        mt={'4px'}
+        mb={'8px'}
         width={'fit-content'}
         fontWeight={500}
         background={theme.colors[colorMode].layer['4'].default}
         borderRadius={'100px'}
-        fontSize={theme.sizes['3.5']}
+        fontSize={'14px'}
       >
         {estimatedAmount &&
         estimatedAmount?.['cBridge'] &&

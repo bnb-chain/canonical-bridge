@@ -74,7 +74,7 @@ export function TransactionApproveModal(
           size="lg"
           variant={'outline'}
           w={'100%'}
-          fontSize={theme.sizes['4']}
+          fontSize={'16px'}
           lineHeight={1.5}
           onClick={restProps.onClose}
         >

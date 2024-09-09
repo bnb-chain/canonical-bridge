@@ -14,21 +14,21 @@ export function SelectModalHeader(props: SelectModalHeaderProps) {
 
   return (
     <Flex
-      h={theme.sizes['16']}
-      px={theme.sizes['5']}
+      h={'64px'}
+      px={'20px'}
       py={0}
       display="flex"
       alignItems="center"
       justifyContent="space-between"
       lineHeight={1.4}
       fontWeight={500}
-      fontSize={theme.sizes['5']}
+      fontSize={'20px'}
       borderBottom={`1px solid ${theme.colors[colorMode].border['3']}`}
       flexShrink={0}
     >
       {showBack ? (
         <ArrowLeftIcon
-          boxSize={theme.sizes['6']}
+          boxSize={'24px'}
           onClick={onBack}
           cursor="pointer"
           color={theme.colors[colorMode].text.tertiary}
@@ -37,11 +37,11 @@ export function SelectModalHeader(props: SelectModalHeaderProps) {
           }}
         />
       ) : (
-        <Box boxSize={theme.sizes['6']} />
+        <Box boxSize={'24px'} />
       )}
       {children}
       <CloseIcon
-        boxSize={theme.sizes['6']}
+        boxSize={'24px'}
         onClick={onClose}
         cursor="pointer"
         color={theme.colors[colorMode].text.tertiary}
