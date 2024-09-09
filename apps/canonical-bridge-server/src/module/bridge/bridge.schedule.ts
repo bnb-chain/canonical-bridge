@@ -24,17 +24,21 @@ export class BridgeSchedule implements OnModuleInit {
   }
 
   @Cron(CronExpression.EVERY_5_MINUTES)
-  async syncCmcConfig() {
-    this.logger.log('syncCmcConfig');
+  async syncTokenConfig() {
+    this.logger.log('syncTokenConfig');
     await this.syncBridge.add(Tasks.cacheCmcConfig, null, {
       jobId: Tasks.cacheCmcConfig,
+      removeOnComplete: true,
+    });
+    await this.syncBridge.add(Tasks.cacheLlamaConfig, null, {
+      jobId: Tasks.cacheLlamaConfig,
       removeOnComplete: true,
     });
   }
 
   async onModuleInit() {
     await this.syncBridgeInfo();
-    await this.syncCmcConfig();
+    await this.syncTokenConfig();
     const jobs = await this.syncBridge.getFailed();
     jobs.forEach((job) => job?.retry());
     if (!jobs.length) return;

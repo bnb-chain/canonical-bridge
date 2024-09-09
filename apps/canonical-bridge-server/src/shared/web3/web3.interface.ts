@@ -116,3 +116,24 @@ export interface IDebridgeConfig {
   chains: IDebridgeChain[];
   tokens: Record<number, Record<string, IDebridgeToken>>;
 }
+
+export interface IAssetPlatform {
+  id: string;
+  chain_identifier: number;
+  name: string;
+  shortname: string;
+  native_coin_id: string;
+}
+
+export interface ICoin {
+  id: string;
+  name: string;
+  symbol: string;
+  platforms: Record<string, string>;
+}
+
+export interface ICoinPrice {
+  id: string;
+  price: number;
+  decimals: number;
+}

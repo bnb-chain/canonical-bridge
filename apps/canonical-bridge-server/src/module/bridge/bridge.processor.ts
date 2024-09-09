@@ -28,8 +28,34 @@ export class BridgeProcessor extends WorkerHost {
         return this.fetchDeBridge();
       case Tasks.cacheCmcConfig:
         return this.cacheCmcConfig();
+      case Tasks.cacheLlamaConfig:
+        return this.cacheLlamaConfig();
       default:
     }
+  }
+
+  async cacheLlamaConfig() {
+    const tokens = await this.bridgeService.getAllCoingeckoTokens();
+    const config = tokens
+      .filter((t) => t.price)
+      .reduce(
+        (r, c) => {
+          const { symbol, address } = c;
+          if (symbol && !address)
+            return { ...r, [symbol.toLowerCase()]: { price: c.price, decimals: c.decimals } };
+          return {
+            ...r,
+            [`${symbol.toLowerCase()}:${address.toLowerCase()}`]: {
+              price: c.price,
+              decimals: c.decimals,
+            },
+          };
+        },
+        {} as Record<string, string>,
+      );
+
+    await this.cache.set(`${CACHE_KEY.LLAMA_CONFIG}`, config);
+    return config;
   }
 
   async cacheCmcConfig() {

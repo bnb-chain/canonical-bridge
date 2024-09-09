@@ -20,12 +20,28 @@ export class TokenProcessor extends WorkerHost {
 
   async process(job: Job<ITokenJob>) {
     switch (job.name) {
+      case Tasks.fetchCoingeckoToken:
+        return this.fetchCoingeckoToken();
       case Tasks.fetchToken:
         return this.fetchTokens(job);
       case Tasks.fetchPrice:
         return this.fetchPrice(job);
+      case Tasks.fetchLlamaPrice:
+        return this.fetchLlamaPrice(job);
       default:
     }
+  }
+
+  async fetchCoingeckoToken() {
+    const getPlatforms = this.web3Service.getAssetPlatforms();
+    const getCoins = this.web3Service.getCoinList();
+
+    const platforms = await getPlatforms;
+    const coins = await getCoins;
+
+    if (!platforms || !coins) return;
+
+    this.tokenService.syncCoingeckoTokens(coins, platforms);
   }
 
   async fetchTokens(job: Job<ITokenJob>) {
@@ -47,5 +63,11 @@ export class TokenProcessor extends WorkerHost {
     const tokens = await this.web3Service.getCryptoCurrencyQuotes(job.data.ids);
 
     await this.tokenService.syncTokenPrice(tokens);
+  }
+
+  async fetchLlamaPrice(job: Job<ITokenJob>) {
+    const tokens = await this.web3Service.getLlamaTokenPrice(job.data.ids);
+
+    await this.tokenService.syncLlamaTokenPrice(tokens.coins, job.data.keyMap);
   }
 }

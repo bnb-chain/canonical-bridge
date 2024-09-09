@@ -16,6 +16,6 @@ export class UtilService {
       return;
     }
     // todo
-    return Array.isArray(res) ? res.map((r) => r.result) : res.result || res.data || res;
+    return Array.isArray(res) ? res.map((r) => r.result || r) : res.result || res.data || res;
   }
 }

@@ -10,4 +10,8 @@ export class BridgeService {
   async getAllTokens() {
     return this.databaseService.getAllTokens();
   }
+
+  async getAllCoingeckoTokens() {
+    return this.databaseService.getAllCoingeckoTokens();
+  }
 }

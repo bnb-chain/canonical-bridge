@@ -25,6 +25,15 @@ export class TokenSchedule implements OnModuleInit {
     );
   }
 
+  @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
+  async syncCoingeckoTokens() {
+    this.logger.log('syncCoingeckoTokens');
+    await this.syncToken.add(Tasks.fetchCoingeckoToken, null, {
+      jobId: Tasks.fetchCoingeckoToken,
+      removeOnComplete: true,
+    });
+  }
+
   @Cron(CronExpression.EVERY_5_MINUTES)
   async syncCmcTokenPrice() {
     this.logger.log('syncCmcTokenPrice');
@@ -37,8 +46,21 @@ export class TokenSchedule implements OnModuleInit {
     );
   }
 
+  @Cron(CronExpression.EVERY_5_MINUTES)
+  async syncCoingeckoTokenPrice() {
+    this.logger.log('syncCoingeckoTokenPrice');
+    const { tokens, keyMap } = await this.tokensService.getLlamaJobIds();
+    if (!tokens) return;
+    await this.syncToken.add(
+      Tasks.fetchLlamaPrice,
+      { ids: tokens, keyMap },
+      { jobId: `${JOB_KEY.CORN_PRICE_PREFIX}${tokens}`, removeOnComplete: true },
+    );
+  }
+
   async onModuleInit() {
     await this.syncCmcTokens();
+    await this.syncCoingeckoTokens();
     const jobs = await this.syncToken.getFailed();
     jobs.forEach((job) => job?.retry());
     if (!jobs.length) return;

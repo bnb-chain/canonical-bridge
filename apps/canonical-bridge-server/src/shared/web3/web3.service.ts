@@ -1,6 +1,9 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import {
+  IAssetPlatform,
+  ICoin,
+  ICoinPrice,
   ICryptoCurrencyMapEntity,
   ICryptoCurrencyMapPayload,
   ICryptoCurrencyQuoteEntity,
@@ -12,7 +15,9 @@ import {
   CBRIDGE_ENDPOINT,
   CMC_API_ENDPOINT,
   CMC_API_KEY,
+  COINGECKO_ENDPOINT,
   DEBRIDGE_ENDPOINT,
+  LLAMA_COINS_ENDPOINT,
   TOKEN_REQUEST_LIMIT,
 } from '@/common/constants';
 import { values } from 'lodash';
@@ -70,6 +75,27 @@ export class Web3Service {
       tokens: Record<string, IDebridgeToken>;
     }>(`${DEBRIDGE_ENDPOINT}/token-list?chainId=${chainId}`);
 
+    return data;
+  }
+
+  async getAssetPlatforms() {
+    const { data } = await this.httpService.axiosRef.get<IAssetPlatform[]>(
+      `${COINGECKO_ENDPOINT}/v3/asset_platforms`,
+    );
+    return data;
+  }
+
+  async getCoinList() {
+    const { data } = await this.httpService.axiosRef.get<ICoin[]>(
+      `${COINGECKO_ENDPOINT}/v3/coins/list?include_platform=true`,
+    );
+    return data;
+  }
+
+  async getLlamaTokenPrice(ids: string) {
+    const { data } = await this.httpService.axiosRef.get<{ coins: Record<string, ICoinPrice> }>(
+      `${LLAMA_COINS_ENDPOINT}/prices/current/${ids}`,
+    );
     return data;
   }
 }

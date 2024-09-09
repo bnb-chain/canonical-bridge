@@ -1,7 +1,15 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { DatabaseService } from '@/shared/database/database.service';
-import { ICryptoCurrencyMapEntity, ICryptoCurrencyQuoteEntity } from '@/shared/web3/web3.interface';
+import {
+  IAssetPlatform,
+  ICoin,
+  ICoinPrice,
+  ICryptoCurrencyMapEntity,
+  ICryptoCurrencyQuoteEntity,
+} from '@/shared/web3/web3.interface';
 import { PRICE_REQUEST_LIMIT } from '@/common/constants';
+import { isEmpty } from 'lodash';
+import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class TokenService {
@@ -24,6 +32,31 @@ export class TokenService {
     return this.databaseService.createTokens(payload);
   }
 
+  async syncCoingeckoTokens(coins: ICoin[], platforms: IAssetPlatform[]) {
+    const pm = platforms.reduce(
+      (r, c) => ({
+        ...r,
+        [c.id]: c.chain_identifier,
+      }),
+      {} as Record<string, number>,
+    );
+
+    const allTokens: Prisma.LlamaTokenCreateManyInput[] = [];
+    coins.forEach((coin) => {
+      const native = isEmpty(coin.platforms);
+      const base = { id: coin.id, name: coin.name, symbol: coin.symbol, chainId: pm[coin.id] };
+      if (native) {
+        allTokens.push(base);
+      } else {
+        Object.entries(coin.platforms).forEach(([k, v]) => {
+          allTokens.push({ ...base, platform: k, address: v, chainId: pm[k] });
+        });
+      }
+    });
+
+    return this.databaseService.createCoingeckoTokens(allTokens);
+  }
+
   async syncTokenPrice(tokens: ICryptoCurrencyQuoteEntity[]) {
     const payload = tokens.map((token) => ({
       id: token.id,
@@ -36,5 +69,33 @@ export class TokenService {
   async getJobIds() {
     const tokens = await this.databaseService.getTokens(PRICE_REQUEST_LIMIT);
     return tokens.map((token) => token.id).join(',');
+  }
+
+  async syncLlamaTokenPrice(tokens: Record<string, ICoinPrice>, keyMap: Record<string, string>) {
+    const _tokens: ICoinPrice[] = [];
+    Object.entries(tokens).forEach(([key, value]) => {
+      const id = keyMap[key];
+      _tokens.push({ id, price: value.price, decimals: value.decimals });
+    });
+
+    return this.databaseService.updateLlamaTokens(_tokens);
+  }
+
+  async getLlamaJobIds() {
+    const tokens = await this.databaseService.getCoingeckoTokens(PRICE_REQUEST_LIMIT / 2);
+    const keyMap: Record<string, string> = {};
+    const _tokens = tokens.map((l) => {
+      if (l.platform) {
+        const key = `${l.platform}:${l.address}`;
+        keyMap[key] = l.id;
+        return key.replaceAll('/', '%2F');
+      }
+
+      const key = `coingecko:${l.id}`;
+      keyMap[key] = l.id;
+      return key;
+    });
+
+    return { tokens: _tokens.join(','), keyMap };
   }
 }

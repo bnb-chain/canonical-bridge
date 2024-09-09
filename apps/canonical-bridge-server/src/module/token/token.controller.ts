@@ -12,4 +12,9 @@ export class TokenController {
   getCmcConfig() {
     return this.cache.get(CACHE_KEY.CMC_CONFIG);
   }
+
+  @Get('/llama')
+  getLlamaConfig() {
+    return this.cache.get(CACHE_KEY.LLAMA_CONFIG);
+  }
 }

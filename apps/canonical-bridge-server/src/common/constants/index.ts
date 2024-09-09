@@ -5,8 +5,11 @@ export const REDIS_URL = process.env.REDIS_URL;
 
 export const CMC_API_KEY = process.env.CMC_API_KEY;
 export const CMC_API_ENDPOINT = process.env.CMC_API_ENDPOINT || 'https://pro-api.coinmarketcap.com';
-export const CBRIDGE_ENDPOINT = process.env.CBRIDGE_ENDPOINT;
-export const DEBRIDGE_ENDPOINT = process.env.DEBRIDGE_ENDPOINT;
+export const CBRIDGE_ENDPOINT = process.env.CBRIDGE_ENDPOINT || 'https://cbridge-prod2.celer.app';
+export const DEBRIDGE_ENDPOINT =
+  process.env.DEBRIDGE_ENDPOINT || 'https://deswap.debridge.finance/v1.0';
+export const LLAMA_COINS_ENDPOINT = process.env.LLMA_COINS__ENDPOINT || 'https://coins.llama.fi';
+export const COINGECKO_ENDPOINT = process.env.COINGECKO_ENDPOINT || 'https://api.coingecko.com/api';
 
 const redisURL = new URL(REDIS_URL);
 
@@ -20,10 +23,13 @@ export enum Queues {
 
 export enum Tasks {
   fetchToken = 'fetchToken',
+  fetchCoingeckoToken = 'fetchCoingeckoToken',
   fetchPrice = 'fetchPrice',
+  fetchLlamaPrice = 'fetchLlamaPrice',
   fetchCbridge = 'fetchCbridge',
   fetchDebridge = 'fetchDebridge',
   cacheCmcConfig = 'cacheCmcConfig',
+  cacheLlamaConfig = 'cacheLlamaConfig',
 }
 
 export const TOKEN_REQUEST_LIMIT = 1000;
@@ -38,6 +44,7 @@ export const CACHE_KEY = {
   CBRIDGE_CONFIG: 'bridge:cbridge',
   DEBRIDGE_CONFIG: 'bridge:debridge',
   CMC_CONFIG: 'cmc:config',
+  LLAMA_CONFIG: 'cmc:config',
 };
 
 export const JOB_KEY = {
