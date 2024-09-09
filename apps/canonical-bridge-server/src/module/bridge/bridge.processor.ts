@@ -64,10 +64,7 @@ export class BridgeProcessor extends WorkerHost {
       tokenMap[chain.chainId] = Object.values(data.tokens);
     }
 
-    const data = {
-      chains: config.chains,
-      tokens: tokenMap,
-    };
+    const data = { chains: config.chains, tokens: tokenMap };
 
     await this.cache.set(`${CACHE_KEY.DEBRIDGE_CONFIG}`, data);
   }
