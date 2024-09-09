@@ -25,7 +25,7 @@ export class TokenSchedule implements OnModuleInit {
     );
   }
 
-  @Cron(CronExpression.EVERY_SECOND)
+  @Cron(CronExpression.EVERY_5_MINUTES)
   async syncCmcTokenPrice() {
     this.logger.log('syncCmcTokenPrice');
     const ids = await this.tokensService.getJobIds();
