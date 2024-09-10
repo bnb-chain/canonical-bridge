@@ -1,7 +1,7 @@
-import { createReducer } from '@reduxjs/toolkit';
 import { FooterMenuProps } from '@bnb-chain/space';
 
 import * as actions from '@/modules/common/action';
+import { createReducer } from '@/modules/store/createReducer';
 
 export interface CommonState {
   footerMenus: FooterMenuProps[];

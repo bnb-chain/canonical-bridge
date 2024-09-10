@@ -1,6 +1,6 @@
 import { PropsWithChildren } from 'react';
 
-import { useAppSelector } from '@/core/store/hooks';
+import { useAppSelector } from '@/modules/store/StoreProvider';
 import { WalletConnectButton } from '@/modules/transfer/components/Button/WalletConnectButton';
 import { useCurrentWallet } from '@/modules/wallet/hooks/useCurrentWallet';
 import { SwitchWalletButton } from '@/modules/transfer/components/Button/SwitchWalletButton';

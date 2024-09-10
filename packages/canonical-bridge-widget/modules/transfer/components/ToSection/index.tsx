@@ -14,7 +14,7 @@ import { useMemo } from 'react';
 import { useToTokenInfo } from '@/modules/transfer/hooks/useToTokenInfo';
 import { SelectButton } from '@/modules/transfer/components/SelectButton';
 import { SelectDestinationModal } from '@/modules/transfer/components/SelectModal/SelectDestinationModal';
-import { useAppDispatch, useAppSelector } from '@/core/store/hooks';
+import { useAppDispatch, useAppSelector } from '@/modules/store/StoreProvider';
 import { setToChain } from '@/modules/transfer/action';
 import { BridgeChain, formatTokenUrl } from '@/modules/bridges';
 import { ExternalAddress } from '@/modules/transfer/components/ExternalTokenAddress';

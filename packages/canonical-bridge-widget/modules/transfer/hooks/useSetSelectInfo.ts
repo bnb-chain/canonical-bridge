@@ -1,4 +1,4 @@
-import { useAppDispatch, useAppSelector } from '@/core/store/hooks';
+import { useAppDispatch, useAppSelector } from '@/modules/store/StoreProvider';
 import { isSameAddress } from '@/core/utils/address';
 import { useBridgeConfigs, isAvailableChainOrToken } from '@/modules/bridges';
 import { setFromChain, setSelectedToken, setToChain, setToToken } from '@/modules/transfer/action';

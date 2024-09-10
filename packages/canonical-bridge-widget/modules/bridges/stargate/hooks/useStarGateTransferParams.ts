@@ -3,7 +3,7 @@ import { useMemo } from 'react';
 import { parseUnits } from 'viem';
 import { ethers } from 'ethers';
 
-import { useAppSelector } from '@/core/store/hooks';
+import { useAppSelector } from '@/modules/store/StoreProvider';
 import { useDebounce } from '@/core/hooks/useDebounce';
 import { DEBOUNCE_DELAY, DEFAULT_ADDRESS } from '@/core/constants';
 import { useToTokenInfo } from '@/modules/transfer/hooks/useToTokenInfo';

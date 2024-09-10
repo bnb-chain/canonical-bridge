@@ -13,7 +13,7 @@ import { ExternalAddress } from '@/modules/transfer/components/ExternalTokenAddr
 import { ErrorMsg, TokenBalance } from '@/modules/transfer/components/TokenBalance';
 import { SelectButton } from '@/modules/transfer/components/SelectButton';
 import { SelectSourceModal } from '@/modules/transfer/components/SelectModal/SelectSourceModal';
-import { useAppDispatch, useAppSelector } from '@/core/store/hooks';
+import { useAppDispatch, useAppSelector } from '@/modules/store/StoreProvider';
 import { BridgeChain, BridgeToken, formatTokenUrl } from '@/modules/bridges';
 import { useSetSelectInfo } from '@/modules/transfer/hooks/useSetSelectInfo';
 

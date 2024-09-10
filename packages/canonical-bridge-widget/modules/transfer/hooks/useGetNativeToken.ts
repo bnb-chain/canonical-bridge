@@ -1,5 +1,5 @@
 import { nativeTokenMap } from '@/core/constants';
-import { useAppSelector } from '@/core/store/hooks';
+import { useAppSelector } from '@/modules/store/StoreProvider';
 
 export const useGetNativeToken = () => {
   const fromChain = useAppSelector((state) => state.transfer.fromChain);

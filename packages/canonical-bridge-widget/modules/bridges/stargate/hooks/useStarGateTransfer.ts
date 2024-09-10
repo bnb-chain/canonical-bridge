@@ -2,7 +2,7 @@ import { useAccount, usePublicClient, useWalletClient } from 'wagmi';
 import { useCallback } from 'react';
 import { parseUnits } from 'viem';
 
-import { useAppDispatch, useAppSelector } from '@/core/store/hooks';
+import { useAppDispatch, useAppSelector } from '@/modules/store/StoreProvider';
 import { setEstimatedAmount } from '@/modules/transfer/action';
 import { toObject } from '@/core/utils/string';
 import { useDebounce } from '@/core/hooks/useDebounce';

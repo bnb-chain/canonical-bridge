@@ -11,7 +11,7 @@ export function useWaitForReady(time = 1000) {
     return () => {
       clearTimeout(timer);
     };
-  }, []);
+  }, [time]);
 
   return isReady;
 }

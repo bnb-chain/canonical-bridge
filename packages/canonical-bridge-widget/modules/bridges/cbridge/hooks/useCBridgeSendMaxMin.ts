@@ -3,7 +3,7 @@ import { usePublicClient } from 'wagmi';
 
 import { ICBridgeMaxMinSendAmt } from '@/modules/bridges/cbridge/types';
 import { bridgeSDK } from '@/core/constants/bridgeSDK';
-import { useAppSelector } from '@/core/store/hooks';
+import { useAppSelector } from '@/modules/store/StoreProvider';
 
 export const useCBridgeSendMaxMin = ({
   bridgeAddress,

@@ -1,5 +1,3 @@
-import { createReducer } from '@reduxjs/toolkit';
-
 import * as actions from '@/modules/transfer/action';
 import {
   BridgeChain,
@@ -7,6 +5,7 @@ import {
   TransferActionInfo,
   IEstimatedAmount,
 } from '@/modules/bridges/main/types';
+import { createReducer } from '@/modules/store/createReducer';
 
 export type TransferState = {
   fromChain?: BridgeChain;

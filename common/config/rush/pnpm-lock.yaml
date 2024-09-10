@@ -29,7 +29,7 @@ importers:
         version: 11.13.0(@emotion/react@11.9.3(@babel/core@7.24.9(supports-color@8.1.1))(@types/react@18.0.12)(react@18.2.0)(supports-color@8.1.1))(@types/react@18.0.12)(react@18.2.0)(supports-color@8.1.1)
       '@node-real/walletkit':
         specifier: 2.3.0-alpha.2
-        version: 2.3.0-alpha.2(lnnas5d3w7brmhb3eyp5vhbv64)
+        version: 2.3.0-alpha.2(o36a2jykds2ygxpzevhinnax4i)
       '@reduxjs/toolkit':
         specifier: ~2.2.5
         version: 2.2.6(react-redux@9.1.2(@types/react@18.0.12)(react@18.2.0)(redux@5.0.1))(react@18.2.0)
@@ -389,10 +389,7 @@ importers:
         version: 11.13.0(@emotion/react@11.13.0(@types/react@18.0.12)(react@18.2.0)(supports-color@8.1.1))(@types/react@18.0.12)(react@18.2.0)(supports-color@8.1.1)
       '@node-real/walletkit':
         specifier: 2.3.0-alpha.2
-        version: 2.3.0-alpha.2(lnnas5d3w7brmhb3eyp5vhbv64)
-      '@reduxjs/toolkit':
-        specifier: ~2.2.5
-        version: 2.2.6(react-redux@9.1.2(@types/react@18.0.12)(react@18.2.0)(redux@5.0.1))(react@18.2.0)
+        version: 2.3.0-alpha.2(o36a2jykds2ygxpzevhinnax4i)
       '@sentry/nextjs':
         specifier: 7.49.0
         version: 7.49.0(next@14.1.1(@babel/core@7.24.9(supports-color@8.1.1))(@opentelemetry/api@1.9.0)(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(react@18.2.0)(supports-color@8.1.1)(webpack@5.93.0)
@@ -402,9 +399,6 @@ importers:
       '@tanstack/react-query':
         specifier: ~5.36.0
         version: 5.36.2(react@18.2.0)
-      '@wagmi/core':
-        specifier: ^2
-        version: 2.13.1(@tanstack/query-core@5.36.1)(@types/react@18.0.12)(immer@10.0.3)(react@18.2.0)(typescript@5.5.4)(viem@2.0.10(bufferutil@4.0.8)(typescript@5.5.4)(utf-8-validate@5.0.9))
       accept-language-parser:
         specifier: ~1.5.0
         version: 1.5.0
@@ -441,9 +435,6 @@ importers:
       next:
         specifier: 14.1.1
         version: 14.1.1(@babel/core@7.24.9(supports-color@8.1.1))(@opentelemetry/api@1.9.0)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
-      next-redux-wrapper:
-        specifier: ~8.1.0
-        version: 8.1.0(next@14.1.1(@babel/core@7.24.9(supports-color@8.1.1))(@opentelemetry/api@1.9.0)(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(react-redux@9.1.2(@types/react@18.0.12)(react@18.2.0)(redux@5.0.1))(react@18.2.0)
       next-seo:
         specifier: ~6.5.0
         version: 6.5.0(next@14.1.1(@babel/core@7.24.9(supports-color@8.1.1))(@opentelemetry/api@1.9.0)(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
@@ -465,9 +456,6 @@ importers:
       react-dom:
         specifier: ^18
         version: 18.2.0(react@18.2.0)
-      react-redux:
-        specifier: ~9.1.2
-        version: 9.1.2(@types/react@18.0.12)(react@18.2.0)(redux@5.0.1)
       supports-color:
         specifier: 8.1.1
         version: 8.1.1
@@ -17497,7 +17485,7 @@ snapshots:
       - tslib
       - utf-8-validate
 
-  '@node-real/walletkit@2.3.0-alpha.2(lnnas5d3w7brmhb3eyp5vhbv64)':
+  '@node-real/walletkit@2.3.0-alpha.2(o36a2jykds2ygxpzevhinnax4i)':
     dependencies:
       '@metamask/jazzicon': 2.0.0
       '@solana/wallet-adapter-react': 0.15.35(@solana/web3.js@1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.9))(bs58@5.0.0)(react-native@0.74.3(@babel/core@7.24.9(supports-color@8.1.1))(@babel/preset-env@7.18.10(@babel/core@7.24.9(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@18.0.12)(bufferutil@4.0.8)(react@18.2.0)(supports-color@8.1.1)(utf-8-validate@5.0.9))(react@18.2.0)
@@ -21300,7 +21288,7 @@ snapshots:
 
   '@vue/shared@3.4.38': {}
 
-  '@wagmi/connectors@5.1.2(@react-native-async-storage/async-storage@1.24.0(react-native@0.74.3(@babel/core@7.24.9(supports-color@8.1.1))(@babel/preset-env@7.18.10(@babel/core@7.24.9(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@18.0.12)(bufferutil@4.0.8)(react@18.2.0)(supports-color@8.1.1)(utf-8-validate@5.0.9)))(@types/react@18.0.12)(@wagmi/core@2.13.1(@tanstack/query-core@5.36.1)(@types/react@18.0.12)(immer@10.0.3)(react@18.2.0)(typescript@5.5.4)(viem@2.0.10(bufferutil@4.0.8)(typescript@5.5.4)(utf-8-validate@5.0.9)))(bufferutil@4.0.8)(react-dom@18.2.0(react@18.2.0))(react-native@0.74.3(@babel/core@7.24.9(supports-color@8.1.1))(@babel/preset-env@7.18.10(@babel/core@7.24.9(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@18.0.12)(bufferutil@4.0.8)(react@18.2.0)(supports-color@8.1.1)(utf-8-validate@5.0.9))(react@18.2.0)(rollup@3.29.4)(supports-color@8.1.1)(typescript@5.5.4)(utf-8-validate@5.0.9)(viem@2.0.10(bufferutil@4.0.8)(typescript@5.5.4)(utf-8-validate@5.0.9))':
+  '@wagmi/connectors@5.1.2(@react-native-async-storage/async-storage@1.24.0(react-native@0.74.3(@babel/core@7.24.9(supports-color@8.1.1))(@babel/preset-env@7.18.10(@babel/core@7.24.9(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@18.0.12)(bufferutil@4.0.8)(react@18.2.0)(supports-color@8.1.1)(utf-8-validate@5.0.9)))(@types/react@18.0.12)(@wagmi/core@2.13.1(@tanstack/query-core@5.36.1)(@types/react@18.0.12)(react@18.2.0)(typescript@5.5.4)(viem@2.0.10(bufferutil@4.0.8)(typescript@5.5.4)(utf-8-validate@5.0.9)))(bufferutil@4.0.8)(react-dom@18.2.0(react@18.2.0))(react-native@0.74.3(@babel/core@7.24.9(supports-color@8.1.1))(@babel/preset-env@7.18.10(@babel/core@7.24.9(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@18.0.12)(bufferutil@4.0.8)(react@18.2.0)(supports-color@8.1.1)(utf-8-validate@5.0.9))(react@18.2.0)(rollup@3.29.4)(supports-color@8.1.1)(typescript@5.5.4)(utf-8-validate@5.0.9)(viem@2.0.10(bufferutil@4.0.8)(typescript@5.5.4)(utf-8-validate@5.0.9))':
     dependencies:
       '@coinbase/wallet-sdk': 4.0.4
       '@metamask/sdk': 0.27.0(bufferutil@4.0.8)(react-dom@18.2.0(react@18.2.0))(react-native@0.74.3(@babel/core@7.24.9(supports-color@8.1.1))(@babel/preset-env@7.18.10(@babel/core@7.24.9(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@18.0.12)(bufferutil@4.0.8)(react@18.2.0)(supports-color@8.1.1)(utf-8-validate@5.0.9))(react@18.2.0)(rollup@3.29.4)(supports-color@8.1.1)(utf-8-validate@5.0.9)
@@ -31152,7 +31140,7 @@ snapshots:
   wagmi@2.12.2(@react-native-async-storage/async-storage@1.24.0(react-native@0.74.3(@babel/core@7.24.9(supports-color@8.1.1))(@babel/preset-env@7.18.10(@babel/core@7.24.9(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@18.0.12)(bufferutil@4.0.8)(react@18.2.0)(supports-color@8.1.1)(utf-8-validate@5.0.9)))(@tanstack/query-core@5.36.1)(@tanstack/react-query@5.36.2(react@18.2.0))(@types/react@18.0.12)(bufferutil@4.0.8)(immer@10.0.3)(react-dom@18.2.0(react@18.2.0))(react-native@0.74.3(@babel/core@7.24.9(supports-color@8.1.1))(@babel/preset-env@7.18.10(@babel/core@7.24.9(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@18.0.12)(bufferutil@4.0.8)(react@18.2.0)(supports-color@8.1.1)(utf-8-validate@5.0.9))(react@18.2.0)(rollup@3.29.4)(supports-color@8.1.1)(typescript@5.5.4)(utf-8-validate@5.0.9)(viem@2.0.10(bufferutil@4.0.8)(typescript@5.5.4)(utf-8-validate@5.0.9)):
     dependencies:
       '@tanstack/react-query': 5.36.2(react@18.2.0)
-      '@wagmi/connectors': 5.1.2(@react-native-async-storage/async-storage@1.24.0(react-native@0.74.3(@babel/core@7.24.9(supports-color@8.1.1))(@babel/preset-env@7.18.10(@babel/core@7.24.9(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@18.0.12)(bufferutil@4.0.8)(react@18.2.0)(supports-color@8.1.1)(utf-8-validate@5.0.9)))(@types/react@18.0.12)(@wagmi/core@2.13.1(@tanstack/query-core@5.36.1)(@types/react@18.0.12)(immer@10.0.3)(react@18.2.0)(typescript@5.5.4)(viem@2.0.10(bufferutil@4.0.8)(typescript@5.5.4)(utf-8-validate@5.0.9)))(bufferutil@4.0.8)(react-dom@18.2.0(react@18.2.0))(react-native@0.74.3(@babel/core@7.24.9(supports-color@8.1.1))(@babel/preset-env@7.18.10(@babel/core@7.24.9(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@18.0.12)(bufferutil@4.0.8)(react@18.2.0)(supports-color@8.1.1)(utf-8-validate@5.0.9))(react@18.2.0)(rollup@3.29.4)(supports-color@8.1.1)(typescript@5.5.4)(utf-8-validate@5.0.9)(viem@2.0.10(bufferutil@4.0.8)(typescript@5.5.4)(utf-8-validate@5.0.9))
+      '@wagmi/connectors': 5.1.2(@react-native-async-storage/async-storage@1.24.0(react-native@0.74.3(@babel/core@7.24.9(supports-color@8.1.1))(@babel/preset-env@7.18.10(@babel/core@7.24.9(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@18.0.12)(bufferutil@4.0.8)(react@18.2.0)(supports-color@8.1.1)(utf-8-validate@5.0.9)))(@types/react@18.0.12)(@wagmi/core@2.13.1(@tanstack/query-core@5.36.1)(@types/react@18.0.12)(react@18.2.0)(typescript@5.5.4)(viem@2.0.10(bufferutil@4.0.8)(typescript@5.5.4)(utf-8-validate@5.0.9)))(bufferutil@4.0.8)(react-dom@18.2.0(react@18.2.0))(react-native@0.74.3(@babel/core@7.24.9(supports-color@8.1.1))(@babel/preset-env@7.18.10(@babel/core@7.24.9(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@18.0.12)(bufferutil@4.0.8)(react@18.2.0)(supports-color@8.1.1)(utf-8-validate@5.0.9))(react@18.2.0)(rollup@3.29.4)(supports-color@8.1.1)(typescript@5.5.4)(utf-8-validate@5.0.9)(viem@2.0.10(bufferutil@4.0.8)(typescript@5.5.4)(utf-8-validate@5.0.9))
       '@wagmi/core': 2.13.1(@tanstack/query-core@5.36.1)(@types/react@18.0.12)(immer@10.0.3)(react@18.2.0)(typescript@5.5.4)(viem@2.0.10(bufferutil@4.0.8)(typescript@5.5.4)(utf-8-validate@5.0.9))
       react: 18.2.0
       use-sync-external-store: 1.2.0(react@18.2.0)

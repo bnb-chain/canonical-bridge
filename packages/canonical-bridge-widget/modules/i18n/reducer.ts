@@ -1,6 +1,5 @@
-import { createReducer } from '@reduxjs/toolkit';
-
 import * as actions from '@/modules/i18n/action';
+import { createReducer } from '@/modules/store/createReducer';
 
 export interface I18nState {
   messages: Record<string, string>;

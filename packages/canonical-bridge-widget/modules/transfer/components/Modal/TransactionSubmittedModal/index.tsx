@@ -2,7 +2,7 @@ import { Button, useIntl } from '@bnb-chain/space';
 import { useAccount } from 'wagmi';
 
 import { StateModal, StateModalProps } from '@/core/components/StateModal';
-import { useAppDispatch } from '@/core/store/hooks';
+import { useAppDispatch } from '@/modules/store/StoreProvider';
 import { EXPLORER_URL } from '@/core/constants';
 import { setEstimatedAmount, setSendValue, setTransferActionInfo } from '@/modules/transfer/action';
 import { ExLinkIcon } from '@/core/components/icons/ExLinkIcon';

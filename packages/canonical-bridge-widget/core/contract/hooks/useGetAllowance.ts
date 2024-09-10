@@ -4,7 +4,7 @@ import { parseUnits } from 'viem';
 
 import { useGetTokenBalance } from '@/core/contract/hooks/useGetTokenBalance';
 import { ERC20_TOKEN } from '@/core/contract/abi';
-import { useAppSelector } from '@/core/store/hooks';
+import { useAppSelector } from '@/modules/store/StoreProvider';
 
 export const useGetAllowance = ({
   tokenAddress,

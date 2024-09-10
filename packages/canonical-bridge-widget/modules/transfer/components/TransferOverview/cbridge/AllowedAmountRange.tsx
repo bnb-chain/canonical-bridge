@@ -1,7 +1,7 @@
 import { formatUnits } from 'viem';
 import { useIntl } from '@bnb-chain/space';
 
-import { useAppSelector } from '@/core/store/hooks';
+import { useAppSelector } from '@/modules/store/StoreProvider';
 import { useCBridgeTransferParams } from '@/modules/bridges/cbridge/hooks/useCBridgeTransferParams';
 import { useCBridgeSendMaxMin } from '@/modules/bridges/cbridge/hooks';
 import { InfoRow } from '@/modules/transfer/components/InfoRow';

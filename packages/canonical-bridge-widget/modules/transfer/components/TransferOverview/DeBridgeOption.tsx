@@ -8,7 +8,7 @@ import { InfoRow } from '@/modules/transfer/components/InfoRow';
 import { useToTokenInfo } from '@/modules/transfer/hooks/useToTokenInfo';
 import { useGetNativeToken } from '@/modules/transfer/hooks/useGetNativeToken';
 import { useDebounce } from '@/core/hooks/useDebounce';
-import { useAppDispatch, useAppSelector } from '@/core/store/hooks';
+import { useAppDispatch, useAppSelector } from '@/modules/store/StoreProvider';
 import { DEBOUNCE_DELAY } from '@/core/constants';
 import { AdditionalDetails } from '@/modules/transfer/components/TransferOverview/AdditionalDetails';
 import { env } from '@/core/configs/env';

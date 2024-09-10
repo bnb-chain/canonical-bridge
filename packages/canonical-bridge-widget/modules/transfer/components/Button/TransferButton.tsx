@@ -3,7 +3,7 @@ import { useCallback, useState } from 'react';
 import { useAccount, useBalance, usePublicClient, useWalletClient } from 'wagmi';
 import { formatUnits, parseUnits } from 'viem';
 
-import { useAppSelector } from '@/core/store/hooks';
+import { useAppSelector } from '@/modules/store/StoreProvider';
 import { useCBridgeTransferParams } from '@/modules/bridges/cbridge/hooks/useCBridgeTransferParams';
 import { useGetAllowance } from '@/core/contract/hooks/useGetAllowance';
 import { bridgeSDK } from '@/core/constants/bridgeSDK';

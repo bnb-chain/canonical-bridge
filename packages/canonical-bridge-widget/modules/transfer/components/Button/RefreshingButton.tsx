@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Box, theme, useColorMode } from '@bnb-chain/space';
 
-import { useAppDispatch, useAppSelector } from '@/core/store/hooks';
+import { useAppDispatch, useAppSelector } from '@/modules/store/StoreProvider';
 import { setIsRefreshing } from '@/modules/transfer/action';
 import { ESTIMATE_AMOUNT_DATA_RELOAD } from '@/core/constants';
 import { useLoadingBridgeFees } from '@/modules/transfer/hooks/useLoadingBridgeFees';
