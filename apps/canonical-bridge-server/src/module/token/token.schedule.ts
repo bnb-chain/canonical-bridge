@@ -58,9 +58,23 @@ export class TokenSchedule implements OnModuleInit {
     );
   }
 
+  @Cron(CronExpression.EVERY_5_MINUTES)
+  async syncTokenConfig() {
+    this.logger.log('syncTokenConfig');
+    await this.syncToken.add(Tasks.cacheCmcConfig, null, {
+      jobId: Tasks.cacheCmcConfig,
+      removeOnComplete: true,
+    });
+    await this.syncToken.add(Tasks.cacheLlamaConfig, null, {
+      jobId: Tasks.cacheLlamaConfig,
+      removeOnComplete: true,
+    });
+  }
+
   async onModuleInit() {
     await this.syncCmcTokens();
     await this.syncCoingeckoTokens();
+    await this.syncTokenConfig();
     const jobs = await this.syncToken.getFailed();
     jobs.forEach((job) => job?.retry());
     if (!jobs.length) return;

@@ -6,12 +6,4 @@ export class BridgeService {
   private logger = new Logger(BridgeService.name);
 
   constructor(private databaseService: DatabaseService) {}
-
-  async getAllTokens() {
-    return this.databaseService.getAllTokens();
-  }
-
-  async getAllCoingeckoTokens() {
-    return this.databaseService.getAllCoingeckoTokens();
-  }
 }

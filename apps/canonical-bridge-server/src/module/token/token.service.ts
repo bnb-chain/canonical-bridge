@@ -99,4 +99,12 @@ export class TokenService {
 
     return { tokens: _tokens.join(','), keyMap };
   }
+
+  async getAllTokens() {
+    return this.databaseService.getAllTokens();
+  }
+
+  async getAllCoingeckoTokens() {
+    return this.databaseService.getAllCoingeckoTokens();
+  }
 }

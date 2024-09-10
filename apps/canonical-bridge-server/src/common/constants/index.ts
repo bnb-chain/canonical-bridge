@@ -44,7 +44,7 @@ export const CACHE_KEY = {
   CBRIDGE_CONFIG: 'bridge:cbridge',
   DEBRIDGE_CONFIG: 'bridge:debridge',
   CMC_CONFIG: 'cmc:config',
-  LLAMA_CONFIG: 'cmc:config',
+  LLAMA_CONFIG: 'llama:config',
 };
 
 export const JOB_KEY = {
