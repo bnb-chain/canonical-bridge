@@ -1,16 +1,16 @@
 import { Button, Flex } from '@bnb-chain/space';
+import { useConnectModal } from '@node-real/walletkit';
+import { useAccount } from 'wagmi';
 
 import { ProfileMenu } from '@/core/components/ProfileMenu';
-import { useWalletModal } from '@/modules/wallet/hooks/useWalletModal';
-import { useCurrentWallet } from '@/modules/wallet/hooks/useCurrentWallet';
 import { HeaderNetworkStatus } from '@/core/components/HeaderNetworkStatus';
 import { useWaitForReady } from '@/core/hooks/useWaitForReady';
 
 export const HeaderInfo = () => {
   const isReady = useWaitForReady();
 
-  const { isConnected } = useCurrentWallet();
-  const { onOpen } = useWalletModal();
+  const { isConnected } = useAccount();
+  const { onOpen } = useConnectModal();
 
   if (!isReady) {
     return null;

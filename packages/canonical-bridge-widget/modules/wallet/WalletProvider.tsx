@@ -6,6 +6,7 @@ import {
   walletConnect,
   binanceWeb3Wallet,
   okxWallet,
+  defaultEvmConfig,
 } from '@node-real/walletkit/evm';
 
 import { APP_NAME } from '@/core/configs/app';
@@ -18,28 +19,26 @@ export function WalletProvider(props: PropsWithChildren) {
 
   const config = useMemo(() => {
     const config: WalletKitConfig = {
-      walletConfig: {
-        autoConnect: true,
-        metadata: {
-          name: APP_NAME,
-        },
-        evmConfig: {
-          initialChainId: 1,
-          wallets: [metaMask(), trustWallet(), binanceWeb3Wallet(), okxWallet(), walletConnect()],
-          chains: getEvmChains(chainConfigs),
-        },
-      },
-      appearance: {
-        mode: 'light',
+      options: {
         useGridLayoutOnMobile: false,
         gridLayoutThreshold: 10,
       },
+      evmConfig: defaultEvmConfig({
+        autoConnect: true,
+        walletConnectProjectId: 'e68a1816d39726c2afabf05661a32767',
+        metadata: {
+          name: APP_NAME,
+        },
+        initialChainId: 1,
+        wallets: [metaMask(), trustWallet(), binanceWeb3Wallet(), okxWallet(), walletConnect()],
+        chains: getEvmChains(chainConfigs),
+      }),
     };
     return config;
   }, [chainConfigs]);
 
   return (
-    <WalletKitProvider config={config}>
+    <WalletKitProvider config={config} mode="light">
       {children}
       <ConnectModal />
     </WalletKitProvider>

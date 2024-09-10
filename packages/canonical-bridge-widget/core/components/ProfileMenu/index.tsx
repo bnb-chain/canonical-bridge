@@ -12,6 +12,7 @@ import {
 } from '@bnb-chain/space';
 import React from 'react';
 import { DisconnectIcon } from '@bnb-chain/icons';
+import { useAccount, useDisconnect } from 'wagmi';
 
 import { CopyAddress } from '@/core/components/CopyAddress';
 import { AccountAvatar } from '@/core/components/AccountAvatar';
@@ -19,12 +20,14 @@ import { ProfileBg } from '@/core/components/ProfileIcon/ProfileBg';
 import { formatNumber } from '@/core/utils/number';
 import { formatAppAddress } from '@/core/utils/address';
 import { WalletIcon } from '@/core/components/icons/WalletIcon';
-import { useCurrentWallet } from '@/modules/wallet/hooks/useCurrentWallet';
+import { useEvmBalance } from '@/modules/wallet/hooks/useEvmBalance';
 
 export const ProfileMenu = () => {
   const { formatMessage } = useIntl();
   const { colorMode } = useColorMode();
-  const { address, balance, disconnect } = useCurrentWallet();
+  const { address } = useAccount();
+  const { data: balance } = useEvmBalance();
+  const { disconnect } = useDisconnect();
 
   return (
     <Menu>

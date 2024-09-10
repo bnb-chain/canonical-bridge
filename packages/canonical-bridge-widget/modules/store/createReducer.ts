@@ -10,7 +10,7 @@ interface Builder<T> {
 }
 
 export function createReducer<T>(initStates: T, callback: (builder: Builder<T>) => void) {
-  const actions: Record<string, (state: T, payload: any) => T> = {};
+  const actions: Record<string, ActionFn<T>> = {};
 
   const builder: Builder<T> = {
     addCase<P extends ActionCreator<any>>(

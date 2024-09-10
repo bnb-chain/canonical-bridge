@@ -1,10 +1,9 @@
 import { Button, useIntl } from '@bnb-chain/space';
-
-import { useWalletModal } from '@/modules/wallet/hooks/useWalletModal';
+import { useConnectModal } from '@node-real/walletkit';
 
 export function SwitchWalletButton() {
   const { formatMessage } = useIntl();
-  const { onOpen } = useWalletModal();
+  const { onOpen } = useConnectModal();
 
   return (
     <Button

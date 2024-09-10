@@ -1,27 +1,19 @@
 import { PropsWithChildren } from 'react';
+import { useAccount } from 'wagmi';
 
 import { useAppSelector } from '@/modules/store/StoreProvider';
 import { WalletConnectButton } from '@/modules/transfer/components/Button/WalletConnectButton';
-import { useCurrentWallet } from '@/modules/wallet/hooks/useCurrentWallet';
-import { SwitchWalletButton } from '@/modules/transfer/components/Button/SwitchWalletButton';
 import { SwitchNetworkButton } from '@/modules/transfer/components/Button/SwitchNetworkButton';
-import { useWalletSupportChain } from '@/modules/wallet/hooks/useWalletSupportChain';
 
 export function WalletButtonWrapper(props: PropsWithChildren) {
   const { children } = props;
 
   const fromChain = useAppSelector((state) => state.transfer.fromChain);
-  const { isConnected, chain, walletId } = useCurrentWallet();
-
-  const isSupported = useWalletSupportChain(fromChain, walletId);
+  const { isConnected, chain } = useAccount();
 
   if (isConnected) {
-    if (chain && fromChain) {
-      if (!isSupported) {
-        return <SwitchWalletButton />;
-      } else if (chain.id !== fromChain.id) {
-        return <SwitchNetworkButton />;
-      }
+    if (chain && fromChain && chain.id !== fromChain.id) {
+      return <SwitchNetworkButton />;
     }
     return <>{children}</>;
   } else {

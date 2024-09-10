@@ -1,10 +1,10 @@
 import { Button, useColorMode, useIntl } from '@bnb-chain/space';
+import { useConnectModal } from '@node-real/walletkit';
 
-import { useWalletModal } from '@/modules/wallet/hooks/useWalletModal';
 import { useAppSelector } from '@/modules/store/StoreProvider';
 
 export const WalletConnectButton = () => {
-  const { onOpen } = useWalletModal();
+  const { onOpen } = useConnectModal();
   const { formatMessage } = useIntl();
   const { colorMode } = useColorMode();
 
