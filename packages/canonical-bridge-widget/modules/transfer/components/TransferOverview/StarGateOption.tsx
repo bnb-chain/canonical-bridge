@@ -4,7 +4,7 @@ import { formatUnits } from 'viem';
 import { useAccount, usePublicClient } from 'wagmi';
 
 import { setTransferActionInfo } from '@/modules/transfer/action';
-import { useAppDispatch, useAppSelector } from '@/core/store/hooks';
+import { useAppDispatch, useAppSelector } from '@/modules/store/StoreProvider';
 import { AdditionalDetails } from '@/modules/transfer/components/TransferOverview/AdditionalDetails';
 import { InfoRow } from '@/modules/transfer/components/InfoRow';
 import { useToTokenInfo } from '@/modules/transfer/hooks/useToTokenInfo';

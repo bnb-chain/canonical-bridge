@@ -6,7 +6,7 @@ import {
   setIsRefreshing,
   setTransferActionInfo,
 } from '@/modules/transfer/action';
-import { useAppDispatch, useAppSelector } from '@/core/store/hooks';
+import { useAppDispatch, useAppSelector } from '@/modules/store/StoreProvider';
 import { CBridgeOption } from '@/modules/transfer/components/TransferOverview/CBridgeOption';
 import { DeBridgeOption } from '@/modules/transfer/components/TransferOverview/DeBridgeOption';
 import { NoRouteFound } from '@/modules/transfer/components/TransferOverview/NoRouteFound';

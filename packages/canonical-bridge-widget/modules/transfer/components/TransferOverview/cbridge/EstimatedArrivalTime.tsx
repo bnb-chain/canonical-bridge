@@ -1,4 +1,4 @@
-import { useAppSelector } from '@/core/store/hooks';
+import { useAppSelector } from '@/modules/store/StoreProvider';
 import { formatEstimatedTime } from '@/core/utils/time';
 import { useFetchCBridgeTransferWaitingTime } from '@/modules/bridges/cbridge/api/useFetchCBridgeTransferWaitingTime';
 import { InfoRow } from '@/modules/transfer/components/InfoRow';

@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import { IntlProvider as ReactIntlProvider } from '@bnb-chain/space';
 
-import { useAppSelector } from '@/core/store/hooks';
+import { useAppSelector } from '@/modules/store/StoreProvider';
 
 export type IntlProviderProps = {
   children: React.ReactNode;

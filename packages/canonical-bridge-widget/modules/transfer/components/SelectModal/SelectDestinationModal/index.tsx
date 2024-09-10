@@ -1,7 +1,7 @@
 import { Modal, ModalOverlay, useIntl } from '@bnb-chain/space';
 
 import { BridgeChain, BridgeToken, formatTokenUrl, useSupportedToChains } from '@/modules/bridges';
-import { useAppSelector } from '@/core/store/hooks';
+import { useAppSelector } from '@/modules/store/StoreProvider';
 import { TokenSelectedItem } from '@/modules/transfer/components/SelectModal/SelectDestinationModal/TokenSelectedItem';
 import { NetworkPanel } from '@/modules/transfer/components/SelectModal/components/NetworkPanel';
 import { SelectModalBody } from '@/modules/transfer/components/SelectModal/components/SelectModalBody';

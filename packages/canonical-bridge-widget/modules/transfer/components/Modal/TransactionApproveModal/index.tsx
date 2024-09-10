@@ -3,7 +3,7 @@ import { Button, theme, Typography, useColorMode, useIntl } from '@bnb-chain/spa
 import { useEffect } from 'react';
 
 import { useApprove } from '@/core/contract/hooks';
-import { useAppSelector } from '@/core/store/hooks';
+import { useAppSelector } from '@/modules/store/StoreProvider';
 import { StateModal, StateModalProps } from '@/core/components/StateModal';
 
 export function TransactionApproveModal(

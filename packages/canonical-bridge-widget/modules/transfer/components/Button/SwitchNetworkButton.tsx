@@ -1,6 +1,6 @@
 import { Button, useIntl } from '@bnb-chain/space';
 
-import { useAppSelector } from '@/core/store/hooks';
+import { useAppSelector } from '@/modules/store/StoreProvider';
 import { useEvmSwitchChain } from '@/modules/wallet/hooks/useEvmSwitchChain';
 
 export const SwitchNetworkButton = () => {

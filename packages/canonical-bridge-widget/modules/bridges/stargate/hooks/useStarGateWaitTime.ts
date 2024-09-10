@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 
-import { useAppSelector } from '@/core/store/hooks';
+import { useAppSelector } from '@/modules/store/StoreProvider';
 import { IStarGateBusDriveSettings } from '@/modules/bridges/stargate/types';
 import { useToTokenInfo } from '@/modules/transfer/hooks/useToTokenInfo';
 import { bridgeSDK } from '@/core/constants/bridgeSDK';

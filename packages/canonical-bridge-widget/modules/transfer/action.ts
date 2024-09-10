@@ -1,4 +1,4 @@
-import { createAction } from '@reduxjs/toolkit';
+import { createAction } from '@/modules/store/createAction';
 
 import { TransferState } from './reducer';
 

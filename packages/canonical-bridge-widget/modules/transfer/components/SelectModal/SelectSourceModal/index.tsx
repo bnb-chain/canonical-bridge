@@ -1,7 +1,7 @@
 import { Modal, ModalOverlay, useIntl } from '@bnb-chain/space';
 import { useEffect, useState } from 'react';
 
-import { useAppSelector } from '@/core/store/hooks';
+import { useAppSelector } from '@/modules/store/StoreProvider';
 import {
   BridgeChain,
   BridgeToken,

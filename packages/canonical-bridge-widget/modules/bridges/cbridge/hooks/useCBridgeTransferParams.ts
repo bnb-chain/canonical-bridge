@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { parseUnits } from 'viem';
 import { useAccount } from 'wagmi';
 
-import { useAppSelector } from '@/core/store/hooks';
+import { useAppSelector } from '@/modules/store/StoreProvider';
 import { bridgeSDK } from '@/core/constants/bridgeSDK';
 
 export const useCBridgeTransferParams = () => {

@@ -1,7 +1,6 @@
-import { createReducer } from '@reduxjs/toolkit';
-
 import * as actions from '@/modules/bridges/action';
 import { ChainConfig } from '@/modules/bridges';
+import { createReducer } from '@/modules/store/createReducer';
 
 export interface BridgesState {
   chainConfigs: ChainConfig[];

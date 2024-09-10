@@ -2,7 +2,7 @@ import { BaseWallet, useConnectModal, useWallets } from '@node-real/walletkit';
 import { Center, Flex, theme } from '@bnb-chain/space';
 import { useEffect, useRef } from 'react';
 
-import { useAppSelector } from '@/core/store/hooks';
+import { useAppSelector } from '@/modules/store/StoreProvider';
 import { NetworkIcon } from '@/core/components/icons/NetworkIcon';
 
 export function useWalletModal() {

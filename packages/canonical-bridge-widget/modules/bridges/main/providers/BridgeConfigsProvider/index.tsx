@@ -12,7 +12,7 @@ import { useFetchBridgeConfigs } from '@/modules/bridges/main/api/useFetchBridge
 import { mergeSupportedChains } from '@/modules/bridges/main/utils/mergeSupportedChains';
 import { mergeSupportedTokens } from '@/modules/bridges/main/utils/mergeSupportedTokens';
 import { mergeSelectedToToken } from '@/modules/bridges/main/utils/mergeSelectedToToken';
-import { useAppSelector } from '@/core/store/hooks';
+import { useAppSelector } from '@/modules/store/StoreProvider';
 import { getNativeCurrencies } from '@/modules/bridges/main/utils/getNativeCurrencies';
 import { bridgeSDK } from '@/core/constants/bridgeSDK';
 import {

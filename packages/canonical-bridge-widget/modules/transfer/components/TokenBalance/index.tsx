@@ -1,11 +1,11 @@
 import { Box, BoxProps, Flex, theme, useColorMode, useIntl } from '@bnb-chain/space';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { formatUnits } from 'viem';
 import { useAccount, useBalance } from 'wagmi';
 import { WarningTriangleIcon } from '@bnb-chain/icons';
 
 import { formatNumber } from '@/core/utils/number';
-import { useAppDispatch, useAppSelector } from '@/core/store/hooks';
+import { useAppDispatch, useAppSelector } from '@/modules/store/StoreProvider';
 import { useGetTokenBalance } from '@/core/contract/hooks/useGetTokenBalance';
 import { useCBridgeTransferParams } from '@/modules/bridges/cbridge/hooks/useCBridgeTransferParams';
 import { useCBridgeSendMaxMin } from '@/modules/bridges/cbridge/hooks';
@@ -82,24 +82,37 @@ export const TokenBalance = () => {
     }
   }, [refetch, address, selectedToken, fromChain, chain, initBalance]);
 
-  const balanceResult = getBalanceComponent({
+  useEffect(() => {
+    const balanceResult = getBalanceComponent({
+      balance,
+      decimal: selectedToken?.decimal || 0,
+      minMaxSendAmt,
+      value: Number(debouncedSendValue),
+      isConnected: !!chain,
+      transferActionInfo,
+      isPegged: selectedToken?.isPegged,
+      estimatedAmount: estimatedAmount,
+      nativeBalance,
+    });
+    if (balanceResult?.isError === true) {
+      dispatch(setIsTransferable(false));
+      dispatch(setError(balanceResult.text));
+    } else {
+      dispatch(setError(undefined));
+      dispatch(setIsTransferable(true));
+    }
+  }, [
     balance,
-    decimal: selectedToken?.decimal || 0,
+    chain,
+    debouncedSendValue,
+    dispatch,
+    estimatedAmount,
     minMaxSendAmt,
-    value: Number(debouncedSendValue),
-    isConnected: !!chain,
-    transferActionInfo,
-    isPegged: selectedToken?.isPegged,
-    estimatedAmount: estimatedAmount,
     nativeBalance,
-  });
-  if (balanceResult?.isError === true) {
-    dispatch(setIsTransferable(false));
-    dispatch(setError(balanceResult.text));
-  } else {
-    dispatch(setError(undefined));
-    dispatch(setIsTransferable(true));
-  }
+    selectedToken?.decimal,
+    selectedToken?.isPegged,
+    transferActionInfo,
+  ]);
 
   return balance !== null && selectedToken && chain ? (
     <StyledTokenBalance

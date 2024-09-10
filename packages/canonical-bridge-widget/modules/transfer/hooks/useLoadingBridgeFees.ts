@@ -3,7 +3,7 @@ import { formatUnits, parseUnits } from 'viem';
 import { useAccount, usePublicClient } from 'wagmi';
 import { BridgeType, DeBridgeCreateQuoteResponse } from '@bnb-chain/canonical-bridge-sdk';
 
-import { useAppDispatch, useAppSelector } from '@/core/store/hooks';
+import { useAppDispatch, useAppSelector } from '@/modules/store/StoreProvider';
 import {
   setEstimatedAmount,
   setIsGlobalFeeLoading,

@@ -3,7 +3,7 @@ import { parseUnits } from 'viem';
 import { useCallback } from 'react';
 
 import { useToTokenInfo } from '@/modules/transfer/hooks/useToTokenInfo';
-import { useAppSelector } from '@/core/store/hooks';
+import { useAppSelector } from '@/modules/store/StoreProvider';
 
 export const useGetReceiveAmount = () => {
   const estimatedAmount = useAppSelector((state) => state.transfer.estimatedAmount);

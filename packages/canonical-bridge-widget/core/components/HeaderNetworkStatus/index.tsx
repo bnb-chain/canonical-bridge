@@ -3,7 +3,7 @@ import { Flex, theme, useColorMode, useIntl } from '@bnb-chain/space';
 import { IconImage } from '@/core/components/IconImage';
 import { useCurrentWallet } from '@/modules/wallet/hooks/useCurrentWallet';
 import { env } from '@/core/configs/env';
-import { useAppSelector } from '@/core/store/hooks';
+import { useAppSelector } from '@/modules/store/StoreProvider';
 
 export function HeaderNetworkStatus() {
   const fromChain = useAppSelector((state) => state.transfer.fromChain);

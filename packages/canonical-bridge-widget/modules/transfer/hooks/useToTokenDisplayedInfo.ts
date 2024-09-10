@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 
-import { useAppSelector } from '@/core/store/hooks';
+import { useAppSelector } from '@/modules/store/StoreProvider';
 import { BridgeToken } from '@/modules/bridges';
 import { useToTokenInfo } from '@/modules/transfer/hooks/useToTokenInfo';
 

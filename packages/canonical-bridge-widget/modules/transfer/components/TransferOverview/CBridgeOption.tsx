@@ -13,7 +13,7 @@ import { setTransferActionInfo } from '@/modules/transfer/action';
 import { useCBridgeTransferParams } from '@/modules/bridges/cbridge/hooks/useCBridgeTransferParams';
 import { useGetAllowance } from '@/core/contract/hooks/useGetAllowance';
 import { useDebounce } from '@/core/hooks/useDebounce';
-import { useAppDispatch, useAppSelector } from '@/core/store/hooks';
+import { useAppDispatch, useAppSelector } from '@/modules/store/StoreProvider';
 import { DEBOUNCE_DELAY } from '@/core/constants';
 import { formatNumber } from '@/core/utils/number';
 

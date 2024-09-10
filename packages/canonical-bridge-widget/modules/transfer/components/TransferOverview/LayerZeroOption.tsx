@@ -3,7 +3,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { formatUnits, parseUnits, encodePacked, pad } from 'viem';
 import { useAccount, usePublicClient } from 'wagmi';
 
-import { useAppDispatch, useAppSelector } from '@/core/store/hooks';
+import { useAppDispatch, useAppSelector } from '@/modules/store/StoreProvider';
 import { useToTokenInfo } from '@/modules/transfer/hooks/useToTokenInfo';
 import { useGetNativeToken } from '@/modules/transfer/hooks/useGetNativeToken';
 import { useGetAllowance } from '@/core/contract/hooks/useGetAllowance';

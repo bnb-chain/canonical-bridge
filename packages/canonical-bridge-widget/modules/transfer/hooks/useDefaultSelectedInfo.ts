@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 
 import { useBridgeConfigs } from '@/modules/bridges';
-import { useAppDispatch } from '@/core/store/hooks';
+import { useAppDispatch } from '@/modules/store/StoreProvider';
 import { setSendValue } from '@/modules/transfer/action';
 import { useSetSelectInfo } from '@/modules/transfer/hooks/useSetSelectInfo';
 

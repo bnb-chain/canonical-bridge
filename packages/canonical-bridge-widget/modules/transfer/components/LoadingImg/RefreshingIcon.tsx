@@ -1,7 +1,7 @@
 import { Icon, IconProps } from '@bnb-chain/space';
 import { keyframes } from '@emotion/react';
 
-import { useAppSelector } from '@/core/store/hooks';
+import { useAppSelector } from '@/modules/store/StoreProvider';
 
 export const RefreshingIcon = (props: IconProps) => {
   const isGlobalFeeLoading = useAppSelector((state) => state.transfer.isGlobalFeeLoading);

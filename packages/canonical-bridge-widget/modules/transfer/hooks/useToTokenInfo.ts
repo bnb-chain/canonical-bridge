@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 
-import { useAppSelector } from '@/core/store/hooks';
+import { useAppSelector } from '@/modules/store/StoreProvider';
 
 export const useToTokenInfo = () => {
   const toTokenInfo = useAppSelector((state) => state.transfer.toToken);

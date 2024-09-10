@@ -11,7 +11,7 @@ import {
 } from '@bnb-chain/space';
 import { ChangeEvent, useRef, useState } from 'react';
 
-import { useAppDispatch, useAppSelector } from '@/core/store/hooks';
+import { useAppDispatch, useAppSelector } from '@/modules/store/StoreProvider';
 import { setToAccount } from '@/modules/transfer/action';
 import { ErrorIcon } from '@/core/components/icons/ErrorIcon';
 // import { CorrectIcon } from '@/core/components/icons/CorrectIcon';
