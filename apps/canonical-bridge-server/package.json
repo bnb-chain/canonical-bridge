@@ -27,6 +27,7 @@
     "@nestjs/core": "~10.4.1",
     "@nestjs/platform-express": "~10.4.1",
     "@nestjs/schedule": "~4.1.0",
+    "@nestjs/swagger": "~7.4.0",
     "@nestjs/terminus": "~10.2.3",
     "@prisma/client": "~5.19.1",
     "bullmq": "~5.12.14",
