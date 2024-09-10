@@ -73,9 +73,10 @@ export class TokenService {
 
   async syncLlamaTokenPrice(tokens: Record<string, ICoinPrice>, keyMap: Record<string, string>) {
     const _tokens: ICoinPrice[] = [];
-    Object.entries(tokens).forEach(([key, value]) => {
-      const id = keyMap[key];
-      _tokens.push({ id, price: value.price, decimals: value.decimals });
+
+    Object.entries(keyMap).forEach(([key, v]) => {
+      const data = tokens[key];
+      _tokens.push({ id: v, price: data?.price, decimals: data?.decimals });
     });
 
     return this.databaseService.updateLlamaTokens(_tokens);
