@@ -48,7 +48,3 @@ export function isSameAddress(A?: string, B?: string) {
 export function isEvmAddress(address?: string) {
   return !!address && /^0x[a-f0-9]{40}$/i.test(address);
 }
-
-export function isSolanaAddress(address?: string) {
-  return !!address && /^[1-9A-HJ-NP-Za-km-z]{32,44}$/.test(address);
-}

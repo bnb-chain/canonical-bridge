@@ -18,7 +18,7 @@ import {
 
 export type WalletType = 'metaMask' | 'trust' | 'walletConnect' | 'okxWallet' | 'binanceWeb3Wallet';
 
-export type ChainType = 'evm' | 'solana';
+export type ChainType = 'evm';
 
 export interface BridgeChain {
   id: number;
@@ -81,10 +81,6 @@ export interface BridgeConfigsResponse {
       pc: WalletType[];
       mobile: WalletType[];
     };
-    // solana: {
-    //   pc: WalletType[];
-    //   mobile: WalletType[];
-    // };
   };
   order: {
     chain: number[];

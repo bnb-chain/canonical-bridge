@@ -11,6 +11,7 @@ import {
 
 import { APP_NAME } from '@/core/configs/app';
 import { ChainConfig, useBridgeConfigs } from '@/modules/bridges';
+import { env } from '@/core/configs/env';
 
 export function WalletProvider(props: PropsWithChildren) {
   const { children } = props;
@@ -25,7 +26,7 @@ export function WalletProvider(props: PropsWithChildren) {
       },
       evmConfig: defaultEvmConfig({
         autoConnect: true,
-        walletConnectProjectId: 'e68a1816d39726c2afabf05661a32767',
+        walletConnectProjectId: env.WALLET_CONNECT_PROJECT_ID,
         metadata: {
           name: APP_NAME,
         },
