@@ -2,12 +2,14 @@ import common from '@/modules/common/reducer';
 import transfer from '@/modules/transfer/reducer';
 import i18n from '@/modules/i18n/reducer';
 import bridges from '@/modules/bridges/reducer';
+import theme from '@/core/theme/reducer';
 
 const reducers = {
   bridges,
   common,
   transfer,
   i18n,
+  theme,
 } as const;
 
 type Reducers = typeof reducers;

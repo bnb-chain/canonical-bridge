@@ -30,6 +30,8 @@ export const CBridgeOption = () => {
   const sendValue = useAppSelector((state) => state.transfer.sendValue);
   const transferActionInfo = useAppSelector((state) => state.transfer.transferActionInfo);
   const estimatedAmount = useAppSelector((state) => state.transfer.estimatedAmount);
+  const theme = useAppSelector((state) => state.theme.themeConfig);
+
   const publicClient = usePublicClient({ chainId: fromChain?.id });
 
   const [gasFee, setGasFee] = useState<{
@@ -89,8 +91,8 @@ export const CBridgeOption = () => {
       height={'fit-content'}
       borderColor={
         transferActionInfo?.bridgeType === 'cBridge'
-          ? theme.colors[colorMode].support.brand['3']
-          : theme.colors[colorMode].border['3']
+          ? theme.colors[colorMode].border.brand
+          : theme.colors[colorMode].button.select.border
       }
       background={
         transferActionInfo?.bridgeType === 'cBridge' ? 'rgba(255, 233, 0, 0.06);' : 'none'
@@ -99,7 +101,7 @@ export const CBridgeOption = () => {
       padding={'12px'}
       cursor={'pointer'}
       _hover={{
-        borderColor: theme.colors[colorMode].support.brand['3'],
+        borderColor: theme.colors[colorMode].border.brand,
       }}
       onClick={onSelectBridge}
       position={'relative'}
@@ -118,7 +120,7 @@ export const CBridgeOption = () => {
         mb={'8px'}
         width={'fit-content'}
         fontWeight={500}
-        background={theme.colors[colorMode].layer['4'].default}
+        background={theme.colors[colorMode].background.tag}
         borderRadius={'100px'}
         fontSize={'14px'}
       >

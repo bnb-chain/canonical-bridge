@@ -26,7 +26,6 @@ export const LayerZeroOption = () => {
   const selectedToken = useAppSelector((state) => state.transfer.selectedToken);
   const sendValue = useAppSelector((state) => state.transfer.sendValue);
   const transferActionInfo = useAppSelector((state) => state.transfer.transferActionInfo);
-  const receiveValue = useAppSelector((state) => state.transfer.receiveValue);
   const publicClient = usePublicClient({ chainId: fromChain?.id });
   const estimatedAmount = useAppSelector((state) => state.transfer.estimatedAmount);
 
@@ -170,8 +169,8 @@ export const LayerZeroOption = () => {
         borderRadius={'100px'}
         fontSize={theme.sizes['3.5']}
       >
-        {receiveValue && receiveValue?.['layerZero'] && toTokenInfo && Number(sendValue) > 0
-          ? `~${formatNumber(Number(receiveValue?.['layerZero']), 8)} ${toTokenInfo.symbol}`
+        {sendValue && sendValue && toTokenInfo && Number(sendValue) > 0 && selectedToken
+          ? `~${formatNumber(Number(sendValue), selectedToken?.decimal)} ${selectedToken?.symbol}`
           : '-'}
       </Box>
 

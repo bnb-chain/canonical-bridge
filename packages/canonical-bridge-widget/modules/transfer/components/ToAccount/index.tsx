@@ -3,7 +3,6 @@ import {
   Box,
   Input,
   useColorMode,
-  theme,
   FlexProps,
   useIntl,
   InputGroup,
@@ -22,6 +21,7 @@ export function ToAccount(props: FlexProps) {
   const dispatch = useAppDispatch();
 
   const toAccount = useAppSelector((state) => state.transfer.toAccount);
+  const theme = useAppSelector((state) => state.theme.themeConfig);
 
   const timerRef = useRef<any>();
   const [inputValue, setInputValue] = useState(toAccount.address);
@@ -66,12 +66,12 @@ export function ToAccount(props: FlexProps) {
           }}
           _focus={{
             bg: 'transparent',
-            boxShadow: `0 0 0 1px ${theme.colors[colorMode].support.brand[3]}`,
-            borderColor: theme.colors[colorMode].support.brand[3],
+            boxShadow: `0 0 0 1px ${theme.colors[colorMode].text.brand}`,
+            borderColor: theme.colors[colorMode].text.brand,
           }}
           _invalid={{
-            boxShadow: `0 0 0 1px ${theme.colors[colorMode].support.danger[3]}`,
-            borderColor: theme.colors[colorMode].support.danger[3],
+            boxShadow: `0 0 0 1px ${theme.colors[colorMode].text.danger}`,
+            borderColor: theme.colors[colorMode].text.danger,
           }}
         />
         {isInvalid && (
@@ -82,7 +82,7 @@ export function ToAccount(props: FlexProps) {
       </InputGroup>
 
       {isInvalid && (
-        <Flex mt={'8px'} color={theme.colors[colorMode].support.danger[3]}>
+        <Flex mt={'8px'} color={theme.colors[colorMode].text.danger}>
           {formatMessage({ id: 'to.section.account.invalid' })}
         </Flex>
       )}

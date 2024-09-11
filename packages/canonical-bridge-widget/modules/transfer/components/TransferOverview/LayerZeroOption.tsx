@@ -1,4 +1,4 @@
-import { Box, Flex, theme, useColorMode, Image, useIntl } from '@bnb-chain/space';
+import { Box, Flex, useColorMode, Image, useIntl } from '@bnb-chain/space';
 import { useCallback, useEffect, useState } from 'react';
 import { formatUnits, parseUnits, encodePacked, pad } from 'viem';
 import { useAccount, usePublicClient } from 'wagmi';
@@ -29,6 +29,7 @@ export const LayerZeroOption = () => {
   const selectedToken = useAppSelector((state) => state.transfer.selectedToken);
   const sendValue = useAppSelector((state) => state.transfer.sendValue);
   const transferActionInfo = useAppSelector((state) => state.transfer.transferActionInfo);
+  const theme = useAppSelector((state) => state.theme.themeConfig);
   const estimatedAmount = useAppSelector((state) => state.transfer.estimatedAmount);
   const publicClient = usePublicClient({ chainId: fromChain?.id });
 
@@ -140,8 +141,8 @@ export const LayerZeroOption = () => {
       height={'fit-content'}
       borderColor={
         transferActionInfo?.bridgeType === 'layerZero'
-          ? theme.colors[colorMode].support.brand['3']
-          : theme.colors[colorMode].border['3']
+          ? theme.colors[colorMode].border.brand
+          : theme.colors[colorMode].button.select.border
       }
       background={
         transferActionInfo?.bridgeType === 'layerZero' ? 'rgba(255, 233, 0, 0.06);' : 'none'
@@ -150,7 +151,7 @@ export const LayerZeroOption = () => {
       padding={'12px'}
       cursor={'pointer'}
       _hover={{
-        borderColor: theme.colors[colorMode].support.brand['3'],
+        borderColor: theme.colors[colorMode].border.brand,
       }}
       onClick={onSelectBridge}
       position={'relative'}
@@ -175,7 +176,7 @@ export const LayerZeroOption = () => {
         mb={'8px'}
         width={'fit-content'}
         fontWeight={500}
-        background={theme.colors[colorMode].layer['4'].default}
+        background={theme.colors[colorMode].background.tag}
         borderRadius={'100px'}
         fontSize={'14px'}
       >

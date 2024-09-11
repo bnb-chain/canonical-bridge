@@ -1,4 +1,4 @@
-import { Box, Flex, Image, theme, useColorMode, useIntl } from '@bnb-chain/space';
+import { Box, Flex, Image, useColorMode, useIntl } from '@bnb-chain/space';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { formatUnits, parseUnits } from 'viem';
 import { useAccount, usePublicClient } from 'wagmi';
@@ -29,6 +29,7 @@ export const DeBridgeOption = () => {
   const sendValue = useAppSelector((state) => state.transfer.sendValue);
   const transferActionInfo = useAppSelector((state) => state.transfer.transferActionInfo);
   const estimatedAmount = useAppSelector((state) => state.transfer.estimatedAmount);
+  const theme = useAppSelector((state) => state.theme.themeConfig);
 
   const publicClient = usePublicClient({ chainId: fromChain?.id });
   const [gasInfo, setGasInfo] = useState<{ gas: bigint; gasPrice: bigint }>({
@@ -196,8 +197,8 @@ export const DeBridgeOption = () => {
       border={`1px solid`}
       borderColor={
         transferActionInfo?.bridgeType === 'deBridge'
-          ? theme.colors[colorMode].support.brand['3']
-          : theme.colors[colorMode].border['3']
+          ? theme.colors[colorMode].border.brand
+          : theme.colors[colorMode].button.select.border
       }
       background={
         transferActionInfo?.bridgeType === 'deBridge' ? 'rgba(255, 233, 0, 0.06);' : 'none'
@@ -207,7 +208,7 @@ export const DeBridgeOption = () => {
       position={'relative'}
       cursor={'pointer'}
       _hover={{
-        borderColor: theme.colors[colorMode].support.brand['3'],
+        borderColor: theme.colors[colorMode].border.brand,
       }}
       onClick={onSelectBridge}
     >
@@ -230,7 +231,7 @@ export const DeBridgeOption = () => {
         mb={'8px'}
         width={'fit-content'}
         fontWeight={500}
-        background={theme.colors[colorMode].layer['4'].default}
+        background={theme.colors[colorMode].background.tag}
         borderRadius={'100px'}
         fontSize={'14px'}
       >

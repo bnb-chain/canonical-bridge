@@ -1,32 +1,56 @@
 import { ChakraProvider, theme, createLocalStorageManager, ColorMode } from '@bnb-chain/space';
+import { useEffect, useMemo } from 'react';
+import { merge } from 'lodash';
 
+import { light } from '@/core/theme/colors/light';
+import { dark } from '@/core/theme/colors/dark';
 import { APP_NAME } from '@/core/configs/app';
 import { walletStyles } from '@/core/theme/walletStyles';
+import { useAppDispatch } from '@/modules/store/StoreProvider';
+import { setThemeConfig } from '@/core/theme/action';
 
 interface ThemeProviderProps {
   children: React.ReactNode;
+  themeConfig?: { dark?: any; light?: any };
 }
 
 const colorModeManager = createLocalStorageManager(`${APP_NAME}-color-mode`);
 
-export const ThemeProvider = ({ children }: ThemeProviderProps) => {
-  const customTheme = {
-    ...theme,
-    config: {
-      ...theme.config,
-      initialColorMode: 'dark',
-      useSystemColorMode: false,
-    },
-    styles: {
-      global: ({ colorMode }: { colorMode: ColorMode }) => ({
-        body: {
-          bg: theme.colors[colorMode].background[3],
-          minWidth: '768px',
-        },
-        ...walletStyles(colorMode),
+export const ThemeProvider = ({ children, themeConfig }: ThemeProviderProps) => {
+  const dispatch = useAppDispatch();
+
+  const customTheme = useMemo(() => {
+    return {
+      ...theme,
+      config: {
+        ...theme.config,
+        initialColorMode: 'dark',
+        useSystemColorMode: false,
+      },
+      styles: {
+        global: ({ colorMode }: { colorMode: ColorMode }) => ({
+          body: {
+            bg: theme.colors[colorMode].background[3],
+            minWidth: '768px',
+          },
+          ...walletStyles(colorMode),
+        }),
+      },
+      colors: {
+        ...theme.colors,
+        dark: merge(dark, themeConfig?.dark),
+        light: merge(light, themeConfig?.light),
+      },
+    };
+  }, [themeConfig]);
+
+  useEffect(() => {
+    dispatch(
+      setThemeConfig({
+        colors: { dark: customTheme.colors.dark, light: customTheme.colors.light },
       }),
-    },
-  };
+    );
+  }, [dispatch, customTheme.colors]);
 
   return (
     <ChakraProvider

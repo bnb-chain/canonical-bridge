@@ -5,7 +5,6 @@ import { useAppDispatch, useAppSelector } from '@/core/store/hooks';
 import {
   setEstimatedAmount,
   setIsGlobalFeeLoading,
-  setReceiveValue,
   setTransferActionInfo,
 } from '@/modules/transfer/action';
 import { useGetDebridgeEstimateAmount } from '@/modules/bridges/debridge/hooks/useGetDebridgeEstimateAmount';
@@ -111,11 +110,6 @@ export const useLoadingBridgeFees = () => {
             value: debouncedSendValue,
           });
           dispatch(setEstimatedAmount({ layerZero: Number(layerZeroEst.value[0]) }));
-          dispatch(
-            setReceiveValue({
-              layerZero: debouncedSendValue,
-            }),
-          );
         } else {
           dispatch(setEstimatedAmount({ layerZero: undefined }));
         }

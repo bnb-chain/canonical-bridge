@@ -6,12 +6,12 @@ import {
   InputGroup,
   InputLeftElement,
   InputRightElement,
-  theme,
   useColorMode,
 } from '@bnb-chain/space';
 import { ChangeEvent, useRef, useState } from 'react';
 
 import { SearchIcon } from '@/core/components/icons/SearchIcon';
+import { useAppSelector } from '@/modules/store/StoreProvider';
 
 interface SearchInputProps extends Omit<InputGroupProps, 'onChange'> {
   placeholder: string;
@@ -21,6 +21,7 @@ interface SearchInputProps extends Omit<InputGroupProps, 'onChange'> {
 
 export function SearchInput(props: SearchInputProps) {
   const { placeholder, isDisabled = false, onChange, ...restProps } = props;
+  const theme = useAppSelector((state) => state.theme.themeConfig);
 
   const { colorMode } = useColorMode();
 
@@ -54,7 +55,7 @@ export function SearchInput(props: SearchInputProps) {
 
       <Input
         value={value}
-        fontWeight={theme.fontWeights[400]}
+        fontWeight={400}
         placeholder={placeholder}
         onChange={onChangeInput}
         maxLength={64}

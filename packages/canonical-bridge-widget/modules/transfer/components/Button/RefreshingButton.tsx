@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Box, theme, useColorMode } from '@bnb-chain/space';
+import { Box, useColorMode } from '@bnb-chain/space';
 
 import { useAppDispatch, useAppSelector } from '@/modules/store/StoreProvider';
 import { setIsRefreshing } from '@/modules/transfer/action';
@@ -12,7 +12,7 @@ export const RefreshingButton = () => {
   const isGlobalFeeLoading = useAppSelector((state) => state.transfer.isGlobalFeeLoading);
   const isRefreshing = useAppSelector((state) => state.transfer.isRefreshing);
   const transferActionInfo = useAppSelector((state) => state.transfer.transferActionInfo);
-
+  const theme = useAppSelector((state) => state.theme.themeConfig);
   const dispatch = useAppDispatch();
   const [isButtonPressed, setIsButtonPressed] = useState(false);
 
@@ -57,12 +57,12 @@ export const RefreshingButton = () => {
   return transferActionInfo ? (
     <Box
       cursor={!isGlobalFeeLoading && isRefreshing ? 'pointer' : 'not-allowed'}
-      color={theme.colors[colorMode].support.brand['5']}
+      color={theme.colors[colorMode].button.refresh.text}
       _hover={{
         color:
           !isGlobalFeeLoading && isRefreshing
             ? theme.colors[colorMode].support.brand['4']
-            : theme.colors[colorMode].support.brand['5'],
+            : theme.colors[colorMode].button.refresh.text,
       }}
       onClick={() => {
         setIsButtonPressed(true);

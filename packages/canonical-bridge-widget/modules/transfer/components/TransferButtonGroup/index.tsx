@@ -35,7 +35,7 @@ export const TransferButtonGroup = () => {
 
   return (
     <>
-      <Flex gap={'4px'}>
+      <Flex gap={'4px'} mt={'24px'}>
         <WalletButtonWrapper>
           <TransferButton
             onOpenSubmittedModal={onOpenSubmittedModal}

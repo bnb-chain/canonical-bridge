@@ -1,4 +1,4 @@
-import { Button, Flex, useIntl } from '@bnb-chain/space';
+import { Button, Flex, useColorMode, useIntl } from '@bnb-chain/space';
 
 import {
   SOURCE_MAX_MORE_COUNT,
@@ -9,6 +9,7 @@ import { BridgeChain } from '@/modules/bridges';
 import { useRecentNetworks } from '@/modules/transfer/components/SelectModal/hooks/useRecentNetworks';
 import { SectionTitle } from '@/modules/transfer/components/SelectModal/components/SectionTitle';
 import { NetworkItem } from '@/modules/transfer/components/SelectModal/SelectSourceModal/NetworkItem';
+import { useAppSelector } from '@/modules/store/StoreProvider';
 
 interface NetworkSectionProps {
   selectedNetwork?: BridgeChain;
@@ -21,8 +22,10 @@ export function NetworkSection(props: NetworkSectionProps) {
   const { selectedNetwork, networks = [], onSelect, onShowMore } = props;
 
   const { formatMessage } = useIntl();
+  const { colorMode } = useColorMode();
   const showMoreButton = networks.length > SOURCE_MAX_RECENT_COUNT;
   const moreCount = networks.length - SOURCE_MAX_RECENT_COUNT;
+  const theme = useAppSelector((state) => state.theme.themeConfig);
 
   const recentNetworks = useRecentNetworks({
     current: selectedNetwork,
@@ -42,6 +45,7 @@ export function NetworkSection(props: NetworkSectionProps) {
             isSelected={item.id === selectedNetwork?.id}
             data={item}
             onClick={() => onSelect(item)}
+            color={theme.colors[colorMode].text.tertiary}
           />
         ))}
 

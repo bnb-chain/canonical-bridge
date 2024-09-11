@@ -2,6 +2,7 @@ import { FlexProps, useColorMode, Flex, theme } from '@bnb-chain/space';
 
 import { IconImage } from '@/core/components/IconImage';
 import { BridgeChain } from '@/modules/bridges';
+import { useAppSelector } from '@/modules/store/StoreProvider';
 
 interface NetworkItemProps extends FlexProps {
   data: BridgeChain;
@@ -12,6 +13,7 @@ export function NetworkItem(props: NetworkItemProps) {
   const { data, isSelected = false, ...restProps } = props;
 
   const { colorMode } = useColorMode();
+  const theme = useAppSelector((state) => state.theme.themeConfig);
 
   return (
     <Flex
@@ -21,10 +23,13 @@ export function NetworkItem(props: NetworkItemProps) {
       borderRadius={'8px'}
       border="1px solid"
       borderColor={
-        isSelected ? theme.colors[colorMode].support.brand[3] : theme.colors[colorMode].border[3]
+        isSelected
+          ? theme.colors[colorMode].background.brand
+          : theme.colors[colorMode].button.select.border
       }
+      color={theme.colors[colorMode].button.select.text}
       _hover={{
-        bg: isSelected ? undefined : theme.colors[colorMode].layer[3].hover,
+        bg: isSelected ? undefined : theme.colors[colorMode].button.select.background.hover,
       }}
       bg={isSelected ? `rgba(255, 233, 0, 0.06)` : 'transparent'}
       h={'32px'}

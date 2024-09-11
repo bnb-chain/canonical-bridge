@@ -1,5 +1,7 @@
 import { ArrowLeftIcon, CloseIcon } from '@bnb-chain/icons';
-import { Box, Flex, ModalHeaderProps, theme, useColorMode } from '@bnb-chain/space';
+import { Box, Flex, ModalHeaderProps, useColorMode } from '@bnb-chain/space';
+
+import { useAppSelector } from '@/modules/store/StoreProvider';
 
 interface SelectModalHeaderProps extends Omit<ModalHeaderProps, 'title'> {
   showBack?: boolean;
@@ -10,6 +12,7 @@ interface SelectModalHeaderProps extends Omit<ModalHeaderProps, 'title'> {
 export function SelectModalHeader(props: SelectModalHeaderProps) {
   const { children, showBack = false, onClose, onBack } = props;
 
+  const theme = useAppSelector((state) => state.theme.themeConfig);
   const { colorMode } = useColorMode();
 
   return (
@@ -31,9 +34,9 @@ export function SelectModalHeader(props: SelectModalHeaderProps) {
           boxSize={'24px'}
           onClick={onBack}
           cursor="pointer"
-          color={theme.colors[colorMode].text.tertiary}
+          color={theme.colors[colorMode].modal.back.default}
           _hover={{
-            color: theme.colors[colorMode].text.primary,
+            color: theme.colors[colorMode].modal.back.hover,
           }}
         />
       ) : (
@@ -44,9 +47,9 @@ export function SelectModalHeader(props: SelectModalHeaderProps) {
         boxSize={'24px'}
         onClick={onClose}
         cursor="pointer"
-        color={theme.colors[colorMode].text.tertiary}
+        color={theme.colors[colorMode].modal.back.default}
         _hover={{
-          color: theme.colors[colorMode].text.primary,
+          color: theme.colors[colorMode].modal.back.hover,
         }}
       />
     </Flex>

@@ -1,4 +1,4 @@
-import { FlexProps, Flex, theme, useColorMode, Box, Text, Space, useIntl } from '@bnb-chain/space';
+import { FlexProps, Flex, useColorMode, Box, Text, Space, useIntl } from '@bnb-chain/space';
 import { useState } from 'react';
 
 import { IconImage } from '@/core/components/IconImage';
@@ -8,6 +8,7 @@ import { NoResultFound } from '@/modules/transfer/components/SelectModal/compone
 import { SearchInput } from '@/modules/transfer/components/SelectModal/components/SearchInput';
 import { UnavailableTag } from '@/modules/transfer/components/SelectModal/components/UnavailableTag';
 import { SectionTitle } from '@/modules/transfer/components/SelectModal/components/SectionTitle';
+import { useAppSelector } from '@/modules/store/StoreProvider';
 
 interface NetworkPanelProps {
   showTitle?: boolean;
@@ -72,7 +73,7 @@ interface NetworkListItemProps extends FlexProps {
 
 export function NetworkListItem(props: NetworkListItemProps) {
   const { data, unavailableTips, ...restProps } = props;
-
+  const theme = useAppSelector((state) => state.theme.themeConfig);
   const { colorMode } = useColorMode();
 
   return (
@@ -85,14 +86,20 @@ export function NetworkListItem(props: NetworkListItemProps) {
       transitionDuration="normal"
       transitionProperty="colors"
       cursor="pointer"
+      bg={theme.colors[colorMode].modal.item.background.default}
       _hover={{
-        bg: theme.colors[colorMode].layer[3].hover,
+        bg: theme.colors[colorMode].modal.item.background.hover,
       }}
       {...restProps}
     >
       <Flex alignItems="center" gap={'12px'} overflow="hidden">
         <IconImage src={data.icon} boxSize={'32px'} alt={data.name} />
-        <Text textOverflow="ellipsis" overflow="hidden" whiteSpace="nowrap">
+        <Text
+          textOverflow="ellipsis"
+          overflow="hidden"
+          whiteSpace="nowrap"
+          color={theme.colors[colorMode].modal.item.text.primary}
+        >
           {data.name}
         </Text>
       </Flex>

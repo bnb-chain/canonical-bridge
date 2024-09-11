@@ -28,8 +28,8 @@ export default function App(props: AppProps) {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <ThemeProvider>
-        <StoreProvider>
+      <StoreProvider>
+        <ThemeProvider>
           <IntlProvider locale={'en'} messages={{ ...en }}>
             <DataProvider>
               <BridgeConfigsProvider>
@@ -41,8 +41,8 @@ export default function App(props: AppProps) {
               </BridgeConfigsProvider>
             </DataProvider>
           </IntlProvider>
-        </StoreProvider>
-      </ThemeProvider>
+        </ThemeProvider>
+      </StoreProvider>
     </QueryClientProvider>
   );
 }

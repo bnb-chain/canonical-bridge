@@ -1,4 +1,4 @@
-import { Box, Flex, theme, useColorMode, useIntl } from '@bnb-chain/space';
+import { Box, Flex, useColorMode, useIntl } from '@bnb-chain/space';
 import { useCallback, useEffect, useState } from 'react';
 import { formatUnits } from 'viem';
 import { useAccount, usePublicClient } from 'wagmi';
@@ -34,6 +34,7 @@ export const StarGateOption = () => {
   const transferActionInfo = useAppSelector((state) => state.transfer.transferActionInfo);
   const estimatedAmount = useAppSelector((state) => state.transfer.estimatedAmount);
   const publicClient = usePublicClient({ chainId: fromChain?.id });
+  const theme = useAppSelector((state) => state.theme.themeConfig);
 
   const { data: estimatedTime } = useStarGateWaitTime();
 
@@ -142,8 +143,8 @@ export const StarGateOption = () => {
       height={'fit-content'}
       borderColor={
         transferActionInfo?.bridgeType === 'stargate'
-          ? theme.colors[colorMode].support.brand['3']
-          : theme.colors[colorMode].border['3']
+          ? theme.colors[colorMode].border.brand
+          : theme.colors[colorMode].button.select.border
       }
       background={
         transferActionInfo?.bridgeType === 'stargate' ? 'rgba(255, 233, 0, 0.06);' : 'none'
@@ -152,7 +153,7 @@ export const StarGateOption = () => {
       padding={'12px'}
       cursor={'pointer'}
       _hover={{
-        borderColor: theme.colors[colorMode].support.brand['3'],
+        borderColor: theme.colors[colorMode].border.brand,
       }}
       onClick={onSelectBridge}
       position={'relative'}
@@ -171,7 +172,7 @@ export const StarGateOption = () => {
         mb={'8px'}
         width={'fit-content'}
         fontWeight={500}
-        background={theme.colors[colorMode].layer['4'].default}
+        background={theme.colors[colorMode].background.tag}
         borderRadius={'100px'}
         fontSize={'14px'}
       >

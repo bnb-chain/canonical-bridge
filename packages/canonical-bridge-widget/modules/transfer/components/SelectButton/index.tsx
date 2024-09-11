@@ -1,8 +1,9 @@
-import { ButtonProps, Flex, Text, theme, useColorMode, Button } from '@bnb-chain/space';
+import { ButtonProps, Flex, Text, useColorMode, Button } from '@bnb-chain/space';
 import { CaretDownIcon } from '@bnb-chain/icons';
 
 import { IconImage } from '@/core/components/IconImage';
 import { BridgeChain, BridgeToken } from '@/modules/bridges/main/types';
+import { useAppSelector } from '@/modules/store/StoreProvider';
 
 export interface SelectButtonProps extends Omit<ButtonProps, 'value'> {
   network?: BridgeChain;
@@ -11,23 +12,23 @@ export interface SelectButtonProps extends Omit<ButtonProps, 'value'> {
 
 export function SelectButton(props: SelectButtonProps) {
   const { network, token, ...restProps } = props;
+  const theme = useAppSelector((state) => state.theme.themeConfig);
 
   const { colorMode } = useColorMode();
 
   return (
     <Button
-      borderRadius={'16px'}
+      borderRadius={'8px'}
       flexShrink={0}
       h={'64px'}
       px={'16px'}
       py={'12px'}
-      w={'100%'}
-      maxW={'250px'}
+      // w={'100%'}
       justifyContent={'space-between'}
       gap={'8px'}
-      background={theme.colors[colorMode].layer['3'].default}
+      background={theme.colors[colorMode].button.select.background.default}
       _hover={{
-        background: theme.colors[colorMode].layer['3'].hover,
+        background: theme.colors[colorMode].button.select.background.hover,
       }}
       color={theme.colors[colorMode].text.primary}
       {...restProps}
@@ -69,13 +70,13 @@ export function SelectButton(props: SelectButtonProps) {
             fontSize={'14px'}
             fontWeight={400}
             lineHeight={'16px'}
-            color={theme.colors[colorMode].text.placeholder}
+            color={theme.colors[colorMode].button.select.text}
           >
             {network?.name ?? 'Select Network'}
           </Text>
         </Flex>
       </Flex>
-      <CaretDownIcon w={'24px'} h={'24px'} color={theme.colors[colorMode].text.secondary} />
+      <CaretDownIcon w={'24px'} h={'24px'} color={theme.colors[colorMode].button.select.arrow} />
     </Button>
   );
 }

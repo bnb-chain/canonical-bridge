@@ -1,4 +1,4 @@
-import { Box, Flex, Skeleton, theme, useColorMode, useIntl } from '@bnb-chain/space';
+import { Box, Flex, Skeleton, useColorMode, useIntl } from '@bnb-chain/space';
 import { ReactNode, useEffect, useMemo } from 'react';
 
 import {
@@ -31,6 +31,7 @@ export function TransferOverview() {
   const toChain = useAppSelector((state) => state.transfer.toChain);
   const toTokenInfo = useAppSelector((state) => state.transfer.toToken);
   const bridgeType = useAppSelector((state) => state.transfer.transferActionInfo)?.bridgeType;
+  const theme = useAppSelector((state) => state.theme.themeConfig);
 
   const { loadingBridgeFees } = useLoadingBridgeFees();
 
@@ -104,7 +105,7 @@ export function TransferOverview() {
             position={'relative'}
             py={'24px'}
             borderRadius={'24px'}
-            background={theme.colors[colorMode].layer['3'].default}
+            background={theme.colors[colorMode].background.route}
             minW="384px"
           >
             <Flex flexDir={'column'} gap={'12px'}>
@@ -112,7 +113,7 @@ export function TransferOverview() {
                 justifyContent={'space-between'}
                 alignItems={'center'}
                 px={'24px'}
-                color={theme.colors[colorMode].text.tertiary}
+                color={theme.colors[colorMode].text.route.title}
                 fontSize={'14px'}
                 h={'32px'}
                 sx={{

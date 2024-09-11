@@ -1,5 +1,5 @@
-import { Box, BoxProps, Flex, theme, useColorMode, useIntl } from '@bnb-chain/space';
-import { useEffect, useMemo, useState } from 'react';
+import { Box, BoxProps, Flex, useColorMode, useIntl } from '@bnb-chain/space';
+import { useEffect, useState } from 'react';
 import { formatUnits } from 'viem';
 import { useAccount, useBalance } from 'wagmi';
 import { WarningTriangleIcon } from '@bnb-chain/icons';
@@ -135,6 +135,7 @@ export function StyledTokenBalance(props: StyledTokenBalanceInfoProps) {
   const { error, balance, selectedToken, setMaxAmount } = props;
   const { colorMode } = useColorMode();
   const { formatMessage } = useIntl();
+  const theme = useAppSelector((state) => state.theme.themeConfig);
 
   return (
     <Flex flex={1} flexDir={'column'} fontSize={'12px'}>
@@ -145,7 +146,7 @@ export function StyledTokenBalance(props: StyledTokenBalanceInfoProps) {
               w={'16px'}
               h={'16px'}
               mr={'4px'}
-              color={theme.colors[colorMode].support.danger[3]}
+              color={theme.colors[colorMode].text.danger}
             />
           ) : null}
           {formatMessage({ id: 'from.section.balance.title' })}
@@ -247,9 +248,10 @@ export const getBalanceComponent = ({
 
 export function ErrorMsg(props: BoxProps) {
   const { colorMode } = useColorMode();
+  const theme = useAppSelector((state) => state.theme.themeConfig);
   return (
     <Box
-      color={theme.colors[colorMode].support.danger[3]}
+      color={theme.colors[colorMode].text.danger}
       fontSize={'12px'}
       fontWeight={400}
       lineHeight={'16px'}

@@ -1,12 +1,4 @@
-import {
-  Flex,
-  Input,
-  Typography,
-  theme,
-  useColorMode,
-  useDisclosure,
-  useIntl,
-} from '@bnb-chain/space';
+import { Flex, Input, Typography, useColorMode, useDisclosure, useIntl } from '@bnb-chain/space';
 
 import { setSendValue, setTransferActionInfo } from '@/modules/transfer/action';
 import { ExternalAddress } from '@/modules/transfer/components/ExternalTokenAddress';
@@ -53,6 +45,7 @@ export function FromSection() {
   const selectedToken = useAppSelector((state) => state.transfer.selectedToken);
   const sendValue = useAppSelector((state) => state.transfer.sendValue);
   const error = useAppSelector((state) => state.transfer.error);
+  const theme = useAppSelector((state) => state.theme.themeConfig);
 
   const onChangeSendValue = (event: React.ChangeEvent<HTMLInputElement>) => {
     let value = event.target.value.trim() ?? 0;
@@ -123,9 +116,7 @@ export function FromSection() {
           justifyContent="space-between"
           borderRadius={'16px'}
           border={`1px solid ${
-            !!error
-              ? theme.colors[colorMode].support.danger['3']
-              : theme.colors[colorMode].border['3']
+            !!error ? theme.colors[colorMode].text.danger : theme.colors[colorMode].border['3']
           }`}
           p={'8px'}
           gap={'8px'}
