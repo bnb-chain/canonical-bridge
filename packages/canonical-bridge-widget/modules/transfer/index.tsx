@@ -7,6 +7,7 @@ import { TransferButtonGroup } from '@/modules/transfer/components/TransferButto
 import { useDefaultSelectedInfo } from '@/modules/transfer/hooks/useDefaultSelectedInfo';
 import { useAppSelector } from '@/modules/store/StoreProvider';
 import { ExchangeChain } from '@/modules/transfer/components/Button/ExchangeChain';
+import { SendInput } from '@/modules/transfer/components/SendInput';
 
 export function TransferPage() {
   const { colorMode } = useColorMode();
@@ -35,6 +36,7 @@ export function TransferPage() {
         <FromSection />
         <ExchangeChain />
         <ToSection />
+        <SendInput />
         <Flex flexDir="column">
           <TransferButtonGroup />
         </Flex>

@@ -183,6 +183,9 @@ export type ColorType = {
   };
   input: {
     1: string;
+    border: string;
+    background: string;
+    title: string;
   };
 };
 

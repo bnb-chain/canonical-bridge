@@ -10,6 +10,9 @@ export const dark: ColorType = {
   },
   input: {
     1: '#373943',
+    border: '#373943',
+    background: '#1E2026',
+    title: '#8C8F9B',
   },
   text: {
     primary: '#FFFFFF',
