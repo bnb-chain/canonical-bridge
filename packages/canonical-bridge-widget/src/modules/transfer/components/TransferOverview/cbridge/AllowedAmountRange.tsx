@@ -9,10 +9,7 @@ export const AllowAmountRange = ({ isLoading }: { isLoading?: boolean }) => {
   const selectedToken = useAppSelector((state) => state.transfer.selectedToken);
   const { formatMessage } = useIntl();
 
-  const { minMaxSendAmt } = useCBridgeSendMaxMin({
-    tokenAddress: selectedToken?.address as `0x${string}`,
-    isPegged: selectedToken?.isPegged,
-  });
+  const { minMaxSendAmt } = useCBridgeSendMaxMin();
 
   return !selectedToken?.isPegged ? (
     <InfoRow

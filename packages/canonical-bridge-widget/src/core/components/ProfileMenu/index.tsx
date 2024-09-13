@@ -10,7 +10,6 @@ import {
   useColorMode,
   useIntl,
 } from '@bnb-chain/space';
-import React from 'react';
 import { DisconnectIcon } from '@bnb-chain/icons';
 import { useAccount, useDisconnect } from 'wagmi';
 

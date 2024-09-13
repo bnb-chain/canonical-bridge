@@ -1,4 +1,4 @@
-import { Box, Flex, theme, useColorMode, useIntl, useTheme } from '@bnb-chain/space';
+import { Box, Flex, useColorMode, useIntl, useTheme } from '@bnb-chain/space';
 import { useCallback, useEffect, useState } from 'react';
 import { formatUnits } from 'viem';
 import { usePublicClient } from 'wagmi';
