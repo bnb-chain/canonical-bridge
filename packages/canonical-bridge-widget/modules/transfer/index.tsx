@@ -1,13 +1,11 @@
 import { Box, Flex, useColorMode, useIntl } from '@bnb-chain/space';
 
-import { FromSection } from '@/modules/transfer/components/FromSection';
-import { ToSection } from '@/modules/transfer/components/ToSection';
 import { TransferOverview } from '@/modules/transfer/components/TransferOverview';
 import { TransferButtonGroup } from '@/modules/transfer/components/TransferButtonGroup';
 import { useDefaultSelectedInfo } from '@/modules/transfer/hooks/useDefaultSelectedInfo';
 import { useAppSelector } from '@/modules/store/StoreProvider';
-import { ExchangeChain } from '@/modules/transfer/components/Button/ExchangeChain';
 import { SendInput } from '@/modules/transfer/components/SendInput';
+import { NetWorkSection } from '@/modules/transfer/components/NetWorkSection';
 
 export function TransferPage() {
   const { colorMode } = useColorMode();
@@ -30,12 +28,18 @@ export function TransferPage() {
         gap={'24px'}
         position="relative"
       >
-        <Box as="h1" mb={'8px'} fontSize={'20px'} fontWeight={500}>
+        <Box
+          as="h1"
+          mb={'8px'}
+          fontSize={'20px'}
+          fontWeight={500}
+          textAlign={'center'}
+          borderBottom={`1px solid ${theme.colors[colorMode].border[2]}`}
+          pb={'24px'}
+        >
           {formatMessage({ id: 'main.title' })}
         </Box>
-        <FromSection />
-        <ExchangeChain />
-        <ToSection />
+        <NetWorkSection />
         <SendInput />
         <Flex flexDir="column">
           <TransferButtonGroup />

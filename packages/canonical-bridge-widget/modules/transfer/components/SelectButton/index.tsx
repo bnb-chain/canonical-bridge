@@ -2,16 +2,16 @@ import { ButtonProps, Flex, Text, useColorMode, Button } from '@bnb-chain/space'
 import { CaretDownIcon } from '@bnb-chain/icons';
 
 import { IconImage } from '@/core/components/IconImage';
-import { BridgeChain, BridgeToken } from '@/modules/bridges/main/types';
+import { BridgeChain } from '@/modules/bridges/main/types';
 import { useAppSelector } from '@/modules/store/StoreProvider';
 
 export interface SelectButtonProps extends Omit<ButtonProps, 'value'> {
   network?: BridgeChain;
-  token?: BridgeToken;
+  // token?: BridgeToken;
 }
 
 export function SelectButton(props: SelectButtonProps) {
-  const { network, token, ...restProps } = props;
+  const { network, ...restProps } = props;
   const theme = useAppSelector((state) => state.theme.themeConfig);
 
   const { colorMode } = useColorMode();
@@ -23,7 +23,6 @@ export function SelectButton(props: SelectButtonProps) {
       h={'64px'}
       px={'16px'}
       py={'12px'}
-      // w={'100%'}
       justifyContent={'space-between'}
       gap={'8px'}
       background={theme.colors[colorMode].button.select.background.default}
@@ -35,19 +34,10 @@ export function SelectButton(props: SelectButtonProps) {
     >
       <Flex gap={'12px'} alignItems={'center'} position={'relative'} overflow="hidden">
         <IconImage
-          src={token?.icon}
+          src={network?.icon}
           w={'32px'}
           h={'32px'}
           fallbackBgColor={theme.colors[colorMode].support.primary[4]}
-        />
-        <IconImage
-          src={network?.icon}
-          w={'16px'}
-          h={'16px'}
-          position={'absolute'}
-          top={'20px'}
-          left={'20px'}
-          fallbackBgColor={theme.colors[colorMode].support.primary[3]}
         />
         <Flex
           flexDir={'column'}
@@ -63,15 +53,7 @@ export function SelectButton(props: SelectButtonProps) {
             },
           }}
         >
-          <Text fontSize={'16px'} lineHeight={'24px'}>
-            {token?.symbol ?? 'Select Token'}
-          </Text>
-          <Text
-            fontSize={'14px'}
-            fontWeight={400}
-            lineHeight={'16px'}
-            color={theme.colors[colorMode].button.select.text}
-          >
+          <Text fontSize={'16px'} lineHeight={'24px'} fontWeight={400}>
             {network?.name ?? 'Select Network'}
           </Text>
         </Flex>
