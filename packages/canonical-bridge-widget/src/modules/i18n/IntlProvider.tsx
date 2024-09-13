@@ -1,7 +1,5 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import { IntlProvider as ReactIntlProvider } from '@bnb-chain/space';
-
-import { useAppSelector } from '@/modules/store/StoreProvider';
 
 export type IntlProviderProps = {
   children: React.ReactNode;
@@ -10,17 +8,8 @@ export type IntlProviderProps = {
 };
 
 export const IntlProvider = ({ children, locale, messages }: IntlProviderProps) => {
-  const commonMessages = useAppSelector((state) => state.i18n.messages);
-
-  const _messages = useMemo(() => {
-    return {
-      ...commonMessages,
-      ...messages,
-    };
-  }, [commonMessages, messages]);
-
   return (
-    <ReactIntlProvider locale={locale} messages={_messages}>
+    <ReactIntlProvider locale={locale} messages={messages}>
       {children}
     </ReactIntlProvider>
   );

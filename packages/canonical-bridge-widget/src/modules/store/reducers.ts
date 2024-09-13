@@ -1,13 +1,11 @@
 import common from '@/modules/common/reducer';
 import transfer from '@/modules/transfer/reducer';
-import i18n from '@/modules/i18n/reducer';
 import bridges from '@/modules/bridges/reducer';
 
 const reducers = {
   bridges,
   common,
   transfer,
-  i18n,
 } as const;
 
 type Reducers = typeof reducers;
