@@ -2,38 +2,37 @@ import { ButtonProps, Flex, Text, useColorMode, Button, useTheme } from '@bnb-ch
 import { CaretDownIcon } from '@bnb-chain/icons';
 
 import { IconImage } from '@/core/components/IconImage';
-import { BridgeChain } from '@/modules/bridges/main/types';
+import { useAppSelector } from '@/modules/store/StoreProvider';
+import { BridgeToken } from '@/modules/bridges';
 
 export interface SelectButtonProps extends Omit<ButtonProps, 'value'> {
-  network?: BridgeChain;
-  // token?: BridgeToken;
+  token?: BridgeToken;
 }
 
-export function SelectButton(props: SelectButtonProps) {
-  const { network, ...restProps } = props;
-  const theme = useTheme();
-
+export function TokenSelectButton(props: SelectButtonProps) {
+  const { token, ...restProps } = props;
   const { colorMode } = useColorMode();
+
+  const theme = useTheme();
 
   return (
     <Button
-      borderRadius={'8px'}
+      borderRadius={'24px'}
       flexShrink={0}
-      h={'64px'}
-      px={'16px'}
-      py={'12px'}
+      h={'40px'}
+      p={'4px 8px 4px 4px'}
       justifyContent={'space-between'}
       gap={'8px'}
-      background={theme.colors[colorMode].button.select.background.default}
+      background={'#373943'}
       _hover={{
         background: theme.colors[colorMode].button.select.background.hover,
       }}
       color={theme.colors[colorMode].text.primary}
       {...restProps}
     >
-      <Flex gap={'12px'} alignItems={'center'} position={'relative'} overflow="hidden">
+      <Flex gap={'8px'} alignItems={'center'} position={'relative'} overflow="hidden">
         <IconImage
-          src={network?.icon}
+          src={token?.icon}
           w={'32px'}
           h={'32px'}
           fallbackBgColor={theme.colors[colorMode].support.primary[4]}
@@ -52,8 +51,8 @@ export function SelectButton(props: SelectButtonProps) {
             },
           }}
         >
-          <Text fontSize={'16px'} lineHeight={'24px'} fontWeight={400}>
-            {network?.name ?? 'Select Network'}
+          <Text fontSize={'16px'} lineHeight={'24px'}>
+            {token?.symbol}
           </Text>
         </Flex>
       </Flex>

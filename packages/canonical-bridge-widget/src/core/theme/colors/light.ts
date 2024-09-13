@@ -11,6 +11,9 @@ export const light: ColorType = {
   },
   input: {
     1: '#F7F7F8',
+    border: '#E1E2E5',
+    background: '#FFFFFF',
+    title: '#8C8F9B',
   },
   text: {
     primary: '#181A1E',

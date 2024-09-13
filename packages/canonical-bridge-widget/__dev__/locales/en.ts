@@ -10,7 +10,7 @@ export const en = {
   'route.title': 'Select Bridge Routes',
   'from.section.title': 'From',
   'from.section.balance.title': 'Balance:',
-  'from.section.balance.button.max': 'Max',
+  'from.section.balance.button.max': 'Max:',
   'to.section.title': 'To',
   'to.section.estimated-amount': 'Est. Amount Receive',
   'to.section.account.label': 'Destination Address',
@@ -54,7 +54,7 @@ export const en = {
   'modal.submit.button.close': 'Make Another Transaction',
 
   'select-modal.select.network.title': 'Select Network',
-  'select-modal.select.token.title': 'Select Token',
+  'select-modal.select.token.title': 'Choose Token',
   'select-modal.select.no-result.title': 'No result found',
   'select-modal.select.no-result.warning':
     'Try adjusting your search request to find what you’re looking for',

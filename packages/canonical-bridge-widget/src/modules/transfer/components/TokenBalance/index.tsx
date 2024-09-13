@@ -7,7 +7,6 @@ import { WarningTriangleIcon } from '@bnb-chain/icons';
 import { formatNumber } from '@/core/utils/number';
 import { useAppDispatch, useAppSelector } from '@/modules/store/StoreProvider';
 import { useGetTokenBalance } from '@/core/contract/hooks/useGetTokenBalance';
-import { useCBridgeTransferParams } from '@/modules/bridges/cbridge/hooks/useCBridgeTransferParams';
 import { useCBridgeSendMaxMin } from '@/modules/bridges/cbridge/hooks';
 import { DEBOUNCE_DELAY } from '@/core/constants';
 import { useDebounce } from '@/core/hooks/useDebounce';
@@ -18,7 +17,6 @@ import { BridgeToken, TransferActionInfo } from '@/modules/bridges';
 export const TokenBalance = () => {
   const { address, chain } = useAccount();
   const { data: nativeBalance } = useBalance({ address: address as `0x${string}` });
-  const { bridgeAddress } = useCBridgeTransferParams();
 
   const selectedToken = useAppSelector((state) => state.transfer.selectedToken);
   const fromChain = useAppSelector((state) => state.transfer.fromChain);
@@ -29,11 +27,7 @@ export const TokenBalance = () => {
 
   const debouncedSendValue = useDebounce(sendValue, DEBOUNCE_DELAY);
   const dispatch = useAppDispatch();
-  const { minMaxSendAmt } = useCBridgeSendMaxMin({
-    bridgeAddress: bridgeAddress as `0x${string}`,
-    tokenAddress: selectedToken?.address as `0x${string}`,
-    isPegged: selectedToken?.isPegged,
-  });
+  const { minMaxSendAmt } = useCBridgeSendMaxMin();
   const { balance: initBalance, refetch } = useGetTokenBalance({
     tokenAddress: selectedToken?.address as `0x${string}`,
   });
