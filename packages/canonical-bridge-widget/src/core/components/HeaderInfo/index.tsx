@@ -4,17 +4,10 @@ import { useAccount } from 'wagmi';
 
 import { ProfileMenu } from '@/core/components/ProfileMenu';
 import { HeaderNetworkStatus } from '@/core/components/HeaderNetworkStatus';
-import { useWaitForReady } from '@/core/hooks/useWaitForReady';
 
 export const HeaderInfo = () => {
-  const isReady = useWaitForReady();
-
   const { isConnected } = useAccount();
   const { onOpen } = useConnectModal();
-
-  if (!isReady) {
-    return null;
-  }
 
   return (
     <Flex alignItems="center" gap={'16px'}>
