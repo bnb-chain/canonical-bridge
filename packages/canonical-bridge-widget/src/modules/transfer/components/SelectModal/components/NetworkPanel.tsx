@@ -17,7 +17,6 @@ import { NoResultFound } from '@/modules/transfer/components/SelectModal/compone
 import { SearchInput } from '@/modules/transfer/components/SelectModal/components/SearchInput';
 import { UnavailableTag } from '@/modules/transfer/components/SelectModal/components/UnavailableTag';
 import { SectionTitle } from '@/modules/transfer/components/SelectModal/components/SectionTitle';
-import { useAppSelector } from '@/modules/store/StoreProvider';
 
 interface NetworkPanelProps {
   showTitle?: boolean;

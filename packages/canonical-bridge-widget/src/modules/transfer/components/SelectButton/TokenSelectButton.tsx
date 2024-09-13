@@ -2,7 +2,6 @@ import { ButtonProps, Flex, Text, useColorMode, Button, useTheme } from '@bnb-ch
 import { CaretDownIcon } from '@bnb-chain/icons';
 
 import { IconImage } from '@/core/components/IconImage';
-import { useAppSelector } from '@/modules/store/StoreProvider';
 import { BridgeToken } from '@/modules/bridges';
 
 export interface SelectButtonProps extends Omit<ButtonProps, 'value'> {
