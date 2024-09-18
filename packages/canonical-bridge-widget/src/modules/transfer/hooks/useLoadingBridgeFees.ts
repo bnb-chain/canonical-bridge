@@ -9,12 +9,12 @@ import {
   setIsGlobalFeeLoading,
   setTransferActionInfo,
 } from '@/modules/transfer/action';
-import { useCBridgeTransferParams } from '@/modules/bridges/cbridge/hooks/useCBridgeTransferParams';
 import { useToTokenInfo } from '@/modules/transfer/hooks/useToTokenInfo';
 import { useDebounce } from '@/core/hooks/useDebounce';
 import { DEBOUNCE_DELAY, DEFAULT_ADDRESS } from '@/core/constants';
 import { bridgeSDK } from '@/core/constants/bridgeSDK';
 import { toObject } from '@/core/utils/string';
+import { useCBridgeTransferParams } from '@/modules/aggregator/adapters/cBridge/hooks/useCBridgeTransferParams';
 
 const availableBridgeTypes: BridgeType[] = ['deBridge', 'cBridge', 'stargate', 'layerZero'];
 
@@ -42,7 +42,7 @@ export const useLoadingBridgeFees = () => {
     const bridgeTypeList: BridgeType[] = [];
     const valueArr = [];
     availableBridgeTypes.forEach((bridge) => {
-      if (selectedToken.available[bridge]) {
+      if (selectedToken[bridge]?.isCompatible) {
         bridgeTypeList.push(bridge);
       }
     });
@@ -53,16 +53,16 @@ export const useLoadingBridgeFees = () => {
         fromTokenAddress: selectedToken.address as `0x${string}`,
         fromAccount: address || DEFAULT_ADDRESS,
         toChainId: toChain?.id,
-        sendValue: parseUnits(debouncedSendValue, selectedToken.decimal),
+        sendValue: parseUnits(debouncedSendValue, selectedToken.decimals),
         fromTokenSymbol: selectedToken.symbol,
         publicClient,
         endPointId: {
-          layerZeroV1: selectedToken?.rawData.layerZero?.endpointID,
-          layerZeroV2: selectedToken?.rawData.stargate?.endpointID,
+          layerZeroV1: selectedToken?.layerZero?.raw?.endpointID,
+          layerZeroV2: selectedToken?.stargate?.raw?.endpointID,
         },
         bridgeAddress: {
-          stargate: selectedToken?.rawData.stargate?.bridgeAddress as `0x${string}`,
-          layerZero: selectedToken?.rawData.layerZero?.bridgeAddress as `0x${string}`,
+          stargate: selectedToken?.stargate?.raw?.bridgeAddress as `0x${string}`,
+          layerZero: selectedToken?.layerZero?.raw?.bridgeAddress as `0x${string}`,
         },
         toTokenAddress: toToken?.address as `0x${string}`,
         toAccount: address,
@@ -108,7 +108,7 @@ export const useLoadingBridgeFees = () => {
           type: 'stargate',
           value: formatUnits(
             stargateEst.value?.[2].amountReceivedLD,
-            selectedToken?.rawData.stargate?.decimals || 18,
+            selectedToken?.stargate?.raw?.decimals || 18,
           ),
         });
       } else {
@@ -152,19 +152,19 @@ export const useLoadingBridgeFees = () => {
             );
           } else if (
             highestValue.type === 'stargate' &&
-            selectedToken?.rawData.stargate?.bridgeAddress
+            selectedToken?.stargate?.raw?.bridgeAddress
           ) {
             dispatch(
               setTransferActionInfo({
                 bridgeType: 'stargate',
-                bridgeAddress: selectedToken?.rawData.stargate?.bridgeAddress as `0x${string}`,
+                bridgeAddress: selectedToken?.stargate?.raw?.bridgeAddress as `0x${string}`,
               }),
             );
           } else if (highestValue.type === 'layerZero') {
             dispatch(
               setTransferActionInfo({
                 bridgeType: 'layerZero',
-                bridgeAddress: selectedToken?.rawData.layerZero?.bridgeAddress as `0x${string}`,
+                bridgeAddress: selectedToken?.layerZero?.raw?.bridgeAddress as `0x${string}`,
               }),
             );
           }

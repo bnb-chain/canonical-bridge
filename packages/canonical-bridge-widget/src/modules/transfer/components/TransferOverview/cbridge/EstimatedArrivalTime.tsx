@@ -1,7 +1,7 @@
 import { useAppSelector } from '@/modules/store/StoreProvider';
 import { formatEstimatedTime } from '@/core/utils/time';
-import { useFetchCBridgeTransferWaitingTime } from '@/modules/bridges/cbridge/api/useFetchCBridgeTransferWaitingTime';
 import { InfoRow } from '@/modules/transfer/components/InfoRow';
+import { useFetchCBridgeTransferWaitingTime } from '@/modules/aggregator/adapters/cBridge/api/useFetchCBridgeTransferWaitingTime';
 
 export const EstimatedArrivalTime = () => {
   const fromChain = useAppSelector((state) => state.transfer.fromChain);

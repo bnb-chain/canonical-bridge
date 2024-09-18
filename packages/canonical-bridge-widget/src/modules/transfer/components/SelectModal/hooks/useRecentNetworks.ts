@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react';
 
-import { BridgeChain } from '@/modules/bridges';
 import { storage } from '@/core/utils/storage';
+import { IBridgeChain } from '@/modules/aggregator/types';
 
 interface UseRecentNetworksProps {
-  current?: BridgeChain;
-  networks: BridgeChain[];
+  current?: IBridgeChain;
+  networks: IBridgeChain[];
   storageKey: string;
   maxCount: number;
 }
@@ -13,7 +13,7 @@ interface UseRecentNetworksProps {
 export function useRecentNetworks(props: UseRecentNetworksProps) {
   const { current, networks, storageKey, maxCount } = props;
 
-  const [recentNetworks, setRecentNetworks] = useState<BridgeChain[]>([]);
+  const [recentNetworks, setRecentNetworks] = useState<IBridgeChain[]>([]);
 
   useEffect(() => {
     const currId = current?.id;
@@ -32,7 +32,7 @@ export function useRecentNetworks(props: UseRecentNetworksProps) {
     }
     storage.set(storageKey, networkIds);
 
-    const recentNetworks: BridgeChain[] = [];
+    const recentNetworks: IBridgeChain[] = [];
     networkIds.forEach((id) => {
       const target = networks.find((item) => item.id === id);
       if (target) {

@@ -2,12 +2,13 @@ import { FlexProps, useColorMode, Flex, Link, Text, useTheme } from '@bnb-chain/
 
 import { IconImage } from '@/core/components/IconImage';
 import { ExLinkIcon } from '@/core/components/icons/ExLinkIcon';
-import { BridgeToken, isAvailableChainOrToken } from '@/modules/bridges';
 import { UnavailableTag } from '@/modules/transfer/components/SelectModal/components/UnavailableTag';
 import { formatAppAddress } from '@/core/utils/address';
+import { IBridgeToken } from '@/modules/aggregator/types';
+import { isCompatibleChainOrToken } from '@/modules/aggregator/shared/isCompatibleChainOrToken';
 
 interface TokenListItemProps extends FlexProps {
-  data: BridgeToken;
+  data: IBridgeToken;
   showTag?: boolean;
   tokenUrl?: string;
   unavailableTips?: string;
@@ -77,7 +78,7 @@ export function TokenListItem(props: TokenListItemProps) {
           </Flex>
         </Flex>
       </Flex>
-      {showTag && !isAvailableChainOrToken(data) && <UnavailableTag tips={unavailableTips} />}
+      {showTag && !isCompatibleChainOrToken(data) && <UnavailableTag tips={unavailableTips} />}
     </Flex>
   );
 }

@@ -1,12 +1,12 @@
 import { useEffect } from 'react';
 
-import { useBridgeConfigs } from '@/modules/bridges';
 import { useAppDispatch } from '@/modules/store/StoreProvider';
 import { setSendValue } from '@/modules/transfer/action';
 import { useSetSelectInfo } from '@/modules/transfer/hooks/useSetSelectInfo';
+import { useBridgeConfig } from '@/modules/aggregator/components/BridgeConfigProvider';
 
 export function useDefaultSelectedInfo() {
-  const { isReady, defaultSelectedInfo } = useBridgeConfigs();
+  const { isReady, defaultSelectedInfo } = useBridgeConfig();
   const { setSelectInfo } = useSetSelectInfo();
   const dispatch = useAppDispatch();
 
@@ -15,7 +15,6 @@ export function useDefaultSelectedInfo() {
       setSelectInfo({
         fromChainId: defaultSelectedInfo.fromChainId,
         toChainId: defaultSelectedInfo.toChainId,
-        tokenSymbol: defaultSelectedInfo.tokenSymbol,
         tokenAddress: defaultSelectedInfo.tokenAddress,
       });
       dispatch(setSendValue(defaultSelectedInfo.amount));

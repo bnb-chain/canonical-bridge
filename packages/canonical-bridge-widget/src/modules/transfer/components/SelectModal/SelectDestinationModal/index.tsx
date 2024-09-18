@@ -1,6 +1,5 @@
 import { Modal, ModalOverlay, useIntl } from '@bnb-chain/space';
 
-import { BridgeChain, BridgeToken, formatTokenUrl, useSupportedToChains } from '@/modules/bridges';
 import { useAppSelector } from '@/modules/store/StoreProvider';
 import { TokenSelectedItem } from '@/modules/transfer/components/SelectModal/SelectDestinationModal/TokenSelectedItem';
 import { NetworkPanel } from '@/modules/transfer/components/SelectModal/components/NetworkPanel';
@@ -8,11 +7,14 @@ import { SelectModalBody } from '@/modules/transfer/components/SelectModal/compo
 import { SelectModalContent } from '@/modules/transfer/components/SelectModal/components/SelectModalContent';
 import { SelectModalHeader } from '@/modules/transfer/components/SelectModal/components/SelectModalHeader';
 import { useToTokenDisplayedInfo } from '@/modules/transfer/hooks/useToTokenDisplayedInfo';
+import { IBridgeChain, IBridgeToken } from '@/modules/aggregator/types';
+import { useToChains } from '@/modules/aggregator/hooks/useToChains';
+import { formatTokenUrl } from '@/core/utils/string';
 
 interface SelectDestinationModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSelect: (network: BridgeChain) => void;
+  onSelect: (network: IBridgeChain) => void;
 }
 
 export function SelectDestinationModal(props: SelectDestinationModalProps) {
@@ -22,15 +24,14 @@ export function SelectDestinationModal(props: SelectDestinationModalProps) {
   const fromNetwork = useAppSelector((state) => state.transfer.fromChain);
   const toNetwork = useAppSelector((state) => state.transfer.toChain);
   const selectedToken = useAppSelector((state) => state.transfer.selectedToken);
-  const toTokenInfo = useToTokenDisplayedInfo() as BridgeToken;
+  const toTokenInfo = useToTokenDisplayedInfo() as IBridgeToken;
 
-  const toNetworks = useSupportedToChains({
-    fromChainId: fromNetwork?.id,
-    tokenSymbol: selectedToken?.symbol,
-    tokenAddress: selectedToken?.address,
+  const toNetworks = useToChains({
+    fromChain: fromNetwork,
+    token: selectedToken,
   });
 
-  const onSelectNetwork = (value: BridgeChain) => {
+  const onSelectNetwork = (value: IBridgeChain) => {
     onSelect(value);
     onClose();
   };

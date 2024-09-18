@@ -7,12 +7,13 @@ import { WarningTriangleIcon } from '@bnb-chain/icons';
 import { formatNumber } from '@/core/utils/number';
 import { useAppDispatch, useAppSelector } from '@/modules/store/StoreProvider';
 import { useGetTokenBalance } from '@/core/contract/hooks/useGetTokenBalance';
-import { useCBridgeSendMaxMin } from '@/modules/bridges/cbridge/hooks';
 import { DEBOUNCE_DELAY } from '@/core/constants';
 import { useDebounce } from '@/core/hooks/useDebounce';
-import { ICBridgeMaxMinSendAmt } from '@/modules/bridges/cbridge/types';
 import { setError, setIsTransferable, setSendValue } from '@/modules/transfer/action';
-import { BridgeToken, TransferActionInfo } from '@/modules/bridges';
+import { useCBridgeSendMaxMin } from '@/modules/aggregator/adapters/cBridge/hooks/useCBridgeSendMaxMin';
+import { IBridgeToken } from '@/modules/aggregator/types';
+import { ICBridgeMaxMinSendAmt } from '@/modules/aggregator/adapters/cBridge/types';
+import { ITransferActionInfo } from '@/modules/transfer/types';
 
 export const TokenBalance = () => {
   const { address, chain } = useAccount();
@@ -35,7 +36,7 @@ export const TokenBalance = () => {
 
   const setMaxAmount = () => {
     if (balance && selectedToken) {
-      dispatch(setSendValue(formatUnits(balance, selectedToken?.decimal || 0)));
+      dispatch(setSendValue(formatUnits(balance, selectedToken?.decimals || 0)));
     }
   };
   useEffect(() => {
@@ -79,7 +80,7 @@ export const TokenBalance = () => {
   useEffect(() => {
     const balanceResult = getBalanceComponent({
       balance,
-      decimal: selectedToken?.decimal || 0,
+      decimal: selectedToken?.decimals || 0,
       minMaxSendAmt,
       value: Number(debouncedSendValue),
       isConnected: !!chain,
@@ -103,7 +104,7 @@ export const TokenBalance = () => {
     estimatedAmount,
     minMaxSendAmt,
     nativeBalance,
-    selectedToken?.decimal,
+    selectedToken?.decimals,
     selectedToken?.isPegged,
     transferActionInfo,
   ]);
@@ -121,7 +122,7 @@ export const TokenBalance = () => {
 export interface StyledTokenBalanceInfoProps {
   error?: string;
   balance: bigint;
-  selectedToken: BridgeToken;
+  selectedToken: IBridgeToken;
   setMaxAmount: () => void;
 }
 
@@ -145,7 +146,7 @@ export function StyledTokenBalance(props: StyledTokenBalanceInfoProps) {
           ) : null}
           {formatMessage({ id: 'from.section.balance.title' })}
           <Box ml={'4px'} color={theme.colors[colorMode].text.secondary} fontWeight={500}>
-            {Number(formatUnits(balance, selectedToken?.decimal))}
+            {Number(formatUnits(balance, selectedToken?.decimals))}
           </Box>
         </Flex>
         {!!balance ? (
@@ -181,7 +182,7 @@ export const getBalanceComponent = ({
   minMaxSendAmt: ICBridgeMaxMinSendAmt;
   value: number;
   isConnected: boolean;
-  transferActionInfo: TransferActionInfo | undefined;
+  transferActionInfo: ITransferActionInfo | undefined;
   isPegged?: boolean;
   estimatedAmount?: any;
   nativeBalance: any;

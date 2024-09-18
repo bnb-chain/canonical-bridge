@@ -4,8 +4,8 @@ import { merge } from 'lodash';
 
 import { light } from '@/core/theme/colors/light';
 import { dark } from '@/core/theme/colors/dark';
-import { APP_NAME } from '@/core/configs/app';
 import { walletStyles } from '@/core/theme/walletStyles';
+import { APP_NAME } from '@/core/constants';
 
 export interface ThemeProviderProps {
   children: React.ReactNode;

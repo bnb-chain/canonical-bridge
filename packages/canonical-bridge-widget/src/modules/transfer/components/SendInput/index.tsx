@@ -7,8 +7,8 @@ import { MaxLink } from '@/modules/transfer/components/SendInput/MaxLink';
 import { TokenSelectButton } from '@/modules/transfer/components/SelectButton/TokenSelectButton';
 import { SelectTokenModal } from '@/modules/transfer/components/SelectModal/SelectSourceModal/SelectTokenModal';
 import { useSetSelectInfo } from '@/modules/transfer/hooks/useSetSelectInfo';
-import { BridgeChain, BridgeToken } from '@/modules/bridges';
 import { InputValidationMessage } from '@/modules/transfer/components/SendInput/InputValidationMessage';
+import { IBridgeChain, IBridgeToken } from '@/modules/aggregator/types';
 
 const handleKeyPress = (e: React.KeyboardEvent) => {
   // only allow number and decimal
@@ -74,7 +74,7 @@ export const SendInput: React.FC = () => {
     }
   };
 
-  const onSelectSource = (chain: BridgeChain, token?: BridgeToken) => {
+  const onSelectSource = (chain: IBridgeChain, token?: IBridgeToken) => {
     setSelectInfo({
       direction: 'from',
       fromChainId: chain.id,

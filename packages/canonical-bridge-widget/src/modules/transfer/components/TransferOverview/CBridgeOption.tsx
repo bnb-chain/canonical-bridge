@@ -10,12 +10,12 @@ import { InfoRow } from '@/modules/transfer/components/InfoRow';
 import { useToTokenInfo } from '@/modules/transfer/hooks/useToTokenInfo';
 import { CBridgeIcon } from '@/core/components/icons/brand/CBridgeLogo';
 import { setTransferActionInfo } from '@/modules/transfer/action';
-import { useCBridgeTransferParams } from '@/modules/bridges/cbridge/hooks/useCBridgeTransferParams';
 import { useGetAllowance } from '@/core/contract/hooks/useGetAllowance';
 import { useDebounce } from '@/core/hooks/useDebounce';
 import { useAppDispatch, useAppSelector } from '@/modules/store/StoreProvider';
 import { DEBOUNCE_DELAY } from '@/core/constants';
 import { formatNumber } from '@/core/utils/number';
+import { useCBridgeTransferParams } from '@/modules/aggregator/adapters/cBridge/hooks/useCBridgeTransferParams';
 
 export const CBridgeOption = () => {
   const dispatch = useAppDispatch();
@@ -146,7 +146,7 @@ export const CBridgeOption = () => {
           <InfoRow
             label={formatMessage({ id: 'route.option.info.gas-fee' })}
             value={`${formatNumber(Number(formatUnits(gasFee?.gas * gasFee?.gasPrice, 18)), 8)} ${
-              fromChain?.rawData.cBridge?.gas_token_symbol
+              fromChain?.cBridge?.raw?.gas_token_symbol
             }`}
           />
         ) : null}

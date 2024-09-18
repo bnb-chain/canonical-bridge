@@ -1,19 +1,20 @@
 import { Box, Flex, theme, useColorMode, useIntl } from '@bnb-chain/space';
 import { useState } from 'react';
 
-import { BridgeChain, BridgeToken, formatTokenUrl } from '@/modules/bridges';
 import { NoNetworkIcon } from '@/core/components/icons/NoNetworkIcon';
 import { VirtualList } from '@/core/components/VirtualList';
 import { NoResultFound } from '@/modules/transfer/components/SelectModal/components/NoResultFound';
 import { SearchInput } from '@/modules/transfer/components/SelectModal/components/SearchInput';
 import { SectionTitle } from '@/modules/transfer/components/SelectModal/components/SectionTitle';
 import { TokenListItem } from '@/modules/transfer/components/SelectModal/components/TokenListItem';
+import { formatTokenUrl } from '@/core/utils/string';
+import { IBridgeToken, IBridgeChain } from '@/modules/aggregator/types';
 
 interface TokenSectionProps {
-  tokens?: BridgeToken[];
+  tokens?: IBridgeToken[];
   showNetworkTips: boolean;
-  selectedNetwork?: BridgeChain;
-  onSelect: (value: BridgeToken) => void;
+  selectedNetwork?: IBridgeChain;
+  onSelect: (value: IBridgeToken) => void;
 }
 
 export function TokenSection(props: TokenSectionProps) {

@@ -1,10 +1,10 @@
 import { FlexProps, useColorMode, Flex, useTheme } from '@bnb-chain/space';
 
 import { IconImage } from '@/core/components/IconImage';
-import { BridgeChain } from '@/modules/bridges';
+import { IBridgeChain } from '@/modules/aggregator/types';
 
 interface NetworkItemProps extends FlexProps {
-  data: BridgeChain;
+  data: IBridgeChain;
   isSelected?: boolean;
 }
 

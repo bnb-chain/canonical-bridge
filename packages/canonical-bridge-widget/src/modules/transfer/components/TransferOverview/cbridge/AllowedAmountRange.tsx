@@ -2,8 +2,8 @@ import { formatUnits } from 'viem';
 import { useIntl } from '@bnb-chain/space';
 
 import { useAppSelector } from '@/modules/store/StoreProvider';
-import { useCBridgeSendMaxMin } from '@/modules/bridges/cbridge/hooks';
 import { InfoRow } from '@/modules/transfer/components/InfoRow';
+import { useCBridgeSendMaxMin } from '@/modules/aggregator/adapters/cBridge/hooks/useCBridgeSendMaxMin';
 
 export const AllowAmountRange = ({ isLoading }: { isLoading?: boolean }) => {
   const selectedToken = useAppSelector((state) => state.transfer.selectedToken);
@@ -17,9 +17,9 @@ export const AllowAmountRange = ({ isLoading }: { isLoading?: boolean }) => {
       label={formatMessage({ id: 'route.option.info.send-range' })}
       value={
         minMaxSendAmt && !!Number(minMaxSendAmt.min) && !!Number(minMaxSendAmt.max) && selectedToken
-          ? `${formatUnits(BigInt(minMaxSendAmt.min), selectedToken?.decimal)} - ${formatUnits(
+          ? `${formatUnits(BigInt(minMaxSendAmt.min), selectedToken?.decimals)} - ${formatUnits(
               BigInt(minMaxSendAmt.max),
-              selectedToken?.decimal,
+              selectedToken?.decimals,
             )} ${selectedToken.symbol}`
           : '-'
       }

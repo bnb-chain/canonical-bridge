@@ -11,17 +11,18 @@ import {
 import { useState } from 'react';
 
 import { IconImage } from '@/core/components/IconImage';
-import { BridgeChain, isAvailableChainOrToken } from '@/modules/bridges';
 import { VirtualList } from '@/core/components/VirtualList';
 import { NoResultFound } from '@/modules/transfer/components/SelectModal/components/NoResultFound';
 import { SearchInput } from '@/modules/transfer/components/SelectModal/components/SearchInput';
 import { UnavailableTag } from '@/modules/transfer/components/SelectModal/components/UnavailableTag';
 import { SectionTitle } from '@/modules/transfer/components/SelectModal/components/SectionTitle';
+import { IBridgeChain } from '@/modules/aggregator/types';
+import { isCompatibleChainOrToken } from '@/modules/aggregator/shared/isCompatibleChainOrToken';
 
 interface NetworkPanelProps {
   showTitle?: boolean;
-  networks: BridgeChain[];
-  onSelect: (value: BridgeChain) => void;
+  networks: IBridgeChain[];
+  onSelect: (value: IBridgeChain) => void;
   unavailableTips: string;
 }
 
@@ -75,7 +76,7 @@ export function NetworkPanel(props: NetworkPanelProps) {
 }
 
 interface NetworkListItemProps extends FlexProps {
-  data: BridgeChain;
+  data: IBridgeChain;
   unavailableTips: string;
 }
 
@@ -111,7 +112,7 @@ export function NetworkListItem(props: NetworkListItemProps) {
           {data.name}
         </Text>
       </Flex>
-      {!isAvailableChainOrToken(data) && <UnavailableTag tips={unavailableTips} />}
+      {!isCompatibleChainOrToken(data) && <UnavailableTag tips={unavailableTips} />}
     </Flex>
   );
 }

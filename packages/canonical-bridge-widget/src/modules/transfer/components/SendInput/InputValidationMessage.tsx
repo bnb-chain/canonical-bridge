@@ -7,8 +7,8 @@ import { useInputValidation } from '@/modules/transfer/hooks/useInputValidation'
 import { useDebounce } from '@/core/hooks/useDebounce';
 import { DEBOUNCE_DELAY } from '@/core/constants';
 import { useLoadingTokenBalance } from '@/modules/transfer/hooks/useLoadingTokenBalance';
-import { useCBridgeSendMaxMin } from '@/modules/bridges/cbridge/hooks';
 import { setError, setIsTransferable } from '@/modules/transfer/action';
+import { useCBridgeSendMaxMin } from '@/modules/aggregator/adapters/cBridge/hooks/useCBridgeSendMaxMin';
 
 export const InputValidationMessage = () => {
   const { colorMode } = useColorMode();
@@ -31,7 +31,7 @@ export const InputValidationMessage = () => {
   useEffect(() => {
     const balanceResult = validateInput({
       balance,
-      decimal: selectedToken?.decimal || 0,
+      decimal: selectedToken?.decimals || 0,
       minMaxSendAmt,
       value: Number(debouncedSendValue),
       isConnected: !!chain,
@@ -55,7 +55,7 @@ export const InputValidationMessage = () => {
     estimatedAmount,
     minMaxSendAmt,
     nativeBalance,
-    selectedToken?.decimal,
+    selectedToken?.decimals,
     selectedToken?.isPegged,
     transferActionInfo,
     validateInput,

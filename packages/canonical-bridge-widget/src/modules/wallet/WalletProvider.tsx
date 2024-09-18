@@ -9,14 +9,15 @@ import {
   defaultEvmConfig,
 } from '@node-real/walletkit/evm';
 
-import { APP_NAME } from '@/core/configs/app';
-import { ChainConfig, useBridgeConfigs } from '@/modules/bridges';
 import { env } from '@/core/configs/env';
+import { useBridgeConfig } from '@/modules/aggregator/components/BridgeConfigProvider';
+import { APP_NAME } from '@/core/constants';
+import { IChainConfig } from '@/modules/aggregator/types';
 
 export function WalletProvider(props: PropsWithChildren) {
   const { children } = props;
 
-  const { chainConfigs } = useBridgeConfigs();
+  const { chainConfigs } = useBridgeConfig();
 
   const config = useMemo(() => {
     const config: WalletKitConfig = {
@@ -26,11 +27,11 @@ export function WalletProvider(props: PropsWithChildren) {
       },
       evmConfig: defaultEvmConfig({
         autoConnect: true,
+        initialChainId: 1,
         walletConnectProjectId: env.WALLET_CONNECT_PROJECT_ID,
         metadata: {
           name: APP_NAME,
         },
-        initialChainId: 1,
         wallets: [metaMask(), trustWallet(), binanceWeb3Wallet(), okxWallet(), walletConnect()],
         chains: getEvmChains(chainConfigs),
       }),
@@ -46,26 +47,24 @@ export function WalletProvider(props: PropsWithChildren) {
   );
 }
 
-function getEvmChains(chainConfigs: ChainConfig[]) {
-  return chainConfigs
-    ?.filter((item) => item.chainType === 'evm')
-    .map((item) => ({
-      id: item.id,
-      name: item.name,
-      nativeCurrency: item.nativeCurrency,
-      rpcUrls: {
-        default: {
-          http: [item.rpcUrl],
-        },
-        public: {
-          http: [item.rpcUrl],
-        },
+function getEvmChains(chainConfigs: IChainConfig[]) {
+  return chainConfigs.map((item) => ({
+    id: item.id,
+    name: item.name,
+    nativeCurrency: item.nativeCurrency,
+    rpcUrls: {
+      default: {
+        http: [item.rpcUrl],
       },
-      blockExplorers: {
-        default: {
-          name: item.explorer.name,
-          url: item.explorer.url,
-        },
+      public: {
+        http: [item.rpcUrl],
       },
-    }));
+    },
+    blockExplorers: {
+      default: {
+        name: item.explorer.name,
+        url: item.explorer.url,
+      },
+    },
+  }));
 }

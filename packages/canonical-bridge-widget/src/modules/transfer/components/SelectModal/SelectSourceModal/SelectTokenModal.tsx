@@ -2,16 +2,17 @@ import { Modal, ModalOverlay, useIntl } from '@bnb-chain/space';
 import { useEffect, useState } from 'react';
 
 import { useAppSelector } from '@/modules/store/StoreProvider';
-import { BridgeChain, BridgeToken, useSupportedTokens } from '@/modules/bridges';
 import { SelectModalBody } from '@/modules/transfer/components/SelectModal/components/SelectModalBody';
 import { SelectModalContent } from '@/modules/transfer/components/SelectModal/components/SelectModalContent';
 import { SelectModalHeader } from '@/modules/transfer/components/SelectModal/components/SelectModalHeader';
 import { TokenSection } from '@/modules/transfer/components/SelectModal/SelectSourceModal/TokenSection';
+import { IBridgeChain, IBridgeToken } from '@/modules/aggregator/types';
+import { useTokens } from '@/modules/aggregator/hooks/useTokens';
 
 interface SelectTokenModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSelect: (network: BridgeChain, token?: BridgeToken) => void;
+  onSelect: (network: IBridgeChain, token?: IBridgeToken) => void;
 }
 
 export function SelectTokenModal(props: SelectTokenModalProps) {
@@ -29,16 +30,16 @@ export function SelectTokenModal(props: SelectTokenModalProps) {
     }
   }, [isOpen]);
 
-  const tokens = useSupportedTokens({
-    fromChainId: fromChain?.id,
-    toChainId: toNetwork?.id,
+  const tokens = useTokens({
+    fromChain: fromChain,
+    toChain: toNetwork,
   });
 
   const onHideNetworkPanel = () => {
     setShowNetworkPanel(false);
   };
 
-  const onSelectToken = (token: BridgeToken) => {
+  const onSelectToken = (token: IBridgeToken) => {
     onSelect(fromChain!, token);
     onClose();
   };

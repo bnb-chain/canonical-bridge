@@ -1,3 +1,5 @@
+import { env } from '@/core/configs/env';
+
 export function truncateStr(str: string, headLen = 6, tailLen = 6) {
   if (!str) {
     return '';
@@ -23,4 +25,17 @@ export function toObject(value: any) {
       (key, value) => (typeof value === 'bigint' ? value.toString() : value), // return everything else unchanged
     ),
   );
+}
+
+export function formatTokenUrl(pattern?: string, address?: string) {
+  if (!pattern || !address) {
+    return '';
+  }
+
+  return pattern?.replace('{0}', address);
+}
+
+export function formatTokenIcon(tokenSymbol: string) {
+  const iconSymbol = tokenSymbol.replace(/[+]$/, '_ICON')?.toUpperCase();
+  return `${env.ASSET_PREFIX}/images/tokens/${iconSymbol}.png`;
 }

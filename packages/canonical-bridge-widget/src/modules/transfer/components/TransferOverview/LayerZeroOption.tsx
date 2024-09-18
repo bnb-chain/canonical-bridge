@@ -13,9 +13,9 @@ import { setTransferActionInfo } from '@/modules/transfer/action';
 import { AdditionalDetails } from '@/modules/transfer/components/TransferOverview/AdditionalDetails';
 import { InfoRow } from '@/modules/transfer/components/InfoRow';
 import { formatNumber } from '@/core/utils/number';
-import { CAKE_PROXY_OFT_ABI } from '@/modules/bridges/layerZero/abi/cakeProxyOFT';
 import { useGetTokenBalance } from '@/core/contract/hooks/useGetTokenBalance';
 import { env } from '@/core/configs/env';
+import { CAKE_PROXY_OFT_ABI } from '@/modules/aggregator/adapters/layerZero/abi/cakeProxyOFT';
 
 export const LayerZeroOption = () => {
   const dispatch = useAppDispatch();
@@ -34,10 +34,10 @@ export const LayerZeroOption = () => {
   const publicClient = usePublicClient({ chainId: fromChain?.id });
 
   const { allowance } = useGetAllowance({
-    tokenAddress: selectedToken?.rawData.layerZero?.address
+    tokenAddress: selectedToken?.layerZero?.raw?.address
       ? (selectedToken?.address as `0x${string}`)
       : ('' as `0x${string}`),
-    sender: selectedToken?.rawData.layerZero?.bridgeAddress as `0x${string}`,
+    sender: selectedToken?.layerZero?.raw?.bridgeAddress as `0x${string}`,
   });
 
   const { balance } = useGetTokenBalance({
@@ -52,22 +52,22 @@ export const LayerZeroOption = () => {
 
   useEffect(() => {
     let mount = true;
-    if (!mount || !publicClient || !toTokenInfo?.rawData?.layerZero?.endpointID) {
+    if (!mount || !publicClient || !toTokenInfo?.layerZero?.raw?.endpointID) {
       return;
     }
     (async () => {
       try {
         const receiver = address || DEFAULT_ADDRESS;
-        const bridgeAddress = selectedToken?.rawData.layerZero?.bridgeAddress as `0x${string}`;
+        const bridgeAddress = selectedToken?.layerZero?.raw?.bridgeAddress as `0x${string}`;
         const amount = parseUnits(
           sendValue,
-          selectedToken?.rawData?.layerZero?.decimals ?? (18 as number),
+          selectedToken?.layerZero?.raw?.decimals ?? (18 as number),
         );
 
         const fees = await bridgeSDK.layerZero.getEstimateFee({
           bridgeAddress,
           userAddress: receiver,
-          dstEndpoint: toTokenInfo?.rawData.layerZero?.endpointID as number,
+          dstEndpoint: toTokenInfo?.layerZero?.raw?.endpointID as number,
           amount,
           publicClient: publicClient,
         });
@@ -88,7 +88,7 @@ export const LayerZeroOption = () => {
           functionName: 'sendFrom',
           args: [
             address,
-            toTokenInfo?.rawData.layerZero?.endpointID,
+            toTokenInfo?.layerZero?.raw?.endpointID,
             address32Bytes,
             amount,
             amount,
@@ -122,8 +122,8 @@ export const LayerZeroOption = () => {
   }, [allowance, dispatch, publicClient, address, selectedToken, sendValue, toTokenInfo, balance]);
 
   const onSelectBridge = useCallback(() => {
-    if (!selectedToken?.rawData.layerZero?.bridgeAddress) return;
-    const bridgeAddress = selectedToken.rawData.layerZero.bridgeAddress;
+    if (!selectedToken?.layerZero?.raw?.bridgeAddress) return;
+    const bridgeAddress = selectedToken.layerZero?.raw.bridgeAddress;
     dispatch(
       setTransferActionInfo({
         bridgeType: 'layerZero',
@@ -209,7 +209,7 @@ export const LayerZeroOption = () => {
           <InfoRow
             label={formatMessage({ id: 'route.option.info.gas-fee' })}
             value={`${formatNumber(
-              Number(formatUnits(gasFee?.gas * gasFee?.gasPrice, toTokenInfo.decimal)),
+              Number(formatUnits(gasFee?.gas * gasFee?.gasPrice, toTokenInfo.decimals)),
               8,
             )} ${nativeToken}`}
           />

@@ -12,12 +12,12 @@ import { StarGateLogo } from '@/core/components/icons/brand/StargateLogo';
 import { useGetAllowance } from '@/core/contract/hooks/useGetAllowance';
 import { formatNumber } from '@/core/utils/number';
 import { useGetNativeToken } from '@/modules/transfer/hooks/useGetNativeToken';
-import { STARGATE_POOL } from '@/modules/bridges/stargate/abi/stargatePool';
-import { useStarGateTransferParams } from '@/modules/bridges/stargate/hooks/useStarGateTransferParams';
-import { useStarGateWaitTime } from '@/modules/bridges/stargate/hooks/useStarGateWaitTime';
 import { formatEstimatedTime } from '@/core/utils/time';
 import { DEFAULT_ADDRESS } from '@/core/constants';
 import { bridgeSDK } from '@/core/constants/bridgeSDK';
+import { useStargateTransferParams } from '@/modules/aggregator/adapters/stargate/hooks/useStargateTransferParams';
+import { useStargateWaitTime } from '@/modules/aggregator/adapters/stargate/hooks/useStargateWaitTime';
+import { STARGATE_POOL } from '@/modules/aggregator/adapters/stargate/abi/stargatePool';
 
 export const StarGateOption = () => {
   const dispatch = useAppDispatch();
@@ -26,7 +26,7 @@ export const StarGateOption = () => {
   const { toTokenInfo, getToDecimals } = useToTokenInfo();
   const nativeToken = useGetNativeToken();
   const { address } = useAccount();
-  const { args } = useStarGateTransferParams();
+  const { args } = useStargateTransferParams();
 
   const fromChain = useAppSelector((state) => state.transfer.fromChain);
   const selectedToken = useAppSelector((state) => state.transfer.selectedToken);
@@ -36,13 +36,13 @@ export const StarGateOption = () => {
   const publicClient = usePublicClient({ chainId: fromChain?.id });
   const theme = useTheme();
 
-  const { data: estimatedTime } = useStarGateWaitTime();
+  const { data: estimatedTime } = useStargateWaitTime();
 
   const { allowance } = useGetAllowance({
-    tokenAddress: selectedToken?.rawData.stargate?.address
+    tokenAddress: selectedToken?.stargate?.raw?.address
       ? (selectedToken?.address as `0x${string}`)
       : ('' as `0x${string}`),
-    sender: selectedToken?.rawData.stargate?.bridgeAddress as `0x${string}`,
+    sender: selectedToken?.stargate?.raw?.bridgeAddress as `0x${string}`,
   });
 
   const [gasFee, setGasFee] = useState<{
@@ -59,7 +59,7 @@ export const StarGateOption = () => {
     (async () => {
       try {
         const receiver = address || DEFAULT_ADDRESS;
-        const bridgeAddress = selectedToken?.rawData.stargate?.bridgeAddress as `0x${string}`;
+        const bridgeAddress = selectedToken?.stargate?.raw?.bridgeAddress as `0x${string}`;
         const quoteOFTResponse = await bridgeSDK.stargate.getQuoteOFT({
           publicClient: publicClient,
           bridgeAddress,
@@ -87,7 +87,7 @@ export const StarGateOption = () => {
         if (!allowance) return;
         let nativeFee = quoteSendResponse!.nativeFee;
         if (
-          selectedToken?.rawData.stargate?.address === '0x0000000000000000000000000000000000000000'
+          selectedToken?.stargate?.raw?.address === '0x0000000000000000000000000000000000000000'
         ) {
           nativeFee += args.amountLD;
         }
@@ -118,8 +118,8 @@ export const StarGateOption = () => {
   }, [allowance, dispatch, publicClient, address, selectedToken, sendValue, toTokenInfo, args]);
 
   const onSelectBridge = useCallback(() => {
-    if (!selectedToken?.rawData.stargate?.bridgeAddress) return;
-    const bridgeAddress = selectedToken.rawData.stargate.bridgeAddress;
+    if (!selectedToken?.stargate?.raw?.bridgeAddress) return;
+    const bridgeAddress = selectedToken.stargate.raw?.bridgeAddress;
     dispatch(
       setTransferActionInfo({
         bridgeType: 'stargate',

@@ -12,8 +12,8 @@ import { setTransferActionInfo } from '@/modules/transfer/action';
 import { SelectButton } from '@/modules/transfer/components/SelectButton';
 import { SelectSourceModal } from '@/modules/transfer/components/SelectModal/SelectSourceModal';
 import { useAppDispatch, useAppSelector } from '@/modules/store/StoreProvider';
-import { BridgeChain, BridgeToken } from '@/modules/bridges';
 import { useSetSelectInfo } from '@/modules/transfer/hooks/useSetSelectInfo';
+import { IBridgeChain, IBridgeToken } from '@/modules/aggregator/types';
 
 export function FromSection() {
   const dispatch = useAppDispatch();
@@ -28,7 +28,7 @@ export function FromSection() {
   const error = useAppSelector((state) => state.transfer.error);
   const theme = useTheme();
 
-  const onSelectSource = (chain: BridgeChain, token?: BridgeToken) => {
+  const onSelectSource = (chain: IBridgeChain, token?: IBridgeToken) => {
     setSelectInfo({
       direction: 'from',
       fromChainId: chain.id,

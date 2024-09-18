@@ -12,8 +12,8 @@ import { SelectButton } from '@/modules/transfer/components/SelectButton';
 import { SelectDestinationModal } from '@/modules/transfer/components/SelectModal/SelectDestinationModal';
 import { useAppDispatch, useAppSelector } from '@/modules/store/StoreProvider';
 import { setToChain } from '@/modules/transfer/action';
-import { BridgeChain } from '@/modules/bridges';
 import { useSetSelectInfo } from '@/modules/transfer/hooks/useSetSelectInfo';
+import { IBridgeChain } from '@/modules/aggregator/types';
 
 export function ToSection() {
   const { isOpen, onClose, onOpen } = useDisclosure();
@@ -27,7 +27,7 @@ export function ToSection() {
   // const { getToTokenAddress } = useToTokenInfo();
   const { colorMode } = useColorMode();
 
-  const onSelectSource = (chain: BridgeChain) => {
+  const onSelectSource = (chain: IBridgeChain) => {
     setSelectInfo({
       direction: 'to',
       toChainId: chain.id,

@@ -1,6 +1,6 @@
-import { ChainConfig } from '@/modules/bridges';
+import { IChainConfig } from '@/modules/aggregator/types';
 
-export const chains: ChainConfig[] = [
+export const chains: IChainConfig[] = [
   {
     id: 1,
     name: 'Ethereum Mainnet',
@@ -9,12 +9,11 @@ export const chains: ChainConfig[] = [
       symbol: 'ETH',
       decimals: 18,
     },
-    rpcUrl: 'https://ethereum-rpc.publicnode.com/', // TODO
+    rpcUrl: 'https://ethereum-rpc.publicnode.com/',
     explorer: {
       name: 'Etherscan',
       url: 'https://etherscan.io',
     },
-    chainType: 'evm',
   },
   {
     id: 10,
@@ -29,7 +28,6 @@ export const chains: ChainConfig[] = [
       name: 'OP Mainnet Explorer',
       url: 'https://optimistic.etherscan.io',
     },
-    chainType: 'evm',
   },
   {
     id: 14,
@@ -44,7 +42,6 @@ export const chains: ChainConfig[] = [
       name: 'Flare Scan',
       url: 'https://flarescan.com/',
     },
-    chainType: 'evm',
   },
   {
     id: 44,
@@ -59,7 +56,6 @@ export const chains: ChainConfig[] = [
       name: 'Crab explorer',
       url: 'https://crab-scan.darwinia.network',
     },
-    chainType: 'evm',
   },
   {
     id: 56,
@@ -74,7 +70,6 @@ export const chains: ChainConfig[] = [
       name: 'bscscan',
       url: 'https://bscscan.com',
     },
-    chainType: 'evm',
   },
   {
     id: 57,
@@ -89,7 +84,6 @@ export const chains: ChainConfig[] = [
       name: 'Syscoin Block Explorer',
       url: 'https://explorer.syscoin.org',
     },
-    chainType: 'evm',
   },
   {
     id: 58,
@@ -104,7 +98,6 @@ export const chains: ChainConfig[] = [
       name: 'explorer',
       url: 'https://explorer.ont.io',
     },
-    chainType: 'evm',
   },
   {
     id: 66,
@@ -119,7 +112,6 @@ export const chains: ChainConfig[] = [
       name: 'oklink',
       url: 'https://www.oklink.com/oktc',
     },
-    chainType: 'evm',
   },
   {
     id: 73,
@@ -134,7 +126,6 @@ export const chains: ChainConfig[] = [
       name: 'fncy scan',
       url: 'https://fncyscan.fncy.world',
     },
-    chainType: 'evm',
   },
   {
     id: 100,
@@ -149,7 +140,6 @@ export const chains: ChainConfig[] = [
       name: 'gnosisscan',
       url: 'https://gnosisscan.io',
     },
-    chainType: 'evm',
   },
   {
     id: 128,
@@ -165,7 +155,6 @@ export const chains: ChainConfig[] = [
       url: 'https://hecoinfo.com',
       tokenUrlPattern: 'https://hecoscan.io/#/token20/{0}',
     },
-    chainType: 'evm',
   },
   {
     id: 137,
@@ -180,7 +169,6 @@ export const chains: ChainConfig[] = [
       name: 'polygonscan',
       url: 'https://polygonscan.com',
     },
-    chainType: 'evm',
   },
   {
     id: 169,
@@ -195,7 +183,6 @@ export const chains: ChainConfig[] = [
       name: 'manta-pacific Explorer',
       url: 'https://pacific-explorer.manta.network',
     },
-    chainType: 'evm',
   },
   {
     id: 196,
@@ -210,7 +197,6 @@ export const chains: ChainConfig[] = [
       name: 'OKLink',
       url: 'https://www.oklink.com/xlayer',
     },
-    chainType: 'evm',
   },
   {
     id: 204,
@@ -225,7 +211,6 @@ export const chains: ChainConfig[] = [
       name: 'opbnbscan',
       url: 'https://mainnet.opbnbscan.com',
     },
-    chainType: 'evm',
   },
   {
     id: 248,
@@ -240,7 +225,6 @@ export const chains: ChainConfig[] = [
       name: 'Oasys-Mainnet explorer',
       url: 'https://explorer.oasys.games',
     },
-    chainType: 'evm',
   },
   {
     id: 250,
@@ -255,7 +239,6 @@ export const chains: ChainConfig[] = [
       name: 'ftmscan',
       url: 'https://ftmscan.com',
     },
-    chainType: 'evm',
   },
   {
     id: 288,
@@ -270,7 +253,6 @@ export const chains: ChainConfig[] = [
       name: 'Bobascan',
       url: 'https://bobascan.com',
     },
-    chainType: 'evm',
   },
   {
     id: 314,
@@ -285,7 +267,6 @@ export const chains: ChainConfig[] = [
       name: 'Filfox',
       url: 'https://filfox.info/en',
     },
-    chainType: 'evm',
   },
   {
     id: 324,
@@ -301,7 +282,6 @@ export const chains: ChainConfig[] = [
       url: 'https://explorer.zksync.io',
       tokenUrlPattern: 'https://explorer.zksync.io/address/{0}',
     },
-    chainType: 'evm',
   },
   {
     id: 336,
@@ -316,7 +296,6 @@ export const chains: ChainConfig[] = [
       name: 'subscan',
       url: 'https://shiden.subscan.io',
     },
-    chainType: 'evm',
   },
   {
     id: 416,
@@ -331,7 +310,6 @@ export const chains: ChainConfig[] = [
       name: 'SX Network Explorer',
       url: 'https://explorer.sx.technology',
     },
-    chainType: 'evm',
   },
   {
     id: 592,
@@ -346,7 +324,6 @@ export const chains: ChainConfig[] = [
       name: 'subscan',
       url: 'https://astar.subscan.io',
     },
-    chainType: 'evm',
   },
   {
     id: 1024,
@@ -361,7 +338,6 @@ export const chains: ChainConfig[] = [
       name: 'CLV Blockchain Explore',
       url: 'https://clvscan.com/',
     },
-    chainType: 'evm',
   },
   {
     id: 1030,
@@ -376,7 +352,6 @@ export const chains: ChainConfig[] = [
       name: 'Conflux Scan',
       url: 'https://evm.confluxscan.net',
     },
-    chainType: 'evm',
   },
   {
     id: 1088,
@@ -391,7 +366,6 @@ export const chains: ChainConfig[] = [
       name: 'Metis Andromeda explorer',
       url: 'https://andromeda-explorer.metis.io',
     },
-    chainType: 'evm',
   },
   {
     id: 1101,
@@ -406,7 +380,6 @@ export const chains: ChainConfig[] = [
       name: 'PolygonScan',
       url: 'https://zkevm.polygonscan.com',
     },
-    chainType: 'evm',
   },
   {
     id: 1284,
@@ -421,7 +394,6 @@ export const chains: ChainConfig[] = [
       name: 'moonscan',
       url: 'https://moonbeam.moonscan.io',
     },
-    chainType: 'evm',
   },
   {
     id: 1285,
@@ -436,7 +408,6 @@ export const chains: ChainConfig[] = [
       name: 'moonscan',
       url: 'https://moonriver.moonscan.io',
     },
-    chainType: 'evm',
   },
   {
     id: 1329,
@@ -451,7 +422,6 @@ export const chains: ChainConfig[] = [
       name: 'Sei Scan',
       url: 'https://www.seiscan.app/',
     },
-    chainType: 'evm',
   },
   {
     id: 1625,
@@ -466,7 +436,6 @@ export const chains: ChainConfig[] = [
       name: 'Gravity Alpha Mainnet Explorer',
       url: 'https://explorer.gravity.xyz',
     },
-    chainType: 'evm',
   },
   {
     id: 2001,
@@ -481,7 +450,6 @@ export const chains: ChainConfig[] = [
       name: 'Blockscout',
       url: 'https://explorer-mainnet-cardano-evm.c1.milkomeda.com',
     },
-    chainType: 'evm',
   },
   {
     id: 2002,
@@ -496,7 +464,6 @@ export const chains: ChainConfig[] = [
       name: '',
       url: '',
     },
-    chainType: 'evm',
   },
   {
     id: 2222,
@@ -511,7 +478,6 @@ export const chains: ChainConfig[] = [
       name: 'Kava EVM Explorer',
       url: 'https://kavascan.com',
     },
-    chainType: 'evm',
   },
   {
     id: 5000,
@@ -526,7 +492,6 @@ export const chains: ChainConfig[] = [
       name: 'Mantle Mainnet Explorer',
       url: 'https://explorer.mantle.xyz/',
     },
-    chainType: 'evm',
   },
   {
     id: 7700,
@@ -541,7 +506,6 @@ export const chains: ChainConfig[] = [
       name: 'Canto Explorer (OKLink)',
       url: 'https://www.oklink.com/canto',
     },
-    chainType: 'evm',
   },
   {
     id: 8217,
@@ -556,7 +520,6 @@ export const chains: ChainConfig[] = [
       name: 'Klaytnscope',
       url: 'https://scope.klaytn.com',
     },
-    chainType: 'evm',
   },
   {
     id: 8453,
@@ -571,7 +534,6 @@ export const chains: ChainConfig[] = [
       name: 'basescan',
       url: 'https://basescan.org',
     },
-    chainType: 'evm',
   },
   {
     id: 8822,
@@ -586,7 +548,6 @@ export const chains: ChainConfig[] = [
       name: 'IOTA EVM explorer',
       url: 'https://explorer.evm.iota.org',
     },
-    chainType: 'evm',
   },
   {
     id: 9001,
@@ -602,7 +563,6 @@ export const chains: ChainConfig[] = [
       url: 'https://www.mintscan.io/evmos',
       tokenUrlPattern: 'https://www.mintscan.io/evmos/address/{0}',
     },
-    chainType: 'evm',
   },
   {
     id: 13000,
@@ -617,7 +577,6 @@ export const chains: ChainConfig[] = [
       name: 'SPS Explorer',
       url: 'http://spsscan.ssquad.games',
     },
-    chainType: 'evm',
   },
   {
     id: 16350,
@@ -632,7 +591,6 @@ export const chains: ChainConfig[] = [
       name: '',
       url: '',
     },
-    chainType: 'evm',
   },
   {
     id: 23294,
@@ -647,7 +605,6 @@ export const chains: ChainConfig[] = [
       name: 'Oasis Sapphire Explorer',
       url: 'https://explorer.oasis.io/mainnet/sapphire',
     },
-    chainType: 'evm',
   },
   {
     id: 42161,
@@ -662,7 +619,6 @@ export const chains: ChainConfig[] = [
       name: 'Arbiscan',
       url: 'https://arbiscan.io',
     },
-    chainType: 'evm',
   },
   {
     id: 42170,
@@ -677,7 +633,6 @@ export const chains: ChainConfig[] = [
       name: 'Arbitrum Nova Chain Explorer',
       url: 'https://nova-explorer.arbitrum.io',
     },
-    chainType: 'evm',
   },
   {
     id: 42220,
@@ -692,7 +647,6 @@ export const chains: ChainConfig[] = [
       name: 'Celoscan',
       url: 'https://celoscan.io',
     },
-    chainType: 'evm',
   },
   {
     id: 42262,
@@ -707,7 +661,6 @@ export const chains: ChainConfig[] = [
       name: 'Oasis Emerald Explorer',
       url: 'https://explorer.oasis.io/mainnet/emerald',
     },
-    chainType: 'evm',
   },
   {
     id: 43114,
@@ -722,7 +675,6 @@ export const chains: ChainConfig[] = [
       name: 'snowtrace',
       url: 'https://snowtrace.io',
     },
-    chainType: 'evm',
   },
   {
     id: 47805,
@@ -737,7 +689,6 @@ export const chains: ChainConfig[] = [
       name: 'rei-scan',
       url: 'https://scan.rei.network',
     },
-    chainType: 'evm',
   },
   {
     id: 59144,
@@ -752,7 +703,6 @@ export const chains: ChainConfig[] = [
       name: 'Etherscan',
       url: 'https://lineascan.build',
     },
-    chainType: 'evm',
   },
   {
     id: 71402,
@@ -768,7 +718,6 @@ export const chains: ChainConfig[] = [
       url: 'https://v1.gwscan.com',
       tokenUrlPattern: 'https://v1.gwscan.com/account/{0}',
     },
-    chainType: 'evm',
   },
   {
     id: 81457,
@@ -783,7 +732,6 @@ export const chains: ChainConfig[] = [
       name: 'Blastscan',
       url: 'https://blastscan.io',
     },
-    chainType: 'evm',
   },
   {
     id: 112358,
@@ -798,7 +746,6 @@ export const chains: ChainConfig[] = [
       name: 'blockscout',
       url: 'https://explorer.metachain.one',
     },
-    chainType: 'evm',
   },
   {
     id: 167000,
@@ -813,7 +760,6 @@ export const chains: ChainConfig[] = [
       name: 'Taiko Scan',
       url: 'https://taikoscan.io',
     },
-    chainType: 'evm',
   },
   {
     id: 210425,
@@ -829,7 +775,6 @@ export const chains: ChainConfig[] = [
       url: 'https://scan.platon.network',
       tokenUrlPattern: 'https://scan.platon.network/tokens-detail?type=erc20&address={0}',
     },
-    chainType: 'evm',
   },
   {
     id: 534352,
@@ -844,7 +789,6 @@ export const chains: ChainConfig[] = [
       name: 'Scrollscan',
       url: 'https://scrollscan.com',
     },
-    chainType: 'evm',
   },
   {
     id: 1313161554,
@@ -859,7 +803,6 @@ export const chains: ChainConfig[] = [
       name: 'aurorascan.dev',
       url: 'https://aurorascan.dev',
     },
-    chainType: 'evm',
   },
   {
     id: 1380012617,
@@ -874,7 +817,6 @@ export const chains: ChainConfig[] = [
       name: 'Rari Mainnet Explorer',
       url: 'https://mainnet.explorer.rarichain.org/',
     },
-    chainType: 'evm',
   },
   {
     id: 1666600000,
@@ -889,6 +831,5 @@ export const chains: ChainConfig[] = [
       name: 'Harmony Block Explorer',
       url: 'https://explorer.harmony.one',
     },
-    chainType: 'evm',
   },
 ];

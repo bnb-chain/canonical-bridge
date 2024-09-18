@@ -1,8 +1,8 @@
 import { useMemo } from 'react';
 
 import { useAppSelector } from '@/modules/store/StoreProvider';
-import { BridgeToken } from '@/modules/bridges';
 import { useToTokenInfo } from '@/modules/transfer/hooks/useToTokenInfo';
+import { IBridgeToken } from '@/modules/aggregator/types';
 
 export function useToTokenDisplayedInfo() {
   const selectedToken = useAppSelector((state) => state.transfer.selectedToken);
@@ -30,5 +30,5 @@ export function useToTokenDisplayedInfo() {
     return info;
   }, [bridgeType, getToTokenAddress, getToTokenSymbol, selectedToken, toTokenInfo?.symbol]);
 
-  return displayedInfo as BridgeToken;
+  return displayedInfo as IBridgeToken;
 }

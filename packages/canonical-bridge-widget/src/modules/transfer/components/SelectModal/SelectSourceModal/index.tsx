@@ -2,23 +2,20 @@ import { Modal, ModalOverlay, useIntl } from '@bnb-chain/space';
 import { useEffect, useState } from 'react';
 
 import { useAppSelector } from '@/modules/store/StoreProvider';
-import {
-  BridgeChain,
-  BridgeToken,
-  useSupportedFromChains,
-  useSupportedTokens,
-} from '@/modules/bridges';
 import { NetworkPanel } from '@/modules/transfer/components/SelectModal/components/NetworkPanel';
 import { SelectModalBody } from '@/modules/transfer/components/SelectModal/components/SelectModalBody';
 import { SelectModalContent } from '@/modules/transfer/components/SelectModal/components/SelectModalContent';
 import { SelectModalHeader } from '@/modules/transfer/components/SelectModal/components/SelectModalHeader';
 import { NetworkSection } from '@/modules/transfer/components/SelectModal/SelectSourceModal/NetworkSection';
 import { TokenSection } from '@/modules/transfer/components/SelectModal/SelectSourceModal/TokenSection';
+import { IBridgeChain, IBridgeToken } from '@/modules/aggregator/types';
+import { useFromChains } from '@/modules/aggregator/hooks/useFromChains';
+import { useTokens } from '@/modules/aggregator/hooks/useTokens';
 
 interface SelectSourceModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSelect: (network: BridgeChain, token?: BridgeToken) => void;
+  onSelect: (network: IBridgeChain, token?: IBridgeToken) => void;
 }
 
 export function SelectSourceModal(props: SelectSourceModalProps) {
@@ -29,7 +26,7 @@ export function SelectSourceModal(props: SelectSourceModalProps) {
   const outerNetwork = useAppSelector((state) => state.transfer.fromChain);
 
   const [showNetworkPanel, setShowNetworkPanel] = useState(false);
-  const [innerNetwork, setInnerNetwork] = useState<BridgeChain>();
+  const [innerNetwork, setInnerNetwork] = useState<IBridgeChain>();
 
   useEffect(() => {
     setInnerNetwork(outerNetwork);
@@ -41,12 +38,12 @@ export function SelectSourceModal(props: SelectSourceModalProps) {
     }
   }, [isOpen]);
 
-  const fromNetworks = useSupportedFromChains({
-    toChainId: toNetwork?.id,
+  const fromNetworks = useFromChains({
+    toChain: toNetwork,
   });
-  const tokens = useSupportedTokens({
-    fromChainId: innerNetwork?.id,
-    toChainId: toNetwork?.id,
+  const tokens = useTokens({
+    fromChain: innerNetwork,
+    toChain: toNetwork,
   });
 
   const onShowNetworkPanel = () => {
@@ -57,14 +54,14 @@ export function SelectSourceModal(props: SelectSourceModalProps) {
     setShowNetworkPanel(false);
   };
 
-  const onSelectNetwork = (value: BridgeChain) => {
+  const onSelectNetwork = (value: IBridgeChain) => {
     setInnerNetwork(value);
     if (showNetworkPanel) {
       onHideNetworkPanel();
     }
   };
 
-  const onSelectToken = (token: BridgeToken) => {
+  const onSelectToken = (token: IBridgeToken) => {
     onSelect(innerNetwork!, token);
     onClose();
   };

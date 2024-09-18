@@ -43,7 +43,7 @@ export const DeBridgeOption = () => {
     (async () => {
       try {
         if (
-          !selectedToken?.rawData.deBridge ||
+          !selectedToken?.deBridge?.raw ||
           !fromChain ||
           !toChain ||
           !debouncedSendValue ||
@@ -71,12 +71,12 @@ export const DeBridgeOption = () => {
             spender: estimatedAmount['deBridge'].tx.to,
           });
 
-          if (allowance < parseUnits(debouncedSendValue, selectedToken.decimal)) {
+          if (allowance < parseUnits(debouncedSendValue, selectedToken.decimals)) {
             // eslint-disable-next-line no-console
             console.log(
               `Allowance is not enough: Allowance ${allowance}, send value: ${parseUnits(
                 debouncedSendValue,
-                selectedToken.decimal,
+                selectedToken.decimals,
               )}`,
             );
             return;

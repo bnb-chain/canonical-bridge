@@ -1,10 +1,10 @@
 import { useColorMode, useTheme } from '@bnb-chain/space';
 
-import { BridgeToken } from '@/modules/bridges';
 import { TokenListItem } from '@/modules/transfer/components/SelectModal/components/TokenListItem';
+import { IBridgeToken } from '@/modules/aggregator/types';
 
 interface TokenSelectedItem {
-  data: BridgeToken;
+  data: IBridgeToken;
   tokenUrl?: string;
 }
 

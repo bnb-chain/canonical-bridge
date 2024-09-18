@@ -2,8 +2,8 @@ import { formatUnits } from 'viem';
 import { BridgeType } from '@bnb-chain/canonical-bridge-sdk';
 import { useCallback } from 'react';
 
-import { ICBridgeMaxMinSendAmt } from '@/modules/bridges/cbridge/types';
 import { formatNumber } from '@/core/utils/number';
+import { ICBridgeMaxMinSendAmt } from '@/modules/aggregator/adapters/cBridge/types';
 
 export const useInputValidation = () => {
   const validateInput = useCallback(

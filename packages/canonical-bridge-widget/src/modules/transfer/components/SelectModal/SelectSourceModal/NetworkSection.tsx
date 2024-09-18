@@ -1,19 +1,19 @@
 import { Button, Flex, useColorMode, useIntl, useTheme } from '@bnb-chain/space';
 
-import {
-  SOURCE_MAX_MORE_COUNT,
-  SOURCE_MAX_RECENT_COUNT,
-  SOURCE_RECENT_NETWORKS_STORAGE_KEY,
-} from '@/core/configs/app';
-import { BridgeChain } from '@/modules/bridges';
 import { useRecentNetworks } from '@/modules/transfer/components/SelectModal/hooks/useRecentNetworks';
 import { SectionTitle } from '@/modules/transfer/components/SelectModal/components/SectionTitle';
 import { NetworkItem } from '@/modules/transfer/components/SelectModal/SelectSourceModal/NetworkItem';
+import {
+  SOURCE_MAX_RECENT_COUNT,
+  SOURCE_RECENT_NETWORKS_STORAGE_KEY,
+  SOURCE_MAX_MORE_COUNT,
+} from '@/core/constants';
+import { IBridgeChain } from '@/modules/aggregator/types';
 
 interface NetworkSectionProps {
-  selectedNetwork?: BridgeChain;
-  networks?: BridgeChain[];
-  onSelect: (value: BridgeChain) => void;
+  selectedNetwork?: IBridgeChain;
+  networks?: IBridgeChain[];
+  onSelect: (value: IBridgeChain) => void;
   onShowMore: () => void;
 }
 

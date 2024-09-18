@@ -94,7 +94,7 @@ export const useGetAllowance = ({
       return true;
     }
     try {
-      const sendVal = parseUnits(sendValue, selectedToken.decimal);
+      const sendVal = parseUnits(sendValue, selectedToken.decimals);
       if (sendVal <= allowance) {
         return false;
       } else {

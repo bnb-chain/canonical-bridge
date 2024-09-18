@@ -1,14 +1,17 @@
 import { nativeTokenMap } from '@/core/constants';
+import { useBridgeConfig } from '@/modules/aggregator/components/BridgeConfigProvider';
 import { useAppSelector } from '@/modules/store/StoreProvider';
 
 export const useGetNativeToken = () => {
+  const { nativeCurrencies } = useBridgeConfig();
   const fromChain = useAppSelector((state) => state.transfer.fromChain);
-  const evmConnectData = useAppSelector((state) => state.bridges.chainConfigs);
-  const chain = evmConnectData.find((item) => item.id === fromChain?.id);
 
-  if (chain?.nativeCurrency.symbol) return chain.nativeCurrency.symbol;
   if (fromChain?.id) {
-    const nativeToken = fromChain?.rawData?.cBridge?.gas_token_symbol;
+    if (nativeCurrencies[fromChain.id]) {
+      return nativeCurrencies[fromChain.id];
+    }
+
+    const nativeToken = fromChain?.cBridge?.raw?.gas_token_symbol;
     if (nativeToken) {
       return nativeToken;
     } else {
