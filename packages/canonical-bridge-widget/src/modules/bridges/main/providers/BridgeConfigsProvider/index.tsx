@@ -1,5 +1,5 @@
 import React, { useContext, useMemo } from 'react';
-import { NativeCurrency } from '@bnb-chain/canonical-bridge-sdk';
+import { DeBridgeToken, NativeCurrency } from '@bnb-chain/canonical-bridge-sdk';
 
 import {
   BridgeChain,
@@ -20,6 +20,7 @@ import {
   GetSupportedToChainsParams,
   GetSupportedTokensParams,
 } from '@/modules/bridges/main/utils/extendAdapters';
+import { TokenQueryParams } from '@/modules/bridges/debridge/types';
 
 export interface BridgeConfigsContextProps {
   isReady: boolean;
@@ -29,6 +30,7 @@ export interface BridgeConfigsContextProps {
   burnPairConfigs: CBridgeBurnPairConfig[];
   chainConfigs: ChainConfig[];
   nativeCurrencies: Record<number, NativeCurrency>;
+  getDeBridgeTokenByAddress: (params: TokenQueryParams) => DeBridgeToken | undefined;
   getSupportedFromChains: (params: GetSupportedFromChainsParams) => BridgeChain[];
   getSupportedToChains: (params: GetSupportedToChainsParams) => BridgeChain[];
   getSupportedTokens: (params: GetSupportedTokensParams) => BridgeToken[];
@@ -48,6 +50,7 @@ const DEFAULT_CONTEXT: BridgeConfigsContextProps = {
   burnPairConfigs: [],
   chainConfigs: [],
   nativeCurrencies: {},
+  getDeBridgeTokenByAddress: () => undefined,
   getSupportedFromChains: () => [],
   getSupportedToChains: () => [],
   getSupportedTokens: () => [],
@@ -124,6 +127,10 @@ export function BridgeConfigsProvider(props: BridgeConfigsProviderProps) {
 
       peggedPairConfigs: cBridgeAdapter.getPeggedPairConfigs(),
       burnPairConfigs: cBridgeAdapter.getBurnPairConfigs(),
+
+      getDeBridgeTokenByAddress(params: TokenQueryParams) {
+        return deBridgeAdapter.getTokenByAddress(params);
+      },
 
       getSupportedFromChains: (params: GetSupportedFromChainsParams) => {
         return mergeSupportedChains({

@@ -92,3 +92,8 @@ export interface ISendDebridgeTokenInput {
   amount: bigint;
   address: `0x${string}`;
 }
+
+export interface TokenQueryParams {
+  chainId: number;
+  address: string;
+}

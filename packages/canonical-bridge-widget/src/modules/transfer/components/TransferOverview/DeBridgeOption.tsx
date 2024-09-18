@@ -1,128 +1,98 @@
-import { Box, Flex, Image, useColorMode, useIntl, useTheme } from '@bnb-chain/space';
-import { useCallback, useEffect, useMemo, useState } from 'react';
-import { formatUnits, parseUnits } from 'viem';
-import { useAccount, usePublicClient } from 'wagmi';
+import { Flex, useColorMode, useIntl, useTheme } from '@bnb-chain/space';
+import { useCallback, useMemo } from 'react';
+import { formatUnits } from 'viem';
 
-import { setError, setTransferActionInfo } from '@/modules/transfer/action';
-import { InfoRow } from '@/modules/transfer/components/InfoRow';
+import { setTransferActionInfo } from '@/modules/transfer/action';
 import { useToTokenInfo } from '@/modules/transfer/hooks/useToTokenInfo';
 import { useGetNativeToken } from '@/modules/transfer/hooks/useGetNativeToken';
-import { useDebounce } from '@/core/hooks/useDebounce';
 import { useAppDispatch, useAppSelector } from '@/modules/store/StoreProvider';
-import { DEBOUNCE_DELAY } from '@/core/constants';
-import { AdditionalDetails } from '@/modules/transfer/components/TransferOverview/AdditionalDetails';
-import { env } from '@/core/configs/env';
 import { formatNumber } from '@/core/utils/number';
-import { formatEstimatedTime } from '@/core/utils/time';
-import { bridgeSDK } from '@/core/constants/bridgeSDK';
-export const DeBridgeOption = () => {
+import { useGetDeBridgeFees } from '@/modules/bridges/debridge/hooks/useGetDeBridgeFees';
+import { RouteTitle } from '@/modules/transfer/components/TransferOverview/RouteInfo/RouteTitle';
+import { EstimatedArrivalTime } from '@/modules/transfer/components/TransferOverview/RouteInfo/EstimatedArrivalTime';
+import { FeesInfo } from '@/modules/transfer/components/TransferOverview/RouteInfo/FeesInfo';
+import { RouteMask } from '@/modules/transfer/components/TransferOverview/RouteInfo/RouteMask';
+import { OtherRouteError } from '@/modules/transfer/components/TransferOverview/RouteInfo/OtherRouteError';
+import { RouteName } from '@/modules/transfer/components/TransferOverview/RouteInfo/RouteName';
+
+interface DeBridgeOptionProps {
+  isReceiveTab?: boolean;
+}
+
+export const DeBridgeOption = ({}: DeBridgeOptionProps) => {
   const nativeToken = useGetNativeToken();
   const { colorMode } = useColorMode();
   const dispatch = useAppDispatch();
-  const { address, chain } = useAccount();
   const { toTokenInfo, getToDecimals } = useToTokenInfo();
   const { formatMessage } = useIntl();
 
-  const fromChain = useAppSelector((state) => state.transfer.fromChain);
-  const toChain = useAppSelector((state) => state.transfer.toChain);
-  const selectedToken = useAppSelector((state) => state.transfer.selectedToken);
-  const sendValue = useAppSelector((state) => state.transfer.sendValue);
   const transferActionInfo = useAppSelector((state) => state.transfer.transferActionInfo);
   const estimatedAmount = useAppSelector((state) => state.transfer.estimatedAmount);
   const theme = useTheme();
+  const { protocolFee, marketMakerFee, debridgeFee, gasInfo } = useGetDeBridgeFees();
 
-  const publicClient = usePublicClient({ chainId: fromChain?.id });
-  const [gasInfo, setGasInfo] = useState<{ gas: bigint; gasPrice: bigint }>({
-    gas: 0n,
-    gasPrice: 0n,
-  });
+  const receiveAmt = useMemo(() => {
+    return estimatedAmount?.['deBridge'] &&
+      toTokenInfo &&
+      Number(estimatedAmount?.['deBridge']?.estimation?.dstChainTokenOut?.amount) > 0 &&
+      !!getToDecimals().deBridge
+      ? formatNumber(
+          Number(
+            formatUnits(
+              BigInt(estimatedAmount?.['deBridge']?.estimation?.dstChainTokenOut?.amount),
+              getToDecimals().deBridge,
+            ),
+          ),
+          8,
+        )
+      : '--';
+  }, [estimatedAmount, toTokenInfo, getToDecimals]);
 
-  const debouncedSendValue = useDebounce(sendValue, DEBOUNCE_DELAY);
-  useEffect(() => {
-    let mount = true;
-    (async () => {
-      try {
-        if (
-          !selectedToken?.rawData.deBridge ||
-          !fromChain ||
-          !toChain ||
-          !debouncedSendValue ||
-          debouncedSendValue === '0' ||
-          !toTokenInfo ||
-          !mount ||
-          !estimatedAmount ||
-          !estimatedAmount['deBridge'] ||
-          chain?.id !== fromChain.id
-        ) {
-          return;
-        }
-        // init value
-        setGasInfo({
-          gas: 0n,
-          gasPrice: 0n,
-        });
-        dispatch(setError(''));
-        if (estimatedAmount['deBridge']?.tx && address && publicClient) {
-          // Check whether token allowance is enough before getting gas estimation
-          const allowance = await bridgeSDK.getTokenAllowance({
-            publicClient: publicClient,
-            tokenAddress: selectedToken?.address as `0x${string}`,
-            owner: address as `0x${string}`,
-            spender: estimatedAmount['deBridge'].tx.to,
-          });
+  const feeDetails = useMemo(() => {
+    let feeContent = '';
+    const feeBreakdown = [];
+    if (gasInfo?.gas && gasInfo?.gasPrice) {
+      const gasFee = `${formatNumber(
+        Number(formatUnits(gasInfo.gas * gasInfo.gasPrice, 18)),
+        8,
+      )} ${nativeToken}`;
+      feeContent += gasFee;
+      feeBreakdown.push({
+        label: formatMessage({ id: 'route.option.info.gas-fee' }),
+        value: gasFee,
+      });
+    }
+    if (marketMakerFee) {
+      feeContent += (!!feeContent ? ` + ` : '') + `${marketMakerFee}`;
+      feeBreakdown.push({
+        label: formatMessage({ id: 'route.option.info.market-maker-fee' }),
+        value: marketMakerFee,
+      });
+    }
+    if (debridgeFee) {
+      feeContent += (!!feeContent ? ` + ` : '') + `${debridgeFee}`;
+      feeBreakdown.push({
+        label: formatMessage({ id: 'route.option.info.debridge-fee' }),
+        value: debridgeFee,
+      });
+    }
+    if (protocolFee) {
+      feeContent += (!!feeContent ? ` + ` : '') + `${protocolFee}`;
+      feeBreakdown.push({
+        label: formatMessage({ id: 'route.option.info.protocol-fee' }),
+        value: protocolFee,
+      });
+    }
+    return { summary: feeContent ? feeContent : '--', breakdown: feeBreakdown };
+  }, [debridgeFee, gasInfo, marketMakerFee, nativeToken, protocolFee, formatMessage]);
 
-          if (allowance < parseUnits(debouncedSendValue, selectedToken.decimal)) {
-            // eslint-disable-next-line no-console
-            console.log(
-              `Allowance is not enough: Allowance ${allowance}, send value: ${parseUnits(
-                debouncedSendValue,
-                selectedToken.decimal,
-              )}`,
-            );
-            return;
-          }
-          const response = await Promise.all([
-            await publicClient.estimateGas({
-              account: address as `0x${string}`,
-              to: estimatedAmount['deBridge']?.tx.to,
-              value: BigInt(estimatedAmount['deBridge']?.tx.value),
-              data: estimatedAmount['deBridge']?.tx.data,
-            }),
-            await publicClient.getGasPrice(),
-          ]);
-          if (response[0] && response[1]) {
-            setGasInfo({
-              gas: response[0],
-              gasPrice: response[1],
-            });
-          }
-        }
-      } catch (error: any) {
-        // eslint-disable-next-line no-console
-        console.log(error, error.message, error.response);
-        if (error?.response?.data?.errorMessage) {
-          dispatch(setError(error.response.data.errorMessage));
-        }
-      }
-    })();
-    return () => {
-      mount = false;
-    };
-  }, [
-    debouncedSendValue,
-    selectedToken,
-    fromChain,
-    toChain,
-    address,
-    toTokenInfo,
-    dispatch,
-    estimatedAmount,
-    publicClient,
-    chain?.id,
-  ]);
+  const isError = useMemo(
+    () => estimatedAmount?.deBridge === 'error' || false,
+    [estimatedAmount?.deBridge],
+  );
 
   const onSelectBridge = useCallback(() => {
-    if (!estimatedAmount || !estimatedAmount?.['deBridge']?.tx) {
+    if (!estimatedAmount || !estimatedAmount?.['deBridge']?.tx || isError) {
       return;
     }
     dispatch(
@@ -134,59 +104,7 @@ export const DeBridgeOption = () => {
         orderId: estimatedAmount['deBridge'].orderId,
       }),
     );
-  }, [estimatedAmount, dispatch]);
-
-  const debridgeFee = useMemo(() => {
-    const srcReserveTokenInfo =
-      estimatedAmount?.deBridge?.estimation.srcChainTokenOut ||
-      estimatedAmount?.deBridge?.estimation.srcChainTokenIn;
-
-    const debridgeFee =
-      estimatedAmount?.deBridge?.estimation.costsDetails?.filter(
-        (cost) => cost.type === 'DlnProtocolFee',
-      )?.[0]?.payload.feeAmount || null;
-    if (srcReserveTokenInfo?.decimals && srcReserveTokenInfo?.symbol) {
-      return `${formatNumber(
-        Number(formatUnits(BigInt(debridgeFee), srcReserveTokenInfo?.decimals)),
-      )} ${srcReserveTokenInfo?.symbol}`;
-    } else {
-      return null;
-    }
-  }, [estimatedAmount]);
-
-  const marketMakerFee = useMemo(() => {
-    let marketFeeStr = '';
-    const dstChainTokenOut = estimatedAmount?.deBridge?.estimation?.dstChainTokenOut;
-    const estimatedOperatingExpenses = estimatedAmount?.deBridge?.estimation?.costsDetails?.filter(
-      (cost) => cost.type === 'EstimatedOperatingExpenses',
-    )?.[0];
-
-    if (estimatedOperatingExpenses && dstChainTokenOut) {
-      marketFeeStr += `${formatNumber(
-        Number(
-          formatUnits(
-            BigInt(estimatedOperatingExpenses.payload.feeAmount),
-            dstChainTokenOut.decimals,
-          ),
-        ),
-        8,
-      )} ${dstChainTokenOut.symbol}`;
-    } else {
-      const srcChainInTokenIn = estimatedAmount?.deBridge?.estimation?.srcChainTokenIn;
-      if (srcChainInTokenIn) {
-        marketFeeStr += `${formatNumber(
-          Number(
-            formatUnits(
-              BigInt(srcChainInTokenIn.approximateOperatingExpense),
-              srcChainInTokenIn.decimals,
-            ),
-          ),
-          8,
-        )} ${srcChainInTokenIn?.symbol}`;
-      }
-    }
-    return marketFeeStr;
-  }, [estimatedAmount]);
+  }, [estimatedAmount, dispatch, isError]);
 
   return (
     <Flex
@@ -203,90 +121,31 @@ export const DeBridgeOption = () => {
       background={
         transferActionInfo?.bridgeType === 'deBridge' ? 'rgba(255, 233, 0, 0.06);' : 'none'
       }
-      borderRadius={'16px'}
-      padding={`${'12px'}`}
+      borderRadius={'8px'}
+      padding={`${'16px'}`}
       position={'relative'}
-      cursor={'pointer'}
+      cursor={isError ? 'default' : 'pointer'}
       _hover={{
-        borderColor: theme.colors[colorMode].border.brand,
+        borderColor: isError
+          ? theme.colors[colorMode].button.select.border
+          : theme.colors[colorMode].border.brand,
       }}
       onClick={onSelectBridge}
     >
-      <Flex flexDir={'row'} gap={'8px'} alignItems={'center'}>
-        <Image
-          src={`${env.ASSET_PREFIX}/images/debridgeIcon.png`}
-          alt="deBridge"
-          w={'20px'}
-          h={'20px'}
-          borderRadius={'100%'}
-        />
-        <Box fontSize={'14px'} fontWeight={500} lineHeight={'20px'}>
-          {formatMessage({ id: 'route.option.deBridge.title' })}
-        </Box>
-      </Flex>
-      <Box
-        px={'8px'}
-        py={'4px'}
-        mt={'4px'}
-        mb={'8px'}
-        width={'fit-content'}
-        fontWeight={500}
-        background={theme.colors[colorMode].background.tag}
-        borderRadius={'100px'}
-        fontSize={'14px'}
-      >
-        {estimatedAmount?.['deBridge'] &&
-        toTokenInfo &&
-        Number(estimatedAmount?.['deBridge']?.estimation?.dstChainTokenOut?.amount) > 0 &&
-        !!getToDecimals().deBridge
-          ? `~${formatNumber(
-              Number(
-                formatUnits(
-                  BigInt(estimatedAmount?.['deBridge']?.estimation?.dstChainTokenOut?.amount),
-                  getToDecimals().deBridge,
-                ),
-              ),
-              8,
-            )} ${toTokenInfo.symbol}`
-          : '-'}
-      </Box>
-      <InfoRow
-        label={formatMessage({ id: 'route.option.info.estimated-time' })}
-        value={formatEstimatedTime(
-          estimatedAmount?.['deBridge']?.order?.approximateFulfillmentDelay,
-        )}
+      {isError ? <RouteMask /> : null}
+      <RouteName bridgeType="deBridge" />
+      <RouteTitle
+        receiveAmt={receiveAmt}
+        tokenAddress={toTokenInfo?.address}
+        toTokenInfo={toTokenInfo}
       />
-      <AdditionalDetails>
-        {gasInfo && gasInfo?.gas && gasInfo?.gasPrice ? (
-          <InfoRow
-            label={formatMessage({ id: 'route.option.info.gas-fee' })}
-            value={`${formatNumber(
-              Number(formatUnits(gasInfo.gas * gasInfo.gasPrice, 18)),
-              8,
-            )} ${nativeToken}`}
-          />
-        ) : null}
-        {debridgeFee ? (
-          <InfoRow
-            label={formatMessage({ id: 'route.option.info.debridge-fee' })}
-            value={debridgeFee}
-          />
-        ) : null}
-        {marketMakerFee ? (
-          <InfoRow
-            label={formatMessage({ id: 'route.option.info.market-maker-fee' })}
-            value={marketMakerFee}
-          />
-        ) : null}
-        <InfoRow
-          label={formatMessage({ id: 'route.option.info.protocol-fee' })}
-          value={
-            estimatedAmount?.['deBridge']?.fixFee && selectedToken
-              ? `${formatUnits(BigInt(estimatedAmount?.['deBridge']?.fixFee), 18)} ${nativeToken}`
-              : '-'
-          }
-        />
-      </AdditionalDetails>
+      <EstimatedArrivalTime bridgeType={'deBridge'} />
+      <FeesInfo
+        bridgeType="deBridge"
+        summary={feeDetails.summary}
+        breakdown={feeDetails.breakdown}
+      />
+      <OtherRouteError bridgeType={'deBridge'} />
     </Flex>
   );
 };

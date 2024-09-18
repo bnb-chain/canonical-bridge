@@ -1,128 +1,80 @@
 import { Box, Flex, useColorMode, Image, useIntl, useTheme } from '@bnb-chain/space';
-import { useCallback, useEffect, useState } from 'react';
-import { formatUnits, parseUnits, encodePacked, pad } from 'viem';
-import { useAccount, usePublicClient } from 'wagmi';
+import { useCallback, useMemo } from 'react';
+import { formatUnits } from 'viem';
 
 import { useAppDispatch, useAppSelector } from '@/modules/store/StoreProvider';
 import { useToTokenInfo } from '@/modules/transfer/hooks/useToTokenInfo';
 import { useGetNativeToken } from '@/modules/transfer/hooks/useGetNativeToken';
-import { useGetAllowance } from '@/core/contract/hooks/useGetAllowance';
-import { DEFAULT_ADDRESS } from '@/core/constants';
-import { bridgeSDK } from '@/core/constants/bridgeSDK';
 import { setTransferActionInfo } from '@/modules/transfer/action';
-import { AdditionalDetails } from '@/modules/transfer/components/TransferOverview/AdditionalDetails';
-import { InfoRow } from '@/modules/transfer/components/InfoRow';
 import { formatNumber } from '@/core/utils/number';
-import { CAKE_PROXY_OFT_ABI } from '@/modules/bridges/layerZero/abi/cakeProxyOFT';
-import { useGetTokenBalance } from '@/core/contract/hooks/useGetTokenBalance';
-import { env } from '@/core/configs/env';
+import { useGetLayerZeroFees } from '@/modules/bridges/layerZero/hooks/useGetLayerZeroFees';
+import { RouteTitle } from '@/modules/transfer/components/TransferOverview/RouteInfo/RouteTitle';
+import { FeesInfo } from '@/modules/transfer/components/TransferOverview/RouteInfo/FeesInfo';
+import { RouteMask } from '@/modules/transfer/components/TransferOverview/RouteInfo/RouteMask';
+import { OtherRouteError } from '@/modules/transfer/components/TransferOverview/RouteInfo/OtherRouteError';
+import { RouteName } from '@/modules/transfer/components/TransferOverview/RouteInfo/RouteName';
 
 export const LayerZeroOption = () => {
   const dispatch = useAppDispatch();
   const { colorMode } = useColorMode();
   const { toTokenInfo, getToDecimals } = useToTokenInfo();
   const nativeToken = useGetNativeToken();
-  const { address } = useAccount();
+
   const { formatMessage } = useIntl();
 
-  const fromChain = useAppSelector((state) => state.transfer.fromChain);
   const selectedToken = useAppSelector((state) => state.transfer.selectedToken);
   const sendValue = useAppSelector((state) => state.transfer.sendValue);
   const transferActionInfo = useAppSelector((state) => state.transfer.transferActionInfo);
   const theme = useTheme();
   const estimatedAmount = useAppSelector((state) => state.transfer.estimatedAmount);
-  const publicClient = usePublicClient({ chainId: fromChain?.id });
 
-  const { allowance } = useGetAllowance({
-    tokenAddress: selectedToken?.rawData.layerZero?.address
-      ? (selectedToken?.address as `0x${string}`)
-      : ('' as `0x${string}`),
-    sender: selectedToken?.rawData.layerZero?.bridgeAddress as `0x${string}`,
-  });
+  const { nativeFee, gasInfo } = useGetLayerZeroFees();
 
-  const { balance } = useGetTokenBalance({
-    tokenAddress: selectedToken?.address as `0x${string}`,
-  });
-
-  const [gasFee, setGasFee] = useState<{
-    gas: bigint;
-    gasPrice: bigint;
-  }>({ gas: 0n, gasPrice: 0n });
-  const [nativeFee, setNativeFee] = useState<bigint>(0n);
-
-  useEffect(() => {
-    let mount = true;
-    if (!mount || !publicClient || !toTokenInfo?.rawData?.layerZero?.endpointID) {
-      return;
+  const feeDetails = useMemo(() => {
+    let feeContent = '';
+    const feeBreakdown = [];
+    if (gasInfo?.gas && gasInfo?.gasPrice) {
+      const gasFee = `${formatNumber(
+        Number(formatUnits(gasInfo.gas * gasInfo.gasPrice, 18)),
+        8,
+      )} ${nativeToken}`;
+      feeContent += gasFee;
+      feeBreakdown.push({
+        label: formatMessage({ id: 'route.option.info.gas-fee' }),
+        value: gasFee,
+      });
     }
-    (async () => {
-      try {
-        const receiver = address || DEFAULT_ADDRESS;
-        const bridgeAddress = selectedToken?.rawData.layerZero?.bridgeAddress as `0x${string}`;
-        const amount = parseUnits(
-          sendValue,
-          selectedToken?.rawData?.layerZero?.decimals ?? (18 as number),
-        );
+    if (nativeFee) {
+      const formattedNativeFee = formatNumber(Number(formatUnits(nativeFee, 18)), 8);
+      feeContent += (!!feeContent ? ` + ` : '') + `${formattedNativeFee} ${nativeToken}`;
+      feeBreakdown.push({
+        label: formatMessage({ id: 'route.option.info.native-fee' }),
+        value: `${formattedNativeFee} ${nativeToken}`,
+      });
+    }
+    return { summary: feeContent ? feeContent : '--', breakdown: feeBreakdown };
+  }, [gasInfo, nativeToken, nativeFee, formatMessage]);
 
-        const fees = await bridgeSDK.layerZero.getEstimateFee({
-          bridgeAddress,
-          userAddress: receiver,
-          dstEndpoint: toTokenInfo?.rawData.layerZero?.endpointID as number,
-          amount,
-          publicClient: publicClient,
-        });
+  const receiveAmt = useMemo(() => {
+    return estimatedAmount &&
+      toTokenInfo &&
+      Number(sendValue) > 0 &&
+      estimatedAmount?.['layerZero'] &&
+      Number(estimatedAmount?.['layerZero']) > 0
+      ? `~${formatNumber(
+          Number(formatUnits(BigInt(estimatedAmount?.['layerZero']), getToDecimals()['layerZero'])),
+          8,
+        )} ${toTokenInfo.symbol}`
+      : '--';
+  }, [estimatedAmount, toTokenInfo, sendValue, getToDecimals]);
 
-        setNativeFee(fees?.[0] ?? 0n);
-
-        const address32Bytes = pad(address || DEFAULT_ADDRESS, { size: 32 });
-        const adapterParams = encodePacked(['uint16', 'uint256'], [1, 200000n]);
-        const callParams = [
-          address,
-          '0x0000000000000000000000000000000000000000', // zroPaymentAddress
-          adapterParams,
-        ];
-        const nativeFee = fees[0];
-        const cakeArgs = {
-          address: bridgeAddress,
-          abi: CAKE_PROXY_OFT_ABI,
-          functionName: 'sendFrom',
-          args: [
-            address,
-            toTokenInfo?.rawData.layerZero?.endpointID,
-            address32Bytes,
-            amount,
-            amount,
-            callParams,
-          ],
-          value: nativeFee,
-          account: address,
-        };
-
-        if (!balance || balance < amount) {
-          return;
-        }
-        const gas = await publicClient.estimateContractGas(cakeArgs as any);
-        const gasPrice = await publicClient.getGasPrice();
-        if (gas && gasPrice) {
-          setGasFee({
-            gas,
-            gasPrice,
-          });
-        }
-      } catch (error: any) {
-        // eslint-disable-next-line no-console
-        console.log(error, error.message);
-        setNativeFee(0n);
-        setGasFee({ gas: 0n, gasPrice: 0n });
-      }
-    })();
-    return () => {
-      mount = false;
-    };
-  }, [allowance, dispatch, publicClient, address, selectedToken, sendValue, toTokenInfo, balance]);
+  const isError = useMemo(
+    () => estimatedAmount?.layerZero === 'error' || false,
+    [estimatedAmount?.layerZero],
+  );
 
   const onSelectBridge = useCallback(() => {
-    if (!selectedToken?.rawData.layerZero?.bridgeAddress) return;
+    if (!selectedToken?.rawData.layerZero?.bridgeAddress || isError) return;
     const bridgeAddress = selectedToken.rawData.layerZero.bridgeAddress;
     dispatch(
       setTransferActionInfo({
@@ -130,7 +82,7 @@ export const LayerZeroOption = () => {
         bridgeAddress: bridgeAddress as `0x${string}`,
       }),
     );
-  }, [selectedToken, dispatch]);
+  }, [selectedToken, dispatch, isError]);
 
   return (
     <Flex
@@ -147,74 +99,30 @@ export const LayerZeroOption = () => {
       background={
         transferActionInfo?.bridgeType === 'layerZero' ? 'rgba(255, 233, 0, 0.06);' : 'none'
       }
-      borderRadius={'16px'}
+      borderRadius={'8px'}
       padding={'12px'}
-      cursor={'pointer'}
+      cursor={isError ? 'default' : 'pointer'}
       _hover={{
-        borderColor: theme.colors[colorMode].border.brand,
+        borderColor: isError
+          ? theme.colors[colorMode].button.select.border
+          : theme.colors[colorMode].border.brand,
       }}
       onClick={onSelectBridge}
       position={'relative'}
     >
-      <Flex flexDir={'row'} gap={'8px'}>
-        <Image
-          src={`${env.ASSET_PREFIX}/images/layerZeroIcon.png`}
-          alt="layerZero"
-          w={'20px'}
-          h={'20px'}
-          borderRadius={'100%'}
-        />
-        <Box fontSize={'14px'} fontWeight={500} lineHeight={'20px'}>
-          {'LayerZero'}
-        </Box>
-      </Flex>
-
-      <Box
-        px={'8px'}
-        py={'4px'}
-        mt={'4px'}
-        mb={'8px'}
-        width={'fit-content'}
-        fontWeight={500}
-        background={theme.colors[colorMode].background.tag}
-        borderRadius={'100px'}
-        fontSize={'14px'}
-      >
-        {estimatedAmount &&
-        estimatedAmount?.['layerZero'] &&
-        toTokenInfo &&
-        Number(sendValue) > 0 &&
-        !!getToDecimals()['layerZero']
-          ? `~${formatNumber(
-              Number(
-                formatUnits(BigInt(estimatedAmount?.['layerZero']), getToDecimals()['layerZero']),
-              ),
-              8,
-            )} ${toTokenInfo.symbol}`
-          : '-'}
-      </Box>
-
-      {nativeFee ? (
-        <InfoRow
-          label={formatMessage({ id: 'route.option.info.native-fee' })}
-          value={
-            toTokenInfo
-              ? `${formatNumber(Number(formatUnits(nativeFee, 18)), 8)} ${nativeToken}`
-              : '-'
-          }
-        />
-      ) : null}
-      {!!gasFee?.gas && !!gasFee?.gasPrice && toTokenInfo ? (
-        <AdditionalDetails>
-          <InfoRow
-            label={formatMessage({ id: 'route.option.info.gas-fee' })}
-            value={`${formatNumber(
-              Number(formatUnits(gasFee?.gas * gasFee?.gasPrice, toTokenInfo.decimal)),
-              8,
-            )} ${nativeToken}`}
-          />
-        </AdditionalDetails>
-      ) : null}
+      {isError ? <RouteMask /> : null}
+      <RouteName bridgeType="layerZero" />
+      <RouteTitle
+        receiveAmt={receiveAmt}
+        tokenAddress={toTokenInfo?.address}
+        toTokenInfo={toTokenInfo}
+      />
+      <FeesInfo
+        bridgeType="layerZero"
+        summary={feeDetails.summary}
+        breakdown={feeDetails.breakdown}
+      />
+      <OtherRouteError bridgeType={'layerZero'} />
     </Flex>
   );
 };

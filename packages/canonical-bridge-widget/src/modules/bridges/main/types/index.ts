@@ -130,8 +130,15 @@ export interface TransferActionInfo {
 
 export interface IEstimatedAmount {
   cBridge?: any;
-  deBridge?: DeBridgeCreateQuoteResponse;
+  deBridge?: any;
   stargate?: any; // TODO: response from quoteOFT
+  layerZero?: any;
+}
+
+export interface IBridgeError {
+  cBridge?: any;
+  deBridge?: any;
+  stargate?: any;
   layerZero?: any;
 }
 

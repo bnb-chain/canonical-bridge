@@ -25,3 +25,8 @@ export interface DeBridgeGetSupportedFuncParams {
   fromTokenSymbol?: string;
   data: DeBridgeTransferConfigs;
 }
+
+export interface TokenQueryParams {
+  chainId: number;
+  address: string;
+}

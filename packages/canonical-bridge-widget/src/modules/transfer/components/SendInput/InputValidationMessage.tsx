@@ -42,7 +42,7 @@ export const InputValidationMessage = () => {
     });
     if (balanceResult?.isError === true) {
       dispatch(setIsTransferable(false));
-      dispatch(setError(balanceResult.text));
+      dispatch(setError({ text: balanceResult.text }));
     } else {
       dispatch(setError(undefined));
       dispatch(setIsTransferable(true));
@@ -70,7 +70,7 @@ export const InputValidationMessage = () => {
       position={'absolute'}
       top={`calc(100% + ${'8px'})`}
     >
-      {error}
+      {error.text}
     </Box>
   ) : null;
 };

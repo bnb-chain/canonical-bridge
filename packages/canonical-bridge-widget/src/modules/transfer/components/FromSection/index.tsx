@@ -25,7 +25,6 @@ export function FromSection() {
   const { formatMessage } = useIntl();
 
   const fromChain = useAppSelector((state) => state.transfer.fromChain);
-  const error = useAppSelector((state) => state.transfer.error);
   const theme = useTheme();
 
   const onSelectSource = (chain: BridgeChain, token?: BridgeToken) => {
@@ -64,9 +63,7 @@ export function FromSection() {
           flexDir="column"
           justifyContent="space-between"
           borderRadius={'8px'}
-          border={`1px solid ${
-            !!error ? theme.colors[colorMode].text.danger : theme.colors[colorMode].border['3']
-          }`}
+          border={`1px solid ${theme.colors[colorMode].border['3']}`}
         >
           <SelectButton network={fromChain} onClick={onOpen} />
         </Flex>

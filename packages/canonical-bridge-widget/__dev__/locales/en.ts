@@ -17,12 +17,18 @@ export const en = {
   'to.section.account.placeholder': 'Enter Destination Address',
   'to.section.account.invalid': 'Invalid address.',
 
+  'you.receive.title': 'You Receive',
+  'route.fees.title': 'Fees:',
+  'route.time.title': 'Time:',
+  'route.allowed-send-amount': 'Allowed send range:',
+
   'route.no-found.title': 'No Routes Found',
   'route.no-found.desc': `Why we couldn't find a route: low liquidity on token, very low input amount or no routes
         available for the selected input/output token combination.`,
   'route.option.cBridge.title': 'cBridge:',
   'route.option.deBridge.title': 'deBridge:',
   'route.option.stargate.title': 'Stargate:',
+  'route.option.layerZero.title': 'LayerZero:',
   'route.option.info.estimated-time': 'Est. Time:',
   'route.option.info.gas-fee': 'Gas Fee:',
   'route.option.info.native-fee': 'Native Fee:',
@@ -30,9 +36,8 @@ export const en = {
   'route.option.info.market-maker-fee': 'Market Maker Gas Costs:',
   'route.option.info.base-fee': 'Base Fee:',
   'route.option.info.protocol-fee': 'Protocol Fee:',
-  'route.option.info.send-range': 'Allowed Send Range:',
 
-  'transfer.button.confirm': 'Confirm Transfer',
+  'transfer.button.confirm': 'Send',
   'transfer.button.approve': 'Approve',
   'transfer.button.switch-network': 'Switch Network',
   'transfer.button.wallet-connect': 'Connect Wallet',

@@ -95,7 +95,11 @@ export class DeBridge {
       const deBridgeQuote = await this.createTxQuote(urlParams);
       return deBridgeQuote;
     } catch (error: any) {
-      throw new Error(`Failed to get DeBridge Estimated Fees: ${error}`);
+      if (error.response?.data?.errorMessage) {
+        throw new Error(error.response.data.errorMessage);
+      } else {
+        throw new Error(`${error.message || error}`);
+      }
     }
   }
 

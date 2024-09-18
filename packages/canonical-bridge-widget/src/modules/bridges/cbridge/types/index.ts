@@ -175,6 +175,6 @@ export interface CBridgeGetSupportedFuncParams {
 }
 
 export interface ICBridgeMaxMinSendAmt {
-  max: bigint;
-  min: bigint;
+  max: string;
+  min: string;
 }
