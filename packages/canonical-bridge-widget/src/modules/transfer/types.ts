@@ -1,7 +1,5 @@
 import { BridgeType } from '@bnb-chain/canonical-bridge-sdk';
 
-import { IQuoteResponse } from '@/modules/aggregator/adapters/deBridge/types';
-
 export interface ITransferActionInfo {
   data?: `0x${string}`;
   bridgeAddress?: `0x${string}`;
@@ -19,7 +17,14 @@ export interface IReceiveValue {
 
 export interface IEstimatedAmount {
   cBridge?: any;
-  deBridge?: IQuoteResponse;
+  deBridge?: any;
   stargate?: any; // TODO: response from quoteOFT
+  layerZero?: any;
+}
+
+export interface IBridgeError {
+  cBridge?: any;
+  deBridge?: any;
+  stargate?: any;
   layerZero?: any;
 }

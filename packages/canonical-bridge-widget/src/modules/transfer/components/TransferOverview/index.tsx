@@ -1,4 +1,4 @@
-import { Box, Flex, Skeleton, useColorMode, useIntl, useTheme } from '@bnb-chain/space';
+import { Box, Flex, useColorMode, useIntl, useTheme } from '@bnb-chain/space';
 import { ReactNode, useEffect, useMemo } from 'react';
 
 import {
@@ -17,6 +17,7 @@ import { StarGateOption } from '@/modules/transfer/components/TransferOverview/S
 import { LayerZeroOption } from '@/modules/transfer/components/TransferOverview/LayerZeroOption';
 import { useGetReceiveAmount } from '@/modules/transfer/hooks/useGetReceiveAmount';
 import { RefreshingButton } from '@/modules/transfer/components/Button/RefreshingButton';
+import { RouteSkeleton } from '@/modules/transfer/components/TransferOverview/RouteInfo/RouteSkeleton';
 
 export function TransferOverview() {
   const { colorMode } = useColorMode();
@@ -60,32 +61,25 @@ export function TransferOverview() {
     ) {
       return [];
     }
-    const bridges = [];
+    const routes = [];
     for (const bridge in sortedReceivedAmt) {
-      if (bridge === 'cBridge' && Number(estimatedAmount?.['cBridge']?.estimated_receive_amt) > 0) {
-        bridges.push(<CBridgeOption key={'cbridge-option'} />);
+      if (bridge === 'cBridge' && estimatedAmount?.['cBridge']) {
+        routes.push(<CBridgeOption key={'cbridge-option'} />);
       }
-      if (
-        bridge === 'deBridge' &&
-        estimatedAmount?.['deBridge'] &&
-        estimatedAmount?.['deBridge']?.estimation?.dstChainTokenOut?.amount &&
-        Number(estimatedAmount?.['deBridge']?.estimation?.dstChainTokenOut?.amount) > 0
-      ) {
-        bridges.push(<DeBridgeOption key={'debridge-option'} />);
+      if (bridge === 'deBridge' && estimatedAmount?.['deBridge']) {
+        routes.push(<DeBridgeOption key={'debridge-option'} />);
       }
-      if (
-        bridge === 'stargate' &&
-        estimatedAmount['stargate']?.[2]?.amountReceivedLD &&
-        Number(estimatedAmount['stargate']?.[2]?.amountReceivedLD) > 0
-      ) {
-        bridges.push(<StarGateOption key={'stargate-option'} />);
+      if (bridge === 'stargate' && estimatedAmount['stargate']) {
+        routes.push(<StarGateOption key={'stargate-option'} />);
       }
-      if (bridge === 'layerZero' && Number(estimatedAmount['layerZero']) > 0) {
-        bridges.push(<LayerZeroOption key={'layerZero-option'} />);
+      if (bridge === 'layerZero' && estimatedAmount['layerZero']) {
+        routes.push(<LayerZeroOption key={'layerZero-option'} />);
       }
     }
-    return bridges;
+    return routes;
   }, [sortedReceivedAmt, debouncedSendValue, estimatedAmount]);
+
+  // console.log('sorted received amount', sortedReceivedAmt, options);
 
   const showRoute = selectedToken && sendValue && toTokenInfo;
 
@@ -95,7 +89,7 @@ export function TransferOverview() {
     return options.sort((a) => {
       return a.key === bridgeType ? -1 : 0;
     });
-  }, [options, bridgeType]);
+  }, [options]);
 
   return (
     <Flex flexDir="column" ml={'24px'} gap={'24px'}>
@@ -141,7 +135,7 @@ export function TransferOverview() {
                 toChain ? (
                   <NoRouteFound />
                 ) : !sortedOptions.length || isGlobalFeeLoading ? (
-                  <Skeleton height={'144px'} />
+                  <RouteSkeleton />
                 ) : (
                   <Flex
                     flexDir={'column'}

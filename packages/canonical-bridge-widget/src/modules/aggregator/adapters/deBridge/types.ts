@@ -71,3 +71,8 @@ export type IQuoteResponse = {
   integratorPoints: number;
   orderId: string;
 };
+
+export interface TokenQueryParams {
+  chainId: number;
+  address: string;
+}

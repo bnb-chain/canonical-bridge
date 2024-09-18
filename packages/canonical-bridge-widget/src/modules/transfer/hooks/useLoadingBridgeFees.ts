@@ -7,6 +7,7 @@ import { useAppDispatch, useAppSelector } from '@/modules/store/StoreProvider';
 import {
   setEstimatedAmount,
   setIsGlobalFeeLoading,
+  setRouteError,
   setTransferActionInfo,
 } from '@/modules/transfer/action';
 import { useToTokenInfo } from '@/modules/transfer/hooks/useToTokenInfo';
@@ -39,6 +40,7 @@ export const useLoadingBridgeFees = () => {
     }
     dispatch(setIsGlobalFeeLoading(true));
     dispatch(setEstimatedAmount(undefined));
+    dispatch(setRouteError(undefined));
     const bridgeTypeList: BridgeType[] = [];
     const valueArr = [];
     availableBridgeTypes.forEach((bridge) => {
@@ -57,8 +59,8 @@ export const useLoadingBridgeFees = () => {
         fromTokenSymbol: selectedToken.symbol,
         publicClient,
         endPointId: {
-          layerZeroV1: selectedToken?.layerZero?.raw?.endpointID,
-          layerZeroV2: selectedToken?.stargate?.raw?.endpointID,
+          layerZeroV1: toToken?.layerZero?.raw?.endpointID,
+          layerZeroV2: toToken?.stargate?.raw?.endpointID,
         },
         bridgeAddress: {
           stargate: selectedToken?.stargate?.raw?.bridgeAddress as `0x${string}`,
@@ -73,6 +75,7 @@ export const useLoadingBridgeFees = () => {
       console.log('API response deBridge[0], cBridge[1], stargate[2], layerZero[3]', response);
 
       const [debridgeEst, cbridgeEst, stargateEst, layerZeroEst] = response as any;
+      // deBridge
       if (debridgeEst.status === 'fulfilled' && debridgeEst?.value) {
         dispatch(
           setEstimatedAmount({ deBridge: debridgeEst.value as DeBridgeCreateQuoteResponse }),
@@ -87,9 +90,14 @@ export const useLoadingBridgeFees = () => {
             getToDecimals()['deBridge'],
           ),
         });
+      } else if (debridgeEst.status === 'rejected') {
+        dispatch(setRouteError({ deBridge: debridgeEst.reason.message }));
+        dispatch(setEstimatedAmount({ deBridge: 'error' }));
       } else {
         dispatch(setEstimatedAmount({ deBridge: undefined }));
       }
+
+      // cBridge
       if (cbridgeEst.status === 'fulfilled' && cbridgeEst?.value) {
         dispatch(setEstimatedAmount({ cBridge: cbridgeEst.value }));
         valueArr.push({
@@ -99,9 +107,14 @@ export const useLoadingBridgeFees = () => {
             getToDecimals()['cBridge'],
           ),
         });
+      } else if (cbridgeEst.status === 'rejected') {
+        dispatch(setRouteError({ cBridge: cbridgeEst.reason.message }));
+        dispatch(setEstimatedAmount({ cBridge: 'error' }));
       } else {
         dispatch(setEstimatedAmount({ cBridge: undefined }));
       }
+
+      // stargate
       if (stargateEst.status === 'fulfilled' && stargateEst?.value) {
         dispatch(setEstimatedAmount({ stargate: toObject(stargateEst.value) }));
         valueArr.push({
@@ -111,9 +124,14 @@ export const useLoadingBridgeFees = () => {
             selectedToken?.stargate?.raw?.decimals || 18,
           ),
         });
+      } else if (stargateEst.status === 'rejected') {
+        dispatch(setRouteError({ stargate: stargateEst.reason.message }));
+        dispatch(setEstimatedAmount({ stargate: 'error' }));
       } else {
         dispatch(setEstimatedAmount({ stargate: undefined }));
       }
+
+      // layerZero
       if (layerZeroEst.status === 'fulfilled' && layerZeroEst?.value) {
         dispatch(
           setEstimatedAmount({
@@ -124,9 +142,13 @@ export const useLoadingBridgeFees = () => {
           type: 'layerZero',
           value: debouncedSendValue,
         });
+      } else if (layerZeroEst.status === 'rejected') {
+        dispatch(setRouteError({ layerZero: layerZeroEst.reason.message }));
+        dispatch(setEstimatedAmount({ layerZero: 'error' }));
       } else {
         dispatch(setEstimatedAmount({ layerZero: undefined }));
       }
+
       if (valueArr.length > 0) {
         const highestValue = valueArr.reduce((max, entry) =>
           Number(entry['value']) > Number(max['value']) ? entry : max,

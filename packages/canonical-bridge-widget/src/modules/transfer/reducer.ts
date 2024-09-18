@@ -1,7 +1,7 @@
 import * as actions from '@/modules/transfer/action';
 import { createReducer } from '@/modules/store/createReducer';
 import { IBridgeChain, IBridgeToken } from '@/modules/aggregator/types';
-import { IEstimatedAmount, ITransferActionInfo } from '@/modules/transfer/types';
+import { IBridgeError, IEstimatedAmount, ITransferActionInfo } from '@/modules/transfer/types';
 
 export interface ITransferState {
   fromChain?: IBridgeChain;
@@ -11,7 +11,8 @@ export interface ITransferState {
   toToken?: IBridgeToken;
   slippage: number;
   transferActionInfo?: ITransferActionInfo;
-  error?: string;
+  error?: { text: string; bridgeType?: string };
+  routeError?: IBridgeError;
   isGlobalFeeLoading?: boolean;
   isTransferable: boolean;
   isRefreshing?: boolean;
@@ -28,7 +29,11 @@ const initStates: ITransferState = {
   selectedToken: undefined,
   slippage: 10000, // 1% for cBridge
   transferActionInfo: undefined,
-  error: '',
+  error: {
+    text: '',
+    bridgeType: undefined,
+  },
+  routeError: undefined,
   isGlobalFeeLoading: false,
   isTransferable: true,
   isRefreshing: false,
@@ -92,6 +97,11 @@ export default createReducer(initStates, (builder) => {
   builder.addCase(actions.setEstimatedAmount, (state, { payload }) => ({
     ...state,
     estimatedAmount: { ...state.estimatedAmount, ...payload },
+  }));
+
+  builder.addCase(actions.setRouteError, (state, { payload }) => ({
+    ...state,
+    routeError: { ...state.routeError, ...payload },
   }));
 
   builder.addCase(actions.setToAccount, (state, { payload }) => ({

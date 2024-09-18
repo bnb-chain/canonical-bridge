@@ -5,6 +5,7 @@ import { TransferButtonGroup } from '@/modules/transfer/components/TransferButto
 import { useDefaultSelectedInfo } from '@/modules/transfer/hooks/useDefaultSelectedInfo';
 import { NetWorkSection } from '@/modules/transfer/components/NetWorkSection';
 import { SendInput } from '@/modules/transfer/components/SendInput';
+import { ReceiveInfo } from '@/modules/transfer/components/ReceiveInfo';
 
 export function TransferPage() {
   const { colorMode } = useColorMode();
@@ -40,6 +41,7 @@ export function TransferPage() {
         </Box>
         <NetWorkSection />
         <SendInput />
+        <ReceiveInfo />
         <Flex flexDir="column">
           <TransferButtonGroup />
         </Flex>

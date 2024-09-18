@@ -13,8 +13,8 @@ export const useGetReceiveAmount = () => {
   const getReceiveAmount = useCallback(
     (bridgeType: BridgeType) => {
       if (estimatedAmount) {
-        if (bridgeType === 'deBridge') {
-          return estimatedAmount[bridgeType]?.estimation.dstChainTokenOut.amount;
+        if (bridgeType === 'deBridge' && estimatedAmount[bridgeType]?.estimation) {
+          return estimatedAmount[bridgeType]?.estimation?.dstChainTokenOut.amount;
         } else if (bridgeType === 'cBridge') {
           return estimatedAmount[bridgeType]?.estimated_receive_amt;
         } else if (bridgeType === 'stargate') {

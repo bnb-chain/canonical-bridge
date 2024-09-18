@@ -35,7 +35,7 @@ export const dark: ColorType = {
   button: {
     wallet: {
       text: '#181A1E',
-      background: { default: '#FFE900', hover: '#E1E2E5' },
+      background: { default: '#FFE900', hover: '#EBD600' },
     },
     refresh: {
       text: '#665800',
@@ -98,6 +98,9 @@ export const dark: ColorType = {
     warning: '#5C2600',
     tag: '#373943',
   },
+  receive: {
+    background: '#373943',
+  },
   border: {
     1: '#181A1E',
     2: '#1E2026',
@@ -106,6 +109,10 @@ export const dark: ColorType = {
     inverse: '#FFFFFF',
     brand: '#FFE900',
     disabled: rgba('#5C5F6A', 0.45),
+  },
+  route: {
+    background: { highlight: 'rgba(255, 233, 0, 0.06)' },
+    border: '#373943',
   },
   layer: {
     1: {

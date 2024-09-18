@@ -1,86 +1,101 @@
-import { Box, Flex, useColorMode, useIntl, useTheme } from '@bnb-chain/space';
-import { useCallback, useEffect, useState } from 'react';
+import { Flex, useColorMode, useIntl, useTheme } from '@bnb-chain/space';
+import { useCallback, useMemo } from 'react';
 import { formatUnits } from 'viem';
-import { usePublicClient } from 'wagmi';
 
-import { AdditionalDetails } from '@/modules/transfer/components/TransferOverview/AdditionalDetails';
-import { EstimatedArrivalTime } from '@/modules/transfer/components/TransferOverview/cbridge/EstimatedArrivalTime';
-import { AllowAmountRange } from '@/modules/transfer/components/TransferOverview/cbridge/AllowedAmountRange';
-import { InfoRow } from '@/modules/transfer/components/InfoRow';
 import { useToTokenInfo } from '@/modules/transfer/hooks/useToTokenInfo';
-import { CBridgeIcon } from '@/core/components/icons/brand/CBridgeLogo';
 import { setTransferActionInfo } from '@/modules/transfer/action';
-import { useGetAllowance } from '@/core/contract/hooks/useGetAllowance';
-import { useDebounce } from '@/core/hooks/useDebounce';
 import { useAppDispatch, useAppSelector } from '@/modules/store/StoreProvider';
-import { DEBOUNCE_DELAY } from '@/core/constants';
 import { formatNumber } from '@/core/utils/number';
-import { useCBridgeTransferParams } from '@/modules/aggregator/adapters/cBridge/hooks/useCBridgeTransferParams';
+import { useGetNativeToken } from '@/modules/transfer/hooks/useGetNativeToken';
+import { RouteTitle } from '@/modules/transfer/components/TransferOverview/RouteInfo/RouteTitle';
+import { EstimatedArrivalTime } from '@/modules/transfer/components/TransferOverview/RouteInfo/EstimatedArrivalTime';
+import { FeesInfo } from '@/modules/transfer/components/TransferOverview/RouteInfo/FeesInfo';
+import { AllowedSendAmount } from '@/modules/transfer/components/TransferOverview/RouteInfo/AllowedSendAmount';
+import { RouteMask } from '@/modules/transfer/components/TransferOverview/RouteInfo/RouteMask';
+import { OtherRouteError } from '@/modules/transfer/components/TransferOverview/RouteInfo/OtherRouteError';
+import { RouteName } from '@/modules/transfer/components/TransferOverview/RouteInfo/RouteName';
+import { useGetCBridgeFees } from '@/modules/aggregator/adapters/cBridge/hooks/useGetCBridgeFees';
 
 export const CBridgeOption = () => {
   const dispatch = useAppDispatch();
   const { colorMode } = useColorMode();
   const { toTokenInfo, getToDecimals } = useToTokenInfo();
+  const nativeToken = useGetNativeToken();
+  const { baseFee, protocolFee, gasInfo, isAllowSendError, bridgeAddress, cBridgeAllowedAmt } =
+    useGetCBridgeFees();
 
-  const { args, bridgeAddress } = useCBridgeTransferParams();
   const { formatMessage } = useIntl();
 
   const selectedToken = useAppSelector((state) => state.transfer.selectedToken);
-  const fromChain = useAppSelector((state) => state.transfer.fromChain);
-  const sendValue = useAppSelector((state) => state.transfer.sendValue);
   const transferActionInfo = useAppSelector((state) => state.transfer.transferActionInfo);
   const estimatedAmount = useAppSelector((state) => state.transfer.estimatedAmount);
+  const sendValue = useAppSelector((state) => state.transfer.sendValue);
   const theme = useTheme();
 
-  const publicClient = usePublicClient({ chainId: fromChain?.id });
+  const receiveAmt = useMemo(() => {
+    return estimatedAmount &&
+      estimatedAmount?.['cBridge'] &&
+      toTokenInfo &&
+      Number(sendValue) > 0 &&
+      !!getToDecimals()['cBridge'] &&
+      Number(estimatedAmount?.['cBridge']?.estimated_receive_amt) > 0
+      ? `${formatNumber(
+          Number(
+            formatUnits(
+              estimatedAmount?.['cBridge']?.estimated_receive_amt,
+              getToDecimals()['cBridge'],
+            ),
+          ),
+          8,
+        )} ${toTokenInfo.symbol}`
+      : '--';
+  }, [estimatedAmount, toTokenInfo, sendValue, getToDecimals]);
 
-  const [gasFee, setGasFee] = useState<{
-    gas: bigint;
-    gasPrice: bigint;
-  }>({ gas: 0n, gasPrice: 0n });
-
-  const { allowance } = useGetAllowance({
-    tokenAddress: selectedToken?.address as `0x${string}`,
-    sender: bridgeAddress as `0x${string}`,
-  });
-
-  const debouncedArguments = useDebounce(args, DEBOUNCE_DELAY);
-
-  useEffect(() => {
-    let mount = true;
-    if (!mount || !debouncedArguments || allowance === 0n || !publicClient) {
-      return;
+  const feeDetails = useMemo(() => {
+    let feeContent = '';
+    const feeBreakdown = [];
+    if (gasInfo?.gas && gasInfo?.gasPrice) {
+      const gasFee = `${formatNumber(
+        Number(formatUnits(gasInfo.gas * gasInfo.gasPrice, 18)),
+        8,
+      )} ${nativeToken}`;
+      feeContent += gasFee;
+      feeBreakdown.push({
+        label: formatMessage({ id: 'route.option.info.gas-fee' }),
+        value: gasFee,
+      });
     }
-    (async () => {
-      try {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const gas = await publicClient.estimateContractGas(debouncedArguments as any);
-        const gasPrice = await publicClient.getGasPrice();
-        if (gas && gasPrice) {
-          setGasFee({
-            gas,
-            gasPrice,
-          });
-        }
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      } catch (error: any) {
-        // eslint-disable-next-line no-console
-        console.log(error, error.message, debouncedArguments);
-      }
-    })();
-    return () => {
-      mount = false;
-    };
-  }, [debouncedArguments, allowance, dispatch, publicClient]);
+    if (baseFee) {
+      feeContent += (!!feeContent ? ` + ` : '') + `${baseFee}`;
+      feeBreakdown.push({
+        label: formatMessage({ id: 'route.option.info.base-fee' }),
+        value: baseFee,
+      });
+    }
+    if (protocolFee) {
+      feeContent += (!!feeContent ? ` + ` : '') + `${protocolFee}`;
+      feeBreakdown.push({
+        label: formatMessage({ id: 'route.option.info.protocol-fee' }),
+        value: protocolFee,
+      });
+    }
+    return { summary: feeContent ? feeContent : '--', breakdown: feeBreakdown };
+  }, [gasInfo, nativeToken, protocolFee, baseFee, formatMessage]);
+
+  const isError = useMemo(
+    () => estimatedAmount?.cBridge === 'error' || isAllowSendError || false,
+    [estimatedAmount?.cBridge, isAllowSendError],
+  );
 
   const onSelectBridge = useCallback(() => {
+    if (isError) return;
     dispatch(
       setTransferActionInfo({
         bridgeType: 'cBridge',
         bridgeAddress: bridgeAddress as `0x${string}`,
       }),
     );
-  }, [bridgeAddress, dispatch]);
+  }, [bridgeAddress, dispatch, isError]);
 
   return (
     <Flex
@@ -97,88 +112,44 @@ export const CBridgeOption = () => {
       background={
         transferActionInfo?.bridgeType === 'cBridge' ? 'rgba(255, 233, 0, 0.06);' : 'none'
       }
-      borderRadius={'16px'}
+      borderRadius={'8px'}
       padding={'12px'}
-      cursor={'pointer'}
+      position={'relative'}
+      cursor={isError ? 'default' : 'pointer'}
       _hover={{
-        borderColor: theme.colors[colorMode].border.brand,
+        borderColor: isError
+          ? theme.colors[colorMode].button.select.border
+          : theme.colors[colorMode].border.brand,
       }}
       onClick={onSelectBridge}
-      position={'relative'}
     >
-      <Flex flexDir={'row'} gap={'8px'}>
-        <CBridgeIcon w={'20px'} h={'20px'} />
-        <Box fontSize={'14px'} fontWeight={500} lineHeight={'20px'}>
-          {formatMessage({ id: 'route.option.cBridge.title' })}
-        </Box>
-      </Flex>
-
-      <Box
-        px={'8px'}
-        py={'4px'}
-        mt={'4px'}
-        mb={'8px'}
-        width={'fit-content'}
-        fontWeight={500}
-        background={theme.colors[colorMode].background.tag}
-        borderRadius={'100px'}
-        fontSize={'14px'}
-      >
-        {estimatedAmount &&
-        estimatedAmount?.['cBridge'] &&
-        toTokenInfo &&
-        Number(sendValue) > 0 &&
-        !!getToDecimals()['cBridge']
-          ? `~${formatNumber(
-              Number(
-                formatUnits(
-                  estimatedAmount?.['cBridge']?.estimated_receive_amt,
-                  getToDecimals()['cBridge'],
-                ),
-              ),
-              8,
-            )} ${toTokenInfo.symbol}`
-          : '-'}
-      </Box>
-      <EstimatedArrivalTime />
-      <AdditionalDetails>
-        {!!gasFee?.gas && !!gasFee?.gasPrice ? (
-          <InfoRow
-            label={formatMessage({ id: 'route.option.info.gas-fee' })}
-            value={`${formatNumber(Number(formatUnits(gasFee?.gas * gasFee?.gasPrice, 18)), 8)} ${
-              fromChain?.cBridge?.raw?.gas_token_symbol
-            }`}
-          />
-        ) : null}
-        <InfoRow
-          label={formatMessage({ id: 'route.option.info.base-fee' })}
-          value={
-            estimatedAmount?.['cBridge'] && toTokenInfo && Number(sendValue) > 0
-              ? `${formatNumber(
-                  Number(
-                    formatUnits(
-                      estimatedAmount?.['cBridge']?.base_fee,
-                      getToDecimals().cBridge || 18,
-                    ),
-                  ),
-                  8,
-                )} ${toTokenInfo?.symbol}`
-              : '-'
-          }
-        />
-        <InfoRow
-          label={formatMessage({ id: 'route.option.info.protocol-fee' })}
-          value={
-            estimatedAmount?.['cBridge'] && toTokenInfo
-              ? `${formatUnits(
-                  estimatedAmount?.['cBridge']?.perc_fee,
-                  getToDecimals().cBridge || 18,
-                )} ${toTokenInfo?.symbol}`
-              : '-'
-          }
-        />
-        <AllowAmountRange />
-      </AdditionalDetails>
+      {isError ? <RouteMask /> : null}
+      <RouteName bridgeType="cBridge" />
+      <RouteTitle
+        receiveAmt={receiveAmt}
+        tokenAddress={toTokenInfo?.address}
+        toTokenInfo={toTokenInfo}
+      />
+      <EstimatedArrivalTime bridgeType={'cBridge'} />
+      <FeesInfo
+        bridgeType="cBridge"
+        summary={feeDetails.summary}
+        breakdown={feeDetails.breakdown}
+      />
+      <AllowedSendAmount
+        position={'static'}
+        zIndex={2}
+        isError={isAllowSendError}
+        allowedSendAmount={
+          cBridgeAllowedAmt && selectedToken
+            ? {
+                min: cBridgeAllowedAmt.min,
+                max: cBridgeAllowedAmt.max,
+              }
+            : null
+        }
+      />
+      <OtherRouteError bridgeType={'cBridge'} />
     </Flex>
   );
 };

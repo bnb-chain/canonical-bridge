@@ -230,6 +230,6 @@ export interface IGetCBridgeTransferFunction {
 }
 
 export interface ICBridgeMaxMinSendAmt {
-  max: bigint;
-  min: bigint;
+  max: string;
+  min: string;
 }

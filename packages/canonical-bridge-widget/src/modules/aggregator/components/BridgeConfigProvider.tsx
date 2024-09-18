@@ -3,6 +3,7 @@ import { BridgeType } from '@bnb-chain/canonical-bridge-sdk';
 
 import {
   AdapterConstructorType,
+  AdapterType,
   IBridgeChain,
   IBridgeConfig,
   IBridgeToken,
@@ -28,6 +29,7 @@ export interface BridgeConfigContextProps {
   defaultSelectedInfo: IBridgeConfig['defaultSelectedInfo'];
   chainConfigs: IChainConfig[];
   nativeCurrencies: Record<number, INativeCurrency>;
+  adapters: AdapterType[];
   getFromChains: (params: IGetFromChainsParams) => IBridgeChain[];
   getToChains: (params: IGetToChainsParams) => IBridgeChain[];
   getTokens: (params: IGetTokensParams) => IBridgeToken[];
@@ -39,6 +41,7 @@ const DEFAULT_CONTEXT: BridgeConfigContextProps = {
   defaultSelectedInfo: {} as IBridgeConfig['defaultSelectedInfo'],
   chainConfigs: [],
   nativeCurrencies: {},
+  adapters: [],
   getFromChains: () => [],
   getToChains: () => [],
   getTokens: () => [],
@@ -107,6 +110,8 @@ export function BridgeConfigProvider(props: BridgeConfigProviderProps) {
       chainConfigs: config.chainConfigs,
       nativeCurrencies,
 
+      adapters,
+
       getFromChains: (params: IGetFromChainsParams) => {
         return aggregateChains({
           direction: 'from',
@@ -115,6 +120,7 @@ export function BridgeConfigProvider(props: BridgeConfigProviderProps) {
           config,
         });
       },
+
       getToChains: (params: IGetToChainsParams) => {
         return aggregateChains({
           direction: 'to',
@@ -123,6 +129,7 @@ export function BridgeConfigProvider(props: BridgeConfigProviderProps) {
           config,
         });
       },
+
       getTokens: (params: IGetTokensParams) => {
         return aggregateTokens({
           adapters,
@@ -130,6 +137,7 @@ export function BridgeConfigProvider(props: BridgeConfigProviderProps) {
           config,
         });
       },
+
       getToToken: (params: IGetToTokenParams) => {
         return aggregateToToken({
           adapters,
@@ -145,4 +153,14 @@ export function BridgeConfigProvider(props: BridgeConfigProviderProps) {
 
 export function useBridgeConfig() {
   return useContext(BridgeConfigContext);
+}
+
+export function useAdapter<T = unknown>(bridgeType: BridgeType) {
+  const { adapters } = useBridgeConfig();
+
+  const adapter = useMemo(() => {
+    return adapters.find((adapter) => adapter.bridgeType === bridgeType);
+  }, [adapters, bridgeType]);
+
+  return adapter as T;
 }

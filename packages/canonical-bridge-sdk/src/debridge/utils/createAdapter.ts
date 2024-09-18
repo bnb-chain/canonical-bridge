@@ -8,7 +8,9 @@ import {
   DeBridgeChain,
   DeBridgeToken,
   DeBridgeTransferConfigs,
+  TokenQueryParams,
 } from '@/debridge/types';
+import { isSameAddress } from '@/core/utils/address';
 
 /**
  * Create a bridge adapter based on provided configurations
@@ -65,6 +67,16 @@ export function createAdapter({
         };
       },
     }),
+    getTokenByAddress(params: TokenQueryParams) {
+      const { chainId, address } = params;
+      if (chainId && address) {
+        const tokens = chainTokensMap.get(Number(chainId));
+        const target = tokens?.find((item) =>
+          isSameAddress(item.address, address)
+        );
+        return target;
+      }
+    },
   };
 }
 

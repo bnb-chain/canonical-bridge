@@ -14,7 +14,7 @@ export const WalletConnectButton = () => {
       w="100%"
       onClick={() => onOpen()}
       color={theme.colors[colorMode].button.wallet.text}
-      background={theme.colors[colorMode].button.wallet.background.hover}
+      background={theme.colors[colorMode].button.wallet.background.default}
       _hover={{
         background: theme.colors[colorMode].button.wallet.background.hover,
       }}

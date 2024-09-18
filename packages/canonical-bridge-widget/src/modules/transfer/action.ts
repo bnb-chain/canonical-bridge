@@ -35,4 +35,6 @@ export const setEstimatedAmount = createAction<ITransferState['estimatedAmount']
   'transfer/setEstimatedAmount',
 );
 
+export const setRouteError = createAction<ITransferState['routeError']>('transfer/setRouteError');
+
 export const setToAccount = createAction<ITransferState['toAccount']>('transfer/setToAccount');

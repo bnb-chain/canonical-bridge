@@ -6,6 +6,7 @@ import {
   IDeBridgeToken,
 } from '@/modules/aggregator/adapters/deBridge/types';
 import { BaseAdapter, ITransferTokenPair } from '@/modules/aggregator/shared/BaseAdapter';
+import { isSameAddress } from '@/core/utils/address';
 
 export class DeBridgeAdapter extends BaseAdapter<
   IDeBridgeTransferConfig,
@@ -123,5 +124,13 @@ export class DeBridgeAdapter extends BaseAdapter<
       address: token.address,
       decimals: token.decimals,
     };
+  }
+
+  public getTokenByAddress({ chainId, address }: { chainId: number; address: string }) {
+    if (chainId && address) {
+      const tokens = this.tokenMap.get(Number(chainId));
+      const target = tokens?.find((item) => isSameAddress(item.address, address));
+      return target;
+    }
   }
 }
