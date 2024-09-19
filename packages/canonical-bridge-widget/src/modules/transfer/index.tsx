@@ -7,7 +7,11 @@ import { SendInput } from '@/modules/transfer/components/SendInput';
 import { ReceiveInfo } from '@/modules/transfer/components/ReceiveInfo';
 import { useDefaultSelectedInfo } from '@/modules/aggregator/hooks/useDefaultSelectedInfo';
 
-export function TransferPage() {
+interface TransferPageProps {
+  routeContentBottom?: React.ReactNode;
+}
+
+export function TransferPage({ routeContentBottom }: TransferPageProps) {
   const { colorMode } = useColorMode();
   const { formatMessage } = useIntl();
   const theme = useTheme();
@@ -46,7 +50,7 @@ export function TransferPage() {
           <TransferButtonGroup />
         </Flex>
       </Flex>
-      <TransferOverview />
+      <TransferOverview routeContentBottom={routeContentBottom} />
     </Flex>
   );
 }

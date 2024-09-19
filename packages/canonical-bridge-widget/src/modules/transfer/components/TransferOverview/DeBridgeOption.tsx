@@ -88,7 +88,7 @@ export const DeBridgeOption = ({}: DeBridgeOptionProps) => {
 
   const isError = useMemo(
     () => estimatedAmount?.deBridge === 'error' || receiveAmt === '--' || false,
-    [estimatedAmount?.deBridge],
+    [estimatedAmount?.deBridge, receiveAmt],
   );
 
   const onSelectBridge = useCallback(() => {

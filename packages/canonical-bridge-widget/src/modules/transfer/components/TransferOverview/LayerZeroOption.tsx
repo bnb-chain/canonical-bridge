@@ -64,13 +64,13 @@ export const LayerZeroOption = () => {
       ? `${formatNumber(
           Number(formatUnits(BigInt(estimatedAmount?.['layerZero']), getToDecimals()['layerZero'])),
           8,
-        )} ${toTokenInfo.symbol}`
+        )}`
       : '--';
   }, [estimatedAmount, toTokenInfo, sendValue, getToDecimals]);
 
   const isError = useMemo(
     () => estimatedAmount?.layerZero === 'error' || receiveAmt === '--' || false,
-    [estimatedAmount?.layerZero],
+    [estimatedAmount?.layerZero, receiveAmt],
   );
 
   const onSelectBridge = useCallback(() => {
