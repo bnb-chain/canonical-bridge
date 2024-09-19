@@ -46,7 +46,7 @@ export const useGetAllowance = ({
         !!fromChain &&
         !!chain &&
         !!tokenAddress &&
-        !!sendValue &&
+        !!Number(sendValue) &&
         !!toTokenInfo,
     },
   });
@@ -84,6 +84,7 @@ export const useGetAllowance = ({
         mount = false;
         inter && clearInterval(inter);
       };
+      // eslint-disable-next-line
     } catch (e: any) {
       // eslint-disable-next-line no-console
       console.log(e);
@@ -100,6 +101,7 @@ export const useGetAllowance = ({
       } else {
         return true;
       }
+      // eslint-disable-next-line
     } catch (e: any) {
       // eslint-disable-next-line no-console
       console.log(e);

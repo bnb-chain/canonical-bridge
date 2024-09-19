@@ -11,7 +11,7 @@ export const RouteNotFoundIcon = (props: IconProps) => {
       {...props}
     >
       <g id="icon" clipPath="url(#clip0_26136_34658)">
-        <rect id="Rectangle 43671" width="40" height="40" rx="20" fill="#373943" />
+        <rect id="Rectangle 43671" width="40" height="40" rx="20" fill="#5C5F6A" />
         <g id="conversion_path_off">
           <mask
             id="mask0_26136_34658_no_route_found"

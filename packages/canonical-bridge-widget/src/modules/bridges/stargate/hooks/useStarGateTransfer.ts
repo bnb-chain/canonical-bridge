@@ -53,6 +53,7 @@ export const useStarGateTransfer = () => {
 
       dispatch(setEstimatedAmount({ stargate: toObject(quoteOFTResponse) }));
       return { quoteOFT: quoteOFTResponse };
+      // eslint-disable-next-line
     } catch (error: any) {
       // eslint-disable-next-line no-console
       console.log(error, error.message);

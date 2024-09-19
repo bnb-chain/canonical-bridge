@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useAccount, usePublicClient } from 'wagmi';
-import { formatUnits } from 'viem';
+import { formatUnits, parseUnits } from 'viem';
 
 import { useAppDispatch, useAppSelector } from '@/modules/store/StoreProvider';
 import { useToTokenInfo } from '@/modules/transfer/hooks/useToTokenInfo';
@@ -10,6 +10,8 @@ import { bridgeSDK } from '@/core/constants/bridgeSDK';
 import { STARGATE_POOL } from '@/modules/bridges/stargate/abi/stargatePool';
 import { useGetAllowance } from '@/core/contract/hooks/useGetAllowance';
 import { formatNumber } from '@/core/utils/number';
+import { useGetTokenBalance } from '@/core/contract/hooks/useGetTokenBalance';
+import { setRouteError } from '@/modules/transfer/action';
 
 export const useGetStarGateFees = () => {
   const dispatch = useAppDispatch();
@@ -39,6 +41,10 @@ export const useGetStarGateFees = () => {
     sender: selectedToken?.rawData.stargate?.bridgeAddress as `0x${string}`,
   });
 
+  const { balance } = useGetTokenBalance({
+    tokenAddress: selectedToken?.address as `0x${string}`,
+  });
+
   useEffect(() => {
     let mount = true;
     if (!mount || !args || !publicClient) {
@@ -46,6 +52,11 @@ export const useGetStarGateFees = () => {
     }
     (async () => {
       try {
+        const decimal = selectedToken?.rawData?.stargate?.decimals ?? (18 as number);
+        const amount = parseUnits(sendValue, decimal);
+        if (!balance || balance < amount) {
+          return;
+        }
         const receiver = address || DEFAULT_ADDRESS;
         const bridgeAddress = selectedToken?.rawData.stargate?.bridgeAddress as `0x${string}`;
         const quoteOFTResponse = await bridgeSDK.stargate.getQuoteOFT({
@@ -55,17 +66,25 @@ export const useGetStarGateFees = () => {
           receiver: receiver,
           amount: args.amountLD,
         });
+        const allowedMin = Number(formatUnits(quoteOFTResponse[0].minAmountLD, decimal));
+        const allowedMax = Number(formatUnits(quoteOFTResponse[0].maxAmountLD, decimal));
         if (quoteOFTResponse[0]) {
           setAllowedSendAmount({
-            min: formatNumber(
-              Number(formatUnits(quoteOFTResponse[0].minAmountLD, selectedToken?.decimal || 18)),
-              8,
-            ),
-            max: formatNumber(
-              Number(formatUnits(quoteOFTResponse[0].maxAmountLD, selectedToken?.decimal || 18)),
-              8,
-            ),
+            min: formatNumber(allowedMin, 8),
+            max: formatNumber(allowedMax, 8),
           });
+        }
+        // Can not retrieve other fees if token amount is out of range
+        if (Number(sendValue) < allowedMin || Number(sendValue) > allowedMax) {
+          return;
+        }
+        if (!Number(quoteOFTResponse?.[2].amountReceivedLD)) {
+          dispatch(
+            setRouteError({
+              stargate: 'Given amount of input asset is too small to cover operational costs',
+            }),
+          );
+          return;
         }
 
         if (quoteOFTResponse?.[2].amountReceivedLD) {
@@ -81,8 +100,6 @@ export const useGetStarGateFees = () => {
           receiver,
         });
 
-        // eslint-disable-next-line no-console
-        // console.log('native fee', quoteSendResponse, 'chainId', publicClient?.chain);
         setNativeFee(quoteSendResponse!.nativeFee);
         if (!allowance) return;
         let nativeFee = quoteSendResponse!.nativeFee;
@@ -107,6 +124,7 @@ export const useGetStarGateFees = () => {
             gasPrice,
           });
         }
+        // eslint-disable-next-line
       } catch (error: any) {
         // eslint-disable-next-line no-console
         console.log(error, error.message);
@@ -115,7 +133,17 @@ export const useGetStarGateFees = () => {
     return () => {
       mount = false;
     };
-  }, [allowance, dispatch, publicClient, address, selectedToken, sendValue, toTokenInfo, args]);
+  }, [
+    allowance,
+    dispatch,
+    publicClient,
+    address,
+    selectedToken,
+    sendValue,
+    toTokenInfo,
+    args,
+    balance,
+  ]);
 
   const protocolFee = useMemo(() => {
     try {
@@ -130,6 +158,7 @@ export const useGetStarGateFees = () => {
       return estimatedAmount?.['stargate'] && toTokenInfo && fee
         ? `${formatUnits(BigInt(fee), getToDecimals().stargate || 18)} ${toTokenInfo?.symbol}`
         : null;
+      // eslint-disable-next-line
     } catch (error: any) {
       // eslint-disable-next-line no-console
       console.log(error, error.message);

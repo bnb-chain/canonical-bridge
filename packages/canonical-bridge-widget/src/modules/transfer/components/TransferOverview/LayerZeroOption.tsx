@@ -1,4 +1,4 @@
-import { Box, Flex, useColorMode, Image, useIntl, useTheme } from '@bnb-chain/space';
+import { Flex, useColorMode, useIntl, useTheme } from '@bnb-chain/space';
 import { useCallback, useMemo } from 'react';
 import { formatUnits } from 'viem';
 
@@ -61,7 +61,7 @@ export const LayerZeroOption = () => {
       Number(sendValue) > 0 &&
       estimatedAmount?.['layerZero'] &&
       Number(estimatedAmount?.['layerZero']) > 0
-      ? `~${formatNumber(
+      ? `${formatNumber(
           Number(formatUnits(BigInt(estimatedAmount?.['layerZero']), getToDecimals()['layerZero'])),
           8,
         )} ${toTokenInfo.symbol}`
@@ -69,7 +69,7 @@ export const LayerZeroOption = () => {
   }, [estimatedAmount, toTokenInfo, sendValue, getToDecimals]);
 
   const isError = useMemo(
-    () => estimatedAmount?.layerZero === 'error' || false,
+    () => estimatedAmount?.layerZero === 'error' || receiveAmt === '--' || false,
     [estimatedAmount?.layerZero],
   );
 
@@ -100,7 +100,7 @@ export const LayerZeroOption = () => {
         transferActionInfo?.bridgeType === 'layerZero' ? 'rgba(255, 233, 0, 0.06);' : 'none'
       }
       borderRadius={'8px'}
-      padding={'12px'}
+      padding={'16px'}
       cursor={isError ? 'default' : 'pointer'}
       _hover={{
         borderColor: isError

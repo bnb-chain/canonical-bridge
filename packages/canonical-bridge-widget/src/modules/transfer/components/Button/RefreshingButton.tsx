@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Box, useColorMode, useTheme } from '@bnb-chain/space';
 
 import { useAppDispatch, useAppSelector } from '@/modules/store/StoreProvider';
-import { setIsRefreshing } from '@/modules/transfer/action';
+import { setIsGlobalFeeLoading, setIsRefreshing } from '@/modules/transfer/action';
 import { ESTIMATE_AMOUNT_DATA_RELOAD } from '@/core/constants';
 import { useLoadingBridgeFees } from '@/modules/transfer/hooks/useLoadingBridgeFees';
 import { RefreshingIcon } from '@/modules/transfer/components/LoadingImg/RefreshingIcon';
@@ -24,17 +24,20 @@ export const RefreshingButton = () => {
     if (!mount) return;
     if (transferActionInfo) {
       let interval = setInterval(() => {
+        dispatch(setIsGlobalFeeLoading(true));
         loadingBridgeFees();
       }, ESTIMATE_AMOUNT_DATA_RELOAD);
 
       // Stop and restart fee loading
       if (isButtonPressed === true) {
-        dispatch(setIsRefreshing(false));
+        dispatch(setIsRefreshing(true));
         if (interval) {
           clearInterval(interval);
+          dispatch(setIsGlobalFeeLoading(true));
           loadingBridgeFees();
-          dispatch(setIsRefreshing(true));
+          dispatch(setIsRefreshing(false));
           interval = setInterval(() => {
+            dispatch(setIsGlobalFeeLoading(true));
             loadingBridgeFees();
           }, ESTIMATE_AMOUNT_DATA_RELOAD);
         }
@@ -56,17 +59,17 @@ export const RefreshingButton = () => {
 
   return transferActionInfo ? (
     <Box
-      cursor={!isGlobalFeeLoading && isRefreshing ? 'pointer' : 'not-allowed'}
+      cursor={!isGlobalFeeLoading && !isRefreshing ? 'pointer' : 'not-allowed'}
       color={theme.colors[colorMode].button.refresh.text}
       _hover={{
         color:
-          !isGlobalFeeLoading && isRefreshing
+          !isGlobalFeeLoading && !isRefreshing
             ? theme.colors[colorMode].support.brand['4']
             : theme.colors[colorMode].button.refresh.text,
       }}
       onClick={() => {
         setIsButtonPressed(true);
-        dispatch(setIsRefreshing(false));
+        dispatch(setIsRefreshing(true));
       }}
     >
       <RefreshingIcon />

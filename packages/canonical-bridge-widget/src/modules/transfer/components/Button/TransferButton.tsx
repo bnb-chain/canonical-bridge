@@ -219,7 +219,7 @@ export function StyledTransferButton(props: ButtonProps) {
 
   return (
     <Flex flexDir="column" w={'100%'}>
-      <Button size={'lg'} h={'64px'} w="100%" {...restProps}>
+      <Button size={'lg'} h={'56px'} w="100%" {...restProps}>
         {formatMessage({ id: 'transfer.button.confirm' })}
       </Button>
     </Flex>

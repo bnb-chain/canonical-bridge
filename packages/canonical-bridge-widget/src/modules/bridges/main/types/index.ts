@@ -13,7 +13,6 @@ import {
   LayerZeroToken,
   LayerZeroTransferConfigs,
   LayerZeroChain,
-  DeBridgeCreateQuoteResponse,
 } from '@bnb-chain/canonical-bridge-sdk';
 
 export type WalletType = 'metaMask' | 'trust' | 'walletConnect' | 'okxWallet' | 'binanceWeb3Wallet';

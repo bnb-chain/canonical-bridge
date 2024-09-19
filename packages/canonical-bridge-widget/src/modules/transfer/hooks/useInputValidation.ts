@@ -50,8 +50,8 @@ export const useInputValidation = () => {
             return { text: `Your balance can not cover protocol fee.`, isError: true };
           }
         }
-        const maxAmt = Number(formatUnits(minMaxSendAmt.max, decimal));
-        const minAmt = Number(formatUnits(minMaxSendAmt.min, decimal));
+        const maxAmt = Number(formatUnits(BigInt(minMaxSendAmt.max), decimal));
+        const minAmt = Number(formatUnits(BigInt(minMaxSendAmt.min), decimal));
 
         if (!isConnected && maxAmt > 0 && minAmt > 0) {
           if (bridgeType === 'cBridge' && !isPegged) {

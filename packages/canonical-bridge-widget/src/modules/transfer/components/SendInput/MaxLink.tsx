@@ -37,7 +37,8 @@ export const MaxLink: React.FC = () => {
           {formatMessage({ id: 'from.section.balance.button.max' })}{' '}
           {formatNumber(Number(formatUnits(balance, selectedToken?.decimal || 0)), 8)}{' '}
           {/* TODO: Token dollars */}
-          {selectedToken?.symbol} ({'$0xxxxx.xx'})
+          {selectedToken?.symbol}
+          {/* ({'$0xxxxx.xx'}) */}
         </Box>
       ) : null}
     </Flex>
