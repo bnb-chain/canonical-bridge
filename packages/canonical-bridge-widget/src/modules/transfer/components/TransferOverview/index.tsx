@@ -1,4 +1,4 @@
-import { Box, Flex, useColorMode, useIntl, useTheme } from '@bnb-chain/space';
+import { Box, Flex, SkeletonCircle, useColorMode, useIntl, useTheme } from '@bnb-chain/space';
 import { ReactNode, useEffect, useMemo } from 'react';
 
 import {
@@ -19,7 +19,11 @@ import { useGetReceiveAmount } from '@/modules/transfer/hooks/useGetReceiveAmoun
 import { RefreshingButton } from '@/modules/transfer/components/Button/RefreshingButton';
 import { RouteSkeleton } from '@/modules/transfer/components/TransferOverview/RouteInfo/RouteSkeleton';
 
-export function TransferOverview() {
+interface TransferOverviewProps {
+  routeContentBottom?: React.ReactNode;
+}
+
+export function TransferOverview({ routeContentBottom }: TransferOverviewProps) {
   const { colorMode } = useColorMode();
   const dispatch = useAppDispatch();
   const { formatMessage } = useIntl();
@@ -118,18 +122,22 @@ export function TransferOverview() {
                 }}
               >
                 {formatMessage({ id: 'route.title' })}
-                <RefreshingButton />
+                {!sortedOptions.length || isGlobalFeeLoading ? (
+                  <SkeletonCircle w={'32px'} h={'32px'} />
+                ) : (
+                  <RefreshingButton />
+                )}
               </Flex>
               <Box
                 px={'24px'}
-                pb={'24px'}
                 flex={1}
                 overflow={'auto'}
                 overscrollBehavior={'contain'}
-                maxHeight={'500px'}
+                maxHeight={'698px'}
               >
                 {!sortedOptions.length || isGlobalFeeLoading ? (
                   <Flex flexDir={'column'} gap={'12px'}>
+                    <RouteSkeleton />
                     <RouteSkeleton />
                     <RouteSkeleton />
                     <RouteSkeleton />
@@ -150,6 +158,7 @@ export function TransferOverview() {
           </Box>
         </Box>
       )}
+      <Box>{routeContentBottom ? routeContentBottom : null}</Box>
     </Flex>
   );
 }

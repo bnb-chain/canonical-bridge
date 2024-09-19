@@ -4,6 +4,7 @@ import { CanonicalBridgeConfig, CanonicalBridgeProvider } from '@/index';
 import { bridgeConfig } from '@/dev/data';
 import { en as messages } from '@/dev/locales/en';
 import { dark } from '@/dev/theme/dark';
+import { ExternalBridgesPanel } from '@/dev/components/ExternalBridgesPanel';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -33,7 +34,7 @@ const config: CanonicalBridgeConfig = {
 export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <CanonicalBridgeProvider config={config} />
+      <CanonicalBridgeProvider config={config} routeContentBottom={<ExternalBridgesPanel />} />
     </QueryClientProvider>
   );
 }
