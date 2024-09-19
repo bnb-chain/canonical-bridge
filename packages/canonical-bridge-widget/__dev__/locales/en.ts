@@ -28,6 +28,8 @@ export const en = {
   'route.option.deBridge.title': 'deBridge:',
   'route.option.stargate.title': 'Stargate:',
   'route.option.layerZero.title': 'LayerZero:',
+  'route.option.tag.best-time': 'Fastest',
+  'route.option.tag.highest-amount': 'Best Return',
   'route.option.info.estimated-time': 'Est. Time:',
   'route.option.info.gas-fee': 'Gas Fee:',
   'route.option.info.native-fee': 'Native Fee:',
