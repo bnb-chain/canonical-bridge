@@ -3,6 +3,7 @@ import { AppModule } from './app.module';
 import { ENDPOINT_PREFIX, SERVER_PORT } from './common/constants';
 import { Logger } from '@nestjs/common';
 import promBundle from 'express-prom-bundle';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 const metricsMiddleware = promBundle({
   includeMethod: true,
@@ -23,6 +24,14 @@ async function bootstrap() {
   app.setGlobalPrefix(ENDPOINT_PREFIX, {
     exclude: ['metrics', 'ping'],
   });
+
+  const config = new DocumentBuilder()
+    .setTitle('Canonical bridge server')
+    .setVersion('1.0')
+    .build();
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup(ENDPOINT_PREFIX, app, document);
+
   app.use(metricsMiddleware);
 
   const server = await app.listen(SERVER_PORT, () => {

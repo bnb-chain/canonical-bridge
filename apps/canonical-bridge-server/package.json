@@ -6,7 +6,7 @@
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
-    "build": "nest build",
+    "build": "npx prisma generate && nest build",
     "format": "prettier --write \"src/**/*.ts\"",
     "start": "nest start",
     "start:dev": "npx dotenv -e .env -- nest start --watch",
@@ -16,6 +16,7 @@
     "lint-staged": "lint-staged",
     "prisma:init": "npx prisma init",
     "prisma:format": "npx prisma format",
+    "prisma:generate": "npx prisma generate",
     "prisma:migrate:div": "npx dotenv -e .env -- npx prisma migrate dev"
   },
   "dependencies": {
@@ -26,6 +27,7 @@
     "@nestjs/core": "~10.4.1",
     "@nestjs/platform-express": "~10.4.1",
     "@nestjs/schedule": "~4.1.0",
+    "@nestjs/swagger": "~7.4.0",
     "@nestjs/terminus": "~10.2.3",
     "@prisma/client": "~5.19.1",
     "bullmq": "~5.12.14",

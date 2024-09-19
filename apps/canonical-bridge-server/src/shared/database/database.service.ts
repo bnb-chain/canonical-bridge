@@ -6,10 +6,17 @@ import { Prisma } from '@prisma/client';
 export class DatabaseService {
   private logger = new Logger(DatabaseService.name);
 
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(private prismaService: PrismaService) {}
 
   async createTokens(tokens: Prisma.TokenCreateManyInput[]) {
     return this.prismaService.token.createMany({
+      data: tokens,
+      skipDuplicates: true,
+    });
+  }
+
+  async createCoingeckoTokens(tokens: Prisma.LlamaTokenCreateManyInput[]) {
+    return this.prismaService.llamaToken.createMany({
       data: tokens,
       skipDuplicates: true,
     });
@@ -23,10 +30,33 @@ export class DatabaseService {
     );
   }
 
+  async updateLlamaTokens(tokens: (Prisma.LlamaTokenUpdateInput & { id: string })[]) {
+    return this.prismaService.$transaction(
+      tokens.map((token) =>
+        this.prismaService.llamaToken.update({ where: { id: token.id }, data: token }),
+      ),
+    );
+  }
+
   async getTokens(limit: number) {
     return this.prismaService.token.findMany({
       take: limit,
       orderBy: { updateAt: 'asc' },
     });
+  }
+
+  async getCoingeckoTokens(limit: number) {
+    return this.prismaService.llamaToken.findMany({
+      take: limit,
+      orderBy: { updateAt: 'asc' },
+    });
+  }
+
+  async getAllTokens() {
+    return this.prismaService.token.findMany();
+  }
+
+  async getAllCoingeckoTokens() {
+    return this.prismaService.llamaToken.findMany();
   }
 }

@@ -27,3 +27,17 @@ model Token {
 
   @@index([address, symbol])
 }
+
+model LlamaToken {
+  id       String   @id
+  name     String
+  symbol   String
+  platform String?
+  address  String?
+  chainId  Int?
+  updateAt DateTime @updatedAt
+  price    Decimal?
+  decimals Int?
+
+  @@index([updateAt])
+}

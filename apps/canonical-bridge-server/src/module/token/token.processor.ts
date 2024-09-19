@@ -1,10 +1,11 @@
 import { InjectQueue, Processor, WorkerHost } from '@nestjs/bullmq';
-import { Logger } from '@nestjs/common';
-import { JOB_KEY, Queues, Tasks, TOKEN_REQUEST_LIMIT } from '@/common/constants';
+import { Inject, Logger } from '@nestjs/common';
+import { CACHE_KEY, JOB_KEY, Queues, Tasks, TOKEN_REQUEST_LIMIT } from '@/common/constants';
 import { Job, Queue } from 'bullmq';
 import { ITokenJob } from '@/module/token/token.interface';
 import { Web3Service } from '@/shared/web3/web3.service';
 import { TokenService } from '@/module/token/token.service';
+import { CACHE_MANAGER, Cache } from '@nestjs/cache-manager';
 
 @Processor(Queues.SyncToken)
 export class TokenProcessor extends WorkerHost {
@@ -13,6 +14,7 @@ export class TokenProcessor extends WorkerHost {
   constructor(
     private web3Service: Web3Service,
     private tokenService: TokenService,
+    @Inject(CACHE_MANAGER) private cache: Cache,
     @InjectQueue(Queues.SyncToken) private syncToken: Queue<ITokenJob>,
   ) {
     super();
@@ -20,13 +22,68 @@ export class TokenProcessor extends WorkerHost {
 
   async process(job: Job<ITokenJob>) {
     switch (job.name) {
+      case Tasks.fetchCoingeckoToken:
+        return this.fetchCoingeckoToken();
       case Tasks.fetchToken:
         return this.fetchTokens(job);
       case Tasks.fetchPrice:
         return this.fetchPrice(job);
+      case Tasks.fetchLlamaPrice:
+        return this.fetchLlamaPrice(job);
+      case Tasks.cacheCmcConfig:
+        return this.cacheCmcConfig();
+      case Tasks.cacheLlamaConfig:
+        return this.cacheLlamaConfig();
       default:
-        return;
     }
+  }
+
+  async cacheLlamaConfig() {
+    const tokens = await this.tokenService.getAllCoingeckoTokens();
+    const config = tokens
+      .filter((t) => t.price)
+      .reduce((r, c) => {
+        const { symbol, address } = c;
+        if (!symbol) return r;
+
+        const key = !address
+          ? symbol.toLowerCase()
+          : `${symbol.toLowerCase()}:${address.toLowerCase()}`;
+        r[key] = { price: c.price, decimals: c.decimals };
+        return r;
+      }, {});
+
+    await this.cache.set(`${CACHE_KEY.LLAMA_CONFIG}`, config);
+    return config;
+  }
+
+  async cacheCmcConfig() {
+    const tokens = await this.tokenService.getAllTokens();
+    const config = tokens
+      .filter((t) => t.price)
+      .reduce((r, c) => {
+        const { symbol, address } = c;
+        if (!symbol) return r;
+        const key = !address
+          ? symbol.toLowerCase()
+          : `${symbol.toLowerCase()}:${address.toLowerCase()}`;
+        r[key] = { price: c.price, id: c.id };
+        return r;
+      }, {});
+    await this.cache.set(`${CACHE_KEY.CMC_CONFIG}`, config);
+    return config;
+  }
+
+  async fetchCoingeckoToken() {
+    const getPlatforms = this.web3Service.getAssetPlatforms();
+    const getCoins = this.web3Service.getCoinList();
+
+    const platforms = await getPlatforms;
+    const coins = await getCoins;
+
+    if (!platforms || !coins) return;
+
+    this.tokenService.syncCoingeckoTokens(coins, platforms);
   }
 
   async fetchTokens(job: Job<ITokenJob>) {
@@ -47,6 +104,12 @@ export class TokenProcessor extends WorkerHost {
   async fetchPrice(job: Job<ITokenJob>) {
     const tokens = await this.web3Service.getCryptoCurrencyQuotes(job.data.ids);
 
-    this.tokenService.syncTokenPrice(tokens);
+    await this.tokenService.syncTokenPrice(tokens);
+  }
+
+  async fetchLlamaPrice(job: Job<ITokenJob>) {
+    const tokens = await this.web3Service.getLlamaTokenPrice(job.data.ids);
+
+    await this.tokenService.syncLlamaTokenPrice(tokens.coins, job.data.keyMap);
   }
 }

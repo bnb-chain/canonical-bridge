@@ -15,6 +15,7 @@ export class UtilService {
       this.logger.error(data);
       return;
     }
-    return Array.isArray(res) ? res.map((r) => r.result) : res.result || res.data;
+    // todo
+    return Array.isArray(res) ? res.map((r) => r.result || r) : res.result || res.data || res;
   }
 }
