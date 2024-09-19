@@ -28,8 +28,7 @@
     "staking-ui",
     "bnb-chain-bridge",
     "staking-ui",
-    "portal-ui",
-    "canonical-bridge-server"
+    "portal-ui"
   ],
 
   /**

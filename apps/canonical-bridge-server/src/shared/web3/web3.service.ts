@@ -1,11 +1,25 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import {
+  IAssetPlatform,
+  ICoin,
+  ICoinPrice,
   ICryptoCurrencyMapEntity,
   ICryptoCurrencyMapPayload,
   ICryptoCurrencyQuoteEntity,
+  IDebridgeChain,
+  IDebridgeToken,
+  ITransferConfigsForAll,
 } from '@/shared/web3/web3.interface';
-import { CMC_API_ENDPOINT, CMC_API_KEY, TOKEN_REQUEST_LIMIT } from '@/common/constants';
+import {
+  CBRIDGE_ENDPOINT,
+  CMC_API_ENDPOINT,
+  CMC_API_KEY,
+  COINGECKO_ENDPOINT,
+  DEBRIDGE_ENDPOINT,
+  LLAMA_COINS_ENDPOINT,
+  TOKEN_REQUEST_LIMIT,
+} from '@/common/constants';
 import { values } from 'lodash';
 
 @Injectable()
@@ -38,5 +52,50 @@ export class Web3Service {
     });
 
     return values(data || {});
+  }
+
+  async getTransferConfigsForAll() {
+    const { data } = await this.httpService.axiosRef.get<ITransferConfigsForAll>(
+      `${CBRIDGE_ENDPOINT}/v2/getTransferConfigsForAll`,
+    );
+
+    return data;
+  }
+
+  async getDebridgeChains() {
+    const { data } = await this.httpService.axiosRef.get<{ chains: IDebridgeChain[] }>(
+      `${DEBRIDGE_ENDPOINT}/supported-chains-info`,
+    );
+
+    return data;
+  }
+
+  async getDebridgeChainTokens(chainId: number) {
+    const { data } = await this.httpService.axiosRef.get<{
+      tokens: Record<string, IDebridgeToken>;
+    }>(`${DEBRIDGE_ENDPOINT}/token-list?chainId=${chainId}`);
+
+    return data;
+  }
+
+  async getAssetPlatforms() {
+    const { data } = await this.httpService.axiosRef.get<IAssetPlatform[]>(
+      `${COINGECKO_ENDPOINT}/v3/asset_platforms`,
+    );
+    return data;
+  }
+
+  async getCoinList() {
+    const { data } = await this.httpService.axiosRef.get<ICoin[]>(
+      `${COINGECKO_ENDPOINT}/v3/coins/list?include_platform=true`,
+    );
+    return data;
+  }
+
+  async getLlamaTokenPrice(ids: string) {
+    const { data } = await this.httpService.axiosRef.get<{ coins: Record<string, ICoinPrice> }>(
+      `${LLAMA_COINS_ENDPOINT}/prices/current/${ids}`,
+    );
+    return data;
   }
 }

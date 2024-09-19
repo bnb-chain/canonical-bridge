@@ -15,16 +15,16 @@ import { HttpExceptionFilter } from './common/filters/http-exception.filter';
 import { TransformInterceptor } from './common/interceptors/transform.interceptor';
 import { TimeoutInterceptor } from './common/interceptors/timeout.interceptor';
 import { REDIS_HOST, REDIS_PORT } from './common/constants';
-import { CounterModule } from './module/counter/counter.module';
 import { TokenModule } from './module/token/token.module';
 import { BullModule } from '@nestjs/bullmq';
 import { Web3Module } from '@/shared/web3/web3.module';
+import { BridgeModule } from '@/module/bridge/bridge.module';
 
 @Module({
   imports: [
+    BridgeModule,
     Web3Module,
     TokenModule,
-    CounterModule,
     DatabaseModule,
     PrismaModule,
     UtilModule,
