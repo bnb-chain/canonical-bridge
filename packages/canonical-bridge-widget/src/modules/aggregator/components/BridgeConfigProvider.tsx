@@ -87,19 +87,21 @@ export function BridgeConfigProvider(props: BridgeConfigProviderProps) {
       },
     ];
 
-    const adapters = bridges.map(({ bridgeType, Adapter }) => {
-      const bridgeConfig = config[bridgeType];
+    const adapters = bridges
+      .filter((item) => config[item.bridgeType])
+      .map(({ bridgeType, Adapter }) => {
+        const bridgeConfig = config[bridgeType];
 
-      const options: IBaseAdapterOptions<any> = {
-        config: bridgeConfig.config,
-        excludedChains: bridgeConfig.exclude.chains,
-        excludedTokens: bridgeConfig.exclude.tokens,
-        nativeCurrencies,
-        bridgedTokenGroups: bridgeConfig.bridgedTokenGroups,
-      };
+        const options: IBaseAdapterOptions<any> = {
+          config: bridgeConfig.config,
+          excludedChains: bridgeConfig.exclude.chains,
+          excludedTokens: bridgeConfig.exclude.tokens,
+          nativeCurrencies,
+          bridgedTokenGroups: bridgeConfig.bridgedTokenGroups,
+        };
 
-      return new Adapter(options);
-    });
+        return new Adapter(options);
+      });
 
     return {
       isReady: true,

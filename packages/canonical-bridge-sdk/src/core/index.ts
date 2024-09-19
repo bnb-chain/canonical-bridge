@@ -26,6 +26,8 @@ export class CanonicalBridgeSDK {
   stargate!: Stargate;
   layerZero!: LayerZero;
 
+  private options: CanonicalBridgeSDKOptions<BaseBridgeConfig | DeBridgeConfig>;
+
   constructor(
     options: CanonicalBridgeSDKOptions<BaseBridgeConfig | DeBridgeConfig>
   ) {
@@ -57,6 +59,24 @@ export class CanonicalBridgeSDK {
     if (layerZeroConfig) {
       this.layerZero = new LayerZero();
     }
+
+    this.options = options;
+  }
+
+  /**
+   * Get sdk options
+   * @returns {CanonicalBridgeSDKOptions<BaseBridgeConfig | DeBridgeConfig>} sdk options
+   */
+  public getSDKOptions() {
+    return this.options;
+  }
+
+  /**
+   * Get supported bridges
+   * @returns {BridgeType[]} A string list of supported bridges
+   */
+  public getSupportedBridges() {
+    return this.options.bridgeConfigs.map((item) => item.bridgeType);
   }
 
   /**

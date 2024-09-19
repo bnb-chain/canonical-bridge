@@ -16,7 +16,6 @@ import { DEBOUNCE_DELAY, DEFAULT_ADDRESS } from '@/core/constants';
 import { bridgeSDK } from '@/core/constants/bridgeSDK';
 import { toObject } from '@/core/utils/string';
 import { useCBridgeTransferParams } from '@/modules/aggregator/adapters/cBridge/hooks/useCBridgeTransferParams';
-import { availableBridgeTypes } from '@/core/constants/bridgeSDK';
 
 export const useLoadingBridgeFees = () => {
   const dispatch = useAppDispatch();
@@ -48,6 +47,8 @@ export const useLoadingBridgeFees = () => {
     );
     const bridgeTypeList: BridgeType[] = [];
     const valueArr = [];
+
+    const availableBridgeTypes = bridgeSDK.getSupportedBridges();
     availableBridgeTypes.forEach((bridge) => {
       if (selectedToken[bridge]?.isCompatible) {
         bridgeTypeList.push(bridge);
