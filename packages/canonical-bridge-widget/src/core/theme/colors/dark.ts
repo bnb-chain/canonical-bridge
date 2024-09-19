@@ -157,6 +157,8 @@ export const dark: ColorType = {
       3: '#F8545F',
     },
     brand: {
+      1: '#FFFAC2',
+      2: '#FFF15C',
       3: '#FFE900',
       4: '#948700',
       5: '#665800',
