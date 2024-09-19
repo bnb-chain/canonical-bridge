@@ -11,6 +11,7 @@ export const RouteSkeleton = () => {
       flexDir={'column'}
       gap={'8px'}
       border={`1px solid ${theme.colors[colorMode].route.border}`}
+      minW={'336px'}
     >
       <Flex justifyContent={'space-between'} alignItems={'center'} flexDir={'row'}>
         <Skeleton height="12px" width="160px" borderRadius={'8px'} />

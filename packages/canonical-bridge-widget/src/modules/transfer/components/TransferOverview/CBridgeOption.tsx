@@ -47,7 +47,7 @@ export const CBridgeOption = () => {
             ),
           ),
           8,
-        )} ${toTokenInfo.symbol}`
+        )}`
       : '--';
   }, [estimatedAmount, toTokenInfo, sendValue, getToDecimals]);
 
@@ -59,7 +59,7 @@ export const CBridgeOption = () => {
         }),
       );
     }
-  }, [estimatedAmount?.['cBridge']?.estimated_receive_amt]);
+  }, [dispatch, estimatedAmount]);
 
   const feeDetails = useMemo(() => {
     let feeContent = '';

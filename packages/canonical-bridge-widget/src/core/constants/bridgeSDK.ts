@@ -1,7 +1,9 @@
-import { CanonicalBridgeSDK } from '@bnb-chain/canonical-bridge-sdk';
+import { BridgeType, CanonicalBridgeSDK } from '@bnb-chain/canonical-bridge-sdk';
 
 import { env } from '@/core/configs/env';
 import { CLIENT_TIME_OUT, STARGATE_QUEUE_URL } from '@/core/constants';
+
+export const availableBridgeTypes: BridgeType[] = ['deBridge', 'cBridge', 'stargate', 'layerZero'];
 
 /**
  * Initialize SDK Instance

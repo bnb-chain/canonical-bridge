@@ -28,10 +28,11 @@ export interface CanonicalBridgeConfig {
 
 export interface CanonicalBridgeProviderProvider {
   config: CanonicalBridgeConfig;
+  routeContentBottom?: React.ReactNode;
 }
 
 export function CanonicalBridgeProvider(props: CanonicalBridgeProviderProvider) {
-  const { config } = props;
+  const { config, routeContentBottom } = props;
 
   const value = useMemo(() => {
     return {};
@@ -47,7 +48,7 @@ export function CanonicalBridgeProvider(props: CanonicalBridgeProviderProvider) 
             <BridgeConfigProvider config={bridgeConfig}>
               <WalletProvider>
                 <Layout>
-                  <TransferPage />
+                  <TransferPage routeContentBottom={routeContentBottom} />
                 </Layout>
               </WalletProvider>
             </BridgeConfigProvider>

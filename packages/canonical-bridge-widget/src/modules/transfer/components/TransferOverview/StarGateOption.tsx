@@ -92,13 +92,13 @@ export const StarGateOption = () => {
             ),
           ),
           8,
-        )} ${toTokenInfo.symbol}`
+        )}`
       : '--';
   }, [estimatedAmount, toTokenInfo, sendValue, getToDecimals]);
 
   const isError = useMemo(
     () => estimatedAmount?.stargate === 'error' || isAllowSendError || receiveAmt === '--' || false,
-    [estimatedAmount?.stargate, isAllowSendError],
+    [estimatedAmount?.stargate, isAllowSendError, receiveAmt],
   );
 
   const onSelectBridge = useCallback(() => {
