@@ -57,7 +57,7 @@ export function TransactionApproveModal(
             const hash = await approveErc20Token(
               selectedToken.address as `0x${string}`,
               transferActionInfo?.bridgeAddress as `0x${string}`,
-              parseUnits(sendValue, selectedToken.decimal),
+              parseUnits(sendValue, selectedToken.decimals),
             );
             if (hash) {
               restProps.onClose();

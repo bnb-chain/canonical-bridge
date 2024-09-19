@@ -57,19 +57,21 @@ export const en = {
   'modal.submit.button.view-tx': 'View Transaction',
   'modal.submit.button.close': 'Make Another Transaction',
 
-  'select-modal.select.network.title': 'Select Network',
-  'select-modal.select.token.title': 'Choose Token',
-  'select-modal.select.no-result.title': 'No result found',
-  'select-modal.select.no-result.warning':
+  'select-modal.tag.incompatible': 'Incompatible',
+  'select-modal.search.no-result.title': 'No result found',
+  'select-modal.search.no-result.warning':
     'Try adjusting your search request to find what you’re looking for',
-  'select-modal.select.tag.unavailable': 'Unavailable',
-  'select-modal.select.network.select-first': 'Select a network first',
-  'select-modal.token.unavailable-tooltip':
-    'This token is not supported by the source or destination network you’ve selected. Please change the network settings.',
-  'select-modal.src.network.unavailable-tooltip':
-    'This network is not supported by the destination network you’ve selected. Please select another destination network.',
-  'select-modal.dst.network.unavailable-tooltip':
-    'This network is not supported by the source network or token you’ve selected. Please select another source network or token.',
+
+  'select-modal.token.title': 'Choose Token',
+  'select-modal.token.placeholder': 'Search token by name',
+  'select-modal.token.column.name': 'Name',
+  'select-modal.token.column.balance': 'Wallet Balance',
+
+  'select-modal.source.title': 'Source Network',
+  'select-modal.source.placeholder': 'Search network by name',
+
+  'select-modal.destination.title': 'Destination Network',
+  'select-modal.destination.placeholder': 'Search network by name',
 
   'wallet.error.switch-network':
     'An error occurred when attempting to switch the network. Please select another network or try again.',

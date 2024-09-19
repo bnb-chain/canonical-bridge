@@ -1,40 +1,39 @@
 import { createAction } from '@/modules/store/createAction';
+import { ITransferState } from '@/modules/transfer/reducer';
 
-import { TransferState } from './reducer';
-
-export const setSelectedToken = createAction<TransferState['selectedToken']>(
+export const setSelectedToken = createAction<ITransferState['selectedToken']>(
   'transfer/setSelectedToken',
 );
 
-export const setToToken = createAction<TransferState['toToken']>('transfer/toToken');
+export const setToToken = createAction<ITransferState['toToken']>('transfer/toToken');
 
-export const setFromChain = createAction<TransferState['fromChain']>('transfer/setFromChain');
+export const setFromChain = createAction<ITransferState['fromChain']>('transfer/setFromChain');
 
-export const setSendValue = createAction<TransferState['sendValue']>('transfer/setSendValue');
+export const setSendValue = createAction<ITransferState['sendValue']>('transfer/setSendValue');
 
-export const setToChain = createAction<TransferState['toChain']>('transfer/setToChain');
-export const setSlippage = createAction<TransferState['slippage']>('transfer/setSlippage');
-export const setTransferActionInfo = createAction<TransferState['transferActionInfo']>(
+export const setToChain = createAction<ITransferState['toChain']>('transfer/setToChain');
+export const setSlippage = createAction<ITransferState['slippage']>('transfer/setSlippage');
+export const setTransferActionInfo = createAction<ITransferState['transferActionInfo']>(
   'transfer/setTransferActionInfo',
 );
-export const setError = createAction<TransferState['error']>('transfer/setError');
+export const setError = createAction<ITransferState['error']>('transfer/setError');
 
-export const setIsGlobalFeeLoading = createAction<TransferState['isGlobalFeeLoading']>(
+export const setIsGlobalFeeLoading = createAction<ITransferState['isGlobalFeeLoading']>(
   'transfer/setIsGlobalFeeLoading',
 );
 
-export const setIsTransferable = createAction<TransferState['isTransferable']>(
+export const setIsTransferable = createAction<ITransferState['isTransferable']>(
   'transfer/setIsTransferable',
 );
 
-export const setIsRefreshing = createAction<TransferState['isRefreshing']>(
+export const setIsRefreshing = createAction<ITransferState['isRefreshing']>(
   'transfer/setIsRefreshing',
 );
 
-export const setEstimatedAmount = createAction<TransferState['estimatedAmount']>(
+export const setEstimatedAmount = createAction<ITransferState['estimatedAmount']>(
   'transfer/setEstimatedAmount',
 );
 
-export const setRouteError = createAction<TransferState['routeError']>('transfer/setRouteError');
+export const setRouteError = createAction<ITransferState['routeError']>('transfer/setRouteError');
 
-export const setToAccount = createAction<TransferState['toAccount']>('transfer/setToAccount');
+export const setToAccount = createAction<ITransferState['toAccount']>('transfer/setToAccount');

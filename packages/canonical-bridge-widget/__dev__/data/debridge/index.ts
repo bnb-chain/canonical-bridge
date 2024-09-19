@@ -12,7 +12,7 @@ import deBridgeTokenList100000001 from './token_list/chain_id_100000001.json';
 import deBridgeTokenList100000002 from './token_list/chain_id_100000002.json';
 import deBridgeTokenList100000003 from './token_list/chain_id_100000003.json';
 
-const rawConfigs = {
+const rawConfig = {
   chains: deBridgeChainList.chains,
   tokens: {
     1: Object.values(deBridgeTokenList1.tokens),
@@ -76,7 +76,7 @@ const extraConfigs: Record<number, any[]> = {
 };
 
 const deBridgeConfig = {
-  ...rawConfigs,
+  ...rawConfig,
 };
 
 Object.entries(deBridgeConfig.tokens).forEach(([key, value]) => {

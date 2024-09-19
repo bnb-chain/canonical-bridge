@@ -1,10 +1,11 @@
 import React, { useContext, useMemo, useReducer } from 'react';
 
-import { AppState, getInitialState, getReducers } from './reducers';
+import { Action } from '@/modules/store/createAction';
+import { AppState, getInitialState, getReducers } from '@/modules/store/reducers';
 
 interface StoreContextProps {
   state: AppState;
-  dispatch: (params: { type: string; payload: any }) => void;
+  dispatch<T>(params: Action<T>): void;
 }
 
 const StoreContext = React.createContext({} as StoreContextProps);
@@ -14,18 +15,17 @@ export interface StoreProviderProps {
 }
 
 export function StoreProvider(props: StoreProviderProps) {
-  const { children } = props;
-
   const [state, dispatch] = useReducer(getReducers(), getInitialState());
 
-  const value = useMemo(() => {
-    return {
+  const value = useMemo(
+    () => ({
       state,
       dispatch,
-    };
-  }, [state]);
+    }),
+    [state],
+  );
 
-  return <StoreContext.Provider value={value}>{children}</StoreContext.Provider>;
+  return <StoreContext.Provider value={value} {...props} />;
 }
 
 export function useAppDispatch() {

@@ -1,8 +1,7 @@
 import { CanonicalBridgeSDK } from '@bnb-chain/canonical-bridge-sdk';
 
-import { CLIENT_TIME_OUT } from '@/core/configs/app';
 import { env } from '@/core/configs/env';
-import { STARGATE_QUEUE_URL } from '@/core/constants';
+import { CLIENT_TIME_OUT, STARGATE_QUEUE_URL } from '@/core/constants';
 
 /**
  * Initialize SDK Instance

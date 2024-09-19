@@ -1,21 +1,16 @@
 import * as actions from '@/modules/transfer/action';
-import {
-  BridgeChain,
-  BridgeToken,
-  TransferActionInfo,
-  IEstimatedAmount,
-  IBridgeError,
-} from '@/modules/bridges/main/types';
 import { createReducer } from '@/modules/store/createReducer';
+import { IBridgeChain, IBridgeToken } from '@/modules/aggregator/types';
+import { IBridgeError, IEstimatedAmount, ITransferActionInfo } from '@/modules/transfer/types';
 
-export type TransferState = {
-  fromChain?: BridgeChain;
+export interface ITransferState {
+  fromChain?: IBridgeChain;
   sendValue: string;
-  toChain?: BridgeChain;
-  selectedToken?: BridgeToken;
-  toToken?: BridgeToken;
+  toChain?: IBridgeChain;
+  selectedToken?: IBridgeToken;
+  toToken?: IBridgeToken;
   slippage: number;
-  transferActionInfo?: TransferActionInfo;
+  transferActionInfo?: ITransferActionInfo;
   error?: { text: string; bridgeType?: string };
   routeError?: IBridgeError;
   isGlobalFeeLoading?: boolean;
@@ -25,9 +20,9 @@ export type TransferState = {
   toAccount: {
     address?: string;
   };
-};
+}
 
-const initStates: TransferState = {
+const initStates: ITransferState = {
   fromChain: undefined,
   sendValue: '',
   toChain: undefined,

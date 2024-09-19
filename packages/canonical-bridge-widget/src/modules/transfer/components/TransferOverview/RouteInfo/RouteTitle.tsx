@@ -3,14 +3,15 @@ import { useMemo } from 'react';
 
 import { TokenInfoTooltip } from '@/modules/transfer/components/TransferOverview/RouteInfo/TokenInfoTooltip';
 import { IconImage } from '@/core/components/IconImage';
-import { BridgeToken, formatTokenUrl } from '@/modules/bridges';
 import { useAppSelector } from '@/modules/store/StoreProvider';
+import { formatTokenUrl } from '@/core/utils/string';
+import { IBridgeToken } from '@/modules/aggregator/types';
 
 interface RouteTitleProps {
   receiveAmt?: string;
   decimals?: number;
   tokenAddress?: string;
-  toTokenInfo?: BridgeToken;
+  toTokenInfo?: IBridgeToken;
 }
 
 export const RouteTitle = ({ receiveAmt, tokenAddress, toTokenInfo }: RouteTitleProps) => {

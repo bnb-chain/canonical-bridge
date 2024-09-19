@@ -1,6 +1,6 @@
-import { ChainConfig } from '@/modules/bridges';
+import { IChainConfig } from '@/modules/aggregator/types';
 
-export const testnetChains: ChainConfig[] = [
+export const testnetChains: IChainConfig[] = [
   {
     id: 97,
     name: 'BSC Testnet',
@@ -14,7 +14,6 @@ export const testnetChains: ChainConfig[] = [
       name: 'BSC Testnet',
       url: 'https://testnet.bscscan.com',
     },
-    chainType: 'evm',
   },
   {
     id: 1001,
@@ -29,7 +28,6 @@ export const testnetChains: ChainConfig[] = [
       name: 'Klaytn Scope',
       url: 'https://baobab.klaytnscope.com',
     },
-    chainType: 'evm',
   },
   {
     id: 11155111,
@@ -44,7 +42,6 @@ export const testnetChains: ChainConfig[] = [
       name: 'Sepolia Scan',
       url: 'https://sepolia.etherscan.io',
     },
-    chainType: 'evm',
   },
   {
     id: 421614,
@@ -59,7 +56,6 @@ export const testnetChains: ChainConfig[] = [
       name: 'Sepolia ArbiScan',
       url: 'https://sepolia.arbiscan.io/',
     },
-    chainType: 'evm',
   },
   {
     id: 11155420,
@@ -74,6 +70,5 @@ export const testnetChains: ChainConfig[] = [
       name: 'OP Sepolia Scan',
       url: 'https://sepolia-optimistic.etherscan.io',
     },
-    chainType: 'evm',
   },
 ];

@@ -7,7 +7,6 @@ import { useAppDispatch, useAppSelector } from '@/modules/store/StoreProvider';
 import { useToTokenInfo } from '@/modules/transfer/hooks/useToTokenInfo';
 import { formatNumber } from '@/core/utils/number';
 import { useGetNativeToken } from '@/modules/transfer/hooks/useGetNativeToken';
-import { useGetStarGateFees } from '@/modules/bridges/stargate/hooks/useGetStarGateFees';
 import { RouteTitle } from '@/modules/transfer/components/TransferOverview/RouteInfo/RouteTitle';
 import { EstimatedArrivalTime } from '@/modules/transfer/components/TransferOverview/RouteInfo/EstimatedArrivalTime';
 import { FeesInfo } from '@/modules/transfer/components/TransferOverview/RouteInfo/FeesInfo';
@@ -15,6 +14,7 @@ import { AllowedSendAmount } from '@/modules/transfer/components/TransferOvervie
 import { RouteMask } from '@/modules/transfer/components/TransferOverview/RouteInfo/RouteMask';
 import { OtherRouteError } from '@/modules/transfer/components/TransferOverview/RouteInfo/OtherRouteError';
 import { RouteName } from '@/modules/transfer/components/TransferOverview/RouteInfo/RouteName';
+import { useGetStargateFees } from '@/modules/aggregator/adapters/stargate/hooks/useGetStargateFees';
 
 export const StarGateOption = () => {
   const dispatch = useAppDispatch();
@@ -29,7 +29,7 @@ export const StarGateOption = () => {
   const estimatedAmount = useAppSelector((state) => state.transfer.estimatedAmount);
   const theme = useTheme();
 
-  const { nativeFee, gasInfo, protocolFee, allowedSendAmount } = useGetStarGateFees();
+  const { nativeFee, gasInfo, protocolFee, allowedSendAmount } = useGetStargateFees();
   const [isAllowSendError, setIsAllowSendError] = useState(false);
 
   useEffect(() => {
@@ -102,8 +102,8 @@ export const StarGateOption = () => {
   );
 
   const onSelectBridge = useCallback(() => {
-    if (!selectedToken?.rawData.stargate?.bridgeAddress || isError) return;
-    const bridgeAddress = selectedToken.rawData.stargate.bridgeAddress;
+    if (!selectedToken?.stargate?.raw?.bridgeAddress || isError) return;
+    const bridgeAddress = selectedToken.stargate.raw?.bridgeAddress;
     dispatch(
       setTransferActionInfo({
         bridgeType: 'stargate',

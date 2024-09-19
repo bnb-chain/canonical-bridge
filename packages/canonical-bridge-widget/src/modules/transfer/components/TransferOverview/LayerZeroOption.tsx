@@ -7,7 +7,7 @@ import { useToTokenInfo } from '@/modules/transfer/hooks/useToTokenInfo';
 import { useGetNativeToken } from '@/modules/transfer/hooks/useGetNativeToken';
 import { setTransferActionInfo } from '@/modules/transfer/action';
 import { formatNumber } from '@/core/utils/number';
-import { useGetLayerZeroFees } from '@/modules/bridges/layerZero/hooks/useGetLayerZeroFees';
+import { useGetLayerZeroFees } from '@/modules/aggregator/adapters/layerZero/hooks/useGetLayerZeroFees';
 import { RouteTitle } from '@/modules/transfer/components/TransferOverview/RouteInfo/RouteTitle';
 import { FeesInfo } from '@/modules/transfer/components/TransferOverview/RouteInfo/FeesInfo';
 import { RouteMask } from '@/modules/transfer/components/TransferOverview/RouteInfo/RouteMask';
@@ -74,8 +74,8 @@ export const LayerZeroOption = () => {
   );
 
   const onSelectBridge = useCallback(() => {
-    if (!selectedToken?.rawData.layerZero?.bridgeAddress || isError) return;
-    const bridgeAddress = selectedToken.rawData.layerZero.bridgeAddress;
+    if (!selectedToken?.layerZero?.raw?.bridgeAddress || isError) return;
+    const bridgeAddress = selectedToken.layerZero.raw?.bridgeAddress;
     dispatch(
       setTransferActionInfo({
         bridgeType: 'layerZero',

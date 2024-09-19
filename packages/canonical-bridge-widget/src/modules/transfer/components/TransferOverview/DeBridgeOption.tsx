@@ -7,13 +7,13 @@ import { useToTokenInfo } from '@/modules/transfer/hooks/useToTokenInfo';
 import { useGetNativeToken } from '@/modules/transfer/hooks/useGetNativeToken';
 import { useAppDispatch, useAppSelector } from '@/modules/store/StoreProvider';
 import { formatNumber } from '@/core/utils/number';
-import { useGetDeBridgeFees } from '@/modules/bridges/debridge/hooks/useGetDeBridgeFees';
 import { RouteTitle } from '@/modules/transfer/components/TransferOverview/RouteInfo/RouteTitle';
 import { EstimatedArrivalTime } from '@/modules/transfer/components/TransferOverview/RouteInfo/EstimatedArrivalTime';
 import { FeesInfo } from '@/modules/transfer/components/TransferOverview/RouteInfo/FeesInfo';
 import { RouteMask } from '@/modules/transfer/components/TransferOverview/RouteInfo/RouteMask';
 import { OtherRouteError } from '@/modules/transfer/components/TransferOverview/RouteInfo/OtherRouteError';
 import { RouteName } from '@/modules/transfer/components/TransferOverview/RouteInfo/RouteName';
+import { useGetDeBridgeFees } from '@/modules/aggregator/adapters/deBridge/hooks/useGetDeBridgeFees';
 
 interface DeBridgeOptionProps {
   isReceiveTab?: boolean;

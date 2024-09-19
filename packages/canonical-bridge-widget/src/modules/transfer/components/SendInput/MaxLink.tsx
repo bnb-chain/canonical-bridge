@@ -17,7 +17,7 @@ export const MaxLink: React.FC = () => {
 
   const setMaxAmount = () => {
     if (balance && selectedToken) {
-      dispatch(setSendValue(formatUnits(balance, selectedToken?.decimal || 0)));
+      dispatch(setSendValue(formatUnits(balance, selectedToken?.decimals || 0)));
     }
   };
 
@@ -35,7 +35,7 @@ export const MaxLink: React.FC = () => {
           _hover={{ color: theme.colors[colorMode].text.primary }}
         >
           {formatMessage({ id: 'from.section.balance.button.max' })}{' '}
-          {formatNumber(Number(formatUnits(balance, selectedToken?.decimal || 0)), 8)}{' '}
+          {formatNumber(Number(formatUnits(balance, selectedToken?.decimals || 0)), 8)}{' '}
           {/* TODO: Token dollars */}
           {selectedToken?.symbol}
           {/* ({'$0xxxxx.xx'}) */}
