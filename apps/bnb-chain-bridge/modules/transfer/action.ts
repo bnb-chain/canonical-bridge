@@ -13,9 +13,6 @@ export const setFromChain = createAction<TransferState['fromChain']>('transfer/s
 export const setSendValue = createAction<TransferState['sendValue']>('transfer/setSendValue');
 
 export const setToChain = createAction<TransferState['toChain']>('transfer/setToChain');
-export const setReceiveValue = createAction<TransferState['receiveValue']>(
-  'transfer/setReceiveValue',
-);
 export const setSlippage = createAction<TransferState['slippage']>('transfer/setSlippage');
 export const setTransferActionInfo = createAction<TransferState['transferActionInfo']>(
   'transfer/setTransferActionInfo',
