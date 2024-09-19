@@ -6,15 +6,15 @@ import {
   IChainConfig,
 } from '@/modules/aggregator/types';
 import { env } from '@/core/configs/env';
-import { isCompatibleChainOrToken } from '@/modules/aggregator/shared/isCompatibleChainOrToken';
+import { isChainOrTokenCompatible } from '@/modules/aggregator/shared/isChainOrTokenCompatible';
 
 export interface IGetFromChainsParams {
-  toChain?: IBridgeChain;
+  toChainId?: number;
   token?: IBridgeToken;
 }
 
 export interface IGetToChainsParams {
-  fromChain?: IBridgeChain;
+  fromChainId?: number;
   token?: IBridgeToken;
 }
 
@@ -41,12 +41,12 @@ export function aggregateChains({ direction, adapters, params, config }: IAggreg
     let adapterParams: any;
     if (direction === 'from') {
       adapterParams = {
-        toChainId: (params as IGetFromChainsParams).toChain?.id,
+        toChainId: (params as IGetFromChainsParams).toChainId,
         tokenSymbol,
       };
     } else {
       adapterParams = {
-        fromChainId: (params as IGetToChainsParams).fromChain?.id,
+        fromChainId: (params as IGetToChainsParams).fromChainId,
         tokenSymbol,
       };
     }
@@ -83,11 +83,11 @@ export function aggregateChains({ direction, adapters, params, config }: IAggreg
     });
   });
 
-  const finalChains = Object.values(chainMap);
+  const finalChains = [...chainMap.values()];
   finalChains.sort((a, b) => {
     if (direction === 'to') {
-      const isA = isCompatibleChainOrToken(a);
-      const isB = isCompatibleChainOrToken(b);
+      const isA = isChainOrTokenCompatible(a);
+      const isB = isChainOrTokenCompatible(b);
 
       if (isA && !isB) {
         return -1;

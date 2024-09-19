@@ -60,9 +60,7 @@ export function BridgeConfigProvider(props: BridgeConfigProviderProps) {
 
   const value = useMemo(() => {
     if (!config) {
-      return {
-        ...DEFAULT_CONTEXT,
-      };
+      return DEFAULT_CONTEXT;
     }
 
     const nativeCurrencies = getNativeCurrencies(config.chainConfigs);

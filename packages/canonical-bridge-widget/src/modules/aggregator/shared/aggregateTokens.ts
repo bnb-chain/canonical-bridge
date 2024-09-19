@@ -1,10 +1,10 @@
 import { formatTokenIcon } from '@/core/utils/string';
 import { getDisplayTokenSymbol } from '@/modules/aggregator/shared/getDisplayTokenSymbol';
-import { AdapterType, IBridgeChain, IBridgeConfig, IBridgeToken } from '@/modules/aggregator/types';
+import { AdapterType, IBridgeConfig, IBridgeToken } from '@/modules/aggregator/types';
 
 export interface IGetTokensParams {
-  fromChain?: IBridgeChain;
-  toChain?: IBridgeChain;
+  fromChainId?: number;
+  toChainId?: number;
 }
 
 export interface IAggregateTokensParams {
@@ -20,24 +20,24 @@ export function aggregateTokens({ adapters, params, config }: IAggregateTokensPa
   adapters.forEach((adapter) => {
     const { bridgeType } = adapter;
     const { compatibleTokens, tokenPairs } = adapter.getTokens({
-      fromChainId: params.fromChain?.id,
-      toChainId: params.toChain?.id,
+      fromChainId: params.fromChainId!,
+      toChainId: params.toChainId!,
     });
 
     tokenPairs.forEach((item: any) => {
       const { fromToken, fromChainId, peggedConfig } = item;
-      const baseInfo = adapter.getTokenInfo(fromToken);
 
-      let bridgeToken = finalTokenMap.get(baseInfo.address?.toUpperCase());
+      const baseInfo = adapter.getTokenInfo(fromToken);
+      const displaySymbol = getDisplayTokenSymbol({
+        symbolMap: config.displayTokenSymbols?.[fromChainId],
+        defaultSymbol: baseInfo.symbol,
+        tokenAddress: baseInfo.address,
+      });
+
+      let bridgeToken = finalTokenMap.get(displaySymbol.toUpperCase());
       const isCompatible = compatibleTokens.has(baseInfo.symbol);
 
       if (!bridgeToken) {
-        const displaySymbol = getDisplayTokenSymbol({
-          symbolMap: config.displayTokenSymbols?.[fromChainId],
-          defaultSymbol: baseInfo.symbol,
-          tokenAddress: baseInfo.address,
-        });
-
         bridgeToken = {
           ...baseInfo,
           icon: formatTokenIcon(displaySymbol),
@@ -45,7 +45,7 @@ export function aggregateTokens({ adapters, params, config }: IAggregateTokensPa
           isPegged: !!item.isPegged,
         };
         finalTokens.push(bridgeToken);
-        finalTokenMap.set(baseInfo.address?.toUpperCase(), bridgeToken);
+        finalTokenMap.set(displaySymbol, bridgeToken);
       }
 
       const common = {

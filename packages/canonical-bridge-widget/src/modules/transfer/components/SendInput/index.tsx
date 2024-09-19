@@ -1,14 +1,11 @@
 import { Box, Flex, Input, useColorMode, useDisclosure, useTheme } from '@bnb-chain/space';
 
 import { useAppDispatch, useAppSelector } from '@/modules/store/StoreProvider';
-import { setSendValue, setTransferActionInfo } from '@/modules/transfer/action';
-// import { TokenBalance } from '@/modules/transfer/components/TokenBalance';
+import { setSendValue } from '@/modules/transfer/action';
 import { MaxLink } from '@/modules/transfer/components/SendInput/MaxLink';
 import { TokenSelectButton } from '@/modules/transfer/components/SelectButton/TokenSelectButton';
-import { SelectTokenModal } from '@/modules/transfer/components/SelectModal/SelectSourceModal/SelectTokenModal';
-import { useSetSelectInfo } from '@/modules/transfer/hooks/useSetSelectInfo';
 import { InputValidationMessage } from '@/modules/transfer/components/SendInput/InputValidationMessage';
-import { IBridgeChain, IBridgeToken } from '@/modules/aggregator/types';
+import { ChooseTokenModal } from '@/modules/transfer/components/SelectModal/ChooseTokenModal';
 
 const handleKeyPress = (e: React.KeyboardEvent) => {
   // only allow number and decimal
@@ -44,7 +41,6 @@ export const SendInput: React.FC = () => {
   const error = useAppSelector((state) => state.transfer.error);
 
   const { isOpen, onClose, onOpen } = useDisclosure();
-  const { setSelectInfo } = useSetSelectInfo();
 
   const onChangeSendValue = (event: React.ChangeEvent<HTMLInputElement>) => {
     let value = event.target.value.trim() ?? 0;
@@ -72,17 +68,6 @@ export const SendInput: React.FC = () => {
     } else {
       dispatch(setSendValue('0'));
     }
-  };
-
-  const onSelectSource = (chain: IBridgeChain, token?: IBridgeToken) => {
-    setSelectInfo({
-      direction: 'from',
-      fromChainId: chain.id,
-      tokenSymbol: token?.symbol,
-      tokenAddress: token?.address,
-    });
-
-    dispatch(setTransferActionInfo(undefined));
   };
 
   return (
@@ -142,7 +127,8 @@ export const SendInput: React.FC = () => {
         <TokenSelectButton token={selectedToken} onClick={onOpen} />
       </Flex>
       <InputValidationMessage />
-      <SelectTokenModal isOpen={isOpen} onClose={onClose} onSelect={onSelectSource} />
+
+      <ChooseTokenModal isOpen={isOpen} onClose={onClose} />
     </Flex>
   );
 };

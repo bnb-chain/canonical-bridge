@@ -294,48 +294,18 @@ export abstract class BaseAdapter<G extends object, C = unknown, T = unknown> {
     };
   }
 
-  public getTokens({ fromChainId, toChainId }: { fromChainId?: number; toChainId?: number }) {
-    let compatibleTokens = new Set<string>();
+  public getTokens({ fromChainId, toChainId }: { fromChainId: number; toChainId: number }) {
+    const compatibleTokens = new Set<string>();
 
-    const allTokenPairMap = new Map<string, ITransferTokenPair<T>>();
-    this.transferMap.forEach((toMap) => {
-      toMap.forEach((tokenPairMap) => {
-        tokenPairMap.forEach((tokenPair, tokenSymbol) => {
-          allTokenPairMap.set(tokenSymbol, tokenPair);
-        });
-      });
+    const toMap = this.transferMap.get(fromChainId);
+    const tokenPairMap = toMap?.get(toChainId);
+    tokenPairMap?.forEach((_, tokenSymbol) => {
+      compatibleTokens.add(tokenSymbol);
     });
 
-    const tokenPairs = [...allTokenPairMap.values()];
-
-    if (!fromChainId && !toChainId) {
-      compatibleTokens = new Set(allTokenPairMap.keys());
-    }
-
-    if (fromChainId && !toChainId) {
-      const toMap = this.transferMap.get(fromChainId);
-      toMap?.forEach((tokenPairMap) => {
-        tokenPairMap.forEach((_, tokenSymbol) => {
-          compatibleTokens.add(tokenSymbol);
-        });
-      });
-    }
-
-    if (!fromChainId && toChainId) {
-      this.transferMap.forEach((toMap) => {
-        const tokenPairMap = toMap.get(toChainId);
-        tokenPairMap?.forEach((_, tokenSymbol) => {
-          compatibleTokens.add(tokenSymbol);
-        });
-      });
-    }
-
-    if (fromChainId && toChainId) {
-      const toMap = this.transferMap.get(fromChainId);
-      const tokenPairMap = toMap?.get(toChainId);
-      tokenPairMap?.forEach((_, tokenSymbol) => {
-        compatibleTokens.add(tokenSymbol);
-      });
+    let tokenPairs: ITransferTokenPair<T>[] = [];
+    if (tokenPairMap) {
+      tokenPairs = [...tokenPairMap?.values()];
     }
 
     return {

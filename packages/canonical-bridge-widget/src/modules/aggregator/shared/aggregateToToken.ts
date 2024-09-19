@@ -1,10 +1,10 @@
 import { formatTokenIcon } from '@/core/utils/string';
 import { getDisplayTokenSymbol } from '@/modules/aggregator/shared/getDisplayTokenSymbol';
-import { AdapterType, IBridgeChain, IBridgeConfig, IBridgeToken } from '@/modules/aggregator/types';
+import { AdapterType, IBridgeConfig, IBridgeToken } from '@/modules/aggregator/types';
 
 export interface IGetToTokenParams {
-  fromChain: IBridgeChain;
-  toChain: IBridgeChain;
+  fromChainId: number;
+  toChainId: number;
   token: IBridgeToken;
 }
 
@@ -22,8 +22,8 @@ export function aggregateToToken({ adapters, params, config }: IAggregateToToken
 
     const tokenSymbol = params.token?.[bridgeType]?.symbol?.toUpperCase() as string;
     const { tokenPair } = adapter.getTokenPair({
-      fromChainId: params.fromChain?.id,
-      toChainId: params.toChain?.id,
+      fromChainId: params.fromChainId,
+      toChainId: params.toChainId,
       tokenSymbol,
     }) as any;
 
@@ -31,13 +31,13 @@ export function aggregateToToken({ adapters, params, config }: IAggregateToToken
 
     if (toToken) {
       const baseInfo = adapter.getTokenInfo(toToken);
+      const displaySymbol = getDisplayTokenSymbol({
+        symbolMap: config.displayTokenSymbols?.[tokenPair.toChainId],
+        defaultSymbol: baseInfo.symbol,
+        tokenAddress: baseInfo.address,
+      });
 
       if (!bridgeToken) {
-        const displaySymbol = getDisplayTokenSymbol({
-          symbolMap: config.displayTokenSymbols?.[tokenPair.toChainId],
-          defaultSymbol: baseInfo.symbol,
-          tokenAddress: baseInfo.address,
-        });
         bridgeToken = {
           ...baseInfo,
           displaySymbol,

@@ -90,6 +90,7 @@ export interface IBridgeConfig {
   defaultSelectedInfo: {
     fromChainId: number;
     toChainId: number;
+    tokenSymbol: string;
     tokenAddress: string;
     amount: string;
   };

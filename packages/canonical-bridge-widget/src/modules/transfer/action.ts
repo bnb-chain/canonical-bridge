@@ -1,6 +1,5 @@
 import { createAction } from '@/modules/store/createAction';
-
-import { ITransferState } from './reducer';
+import { ITransferState } from '@/modules/transfer/reducer';
 
 export const setSelectedToken = createAction<ITransferState['selectedToken']>(
   'transfer/setSelectedToken',

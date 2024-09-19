@@ -1,8 +1,7 @@
 import React, { useContext, useMemo, useReducer } from 'react';
 
 import { Action } from '@/modules/store/createAction';
-
-import { AppState, getInitialState, getReducers } from './reducers';
+import { AppState, getInitialState, getReducers } from '@/modules/store/reducers';
 
 interface StoreContextProps {
   state: AppState;

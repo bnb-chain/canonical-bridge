@@ -2,10 +2,10 @@ import { Box, Flex, useColorMode, useIntl, useTheme } from '@bnb-chain/space';
 
 import { TransferOverview } from '@/modules/transfer/components/TransferOverview';
 import { TransferButtonGroup } from '@/modules/transfer/components/TransferButtonGroup';
-import { useDefaultSelectedInfo } from '@/modules/transfer/hooks/useDefaultSelectedInfo';
 import { NetWorkSection } from '@/modules/transfer/components/NetWorkSection';
 import { SendInput } from '@/modules/transfer/components/SendInput';
 import { ReceiveInfo } from '@/modules/transfer/components/ReceiveInfo';
+import { useDefaultSelectedInfo } from '@/modules/aggregator/hooks/useDefaultSelectedInfo';
 
 export function TransferPage() {
   const { colorMode } = useColorMode();
