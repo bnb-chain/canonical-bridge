@@ -16,11 +16,10 @@ import { SearchIcon } from '@/core/components/icons/SearchIcon';
 interface SearchInputProps extends Omit<InputGroupProps, 'onChange'> {
   placeholder: string;
   onChange: (value: string) => void;
-  isDisabled?: boolean;
 }
 
 export function SearchInput(props: SearchInputProps) {
-  const { placeholder, isDisabled = false, onChange, ...restProps } = props;
+  const { placeholder, onChange, ...restProps } = props;
   const theme = useTheme();
   const { colorMode } = useColorMode();
 
@@ -58,7 +57,6 @@ export function SearchInput(props: SearchInputProps) {
         placeholder={placeholder}
         onChange={onChangeInput}
         maxLength={64}
-        isDisabled={isDisabled}
       />
 
       {value && (
@@ -74,6 +72,7 @@ export function SearchInput(props: SearchInputProps) {
             minW={0}
             p={0}
             onClick={onClear}
+            transitionDuration="normal"
           >
             <CloseIcon boxSize="11px" />
           </Button>

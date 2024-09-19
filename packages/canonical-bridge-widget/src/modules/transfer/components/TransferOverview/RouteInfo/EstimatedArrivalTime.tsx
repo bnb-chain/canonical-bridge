@@ -4,9 +4,9 @@ import { Box, Flex, FlexProps, useColorMode, useIntl, useTheme } from '@bnb-chai
 
 import { useAppSelector } from '@/modules/store/StoreProvider';
 import { formatEstimatedTime } from '@/core/utils/time';
-import { useStarGateWaitTime } from '@/modules/bridges/stargate/hooks/useStarGateWaitTime';
-import { useCBridgeTransferWaitingTime } from '@/modules/bridges/cbridge/hooks/useCBridgeTransferWaitingTime';
 import { TimerIcon } from '@/core/components/icons/TimerIcon';
+import { useStargateWaitTime } from '@/modules/aggregator/adapters/stargate/hooks/useStargateWaitTime';
+import { useCBridgeTransferWaitingTime } from '@/modules/aggregator/adapters/cBridge/hooks/useCBridgeTransferWaitingTime';
 
 interface EstimatedArrivalTimeProps {
   bridgeType?: BridgeType;
@@ -23,7 +23,7 @@ export const EstimatedArrivalTime = ({
   const fromChain = useAppSelector((state) => state.transfer.fromChain);
   const toChain = useAppSelector((state) => state.transfer.toChain);
 
-  const { data: estimatedTime } = useStarGateWaitTime();
+  const { data: estimatedTime } = useStargateWaitTime();
   const { data: time } = useCBridgeTransferWaitingTime({
     srcChainId: fromChain?.id,
     dstChainId: toChain?.id,

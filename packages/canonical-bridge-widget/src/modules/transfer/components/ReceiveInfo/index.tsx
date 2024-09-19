@@ -6,16 +6,16 @@ import { useAppSelector } from '@/modules/store/StoreProvider';
 import { useGetReceiveAmount } from '@/modules/transfer/hooks/useGetReceiveAmount';
 import { useToTokenInfo } from '@/modules/transfer/hooks/useToTokenInfo';
 import { formatNumber } from '@/core/utils/number';
-import { useGetCBridgeFees } from '@/modules/bridges/cbridge/hooks/useGetCBridgeFees';
-import { useGetDeBridgeFees } from '@/modules/bridges/debridge/hooks/useGetDeBridgeFees';
-import { useGetStarGateFees } from '@/modules/bridges/stargate/hooks/useGetStarGateFees';
 import { useGetNativeToken } from '@/modules/transfer/hooks/useGetNativeToken';
-import { useGetLayerZeroFees } from '@/modules/bridges/layerZero/hooks/useGetLayerZeroFees';
+import { useGetLayerZeroFees } from '@/modules/aggregator/adapters/layerZero/hooks/useGetLayerZeroFees';
 import { RouteTitle } from '@/modules/transfer/components/TransferOverview/RouteInfo/RouteTitle';
 import { EstimatedArrivalTime } from '@/modules/transfer/components/TransferOverview/RouteInfo/EstimatedArrivalTime';
 import { FeesInfo } from '@/modules/transfer/components/TransferOverview/RouteInfo/FeesInfo';
 import { AllowedSendAmount } from '@/modules/transfer/components/TransferOverview/RouteInfo/AllowedSendAmount';
 import { RouteName } from '@/modules/transfer/components/TransferOverview/RouteInfo/RouteName';
+import { useGetCBridgeFees } from '@/modules/aggregator/adapters/cBridge/hooks/useGetCBridgeFees';
+import { useGetDeBridgeFees } from '@/modules/aggregator/adapters/deBridge/hooks/useGetDeBridgeFees';
+import { useGetStargateFees } from '@/modules/aggregator/adapters/stargate/hooks/useGetStargateFees';
 import { ReceiveLoading } from '@/modules/transfer/components/ReceiveInfo/ReceiveLoading';
 import { NoRouteFound } from '@/modules/transfer/components/TransferOverview/NoRouteFound';
 import { useDebounce } from '@/core/hooks/useDebounce';
@@ -61,7 +61,7 @@ export const ReceiveInfo = () => {
     gasInfo: STGasInfo,
     protocolFee: STProtocolFee,
     allowedSendAmount: STAllowedSendAmount,
-  } = useGetStarGateFees();
+  } = useGetStargateFees();
   const { nativeFee: LZNativeFee, gasInfo: LZGasInfo } = useGetLayerZeroFees();
 
   const feeDetails = useMemo(() => {

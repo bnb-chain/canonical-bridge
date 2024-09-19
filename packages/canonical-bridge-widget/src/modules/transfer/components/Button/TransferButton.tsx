@@ -4,9 +4,9 @@ import { useAccount, useBalance, usePublicClient, useWalletClient } from 'wagmi'
 import { formatUnits, parseUnits } from 'viem';
 
 import { useAppSelector } from '@/modules/store/StoreProvider';
-import { useCBridgeTransferParams } from '@/modules/bridges/cbridge/hooks/useCBridgeTransferParams';
 import { useGetAllowance } from '@/core/contract/hooks/useGetAllowance';
 import { bridgeSDK } from '@/core/constants/bridgeSDK';
+import { useCBridgeTransferParams } from '@/modules/aggregator/adapters/cBridge/hooks/useCBridgeTransferParams';
 
 export function TransferButton({
   onOpenSubmittedModal,
@@ -66,7 +66,7 @@ export function TransferButton({
       setChosenBridge('');
       setIsLoading(true);
       if (
-        Number(sendValue) > Number(formatUnits(allowance, selectedToken?.decimal)) &&
+        Number(sendValue) > Number(formatUnits(allowance, selectedToken?.decimals)) &&
         transferActionInfo.bridgeAddress !== selectedToken?.address // doesn't need approve for OFT
       ) {
         // eslint-disable-next-line no-console
@@ -76,7 +76,7 @@ export function TransferButton({
           'allowance',
           allowance,
           'selectedToken?.decimal',
-          selectedToken?.decimal,
+          selectedToken?.decimals,
         );
         onOpenApproveModal();
         return;
@@ -91,7 +91,7 @@ export function TransferButton({
             fromChainId: fromChain?.id,
             isPegged: selectedToken.isPegged,
             address,
-            peggedConfig: selectedToken?.peggedRawData.cBridge,
+            peggedConfig: selectedToken?.cBridge?.peggedConfig,
             args: cBridgeArgs.args,
           });
           await publicClient.waitForTransactionReceipt({
@@ -142,9 +142,9 @@ export function TransferButton({
           publicClient,
           bridgeAddress: transferActionInfo.bridgeAddress as `0x${string}`,
           tokenAddress: selectedToken.address as `0x${string}`,
-          endPointId: toToken?.rawData.stargate?.endpointID as number,
+          endPointId: toToken?.stargate?.raw?.endpointID as number,
           receiver: address,
-          amount: parseUnits(sendValue, selectedToken.decimal),
+          amount: parseUnits(sendValue, selectedToken.decimals),
         });
         if (stargateHash) {
           onCloseConfirmingModal();
@@ -155,9 +155,9 @@ export function TransferButton({
       } else if (transferActionInfo.bridgeType === 'layerZero') {
         const layerZeroHash = await bridgeSDK.layerZero.sendToken({
           bridgeAddress: transferActionInfo.bridgeAddress as `0x${string}`,
-          dstEndpoint: toToken?.rawData.layerZero?.endpointID as number,
+          dstEndpoint: toToken?.layerZero?.raw?.endpointID as number,
           userAddress: address,
-          amount: parseUnits(sendValue, selectedToken.decimal),
+          amount: parseUnits(sendValue, selectedToken.decimals),
           walletClient,
           publicClient,
         });

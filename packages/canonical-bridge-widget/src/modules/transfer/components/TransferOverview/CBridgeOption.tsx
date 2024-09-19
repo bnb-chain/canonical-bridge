@@ -7,7 +7,6 @@ import { setRouteError, setTransferActionInfo } from '@/modules/transfer/action'
 import { useAppDispatch, useAppSelector } from '@/modules/store/StoreProvider';
 import { formatNumber } from '@/core/utils/number';
 import { useGetNativeToken } from '@/modules/transfer/hooks/useGetNativeToken';
-import { useGetCBridgeFees } from '@/modules/bridges/cbridge/hooks/useGetCBridgeFees';
 import { RouteTitle } from '@/modules/transfer/components/TransferOverview/RouteInfo/RouteTitle';
 import { EstimatedArrivalTime } from '@/modules/transfer/components/TransferOverview/RouteInfo/EstimatedArrivalTime';
 import { FeesInfo } from '@/modules/transfer/components/TransferOverview/RouteInfo/FeesInfo';
@@ -15,6 +14,7 @@ import { AllowedSendAmount } from '@/modules/transfer/components/TransferOvervie
 import { RouteMask } from '@/modules/transfer/components/TransferOverview/RouteInfo/RouteMask';
 import { OtherRouteError } from '@/modules/transfer/components/TransferOverview/RouteInfo/OtherRouteError';
 import { RouteName } from '@/modules/transfer/components/TransferOverview/RouteInfo/RouteName';
+import { useGetCBridgeFees } from '@/modules/aggregator/adapters/cBridge/hooks/useGetCBridgeFees';
 
 export const CBridgeOption = () => {
   const dispatch = useAppDispatch();
@@ -47,7 +47,7 @@ export const CBridgeOption = () => {
             ),
           ),
           8,
-        )} ${toTokenInfo.symbol}`
+        )}`
       : '--';
   }, [estimatedAmount, toTokenInfo, sendValue, getToDecimals]);
 
@@ -59,7 +59,7 @@ export const CBridgeOption = () => {
         }),
       );
     }
-  }, [estimatedAmount?.['cBridge']?.estimated_receive_amt]);
+  }, [dispatch, estimatedAmount]);
 
   const feeDetails = useMemo(() => {
     let feeContent = '';

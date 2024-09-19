@@ -1,10 +1,10 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 import { CanonicalBridgeConfig, CanonicalBridgeProvider } from '@/index';
-import { bridgeConfigs } from '@/dev/data';
-import { chains } from '@/dev/data/chains';
+import { bridgeConfig } from '@/dev/data';
 import { en as messages } from '@/dev/locales/en';
 import { dark } from '@/dev/theme/dark';
+import { ExternalBridgesPanel } from '@/dev/components/ExternalBridgesPanel';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -28,14 +28,13 @@ const config: CanonicalBridgeConfig = {
     locale: 'en',
     messages,
   },
-  chainConfigs: chains,
-  bridgeConfigs,
+  bridgeConfig,
 };
 
 export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <CanonicalBridgeProvider config={config} />
+      <CanonicalBridgeProvider config={config} routeContentBottom={<ExternalBridgesPanel />} />
     </QueryClientProvider>
   );
 }

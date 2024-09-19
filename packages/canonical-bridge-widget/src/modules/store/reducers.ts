@@ -1,10 +1,6 @@
-import common from '@/modules/common/reducer';
 import transfer from '@/modules/transfer/reducer';
-import bridges from '@/modules/bridges/reducer';
 
 const reducers = {
-  bridges,
-  common,
   transfer,
 } as const;
 
@@ -15,8 +11,9 @@ type State = {
   [K in Namespace]: ReturnType<Reducers[K]['getInitialState']>;
 };
 
-// TODO
 type Reducer = Record<string, any>;
+
+export type AppState = ReturnType<typeof getInitialState>;
 
 export function getInitialState() {
   const state = Object.fromEntries(
@@ -52,5 +49,3 @@ export function getReducers() {
     return finalState;
   };
 }
-
-export type AppState = ReturnType<typeof getInitialState>;

@@ -9,30 +9,16 @@ import {
 } from '@bnb-chain/space';
 
 import { SelectButton } from '@/modules/transfer/components/SelectButton';
-import { SelectDestinationModal } from '@/modules/transfer/components/SelectModal/SelectDestinationModal';
-import { useAppDispatch, useAppSelector } from '@/modules/store/StoreProvider';
-import { setToChain } from '@/modules/transfer/action';
-import { BridgeChain } from '@/modules/bridges';
-import { useSetSelectInfo } from '@/modules/transfer/hooks/useSetSelectInfo';
+import { useAppSelector } from '@/modules/store/StoreProvider';
+import { DestinationNetworkModal } from '@/modules/transfer/components/SelectModal/DestinationNetworkModal';
 
 export function ToSection() {
   const { isOpen, onClose, onOpen } = useDisclosure();
   const { formatMessage } = useIntl();
-  const dispatch = useAppDispatch();
-  const { setSelectInfo } = useSetSelectInfo();
   const isBase = useBreakpointValue({ base: true, md: false }) ?? false;
   const { colorMode } = useColorMode();
 
   const toChain = useAppSelector((state) => state.transfer.toChain);
-
-  const onSelectSource = (chain: BridgeChain) => {
-    setSelectInfo({
-      direction: 'to',
-      toChainId: chain.id,
-    });
-
-    dispatch(setToChain(chain));
-  };
 
   return (
     <>
@@ -59,7 +45,7 @@ export function ToSection() {
         </Flex>
       </Flex>
 
-      <SelectDestinationModal isOpen={isOpen} onClose={onClose} onSelect={onSelectSource} />
+      <DestinationNetworkModal isOpen={isOpen} onClose={onClose} />
     </>
   );
 }
