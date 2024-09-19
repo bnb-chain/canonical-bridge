@@ -211,6 +211,8 @@ export const chains: IChainConfig[] = [
       name: 'opbnbscan',
       url: 'https://mainnet.opbnbscan.com',
     },
+    chainType: 'link',
+    externalUrl: 'https://opbnb-bridge.bnbchain.org/deposit',
   },
   {
     id: 248,
@@ -576,20 +578,6 @@ export const chains: IChainConfig[] = [
     explorer: {
       name: 'SPS Explorer',
       url: 'http://spsscan.ssquad.games',
-    },
-  },
-  {
-    id: 16350,
-    name: 'Incentiv Devnet',
-    nativeCurrency: {
-      name: 'Testnet INC',
-      symbol: 'INC',
-      decimals: 18,
-    },
-    rpcUrl: 'https://rpc.ankr.com/incentiv_devnet',
-    explorer: {
-      name: '',
-      url: '',
     },
   },
   {

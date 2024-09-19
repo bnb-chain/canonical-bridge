@@ -19,6 +19,7 @@ export interface ITransferTokenPair<T, P = unknown> {
 
 export interface IBaseAdapterOptions<G> {
   config: G;
+  includedChains?: number[];
   excludedChains?: number[];
   excludedTokens?: Record<number, Array<string | Address>>;
   nativeCurrencies?: Record<number, INativeCurrency>;
@@ -30,6 +31,7 @@ export abstract class BaseAdapter<G extends object, C = unknown, T = unknown> {
 
   protected readonly config: G;
 
+  protected readonly includedChains: number[] = [];
   protected readonly excludedChains: number[] = [];
   protected readonly excludedTokens: Record<number, Array<string | Address>> = {};
   protected readonly nativeCurrencies: Record<number, INativeCurrency> = {};
@@ -51,6 +53,7 @@ export abstract class BaseAdapter<G extends object, C = unknown, T = unknown> {
   constructor(options: IBaseAdapterOptions<G>) {
     this.config = options.config ?? {};
 
+    this.includedChains = options.includedChains ?? [];
     this.excludedChains = options.excludedChains ?? [];
     this.excludedTokens = options.excludedTokens ?? {};
     this.nativeCurrencies = options.nativeCurrencies ?? {};

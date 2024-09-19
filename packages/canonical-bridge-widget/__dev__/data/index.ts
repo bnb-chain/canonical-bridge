@@ -1,6 +1,6 @@
-import { IBridgeConfig } from '@/modules/aggregator/types';
-import { chains } from '@/dev/data/chains';
 import { testnetChains } from '@/dev/data/chains-testnet';
+import { chains } from '@/dev/data/chains';
+import { IBridgeConfig } from '@/modules/aggregator/types';
 
 import cBridgeConfig from './cbridge/config.json';
 import deBridgeConfig from './deBridge';
@@ -90,7 +90,7 @@ export const bridgeConfig: IBridgeConfig = {
   cBridge: {
     config: cBridgeConfig,
     exclude: {
-      chains: [1990, 73772, 12340001, 12360001, 12370001, 999999996, 999999997, 16350],
+      chains: [],
       tokens: {
         56: ['0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c'],
         42161: [
@@ -104,7 +104,7 @@ export const bridgeConfig: IBridgeConfig = {
   deBridge: {
     config: deBridgeConfig,
     exclude: {
-      chains: [7565164, 100000001, 100000002, 100000003],
+      chains: [],
       tokens: {
         1: ['cUSDCv3'],
         56: ['0x67d66e8ec1fd25d98b3ccd3b19b7dc4b4b7fc493'],

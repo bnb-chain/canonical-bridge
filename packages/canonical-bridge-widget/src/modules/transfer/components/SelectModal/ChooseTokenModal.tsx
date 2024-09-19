@@ -55,6 +55,7 @@ export function ChooseTokenModal(props: ChooseTokenModalProps) {
         lineHeight="16px"
         color={theme.colors[colorMode].text.secondary}
         pb={'12px'}
+        px={'20px'}
         justifyContent="space-between"
       >
         <Text>{formatMessage({ id: 'select-modal.token.column.name' })}</Text>

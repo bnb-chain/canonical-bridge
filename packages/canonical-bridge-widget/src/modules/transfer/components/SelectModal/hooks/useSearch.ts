@@ -3,6 +3,7 @@ import { useState } from 'react';
 interface UseSearchProps<T = unknown> {
   data: T[];
   filter: (item: T, keyword: string) => boolean;
+  sorter?: (a: T, b: T) => number;
 }
 
 export function useSearch<T>(props: UseSearchProps<T>) {

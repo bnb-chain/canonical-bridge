@@ -26,7 +26,7 @@ export function ListItem(props: ListItemProps) {
   const { formatMessage } = useIntl();
 
   return (
-    <Box pb="8px">
+    <Box pb="8px" px="20px">
       <Flex
         borderRadius={'8px'}
         px={'12px'}

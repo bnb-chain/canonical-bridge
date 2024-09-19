@@ -123,18 +123,23 @@ function getChainInfo({
   chainId: number;
   chainConfigs: IChainConfig[];
 }) {
-  const chain = chainConfigs.find((item) => item.id === chainId);
+  const chainConfig = chainConfigs.find((item) => item.id === chainId);
 
-  const explorerUrl = chain?.explorer.url?.replace(/\/$/, '') ?? '';
+  const explorerUrl = chainConfig?.explorer.url?.replace(/\/$/, '') ?? '';
   const tmpUrlPattern = explorerUrl ? `${explorerUrl}/token/{0}` : '';
-  const tokenUrlPattern = chain?.explorer?.tokenUrlPattern || tmpUrlPattern;
+  const tokenUrlPattern = chainConfig?.explorer?.tokenUrlPattern || tmpUrlPattern;
+
+  const chainType = chainConfig?.chainType ?? 'evm';
+  const externalUrl = chainConfig?.externalUrl;
 
   return {
     id: chainId,
-    name: chain?.name ?? '',
+    name: chainConfig?.name ?? '',
     icon: `${env.ASSET_PREFIX}/images/chains/${chainId}.png`,
     explorerUrl,
-    rpcUrl: chain?.rpcUrl ?? '',
+    rpcUrl: chainConfig?.rpcUrl ?? '',
     tokenUrlPattern,
+    chainType,
+    externalUrl,
   };
 }

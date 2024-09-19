@@ -1,4 +1,4 @@
-import { Flex, useIntl } from '@bnb-chain/space';
+import { Flex, useColorMode, useIntl, useTheme } from '@bnb-chain/space';
 
 import { BaseModal } from '@/modules/transfer/components/SelectModal/components/BaseModal';
 import { useAppSelector } from '@/modules/store/StoreProvider';
@@ -6,8 +6,9 @@ import { useFromChains } from '@/modules/aggregator/hooks/useFromChains';
 import { VirtualList } from '@/core/components/VirtualList';
 import { ListItem } from '@/modules/transfer/components/SelectModal/components/ListItem';
 import { useSearch } from '@/modules/transfer/components/SelectModal/hooks/useSearch';
-import { isChainOrTokenCompatible } from '@/modules/aggregator/shared/isChainOrTokenCompatible';
 import { useSelection } from '@/modules/aggregator/hooks/useSelection';
+import { openLink } from '@/core/utils/common';
+import { ExLinkIcon } from '@/core/components/icons/ExLinkIcon';
 
 interface SourceNetworkModalProps {
   isOpen: boolean;
@@ -23,6 +24,8 @@ export function SourceNetworkModal(props: SourceNetworkModalProps) {
   const selectedToken = useAppSelector((state) => state.transfer.selectedToken);
 
   const { selectFromChain } = useSelection();
+  const theme = useTheme();
+  const { colorMode } = useColorMode();
 
   const fromChains = useFromChains({
     toChainId: toChain?.id,
@@ -47,14 +50,27 @@ export function SourceNetworkModal(props: SourceNetworkModalProps) {
         {(item) => (
           <ListItem
             iconUrl={item.icon}
-            onClick={() => {
-              selectFromChain(item);
-              onClose();
-            }}
             isActive={fromChain?.id === item.id}
             isDisabled={false}
+            onClick={() => {
+              if (item.chainType === 'link') {
+                openLink(item.externalUrl);
+              } else {
+                selectFromChain(item);
+                onClose();
+              }
+            }}
           >
-            <Flex>{item.name}</Flex>
+            <Flex alignItems="center">
+              {item.name}
+              {item.chainType === 'link' && (
+                <ExLinkIcon
+                  ml={'4px'}
+                  color={theme.colors[colorMode].text.secondary}
+                  boxSize={theme.sizes['4']}
+                />
+              )}
+            </Flex>
           </ListItem>
         )}
       </VirtualList>

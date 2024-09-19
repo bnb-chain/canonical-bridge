@@ -18,9 +18,10 @@ export class StargateAdapter extends BaseAdapter<
     const { chains, tokens } = this.config;
 
     const filteredChains = chains.filter((chain) => {
+      const hasChainConfig = this.includedChains.includes(chain.chainId);
       const isExcludedChain = this.excludedChains.includes(chain.chainId);
       const hasToken = tokens[chain.chainId]?.length > 0;
-      return !isExcludedChain && hasToken;
+      return hasChainConfig && !isExcludedChain && hasToken;
     });
 
     const chainMap = new Map<number, IStargateChain>();

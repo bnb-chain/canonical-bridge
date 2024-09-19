@@ -56,9 +56,11 @@ export function BaseModal(props: BaseModalProps) {
             }}
           />
         </Flex>
-        <Flex flexDir="column" p="24px 20px 16px" flex={1}>
-          <SearchInput onChange={onSearch} placeholder={placeholder} />
-          <Flex flexDir="column" mt={'24px'} flex={1} overflowY="auto">
+        <Flex flexDir="column" p="24px 0px 16px" flex={1}>
+          <Flex px={'20px'} mb={'24px'}>
+            <SearchInput onChange={onSearch} placeholder={placeholder} />
+          </Flex>
+          <Flex flexDir="column" flex={1} overflowY="auto">
             {isNoResult ? <NoResultFound /> : <>{children}</>}
           </Flex>
         </Flex>

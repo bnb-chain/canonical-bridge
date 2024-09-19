@@ -37,6 +37,7 @@ export class CBridgeAdapter extends BaseAdapter<
     const { chains, chain_token, pegged_pair_configs } = this.config;
 
     const filteredChains = chains.filter((chain) => {
+      const hasChainConfig = this.includedChains.includes(chain.id);
       const isExcludedChain = this.excludedChains.includes(chain.id);
       const hasEnabledToken = chain_token[chain.id]?.token?.some((e) => !e.token.xfer_disabled);
       const hasPeggedToken = pegged_pair_configs.some(
@@ -45,7 +46,7 @@ export class CBridgeAdapter extends BaseAdapter<
           !e.org_token.token.xfer_disabled &&
           !e.pegged_token.token.xfer_disabled,
       );
-      return !isExcludedChain && (hasEnabledToken || hasPeggedToken);
+      return hasChainConfig && !isExcludedChain && (hasEnabledToken || hasPeggedToken);
     });
 
     const chainMap = new Map<number, ICBridgeChain>();

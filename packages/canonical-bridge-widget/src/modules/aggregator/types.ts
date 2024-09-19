@@ -31,6 +31,8 @@ export interface IBridgeChain {
   explorerUrl: string;
   rpcUrl: string;
   tokenUrlPattern: string;
+  chainType: ChainType;
+  externalUrl?: string;
   cBridge?: {
     isCompatible: boolean;
     raw?: ICBridgeChain;
@@ -148,7 +150,11 @@ export interface IChainConfig {
     url: string;
     tokenUrlPattern?: string;
   };
+  chainType?: ChainType;
+  externalUrl?: string;
 }
+
+export type ChainType = 'link' | 'evm';
 
 export type AdapterConstructorType =
   | typeof CBridgeAdapter
