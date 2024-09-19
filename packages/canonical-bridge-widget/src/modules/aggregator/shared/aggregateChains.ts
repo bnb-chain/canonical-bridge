@@ -36,25 +36,18 @@ export function aggregateChains({ direction, adapters, params, config }: IAggreg
 
     const tmpSymbol = params.token?.[bridgeType]?.symbol?.toUpperCase();
     const isNotSelf = params.token && !tmpSymbol;
-    const tokenSymbol = isNotSelf ? '???????' : tmpSymbol;
-
-    let adapterParams: any;
-    if (direction === 'from') {
-      adapterParams = {
-        toChainId: (params as IGetFromChainsParams).toChainId,
-        tokenSymbol,
-      };
-    } else {
-      adapterParams = {
-        fromChainId: (params as IGetToChainsParams).fromChainId,
-        tokenSymbol,
-      };
-    }
+    const tokenSymbol = isNotSelf ? '???????' : tmpSymbol; // TODO
 
     const { chains, compatibleChainIds } =
       direction === 'from'
-        ? adapter.getFromChains(adapterParams)
-        : adapter.getToChains(adapterParams);
+        ? adapter.getFromChains({
+            toChainId: (params as IGetFromChainsParams).toChainId,
+            tokenSymbol,
+          })
+        : adapter.getToChains({
+            fromChainId: (params as IGetToChainsParams).fromChainId,
+            tokenSymbol,
+          });
 
     chains.forEach((item: any) => {
       const chainId = adapter.getChainId(item);
@@ -83,8 +76,8 @@ export function aggregateChains({ direction, adapters, params, config }: IAggreg
     });
   });
 
-  const finalChains = [...chainMap.values()];
-  finalChains.sort((a, b) => {
+  const chains = [...chainMap.values()];
+  chains.sort((a, b) => {
     if (direction === 'to') {
       const isA = isChainOrTokenCompatible(a);
       const isB = isChainOrTokenCompatible(b);
@@ -113,7 +106,7 @@ export function aggregateChains({ direction, adapters, params, config }: IAggreg
     return a.name < b.name ? -1 : 1;
   });
 
-  return finalChains;
+  return chains;
 }
 
 function getChainInfo({

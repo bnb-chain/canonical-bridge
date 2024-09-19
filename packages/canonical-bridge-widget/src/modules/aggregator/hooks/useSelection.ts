@@ -84,23 +84,24 @@ export function useSelection() {
           fromChainId: fromChain?.id,
         });
       } else {
-        const toChains = getToChains({
+        const toChain = getToChains({
           fromChainId: fromChain.id,
-        });
-        const newToChain = toChains.find((chain) => isChainOrTokenCompatible(chain));
+        }).find((chain) => isChainOrTokenCompatible(chain) && chain.chainType !== 'link');
 
-        const tokens = getTokens({
+        const newToken = getTokens({
           fromChainId: fromChain.id,
-          toChainId: newToChain?.id,
-        });
-        const newToken = tokens.find((token) => isChainOrTokenCompatible(token));
+          toChainId: toChain?.id,
+        }).find((token) => isChainOrTokenCompatible(token));
 
-        const fromChains = getFromChains({
+        const newFromChain = getFromChains({
           toChainId: toChain?.id,
           token: newToken,
-        });
+        }).find((chain) => chain.id === fromChain.id);
 
-        const newFromChain = fromChains.find((chain) => chain.id === fromChain.id);
+        const newToChain = getToChains({
+          fromChainId: fromChain?.id,
+          token: newToken,
+        }).find((chain) => chain.id === toChain?.id);
 
         dispatch(setFromChain(newFromChain));
         dispatch(setToChain(newToChain));

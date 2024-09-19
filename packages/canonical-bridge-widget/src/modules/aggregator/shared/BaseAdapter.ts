@@ -92,10 +92,6 @@ export abstract class BaseAdapter<G extends object, C = unknown, T = unknown> {
     this.toChains = this.chains.filter((chain) => this.toChainIds.has(this.getChainId(chain)));
   }
 
-  protected getTransferMap() {
-    return this.transferMap;
-  }
-
   protected filterTransferMap() {
     const filteredTransferMap = new Map<number, Map<number, Map<string, ITransferTokenPair<T>>>>();
 
