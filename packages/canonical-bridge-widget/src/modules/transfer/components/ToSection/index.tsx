@@ -21,11 +21,9 @@ export function ToSection() {
   const dispatch = useAppDispatch();
   const { setSelectInfo } = useSetSelectInfo();
   const isBase = useBreakpointValue({ base: true, md: false }) ?? false;
+  const { colorMode } = useColorMode();
 
   const toChain = useAppSelector((state) => state.transfer.toChain);
-
-  // const { getToTokenAddress } = useToTokenInfo();
-  const { colorMode } = useColorMode();
 
   const onSelectSource = (chain: BridgeChain) => {
     setSelectInfo({
@@ -35,20 +33,6 @@ export function ToSection() {
 
     dispatch(setToChain(chain));
   };
-
-  // const { getSortedReceiveAmount } = useGetReceiveAmount();
-
-  // const receiveAmt = useMemo(() => {
-  //   if (transferActionInfo && transferActionInfo.bridgeType) {
-  //     const bridgeType = transferActionInfo.bridgeType;
-  //     const receiveValue = getSortedReceiveAmount();
-  //     return receiveValue[bridgeType];
-  //   }
-  //   return null;
-  // }, [getSortedReceiveAmount, transferActionInfo]);
-
-  // const bridgeType = transferActionInfo?.bridgeType;
-  // const tokenAddress = (bridgeType && getToTokenAddress()?.[bridgeType]) || '';
 
   return (
     <>
@@ -72,57 +56,6 @@ export function ToSection() {
           border={`1px solid ${theme.colors[colorMode].border['3']}`}
         >
           <SelectButton network={toChain} onClick={onOpen} />
-
-          {/* <Flex flex={1} flexDir={'column'} alignItems={'flex-start'} justifyContent={'center'}>
-              <Input
-                disabled={true}
-                color={theme.colors[colorMode].text.secondary}
-                fontSize={'24px'}
-                border={'none'}
-                placeholder="0.0"
-                _hover={{
-                  border: 'none',
-                  background: 'none',
-                }}
-                _focus={{
-                  border: 'none',
-                  background: 'none',
-                }}
-                _focusVisible={{
-                  border: 'none',
-                  background: 'none',
-                }}
-                _disabled={{
-                  border: 'none',
-                  background: 'none',
-                }}
-                px={0}
-                background={'none'}
-                value={
-                  toTokenInfo && receiveAmt && !isGlobalFeeLoading && transferActionInfo?.bridgeType
-                    ? `${formatNumber(
-                        Number(
-                          formatUnits(
-                            BigInt(receiveAmt),
-                            getToDecimals()[transferActionInfo?.bridgeType],
-                          ),
-                        ),
-                        8,
-                      )}`
-                    : ''
-                }
-                readOnly
-              />
-              {receiveAmt && (
-                <Box
-                  textAlign={'left'}
-                  fontSize={'12px'}
-                  color={theme.colors[colorMode].text.tertiary}
-                >
-                  {formatMessage({ id: 'to.section.estimated-amount' })}
-                </Box>
-              )}
-            </Flex> */}
         </Flex>
       </Flex>
 

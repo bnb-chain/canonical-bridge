@@ -1,5 +1,5 @@
 import { BridgeType } from '@bnb-chain/canonical-bridge-sdk';
-import { parseUnits } from 'viem';
+import { formatUnits, parseUnits } from 'viem';
 import { useCallback } from 'react';
 
 import { useToTokenInfo } from '@/modules/transfer/hooks/useToTokenInfo';
@@ -13,13 +13,34 @@ export const useGetReceiveAmount = () => {
   const getReceiveAmount = useCallback(
     (bridgeType: BridgeType) => {
       if (estimatedAmount) {
-        if (bridgeType === 'deBridge' && estimatedAmount[bridgeType]?.estimation) {
-          return estimatedAmount[bridgeType]?.estimation?.dstChainTokenOut.amount;
-        } else if (bridgeType === 'cBridge') {
-          return estimatedAmount[bridgeType]?.estimated_receive_amt;
-        } else if (bridgeType === 'stargate') {
-          return String(estimatedAmount[bridgeType]?.[2].amountReceivedLD);
-        } else if (bridgeType === 'layerZero') {
+        if (
+          bridgeType === 'deBridge' &&
+          estimatedAmount[bridgeType]?.estimation &&
+          getToDecimals()['deBridge']
+        ) {
+          return formatUnits(
+            BigInt(estimatedAmount?.['deBridge']?.estimation?.dstChainTokenOut?.amount),
+            getToDecimals().deBridge,
+          );
+        } else if (
+          bridgeType === 'cBridge' &&
+          estimatedAmount?.['cBridge']?.estimated_receive_amt &&
+          getToDecimals()['cBridge']
+        ) {
+          return formatUnits(
+            estimatedAmount?.['cBridge']?.estimated_receive_amt,
+            getToDecimals()['cBridge'],
+          );
+        } else if (
+          bridgeType === 'stargate' &&
+          estimatedAmount?.['stargate']?.[2].amountReceivedLD &&
+          getToDecimals()['stargate']
+        ) {
+          return formatUnits(
+            BigInt(estimatedAmount?.['stargate']?.[2].amountReceivedLD),
+            getToDecimals()['stargate'] || 18,
+          );
+        } else if (bridgeType === 'layerZero' && sendValue && getToDecimals()['layerZero']) {
           if (getToDecimals()['layerZero']) {
             return String(parseUnits(sendValue, getToDecimals()['layerZero']));
           } else {

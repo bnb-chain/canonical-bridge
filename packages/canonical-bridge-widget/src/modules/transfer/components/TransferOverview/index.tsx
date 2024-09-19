@@ -3,13 +3,13 @@ import { ReactNode, useEffect, useMemo } from 'react';
 
 import {
   setEstimatedAmount,
+  setIsGlobalFeeLoading,
   setIsRefreshing,
   setTransferActionInfo,
 } from '@/modules/transfer/action';
 import { useAppDispatch, useAppSelector } from '@/modules/store/StoreProvider';
 import { CBridgeOption } from '@/modules/transfer/components/TransferOverview/CBridgeOption';
 import { DeBridgeOption } from '@/modules/transfer/components/TransferOverview/DeBridgeOption';
-import { NoRouteFound } from '@/modules/transfer/components/TransferOverview/NoRouteFound';
 import { DEBOUNCE_DELAY } from '@/core/constants';
 import { useDebounce } from '@/core/hooks/useDebounce';
 import { useLoadingBridgeFees } from '@/modules/transfer/hooks/useLoadingBridgeFees';
@@ -29,7 +29,6 @@ export function TransferOverview() {
   const isGlobalFeeLoading = useAppSelector((state) => state.transfer.isGlobalFeeLoading);
   const sendValue = useAppSelector((state) => state.transfer.sendValue);
   const estimatedAmount = useAppSelector((state) => state.transfer.estimatedAmount);
-  const toChain = useAppSelector((state) => state.transfer.toChain);
   const toTokenInfo = useAppSelector((state) => state.transfer.toToken);
   const bridgeType = useAppSelector((state) => state.transfer.transferActionInfo)?.bridgeType;
   const theme = useTheme();
@@ -46,8 +45,10 @@ export function TransferOverview() {
         dispatch(setIsRefreshing(false));
         return;
       }
-      loadingBridgeFees();
+      dispatch(setIsGlobalFeeLoading(true));
       dispatch(setIsRefreshing(true));
+      loadingBridgeFees();
+      dispatch(setIsRefreshing(false));
     }
   }, [selectedToken, debouncedSendValue, dispatch, sendValue, loadingBridgeFees]);
 
@@ -79,9 +80,7 @@ export function TransferOverview() {
     return routes;
   }, [sortedReceivedAmt, debouncedSendValue, estimatedAmount]);
 
-  // console.log('sorted received amount', sortedReceivedAmt, options);
-
-  const showRoute = selectedToken && sendValue && toTokenInfo;
+  const showRoute = selectedToken && !!Number(sendValue) && toTokenInfo;
 
   const sortedOptions = useMemo(() => {
     if (!options?.length) return options;
@@ -89,7 +88,7 @@ export function TransferOverview() {
     return options.sort((a) => {
       return a.key === bridgeType ? -1 : 0;
     });
-  }, [options]);
+  }, [options, bridgeType]);
 
   return (
     <Flex flexDir="column" ml={'24px'} gap={'24px'}>
@@ -100,7 +99,8 @@ export function TransferOverview() {
             py={'24px'}
             borderRadius={'24px'}
             background={theme.colors[colorMode].background.route}
-            minW="384px"
+            maxW="384px"
+            w={'100%'}
           >
             <Flex flexDir={'column'} gap={'12px'}>
               <Flex
@@ -128,18 +128,16 @@ export function TransferOverview() {
                 overscrollBehavior={'contain'}
                 maxHeight={'500px'}
               >
-                {!isGlobalFeeLoading &&
-                sortedOptions?.length === 0 &&
-                !!debouncedSendValue &&
-                !!selectedToken &&
-                toChain ? (
-                  <NoRouteFound />
-                ) : !sortedOptions.length || isGlobalFeeLoading ? (
-                  <RouteSkeleton />
+                {!sortedOptions.length || isGlobalFeeLoading ? (
+                  <Flex flexDir={'column'} gap={'12px'}>
+                    <RouteSkeleton />
+                    <RouteSkeleton />
+                    <RouteSkeleton />
+                  </Flex>
                 ) : (
                   <Flex
                     flexDir={'column'}
-                    gap={'24px'}
+                    gap={'12px'}
                     display={isGlobalFeeLoading ? 'none' : 'flex'}
                   >
                     {sortedOptions?.map((bridge: ReactNode) => {

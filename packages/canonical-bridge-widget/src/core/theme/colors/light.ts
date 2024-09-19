@@ -74,6 +74,13 @@ export const light: ColorType = {
     },
     disabled: rgba('#181A1E', 0.4),
   },
+  receive: {
+    background: '#373943',
+  },
+  route: {
+    background: { highlight: 'rgba(255, 233, 0, 0.06)' },
+    border: '#373943',
+  },
   modal: {
     title: '#5C5F6A',
     item: {

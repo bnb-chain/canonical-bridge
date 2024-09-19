@@ -21,7 +21,7 @@ export const RefreshingIcon = (props: IconProps) => {
       {...props}
     >
       <circle
-        className={!isGlobalFeeLoading && isRefreshing ? 'refreshBorder' : ''}
+        className={!isGlobalFeeLoading && !isRefreshing ? 'refreshBorder' : ''}
         cx="21"
         cy="21"
         r="20.5"

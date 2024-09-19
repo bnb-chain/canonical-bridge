@@ -16,24 +16,31 @@ import { EstimatedArrivalTime } from '@/modules/transfer/components/TransferOver
 import { FeesInfo } from '@/modules/transfer/components/TransferOverview/RouteInfo/FeesInfo';
 import { AllowedSendAmount } from '@/modules/transfer/components/TransferOverview/RouteInfo/AllowedSendAmount';
 import { RouteName } from '@/modules/transfer/components/TransferOverview/RouteInfo/RouteName';
+import { ReceiveLoading } from '@/modules/transfer/components/ReceiveInfo/ReceiveLoading';
+import { NoRouteFound } from '@/modules/transfer/components/TransferOverview/NoRouteFound';
+import { useDebounce } from '@/core/hooks/useDebounce';
+import { DEBOUNCE_DELAY } from '@/core/constants';
 export const ReceiveInfo = () => {
   const { getSortedReceiveAmount } = useGetReceiveAmount();
-  const { getToDecimals, toTokenInfo } = useToTokenInfo();
+  const { toTokenInfo } = useToTokenInfo();
   const theme = useTheme();
   const { colorMode } = useColorMode();
   const { formatMessage } = useIntl();
   const nativeToken = useGetNativeToken();
 
   const transferActionInfo = useAppSelector((state) => state.transfer.transferActionInfo);
+  const isGlobalFeeLoading = useAppSelector((state) => state.transfer.isGlobalFeeLoading);
+  const sendValue = useAppSelector((state) => state.transfer.sendValue);
 
   const receiveAmt = useMemo(() => {
+    if (!Number(sendValue)) return null;
     if (transferActionInfo && transferActionInfo.bridgeType) {
       const bridgeType = transferActionInfo.bridgeType;
       const receiveValue = getSortedReceiveAmount();
-      return receiveValue[bridgeType];
+      return Number(receiveValue[bridgeType]);
     }
     return null;
-  }, [getSortedReceiveAmount, transferActionInfo]);
+  }, [getSortedReceiveAmount, transferActionInfo, sendValue]);
 
   const bridgeType = useMemo(() => transferActionInfo?.bridgeType, [transferActionInfo]);
 
@@ -56,11 +63,6 @@ export const ReceiveInfo = () => {
     allowedSendAmount: STAllowedSendAmount,
   } = useGetStarGateFees();
   const { nativeFee: LZNativeFee, gasInfo: LZGasInfo } = useGetLayerZeroFees();
-
-  const decimals = useMemo(
-    () => (bridgeType && getToDecimals()?.[bridgeType]) || 18,
-    [getToDecimals, bridgeType],
-  );
 
   const feeDetails = useMemo(() => {
     let feeContent = '';
@@ -180,36 +182,49 @@ export const ReceiveInfo = () => {
     return null;
   }, [cBridgeAllowedAmt, STAllowedSendAmount, transferActionInfo]);
 
-  return receiveAmt ? (
-    <Flex flexDir={'column'} gap={'12px'}>
-      <Flex flexDir={'row'} justifyContent={'space-between'}>
-        <Box color={theme.colors[colorMode].input.title} fontSize={'14px'} fontWeight={400}>
-          {formatMessage({ id: 'you.receive.title' })}
-        </Box>
-      </Flex>
-      <Flex
-        borderRadius={'8px'}
-        p={'16px'}
-        flexDir={'column'}
-        gap={'12px'}
-        background={theme.colors[colorMode].receive.background}
-      >
-        <RouteName bridgeType={bridgeType} />
-        <RouteTitle
-          receiveAmt={formatNumber(Number(formatUnits(BigInt(receiveAmt), decimals)), 8)}
-          tokenAddress={toTokenInfo?.address}
-          toTokenInfo={toTokenInfo}
-        />
-        <Flex flexDir={'column'} gap={'4px'}>
-          <EstimatedArrivalTime bridgeType={bridgeType} />
-          <FeesInfo
-            bridgeType={bridgeType}
-            summary={feeDetails.summary}
-            breakdown={feeDetails.breakdown}
-          />
-          <AllowedSendAmount allowedSendAmount={allowedAmtContent} />
+  const debouncedSendValue = useDebounce(sendValue, DEBOUNCE_DELAY);
+  return debouncedSendValue === sendValue ? (
+    (receiveAmt && !!Number(sendValue)) || isGlobalFeeLoading ? (
+      <Flex flexDir={'column'} gap={'12px'}>
+        <Flex flexDir={'row'} justifyContent={'space-between'}>
+          <Box color={theme.colors[colorMode].input.title} fontSize={'14px'} fontWeight={400}>
+            {formatMessage({ id: 'you.receive.title' })}
+          </Box>
+        </Flex>
+        <Flex
+          borderRadius={'8px'}
+          p={'16px'}
+          flexDir={'column'}
+          gap={'12px'}
+          background={theme.colors[colorMode].receive.background}
+        >
+          {!isGlobalFeeLoading ? (
+            <>
+              <RouteName bridgeType={bridgeType} />
+              <RouteTitle
+                receiveAmt={receiveAmt ? formatNumber(Number(Number(receiveAmt)), 8) : undefined}
+                tokenAddress={toTokenInfo?.address}
+                toTokenInfo={toTokenInfo}
+              />
+              <Flex flexDir={'column'} gap={'4px'}>
+                <EstimatedArrivalTime bridgeType={bridgeType} />
+                <FeesInfo
+                  bridgeType={bridgeType}
+                  summary={feeDetails.summary}
+                  breakdown={feeDetails.breakdown}
+                />
+                <AllowedSendAmount allowedSendAmount={allowedAmtContent} />
+              </Flex>
+            </>
+          ) : (
+            <ReceiveLoading />
+          )}
         </Flex>
       </Flex>
-    </Flex>
-  ) : null;
+    ) : !!Number(debouncedSendValue) ? (
+      <NoRouteFound />
+    ) : null
+  ) : (
+    <ReceiveLoading />
+  );
 };

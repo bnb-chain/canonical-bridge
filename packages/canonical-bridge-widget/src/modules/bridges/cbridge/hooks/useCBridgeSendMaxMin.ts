@@ -6,7 +6,6 @@ import { ICBridgeMaxMinSendAmt } from '@/modules/bridges/cbridge/types';
 import { bridgeSDK } from '@/core/constants/bridgeSDK';
 import { useAppSelector } from '@/modules/store/StoreProvider';
 import { useCBridgeTransferParams } from '@/modules/bridges/cbridge/hooks/useCBridgeTransferParams';
-import { formatNumber } from '@/core/utils/number';
 
 export const useCBridgeSendMaxMin = (isDisabled = false) => {
   const { bridgeAddress } = useCBridgeTransferParams();
@@ -36,9 +35,10 @@ export const useCBridgeSendMaxMin = (isDisabled = false) => {
         });
 
         setMinMaxSendAmt({
-          min: formatNumber(Number(formatUnits(min, selectedToken?.decimal)), 8),
-          max: formatNumber(Number(formatUnits(max, selectedToken?.decimal)), 8),
+          min: formatUnits(min, selectedToken?.decimal),
+          max: formatUnits(max, selectedToken?.decimal),
         });
+        // eslint-disable-next-line
       } catch (error: any) {
         // eslint-disable-next-line no-console
         console.log('error', error);

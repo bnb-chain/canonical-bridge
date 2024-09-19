@@ -4,6 +4,7 @@ import { CanonicalBridgeConfig, CanonicalBridgeProvider } from '@/index';
 import { bridgeConfigs } from '@/dev/data';
 import { chains } from '@/dev/data/chains';
 import { en as messages } from '@/dev/locales/en';
+import { dark } from '@/dev/theme/dark';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -19,7 +20,7 @@ const config: CanonicalBridgeConfig = {
   appearance: {
     mode: 'dark',
     theme: {
-      dark: {},
+      dark: dark,
       light: {},
     },
   },

@@ -101,6 +101,7 @@ export const useGetDeBridgeFees = () => {
             });
           }
         }
+        // eslint-disable-next-line
       } catch (error: any) {
         // eslint-disable-next-line no-console
         console.log(error, error.message, error.response);

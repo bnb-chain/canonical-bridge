@@ -22,9 +22,8 @@ export const en = {
   'route.time.title': 'Time:',
   'route.allowed-send-amount': 'Allowed send range:',
 
-  'route.no-found.title': 'No Routes Found',
-  'route.no-found.desc': `Why we couldn't find a route: low liquidity on token, very low input amount or no routes
-        available for the selected input/output token combination.`,
+  'route.no-found.title': 'No Available Routes',
+  'route.no-found.desc': `Low liquidity, small input, or incompatible network/token. Adjust and retry.`,
   'route.option.cBridge.title': 'cBridge:',
   'route.option.deBridge.title': 'deBridge:',
   'route.option.stargate.title': 'Stargate:',
