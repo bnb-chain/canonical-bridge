@@ -1,9 +1,9 @@
 import { Flex, useColorMode, useIntl, useTheme } from '@bnb-chain/space';
-import { useCallback, useMemo } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 import { formatUnits } from 'viem';
 
 import { useToTokenInfo } from '@/modules/transfer/hooks/useToTokenInfo';
-import { setTransferActionInfo } from '@/modules/transfer/action';
+import { setRouteError, setTransferActionInfo } from '@/modules/transfer/action';
 import { useAppDispatch, useAppSelector } from '@/modules/store/StoreProvider';
 import { formatNumber } from '@/core/utils/number';
 import { useGetNativeToken } from '@/modules/transfer/hooks/useGetNativeToken';
@@ -51,6 +51,16 @@ export const CBridgeOption = () => {
       : '--';
   }, [estimatedAmount, toTokenInfo, sendValue, getToDecimals]);
 
+  useEffect(() => {
+    if (Number(estimatedAmount?.['cBridge']?.estimated_receive_amt) < 0) {
+      dispatch(
+        setRouteError({
+          cBridge: 'Given amount of input asset is too small to cover operational costs',
+        }),
+      );
+    }
+  }, [estimatedAmount?.['cBridge']?.estimated_receive_amt]);
+
   const feeDetails = useMemo(() => {
     let feeContent = '';
     const feeBreakdown = [];
@@ -83,8 +93,8 @@ export const CBridgeOption = () => {
   }, [gasInfo, nativeToken, protocolFee, baseFee, formatMessage]);
 
   const isError = useMemo(
-    () => estimatedAmount?.cBridge === 'error' || isAllowSendError || false,
-    [estimatedAmount?.cBridge, isAllowSendError],
+    () => estimatedAmount?.cBridge === 'error' || isAllowSendError || receiveAmt === '--' || false,
+    [estimatedAmount?.cBridge, isAllowSendError, receiveAmt],
   );
 
   const onSelectBridge = useCallback(() => {
@@ -113,7 +123,7 @@ export const CBridgeOption = () => {
         transferActionInfo?.bridgeType === 'cBridge' ? 'rgba(255, 233, 0, 0.06);' : 'none'
       }
       borderRadius={'8px'}
-      padding={'12px'}
+      padding={'16px'}
       position={'relative'}
       cursor={isError ? 'default' : 'pointer'}
       _hover={{

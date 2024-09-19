@@ -4,7 +4,6 @@ import { formatUnits } from 'viem';
 
 import { bridgeSDK } from '@/core/constants/bridgeSDK';
 import { useAppSelector } from '@/modules/store/StoreProvider';
-import { formatNumber } from '@/core/utils/number';
 import { useCBridgeTransferParams } from '@/modules/aggregator/adapters/cBridge/hooks/useCBridgeTransferParams';
 import { ICBridgeMaxMinSendAmt } from '@/modules/aggregator/adapters/cBridge/types';
 
@@ -36,9 +35,10 @@ export const useCBridgeSendMaxMin = (isDisabled = false) => {
         });
 
         setMinMaxSendAmt({
-          min: formatNumber(Number(formatUnits(min, selectedToken?.decimals)), 8),
-          max: formatNumber(Number(formatUnits(max, selectedToken?.decimals)), 8),
+          min: formatUnits(min, selectedToken?.decimals),
+          max: formatUnits(max, selectedToken?.decimals),
         });
+        // eslint-disable-next-line
       } catch (error: any) {
         // eslint-disable-next-line no-console
         console.log('error', error);

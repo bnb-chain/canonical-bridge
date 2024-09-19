@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { formatUnits } from 'viem';
+import { formatUnits, parseUnits } from 'viem';
 import { usePublicClient } from 'wagmi';
 
 import { formatNumber } from '@/core/utils/number';
@@ -10,6 +10,7 @@ import { DEBOUNCE_DELAY } from '@/core/constants';
 import { useGetAllowance } from '@/core/contract/hooks/useGetAllowance';
 import { useCBridgeSendMaxMin } from '@/modules/aggregator/adapters/cBridge/hooks/useCBridgeSendMaxMin';
 import { useCBridgeTransferParams } from '@/modules/aggregator/adapters/cBridge/hooks/useCBridgeTransferParams';
+import { useGetTokenBalance } from '@/core/contract/hooks/useGetTokenBalance';
 
 export const useGetCBridgeFees = () => {
   const { toTokenInfo, getToDecimals } = useToTokenInfo();
@@ -26,6 +27,10 @@ export const useGetCBridgeFees = () => {
     gas: bigint;
     gasPrice: bigint;
   }>({ gas: 0n, gasPrice: 0n });
+
+  const { balance } = useGetTokenBalance({
+    tokenAddress: selectedToken?.address as `0x${string}`,
+  });
 
   useEffect(() => {
     setIsAllowSendError(false);
@@ -54,6 +59,13 @@ export const useGetCBridgeFees = () => {
     }
     (async () => {
       try {
+        const amount = parseUnits(
+          sendValue,
+          selectedToken?.cBridge?.raw?.token?.decimal ?? (18 as number),
+        );
+        if (!balance || balance < amount) {
+          return;
+        }
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const gas = await publicClient.estimateContractGas(debouncedArguments as any);
         const gasPrice = await publicClient.getGasPrice();
@@ -70,7 +82,15 @@ export const useGetCBridgeFees = () => {
     return () => {
       mount = false;
     };
-  }, [debouncedArguments, allowance, publicClient, isAllowSendError]);
+  }, [
+    debouncedArguments,
+    allowance,
+    publicClient,
+    isAllowSendError,
+    balance,
+    sendValue,
+    selectedToken?.cBridge?.raw?.token?.decimal,
+  ]);
 
   const baseFee = useMemo(() => {
     return estimatedAmount?.['cBridge'] && toTokenInfo && Number(sendValue) > 0

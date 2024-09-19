@@ -38,9 +38,15 @@ export const useLoadingBridgeFees = () => {
     if (!selectedToken || !publicClient || !fromChain || !toChain || !debouncedSendValue) {
       return;
     }
-    dispatch(setIsGlobalFeeLoading(true));
     dispatch(setEstimatedAmount(undefined));
-    dispatch(setRouteError(undefined));
+    dispatch(
+      setRouteError({
+        deBridge: undefined,
+        cBridge: undefined,
+        stargate: undefined,
+        layerZero: undefined,
+      }),
+    );
     const bridgeTypeList: BridgeType[] = [];
     const valueArr = [];
     availableBridgeTypes.forEach((bridge) => {
@@ -74,6 +80,7 @@ export const useLoadingBridgeFees = () => {
       // eslint-disable-next-line no-console
       console.log('API response deBridge[0], cBridge[1], stargate[2], layerZero[3]', response);
 
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const [debridgeEst, cbridgeEst, stargateEst, layerZeroEst] = response as any;
       // deBridge
       if (debridgeEst.status === 'fulfilled' && debridgeEst?.value) {
@@ -119,10 +126,7 @@ export const useLoadingBridgeFees = () => {
         dispatch(setEstimatedAmount({ stargate: toObject(stargateEst.value) }));
         valueArr.push({
           type: 'stargate',
-          value: formatUnits(
-            stargateEst.value?.[2].amountReceivedLD,
-            selectedToken?.stargate?.raw?.decimals || 18,
-          ),
+          value: formatUnits(stargateEst.value?.[2].amountReceivedLD, getToDecimals()['stargate']),
         });
       } else if (stargateEst.status === 'rejected') {
         dispatch(setRouteError({ stargate: stargateEst.reason.message }));

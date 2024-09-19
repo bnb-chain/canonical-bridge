@@ -87,7 +87,7 @@ export const DeBridgeOption = ({}: DeBridgeOptionProps) => {
   }, [debridgeFee, gasInfo, marketMakerFee, nativeToken, protocolFee, formatMessage]);
 
   const isError = useMemo(
-    () => estimatedAmount?.deBridge === 'error' || false,
+    () => estimatedAmount?.deBridge === 'error' || receiveAmt === '--' || false,
     [estimatedAmount?.deBridge],
   );
 
@@ -122,7 +122,7 @@ export const DeBridgeOption = ({}: DeBridgeOptionProps) => {
         transferActionInfo?.bridgeType === 'deBridge' ? 'rgba(255, 233, 0, 0.06);' : 'none'
       }
       borderRadius={'8px'}
-      padding={`${'16px'}`}
+      padding={'16px'}
       position={'relative'}
       cursor={isError ? 'default' : 'pointer'}
       _hover={{

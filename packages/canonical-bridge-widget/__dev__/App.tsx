@@ -3,6 +3,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { CanonicalBridgeConfig, CanonicalBridgeProvider } from '@/index';
 import { bridgeConfig } from '@/dev/data';
 import { en as messages } from '@/dev/locales/en';
+import { dark } from '@/dev/theme/dark';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -18,7 +19,7 @@ const config: CanonicalBridgeConfig = {
   appearance: {
     mode: 'dark',
     theme: {
-      dark: {},
+      dark: dark,
       light: {},
     },
   },

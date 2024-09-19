@@ -80,11 +80,11 @@ export const StarGateOption = () => {
 
   const receiveAmt = useMemo(() => {
     return estimatedAmount &&
-      estimatedAmount?.['stargate']?.[2].amountReceivedLD &&
       toTokenInfo &&
       Number(sendValue) > 0 &&
+      estimatedAmount?.['stargate']?.[2].amountReceivedLD &&
       Number(estimatedAmount['stargate']?.[2]?.amountReceivedLD) > 0
-      ? `~${formatNumber(
+      ? `${formatNumber(
           Number(
             formatUnits(
               BigInt(estimatedAmount?.['stargate']?.[2].amountReceivedLD),
@@ -97,7 +97,7 @@ export const StarGateOption = () => {
   }, [estimatedAmount, toTokenInfo, sendValue, getToDecimals]);
 
   const isError = useMemo(
-    () => estimatedAmount?.stargate === 'error' || isAllowSendError || false,
+    () => estimatedAmount?.stargate === 'error' || isAllowSendError || receiveAmt === '--' || false,
     [estimatedAmount?.stargate, isAllowSendError],
   );
 
@@ -130,7 +130,7 @@ export const StarGateOption = () => {
           : 'none'
       }
       borderRadius={'8px'}
-      padding={'12px'}
+      padding={'16px'}
       cursor={isError ? 'default' : 'pointer'}
       _hover={{
         borderColor: isError
