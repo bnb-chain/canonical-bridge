@@ -268,7 +268,7 @@ export const ReceiveInfo = ({ onOpen }: ReceiveInfoProps) => {
               </Flex>
             </>
           ) : !receiveAmt && !isGlobalFeeLoading ? (
-            <NoRouteFound />
+            <NoRouteFound onOpen={onOpen} />
           ) : (
             <ReceiveLoading />
           )
