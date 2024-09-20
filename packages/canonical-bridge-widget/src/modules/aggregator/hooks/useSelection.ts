@@ -75,9 +75,9 @@ export function useSelection() {
     },
 
     selectFromChain(fromChain: IBridgeChain) {
-      const isIncompatible = isChainOrTokenCompatible(fromChain);
+      const isCompatible = isChainOrTokenCompatible(fromChain);
 
-      if (isIncompatible) {
+      if (isCompatible) {
         dispatch(setFromChain(fromChain));
         updateToToken({
           fromChainId: fromChain?.id,

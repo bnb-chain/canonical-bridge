@@ -70,12 +70,16 @@ export const en = {
   'select-modal.token.placeholder': 'Search token by name',
   'select-modal.token.column.name': 'Name',
   'select-modal.token.column.balance': 'Wallet Balance',
+  'select-modal.token.incompatible.tooltip':
+    'This token is incompatible by the source or destination network you’ve selected. Please change the network settings',
 
   'select-modal.source.title': 'Source Network',
   'select-modal.source.placeholder': 'Search network by name',
 
   'select-modal.destination.title': 'Destination Network',
   'select-modal.destination.placeholder': 'Search network by name',
+  'select-modal.destination.incompatible.tooltip':
+    'The token you’ve selected is incompatible with this network. Please select another token.',
 
   'wallet.error.switch-network':
     'An error occurred when attempting to switch the network. Please select another network or try again.',
