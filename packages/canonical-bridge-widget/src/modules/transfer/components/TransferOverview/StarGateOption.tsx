@@ -1,5 +1,5 @@
 import { Flex, useColorMode, useIntl, useTheme } from '@bnb-chain/space';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useMemo } from 'react';
 import { formatUnits } from 'viem';
 
 import { setTransferActionInfo } from '@/modules/transfer/action';
@@ -29,22 +29,8 @@ export const StarGateOption = () => {
   const estimatedAmount = useAppSelector((state) => state.transfer.estimatedAmount);
   const theme = useTheme();
 
-  const { nativeFee, gasInfo, protocolFee, allowedSendAmount } = useGetStargateFees();
-  const [isAllowSendError, setIsAllowSendError] = useState(false);
-
-  useEffect(() => {
-    setIsAllowSendError(false);
-    if (!sendValue || !selectedToken || !toTokenInfo) {
-      return;
-    }
-    if (allowedSendAmount?.min && allowedSendAmount?.max) {
-      if (Number(sendValue) < Number(allowedSendAmount.min)) {
-        setIsAllowSendError(true);
-      } else if (Number(sendValue) > Number(allowedSendAmount.max)) {
-        setIsAllowSendError(true);
-      }
-    }
-  }, [allowedSendAmount, sendValue, selectedToken, toTokenInfo]);
+  const { nativeFee, gasInfo, protocolFee, allowedSendAmount, isAllowSendError } =
+    useGetStargateFees();
 
   const feeDetails = useMemo(() => {
     let feeContent = '';

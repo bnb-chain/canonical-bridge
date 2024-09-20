@@ -67,6 +67,7 @@ export const ReceiveInfo = ({ onOpen }: ReceiveInfoProps) => {
     protocolFee: CBProtocolFee,
     gasInfo: CBGasInfo,
     cBridgeAllowedAmt,
+    isAllowSendError,
   } = useGetCBridgeFees();
   const {
     debridgeFee,
@@ -79,6 +80,7 @@ export const ReceiveInfo = ({ onOpen }: ReceiveInfoProps) => {
     gasInfo: STGasInfo,
     protocolFee: STProtocolFee,
     allowedSendAmount: STAllowedSendAmount,
+    isAllowSendError: STIsAllowSendError,
   } = useGetStargateFees();
   const { nativeFee: LZNativeFee, gasInfo: LZGasInfo } = useGetLayerZeroFees();
 
@@ -250,7 +252,16 @@ export const ReceiveInfo = ({ onOpen }: ReceiveInfoProps) => {
                 summary={feeDetails.summary}
                 breakdown={feeDetails.breakdown}
               />
-              <AllowedSendAmount allowedSendAmount={allowedAmtContent} />
+              <AllowedSendAmount
+                allowedSendAmount={allowedAmtContent}
+                isError={
+                  bridgeType === 'cBridge'
+                    ? isAllowSendError
+                    : bridgeType === 'stargate'
+                    ? STIsAllowSendError
+                    : false
+                }
+              />
             </Flex>
           </>
         ) : !isGlobalFeeLoading && !receiveAmt ? (

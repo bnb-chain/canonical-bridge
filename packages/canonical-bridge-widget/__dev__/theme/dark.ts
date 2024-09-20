@@ -86,6 +86,7 @@ export const dark = {
     route: '#1E2026',
     warning: '#5C2600',
     tag: '#373943',
+    body: '#14151A',
   },
   receive: {
     background: '#373943',

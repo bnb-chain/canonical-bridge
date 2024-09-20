@@ -14,6 +14,7 @@ export const RouteChangeButton = ({ onOpen }: { onOpen: () => void }) => {
       alignItems={'center'}
       gap={'1px'}
       fontSize={'12px'}
+      lineHeight={'16px'}
       fontWeight={500}
       color={theme.colors[colorMode].text.brand}
       _hover={{ color: theme.colors[colorMode].support.brand['1'] }}
