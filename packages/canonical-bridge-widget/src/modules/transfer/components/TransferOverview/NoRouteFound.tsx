@@ -55,7 +55,7 @@ export const NoRouteFound = ({ onOpen }: NoRouteFoundProps) => {
           textDecoration={'underline'}
           color={theme.colors[colorMode].text.brand}
           cursor={'pointer'}
-          _hover={{ color: theme.colors[colorMode].support.brand['1'] }}
+          _hover={{ color: theme.colors[colorMode].button.brand.hover }}
           onClick={onOpen}
         >
           {formatMessage({ id: 'route.no-found.mobile.view.routes.link' })}
