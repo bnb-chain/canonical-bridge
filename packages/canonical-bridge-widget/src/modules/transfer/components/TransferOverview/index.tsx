@@ -58,12 +58,14 @@ export function TransferOverview({ routeContentBottom }: TransferOverviewProps) 
       if (!selectedToken || !Number(debouncedSendValue)) {
         dispatch(setEstimatedAmount(undefined));
         dispatch(setIsRefreshing(false));
+        dispatch(setIsGlobalFeeLoading(false));
         return;
       }
-      dispatch(setIsGlobalFeeLoading(true));
       dispatch(setIsRefreshing(true));
       loadingBridgeFees();
       dispatch(setIsRefreshing(false));
+    } else {
+      dispatch(setIsGlobalFeeLoading(true));
     }
   }, [selectedToken, debouncedSendValue, dispatch, sendValue, loadingBridgeFees, isBase]);
 

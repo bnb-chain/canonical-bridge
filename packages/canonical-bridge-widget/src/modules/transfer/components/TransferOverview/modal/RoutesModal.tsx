@@ -19,11 +19,11 @@ export function RoutesModal(props: RoutesModalProps) {
       <ModalOverlay w={'100%'} />
       <ModalContent
         background={theme.colors[colorMode].background.modal}
-        borderRadius={'24px'}
         p={0}
-        h={'665px'}
+        h={'100vh'}
         w={'100%'}
         overflow="hidden"
+        margin={0}
       >
         <Flex
           h={'64px'}

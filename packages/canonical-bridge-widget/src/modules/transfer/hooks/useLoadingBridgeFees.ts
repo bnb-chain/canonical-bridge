@@ -35,6 +35,7 @@ export const useLoadingBridgeFees = () => {
   const debouncedSendValue = useDebounce(sendValue, DEBOUNCE_DELAY);
   const loadingBridgeFees = useCallback(async () => {
     if (!selectedToken || !publicClient || !fromChain || !toChain || !debouncedSendValue) {
+      dispatch(setIsGlobalFeeLoading(false));
       return;
     }
     dispatch(setEstimatedAmount(undefined));
