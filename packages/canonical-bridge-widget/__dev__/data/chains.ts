@@ -211,8 +211,6 @@ export const chains: IChainConfig[] = [
       name: 'opbnbscan',
       url: 'https://mainnet.opbnbscan.com',
     },
-    chainType: 'link',
-    externalUrl: 'https://opbnb-bridge.bnbchain.org/deposit',
   },
   {
     id: 248,

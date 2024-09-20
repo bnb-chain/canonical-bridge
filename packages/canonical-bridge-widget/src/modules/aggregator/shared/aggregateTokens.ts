@@ -4,6 +4,7 @@ import { formatTokenIcon } from '@/core/utils/string';
 import { ITransferTokenPair } from '@/modules/aggregator/shared/BaseAdapter';
 import { getDisplayTokenSymbol } from '@/modules/aggregator/shared/getDisplayTokenSymbol';
 import { AdapterType, IBridgeConfig, IBridgeToken } from '@/modules/aggregator/types';
+import { isChainOrTokenCompatible } from '@/modules/aggregator/shared/isChainOrTokenCompatible';
 
 export interface IGetTokensParams {
   fromChainId?: number;
@@ -73,6 +74,16 @@ export function aggregateTokens({ adapters, params, config }: IAggregateTokensPa
 
   const tokens = [...tokenMap.values()];
   tokens.sort((a, b) => {
+    const isA = isChainOrTokenCompatible(a);
+    const isB = isChainOrTokenCompatible(b);
+
+    if (isA && !isB) {
+      return -1;
+    }
+    if (!isA && isB) {
+      return 1;
+    }
+
     const indexA = tokenOrder.indexOf(a.displaySymbol.toUpperCase());
     const indexB = tokenOrder.indexOf(b.displaySymbol.toUpperCase());
 

@@ -117,6 +117,12 @@ export class StargateAdapter extends BaseAdapter<
     return chain.chainId;
   }
 
+  protected getChainIdAsObject(chainId: number) {
+    return {
+      chainId,
+    };
+  }
+
   public getTokenInfo(token: IStargateToken) {
     return {
       name: token.name,

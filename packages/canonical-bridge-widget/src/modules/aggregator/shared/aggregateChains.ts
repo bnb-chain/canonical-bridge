@@ -1,9 +1,9 @@
 import {
   AdapterType,
+  ChainType,
   IBridgeChain,
   IBridgeConfig,
   IBridgeToken,
-  IChainConfig,
 } from '@/modules/aggregator/types';
 import { env } from '@/core/configs/env';
 import { isChainOrTokenCompatible } from '@/modules/aggregator/shared/isChainOrTokenCompatible';
@@ -28,7 +28,6 @@ export interface IAggregateChainsParams {
 export function aggregateChains({ direction, adapters, params, config }: IAggregateChainsParams) {
   const chainMap = new Map<number, IBridgeChain>();
 
-  const chainConfigs = config.chainConfigs;
   const chainOrder = config.order.chains;
 
   adapters.forEach((adapter) => {
@@ -59,7 +58,7 @@ export function aggregateChains({ direction, adapters, params, config }: IAggreg
         bridgeChain = {
           ...getChainInfo({
             chainId,
-            chainConfigs,
+            config,
           }),
         };
       }
@@ -109,21 +108,16 @@ export function aggregateChains({ direction, adapters, params, config }: IAggreg
   return chains;
 }
 
-function getChainInfo({
-  chainId,
-  chainConfigs,
-}: {
-  chainId: number;
-  chainConfigs: IChainConfig[];
-}) {
-  const chainConfig = chainConfigs.find((item) => item.id === chainId);
+function getChainInfo({ chainId, config }: { chainId: number; config: IBridgeConfig }) {
+  const chainConfig = config.chainConfigs.find((item) => item.id === chainId);
 
   const explorerUrl = chainConfig?.explorer.url?.replace(/\/$/, '') ?? '';
   const tmpUrlPattern = explorerUrl ? `${explorerUrl}/token/{0}` : '';
   const tokenUrlPattern = chainConfig?.explorer?.tokenUrlPattern || tmpUrlPattern;
 
-  const chainType = chainConfig?.chainType ?? 'evm';
-  const externalUrl = chainConfig?.externalUrl;
+  const externalConfig = config.externalChains?.find((item) => item.chainId === chainId);
+  const chainType: ChainType = externalConfig ? 'link' : 'evm';
+  const externalBridgeUrl = externalConfig?.bridgeUrl;
 
   return {
     id: chainId,
@@ -133,6 +127,6 @@ function getChainInfo({
     rpcUrl: chainConfig?.rpcUrl ?? '',
     tokenUrlPattern,
     chainType,
-    externalUrl,
+    externalBridgeUrl,
   };
 }

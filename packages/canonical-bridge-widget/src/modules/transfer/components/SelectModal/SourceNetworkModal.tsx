@@ -54,7 +54,7 @@ export function SourceNetworkModal(props: SourceNetworkModalProps) {
             isDisabled={false}
             onClick={() => {
               if (item.chainType === 'link') {
-                openLink(item.externalUrl);
+                openLink(item.externalBridgeUrl);
               } else {
                 selectFromChain(item);
                 onClose();

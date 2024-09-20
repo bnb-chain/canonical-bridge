@@ -117,6 +117,12 @@ export class LayerZeroAdapter extends BaseAdapter<
     return chain.chainId;
   }
 
+  protected getChainIdAsObject(chainId: number) {
+    return {
+      chainId,
+    };
+  }
+
   public getTokenInfo(token: ILayerZeroToken) {
     return {
       name: '',

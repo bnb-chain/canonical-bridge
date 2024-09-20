@@ -118,6 +118,12 @@ export class DeBridgeAdapter extends BaseAdapter<
     return chain.chainId;
   }
 
+  protected getChainIdAsObject(chainId: number) {
+    return {
+      chainId,
+    };
+  }
+
   public getTokenInfo(token: IDeBridgeToken) {
     return {
       name: token.name,

@@ -272,6 +272,12 @@ export class CBridgeAdapter extends BaseAdapter<
     return chain.id;
   }
 
+  protected getChainIdAsObject(chainId: number) {
+    return {
+      id: chainId,
+    };
+  }
+
   public getTokenInfo(token: ICBridgeToken) {
     return {
       name: token.name,

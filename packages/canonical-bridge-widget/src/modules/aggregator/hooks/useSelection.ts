@@ -1,4 +1,3 @@
-import { isSameAddress } from '@/core/utils/address';
 import { useBridgeConfig } from '@/modules/aggregator/components/BridgeConfigProvider';
 import { isChainOrTokenCompatible } from '@/modules/aggregator/shared/isChainOrTokenCompatible';
 import { IBridgeChain, IBridgeToken } from '@/modules/aggregator/types';
@@ -35,12 +34,10 @@ export function useSelection() {
       fromChainId,
       toChainId,
       tokenSymbol,
-      tokenAddress,
     }: {
       fromChainId: number;
       toChainId: number;
       tokenSymbol: string;
-      tokenAddress: string;
     }) {
       const bridgeTypes = adapters.map((item) => item.bridgeType);
       const token = Object.fromEntries(
@@ -62,7 +59,9 @@ export function useSelection() {
 
       const newFromChain = fromChains.find((item) => item.id === fromChainId);
       const newToChain = toChains.find((item) => item.id === toChainId);
-      const newToken = tokens.find((item) => isSameAddress(item.address, tokenAddress));
+      const newToken = tokens.find(
+        (item) => item.symbol.toUpperCase() === tokenSymbol.toUpperCase(),
+      );
 
       dispatch(setFromChain(newFromChain));
       dispatch(setToChain(newToChain));

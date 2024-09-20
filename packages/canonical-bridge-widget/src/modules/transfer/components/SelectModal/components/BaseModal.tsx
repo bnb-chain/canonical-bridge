@@ -1,5 +1,6 @@
 import { CloseIcon } from '@bnb-chain/icons';
 import { Flex, Modal, ModalContent, ModalOverlay, useColorMode, useTheme } from '@bnb-chain/space';
+import { useEffect } from 'react';
 
 import { SearchInput } from '@/modules/transfer/components/SelectModal/components/SearchInput';
 import { NoResultFound } from '@/modules/transfer/components/SelectModal/components/NoResultFound';
@@ -19,6 +20,12 @@ export function BaseModal(props: BaseModalProps) {
 
   const theme = useTheme();
   const { colorMode } = useColorMode();
+
+  useEffect(() => {
+    if (!isOpen) {
+      onSearch('');
+    }
+  }, [isOpen]);
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} isCentered>

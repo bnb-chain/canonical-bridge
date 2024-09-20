@@ -52,17 +52,17 @@ export function DestinationNetworkModal(props: DestinationNetworkModalProps) {
           <ListItem
             iconUrl={item.icon}
             isActive={toChain?.id === item.id}
-            isDisabled={!isChainOrTokenCompatible(item) && item.chainType !== 'link'}
+            isDisabled={!isChainOrTokenCompatible(item)}
             onClick={() => {
               if (item.chainType === 'link') {
-                openLink(item.externalUrl);
+                openLink(item.externalBridgeUrl);
               } else {
                 selectToChain(item);
                 onClose();
               }
             }}
           >
-            <Flex>
+            <Flex alignItems="center">
               {item.name}
               {item.chainType === 'link' && (
                 <ExLinkIcon
