@@ -579,20 +579,6 @@ export const chains: IChainConfig[] = [
     },
   },
   {
-    id: 16350,
-    name: 'Incentiv Devnet',
-    nativeCurrency: {
-      name: 'Testnet INC',
-      symbol: 'INC',
-      decimals: 18,
-    },
-    rpcUrl: 'https://rpc.ankr.com/incentiv_devnet',
-    explorer: {
-      name: '',
-      url: '',
-    },
-  },
-  {
     id: 23294,
     name: 'Oasis Sapphire',
     nativeCurrency: {

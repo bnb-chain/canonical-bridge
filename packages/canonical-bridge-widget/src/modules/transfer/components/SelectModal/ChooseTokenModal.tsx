@@ -9,6 +9,7 @@ import { VirtualList } from '@/core/components/VirtualList';
 import { ListItem } from '@/modules/transfer/components/SelectModal/components/ListItem';
 import { isChainOrTokenCompatible } from '@/modules/aggregator/shared/isChainOrTokenCompatible';
 import { useSelection } from '@/modules/aggregator/hooks/useSelection';
+import { isSameAddress } from '@/core/utils/address';
 
 interface ChooseTokenModalProps {
   isOpen: boolean;
@@ -55,6 +56,7 @@ export function ChooseTokenModal(props: ChooseTokenModalProps) {
         lineHeight="16px"
         color={theme.colors[colorMode].text.secondary}
         pb={'12px'}
+        px={'20px'}
         justifyContent="space-between"
       >
         <Text>{formatMessage({ id: 'select-modal.token.column.name' })}</Text>
@@ -65,12 +67,12 @@ export function ChooseTokenModal(props: ChooseTokenModalProps) {
           {(item) => (
             <ListItem
               iconUrl={item.icon}
+              isActive={isSameAddress(selectedToken?.address, item.address)}
+              isDisabled={!isChainOrTokenCompatible(item)}
               onClick={() => {
                 selectToken(item);
                 onClose();
               }}
-              isActive={selectedToken?.symbol === item.symbol}
-              isDisabled={!isChainOrTokenCompatible(item)}
             >
               <Flex>{item.displaySymbol}</Flex>
             </ListItem>

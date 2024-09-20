@@ -1,5 +1,6 @@
 import { CloseIcon } from '@bnb-chain/icons';
 import { Flex, Modal, ModalContent, ModalOverlay, useColorMode, useTheme } from '@bnb-chain/space';
+import { useEffect } from 'react';
 
 import { SearchInput } from '@/modules/transfer/components/SelectModal/components/SearchInput';
 import { NoResultFound } from '@/modules/transfer/components/SelectModal/components/NoResultFound';
@@ -19,6 +20,12 @@ export function BaseModal(props: BaseModalProps) {
 
   const theme = useTheme();
   const { colorMode } = useColorMode();
+
+  useEffect(() => {
+    if (!isOpen) {
+      onSearch('');
+    }
+  }, [isOpen]);
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} isCentered>
@@ -56,9 +63,11 @@ export function BaseModal(props: BaseModalProps) {
             }}
           />
         </Flex>
-        <Flex flexDir="column" p="24px 20px 16px" flex={1}>
-          <SearchInput onChange={onSearch} placeholder={placeholder} />
-          <Flex flexDir="column" mt={'24px'} flex={1} overflowY="auto">
+        <Flex flexDir="column" p="24px 0px 16px" flex={1}>
+          <Flex px={'20px'} mb={'24px'}>
+            <SearchInput onChange={onSearch} placeholder={placeholder} />
+          </Flex>
+          <Flex flexDir="column" flex={1} overflowY="auto">
             {isNoResult ? <NoResultFound /> : <>{children}</>}
           </Flex>
         </Flex>

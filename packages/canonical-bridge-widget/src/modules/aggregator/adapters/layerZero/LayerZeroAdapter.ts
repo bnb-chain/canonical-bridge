@@ -18,9 +18,10 @@ export class LayerZeroAdapter extends BaseAdapter<
     const { chains, tokens } = this.config;
 
     const filteredChains = chains.filter((chain) => {
+      const hasChainConfig = this.includedChains.includes(chain.chainId);
       const isExcludedChain = this.excludedChains.includes(chain.chainId);
       const hasToken = tokens[chain.chainId]?.length > 0;
-      return !isExcludedChain && hasToken;
+      return hasChainConfig && !isExcludedChain && hasToken;
     });
 
     const chainMap = new Map<number, ILayerZeroChain>();
@@ -114,6 +115,12 @@ export class LayerZeroAdapter extends BaseAdapter<
 
   public getChainId(chain: ILayerZeroChain) {
     return chain.chainId;
+  }
+
+  protected getChainIdAsObject(chainId: number) {
+    return {
+      chainId,
+    };
   }
 
   public getTokenInfo(token: ILayerZeroToken) {

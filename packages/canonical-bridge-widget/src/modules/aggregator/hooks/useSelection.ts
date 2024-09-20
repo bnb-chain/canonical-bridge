@@ -1,4 +1,3 @@
-import { isSameAddress } from '@/core/utils/address';
 import { useBridgeConfig } from '@/modules/aggregator/components/BridgeConfigProvider';
 import { isChainOrTokenCompatible } from '@/modules/aggregator/shared/isChainOrTokenCompatible';
 import { IBridgeChain, IBridgeToken } from '@/modules/aggregator/types';
@@ -35,12 +34,10 @@ export function useSelection() {
       fromChainId,
       toChainId,
       tokenSymbol,
-      tokenAddress,
     }: {
       fromChainId: number;
       toChainId: number;
       tokenSymbol: string;
-      tokenAddress: string;
     }) {
       const bridgeTypes = adapters.map((item) => item.bridgeType);
       const token = Object.fromEntries(
@@ -62,7 +59,9 @@ export function useSelection() {
 
       const newFromChain = fromChains.find((item) => item.id === fromChainId);
       const newToChain = toChains.find((item) => item.id === toChainId);
-      const newToken = tokens.find((item) => isSameAddress(item.address, tokenAddress));
+      const newToken = tokens.find(
+        (item) => item.symbol.toUpperCase() === tokenSymbol.toUpperCase(),
+      );
 
       dispatch(setFromChain(newFromChain));
       dispatch(setToChain(newToChain));
@@ -84,23 +83,24 @@ export function useSelection() {
           fromChainId: fromChain?.id,
         });
       } else {
-        const toChains = getToChains({
+        const toChain = getToChains({
           fromChainId: fromChain.id,
-        });
-        const newToChain = toChains.find((chain) => isChainOrTokenCompatible(chain));
+        }).find((chain) => isChainOrTokenCompatible(chain) && chain.chainType !== 'link');
 
-        const tokens = getTokens({
+        const newToken = getTokens({
           fromChainId: fromChain.id,
-          toChainId: newToChain?.id,
-        });
-        const newToken = tokens.find((token) => isChainOrTokenCompatible(token));
+          toChainId: toChain?.id,
+        }).find((token) => isChainOrTokenCompatible(token));
 
-        const fromChains = getFromChains({
+        const newFromChain = getFromChains({
           toChainId: toChain?.id,
           token: newToken,
-        });
+        }).find((chain) => chain.id === fromChain.id);
 
-        const newFromChain = fromChains.find((chain) => chain.id === fromChain.id);
+        const newToChain = getToChains({
+          fromChainId: fromChain?.id,
+          token: newToken,
+        }).find((chain) => chain.id === toChain?.id);
 
         dispatch(setFromChain(newFromChain));
         dispatch(setToChain(newToChain));

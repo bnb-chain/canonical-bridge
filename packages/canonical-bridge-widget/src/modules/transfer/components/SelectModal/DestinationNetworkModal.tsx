@@ -1,4 +1,4 @@
-import { Flex, useIntl } from '@bnb-chain/space';
+import { Flex, useColorMode, useIntl, useTheme } from '@bnb-chain/space';
 
 import { BaseModal } from '@/modules/transfer/components/SelectModal/components/BaseModal';
 import { VirtualList } from '@/core/components/VirtualList';
@@ -8,6 +8,8 @@ import { useSearch } from '@/modules/transfer/components/SelectModal/hooks/useSe
 import { useToChains } from '@/modules/aggregator/hooks/useToChains';
 import { ListItem } from '@/modules/transfer/components/SelectModal/components/ListItem';
 import { useSelection } from '@/modules/aggregator/hooks/useSelection';
+import { ExLinkIcon } from '@/core/components/icons/ExLinkIcon';
+import { openLink } from '@/core/utils/common';
 
 interface DestinationNetworkModalProps {
   isOpen: boolean;
@@ -23,6 +25,8 @@ export function DestinationNetworkModal(props: DestinationNetworkModalProps) {
   const selectedToken = useAppSelector((state) => state.transfer.selectedToken);
 
   const { selectToChain } = useSelection();
+  const theme = useTheme();
+  const { colorMode } = useColorMode();
 
   const toChains = useToChains({
     fromChainId: fromChain?.id,
@@ -47,14 +51,27 @@ export function DestinationNetworkModal(props: DestinationNetworkModalProps) {
         {(item) => (
           <ListItem
             iconUrl={item.icon}
-            onClick={() => {
-              selectToChain(item);
-              onClose();
-            }}
             isActive={toChain?.id === item.id}
             isDisabled={!isChainOrTokenCompatible(item)}
+            onClick={() => {
+              if (item.chainType === 'link') {
+                openLink(item.externalBridgeUrl);
+              } else {
+                selectToChain(item);
+                onClose();
+              }
+            }}
           >
-            <Flex>{item.name}</Flex>
+            <Flex alignItems="center">
+              {item.name}
+              {item.chainType === 'link' && (
+                <ExLinkIcon
+                  ml={'4px'}
+                  color={theme.colors[colorMode].text.secondary}
+                  boxSize={theme.sizes['4']}
+                />
+              )}
+            </Flex>
           </ListItem>
         )}
       </VirtualList>

@@ -31,6 +31,8 @@ export interface IBridgeChain {
   explorerUrl: string;
   rpcUrl: string;
   tokenUrlPattern: string;
+  chainType: ChainType;
+  externalBridgeUrl?: string;
   cBridge?: {
     isCompatible: boolean;
     raw?: ICBridgeChain;
@@ -86,12 +88,17 @@ export interface INativeCurrency {
   decimals: number;
 }
 
+export interface IExternalChain {
+  chainId: number;
+  bridgeUrl: string;
+  tokens: Record<number, string[]>;
+}
+
 export interface IBridgeConfig {
   defaultSelectedInfo: {
     fromChainId: number;
     toChainId: number;
     tokenSymbol: string;
-    tokenAddress: string;
     amount: string;
   };
   order: {
@@ -100,6 +107,8 @@ export interface IBridgeConfig {
   };
   displayTokenSymbols: Record<number, Record<string, string>>;
   chainConfigs: IChainConfig[];
+  brandChains?: number[];
+  externalChains?: IExternalChain[];
   cBridge: {
     config: ICBridgeTransferConfig;
     exclude: {
@@ -149,6 +158,8 @@ export interface IChainConfig {
     tokenUrlPattern?: string;
   };
 }
+
+export type ChainType = 'link' | 'evm';
 
 export type AdapterConstructorType =
   | typeof CBridgeAdapter

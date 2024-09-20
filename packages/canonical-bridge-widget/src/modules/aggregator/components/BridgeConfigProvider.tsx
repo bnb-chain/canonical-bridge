@@ -63,8 +63,6 @@ export function BridgeConfigProvider(props: BridgeConfigProviderProps) {
       return DEFAULT_CONTEXT;
     }
 
-    const nativeCurrencies = getNativeCurrencies(config.chainConfigs);
-
     const bridges: Array<{
       bridgeType: BridgeType;
       Adapter: AdapterConstructorType;
@@ -87,6 +85,11 @@ export function BridgeConfigProvider(props: BridgeConfigProviderProps) {
       },
     ];
 
+    const nativeCurrencies = getNativeCurrencies(config.chainConfigs);
+    const includedChains = config.chainConfigs.map((item) => item.id);
+    const brandChains = config.brandChains;
+    const externalChains = config.externalChains;
+
     const adapters = bridges
       .filter((item) => config[item.bridgeType])
       .map(({ bridgeType, Adapter }) => {
@@ -96,8 +99,11 @@ export function BridgeConfigProvider(props: BridgeConfigProviderProps) {
           config: bridgeConfig.config,
           excludedChains: bridgeConfig.exclude.chains,
           excludedTokens: bridgeConfig.exclude.tokens,
-          nativeCurrencies,
           bridgedTokenGroups: bridgeConfig.bridgedTokenGroups,
+          includedChains,
+          nativeCurrencies,
+          brandChains,
+          externalChains,
         };
 
         return new Adapter(options);
@@ -106,10 +112,8 @@ export function BridgeConfigProvider(props: BridgeConfigProviderProps) {
     return {
       isReady: true,
       defaultSelectedInfo: config.defaultSelectedInfo,
-
       chainConfigs: config.chainConfigs,
       nativeCurrencies,
-
       adapters,
 
       getFromChains: (params: IGetFromChainsParams) => {
@@ -120,7 +124,6 @@ export function BridgeConfigProvider(props: BridgeConfigProviderProps) {
           config,
         });
       },
-
       getToChains: (params: IGetToChainsParams) => {
         return aggregateChains({
           direction: 'to',
@@ -129,7 +132,6 @@ export function BridgeConfigProvider(props: BridgeConfigProviderProps) {
           config,
         });
       },
-
       getTokens: (params: IGetTokensParams) => {
         return aggregateTokens({
           adapters,
@@ -137,7 +139,6 @@ export function BridgeConfigProvider(props: BridgeConfigProviderProps) {
           config,
         });
       },
-
       getToToken: (params: IGetToTokenParams) => {
         return aggregateToToken({
           adapters,

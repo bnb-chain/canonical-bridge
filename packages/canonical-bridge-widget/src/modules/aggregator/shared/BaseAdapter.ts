@@ -1,10 +1,7 @@
 import { Address } from 'viem';
 import { BridgeType } from '@bnb-chain/canonical-bridge-sdk';
 
-import { INativeCurrency } from '@/modules/aggregator/types';
-import { isBSC, isOpBNB } from '@/core/utils/chains';
-import { BSC_CHAIN_ID, OP_BNB_CHAIN_ID, OP_BNB_SUPPORTED_TOKENS } from '@/core/constants';
-import { intersectionSet } from '@/core/utils/common';
+import { IExternalChain, INativeCurrency } from '@/modules/aggregator/types';
 
 export interface ITransferTokenPair<T, P = unknown> {
   fromChainId: number;
@@ -19,10 +16,13 @@ export interface ITransferTokenPair<T, P = unknown> {
 
 export interface IBaseAdapterOptions<G> {
   config: G;
+  includedChains?: number[];
   excludedChains?: number[];
   excludedTokens?: Record<number, Array<string | Address>>;
   nativeCurrencies?: Record<number, INativeCurrency>;
   bridgedTokenGroups?: string[][];
+  brandChains?: number[];
+  externalChains?: IExternalChain[];
 }
 
 export abstract class BaseAdapter<G extends object, C = unknown, T = unknown> {
@@ -30,10 +30,13 @@ export abstract class BaseAdapter<G extends object, C = unknown, T = unknown> {
 
   protected readonly config: G;
 
+  protected readonly includedChains: number[] = [];
   protected readonly excludedChains: number[] = [];
   protected readonly excludedTokens: Record<number, Array<string | Address>> = {};
   protected readonly nativeCurrencies: Record<number, INativeCurrency> = {};
   protected readonly bridgedTokenGroups: string[][] = [];
+  protected readonly brandChains: number[] = [];
+  protected readonly externalChains: IExternalChain[] = [];
 
   protected chains: C[] = [];
   protected chainMap = new Map<number, C>();
@@ -51,10 +54,13 @@ export abstract class BaseAdapter<G extends object, C = unknown, T = unknown> {
   constructor(options: IBaseAdapterOptions<G>) {
     this.config = options.config ?? {};
 
+    this.includedChains = options.includedChains ?? [];
     this.excludedChains = options.excludedChains ?? [];
     this.excludedTokens = options.excludedTokens ?? {};
     this.nativeCurrencies = options.nativeCurrencies ?? {};
     this.bridgedTokenGroups = options.bridgedTokenGroups ?? [];
+    this.brandChains = options.brandChains ?? [];
+    this.externalChains = options.externalChains ?? [];
 
     this.init();
   }
@@ -73,10 +79,19 @@ export abstract class BaseAdapter<G extends object, C = unknown, T = unknown> {
   protected abstract initChains(): void;
   protected abstract initTokens(): void;
   protected abstract initTransferMap(): void;
+  protected abstract getChainIdAsObject(chainId: number): unknown;
+
+  public abstract getChainId(chain: C): number;
+  public abstract getTokenInfo(token: T): {
+    symbol: string;
+    name: string;
+    address: string;
+    decimals: number;
+  };
 
   protected initFromChains() {
     this.fromChainIds = new Set(this.transferMap.keys());
-    this.fromChains = this.chains.filter((chain) => this.transferMap.has(this.getChainId(chain)));
+    this.fromChains = this.chains.filter((chain) => this.fromChainIds.has(this.getChainId(chain)));
   }
 
   protected initToChains() {
@@ -89,63 +104,112 @@ export abstract class BaseAdapter<G extends object, C = unknown, T = unknown> {
     this.toChains = this.chains.filter((chain) => this.toChainIds.has(this.getChainId(chain)));
   }
 
-  protected getTransferMap() {
-    return this.transferMap;
-  }
-
   protected filterTransferMap() {
+    if (!this.brandChains.length) {
+      return;
+    }
+
     const filteredTransferMap = new Map<number, Map<number, Map<string, ITransferTokenPair<T>>>>();
 
     this.transferMap.forEach((toMap, fromChainId) => {
-      if (isBSC(fromChainId)) {
+      if (this.brandChains.includes(fromChainId)) {
         filteredTransferMap.set(fromChainId, toMap);
       } else {
-        const tokenPairMap = toMap.get(BSC_CHAIN_ID);
-
-        if (tokenPairMap) {
-          if (!filteredTransferMap.has(fromChainId)) {
-            filteredTransferMap.set(
-              fromChainId,
-              new Map<number, Map<string, ITransferTokenPair<T>>>(),
-            );
+        toMap.forEach((tokenPairMap, toChainId) => {
+          if (this.brandChains.includes(toChainId)) {
+            if (!filteredTransferMap.has(fromChainId)) {
+              filteredTransferMap.set(
+                fromChainId,
+                new Map<number, Map<string, ITransferTokenPair<T>>>(),
+              );
+            }
+            filteredTransferMap.get(fromChainId)?.set(toChainId, tokenPairMap);
           }
-          filteredTransferMap.get(fromChainId)?.set(BSC_CHAIN_ID, tokenPairMap);
-        }
+        });
       }
     });
 
     this.transferMap = filteredTransferMap;
   }
 
-  protected filterToChains(params: {
-    fromChainId: number;
+  protected filterToChains({
+    fromChainId,
+    compatibleChainIds,
+    chains,
+    tokenSymbol,
+  }: {
+    fromChainId?: number;
     compatibleChainIds: Set<number>;
     chains: C[];
     tokenSymbol?: string;
   }) {
-    const { fromChainId, compatibleChainIds, chains, tokenSymbol } = params;
+    let finalCompatibleChainIds = new Set(compatibleChainIds);
+    let finalChains = [...chains];
 
-    if (isBSC(fromChainId)) {
-      if (tokenSymbol && OP_BNB_SUPPORTED_TOKENS.includes(tokenSymbol)) {
-        return {
-          compatibleChainIds: new Set([...compatibleChainIds, OP_BNB_CHAIN_ID]),
-          chains: chains.filter((chain) => !isBSC(this.getChainId(chain))),
-        };
+    if (this.brandChains.length && fromChainId) {
+      if (this.brandChains.includes(fromChainId)) {
+        finalChains = chains.filter((chain) => this.getChainId(chain) !== fromChainId);
+      } else {
+        finalChains = chains.filter((chain) => this.brandChains.includes(this.getChainId(chain)));
       }
-
-      return {
-        compatibleChainIds,
-        chains: chains.filter(
-          (chain) => !isBSC(this.getChainId(chain)) && !isOpBNB(this.getChainId(chain)),
-        ),
-      };
-    } else {
-      return {
-        compatibleChainIds: intersectionSet(compatibleChainIds, new Set([BSC_CHAIN_ID])),
-        chains: chains.filter((chain) => isBSC(this.getChainId(chain))),
-      };
     }
+
+    if (this.externalChains.length && tokenSymbol && fromChainId) {
+      this.externalChains.forEach((item) => {
+        const targetIndex = finalChains.findIndex(
+          (chain) => this.getChainId(chain) === item.chainId,
+        );
+
+        if (item.tokens[fromChainId]?.includes(tokenSymbol)) {
+          finalCompatibleChainIds = new Set([...finalCompatibleChainIds, item.chainId]);
+
+          if (targetIndex === -1) {
+            const chain = this.getChainIdAsObject(item.chainId) as C;
+            finalChains.push(chain);
+          }
+        } else {
+          finalCompatibleChainIds.delete(item.chainId);
+
+          if (targetIndex > -1) {
+            finalChains.splice(targetIndex, 1);
+          }
+        }
+      });
+    }
+
+    return {
+      compatibleChainIds: finalCompatibleChainIds,
+      chains: finalChains,
+    };
   }
+
+  // protected filterTokens({
+  //   fromChainId,
+  //   compatibleTokens,
+  //   tokenPairs,
+  // }: {
+  //   fromChainId: number;
+  //   toChainId: number;
+  //   compatibleTokens: Set<string>;
+  //   tokenPairs: ITransferTokenPair<T>[];
+  // }) {
+  //   let finalCompatibleTokens = new Set(compatibleTokens);
+  //   let finalTokenPairs = [...tokenPairs];
+
+  //   if (this.externalChains.length && fromChainId) {
+  //     this.externalChains.forEach((item) => {
+  //       const tokenSymbols = item.tokens[fromChainId];
+  //       if (tokenSymbols) {
+  //         finalCompatibleTokens = new Set([...finalCompatibleTokens, ...tokenSymbols]);
+  //       }
+  //     });
+  //   }
+
+  //   return {
+  //     compatibleTokens: finalCompatibleTokens,
+  //     tokenPairs: finalTokenPairs,
+  //   };
+  // }
 
   protected checkIsExcludedToken({
     excludedList,
@@ -177,46 +241,33 @@ export abstract class BaseAdapter<G extends object, C = unknown, T = unknown> {
   }) {
     const fromNativeSymbol = this.nativeCurrencies[fromChainId].symbol?.toUpperCase();
     const toNativeSymbol = this.nativeCurrencies[toChainId].symbol?.toUpperCase();
+    const tokenMap = this.symbolMap.get(toChainId);
 
     if (['ETH', 'WETH'].includes(fromTokenSymbol)) {
       if (fromNativeSymbol === 'ETH') {
         if (toNativeSymbol === 'ETH') {
-          return this.symbolMap.get(toChainId)?.get(fromTokenSymbol);
+          return tokenMap?.get(fromTokenSymbol);
         } else {
-          return (
-            this.symbolMap.get(toChainId)?.get('ETH') || this.symbolMap.get(toChainId)?.get('WETH')
-          );
+          return tokenMap?.get('ETH') || tokenMap?.get('WETH');
         }
       } else {
         if (toNativeSymbol === 'ETH') {
-          return this.symbolMap.get(toChainId)?.get('ETH');
+          return tokenMap?.get('ETH');
         }
       }
     }
 
-    let toToken = this.symbolMap.get(toChainId)?.get(fromTokenSymbol);
+    let toToken = tokenMap?.get(fromTokenSymbol);
     if (!toToken) {
       const bridgedGroup = this.bridgedTokenGroups.find((group) => group.includes(fromTokenSymbol));
-      const otherTokens = bridgedGroup?.filter((item) => item.toUpperCase() !== fromTokenSymbol);
-
-      otherTokens?.forEach((symbol) => {
-        if (!toToken) {
-          toToken = this.symbolMap.get(toChainId)?.get(symbol?.toUpperCase());
-        }
-      });
+      const nextToken = bridgedGroup?.find((item) => item.toUpperCase() !== fromTokenSymbol);
+      if (nextToken) {
+        toToken = tokenMap?.get(nextToken?.toUpperCase());
+      }
     }
 
     return toToken;
   }
-
-  public abstract getChainId(chain: C): number;
-
-  public abstract getTokenInfo(token: T): {
-    symbol: string;
-    name: string;
-    address: string;
-    decimals: number;
-  };
 
   public getFromChains({ toChainId, tokenSymbol }: { toChainId?: number; tokenSymbol?: string }) {
     let compatibleChainIds = new Set<number>();
@@ -288,30 +339,43 @@ export abstract class BaseAdapter<G extends object, C = unknown, T = unknown> {
       });
     }
 
-    return {
+    return this.filterToChains({
+      fromChainId,
       compatibleChainIds,
-      chains: this.toChains,
-    };
+      chains: this.fromChains, // Should use `fromChains`
+      tokenSymbol,
+    });
   }
 
   public getTokens({ fromChainId, toChainId }: { fromChainId: number; toChainId: number }) {
-    const compatibleTokens = new Set<string>();
+    const allTokenPairMap = new Map<string, ITransferTokenPair<T>>();
 
-    const toMap = this.transferMap.get(fromChainId);
-    const tokenPairMap = toMap?.get(toChainId);
-    tokenPairMap?.forEach((_, tokenSymbol) => {
-      compatibleTokens.add(tokenSymbol);
+    this.transferMap.forEach((toMap) => {
+      toMap.forEach((tokenPairMap) => {
+        tokenPairMap.forEach((tokenPair, tokenSymbol) => {
+          allTokenPairMap.set(tokenSymbol, tokenPair);
+        });
+      });
     });
 
-    let tokenPairs: ITransferTokenPair<T>[] = [];
-    if (tokenPairMap) {
-      tokenPairs = [...tokenPairMap?.values()];
-    }
+    const tokenPairMap = this.transferMap.get(fromChainId)?.get(toChainId);
+    tokenPairMap?.forEach((tokenPair, tokenSymbol) => {
+      allTokenPairMap.set(tokenSymbol, tokenPair);
+    });
+
+    const compatibleTokens = new Set<string>(tokenPairMap ? tokenPairMap.keys() : []);
 
     return {
-      compatibleTokens,
-      tokenPairs,
+      compatibleTokens: compatibleTokens,
+      tokenPairs: [...allTokenPairMap.values()],
     };
+
+    // return this.filterTokens({
+    //   fromChainId,
+    //   toChainId,
+    //   compatibleTokens,
+    //   tokenPairs: [...allTokenPairMap.values()],
+    // });
   }
 
   public getTokenPair({

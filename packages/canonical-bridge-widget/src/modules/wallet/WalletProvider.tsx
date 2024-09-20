@@ -48,23 +48,25 @@ export function WalletProvider(props: PropsWithChildren) {
 }
 
 function getEvmChains(chainConfigs: IChainConfig[]) {
-  return chainConfigs.map((item) => ({
-    id: item.id,
-    name: item.name,
-    nativeCurrency: item.nativeCurrency,
-    rpcUrls: {
-      default: {
-        http: [item.rpcUrl],
+  return chainConfigs
+    .filter((item) => !item.chainType || item.chainType === 'evm')
+    .map((item) => ({
+      id: item.id,
+      name: item.name,
+      nativeCurrency: item.nativeCurrency,
+      rpcUrls: {
+        default: {
+          http: [item.rpcUrl],
+        },
+        public: {
+          http: [item.rpcUrl],
+        },
       },
-      public: {
-        http: [item.rpcUrl],
+      blockExplorers: {
+        default: {
+          name: item.explorer.name,
+          url: item.explorer.url,
+        },
       },
-    },
-    blockExplorers: {
-      default: {
-        name: item.explorer.name,
-        url: item.explorer.url,
-      },
-    },
-  }));
+    }));
 }

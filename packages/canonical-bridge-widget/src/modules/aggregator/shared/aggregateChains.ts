@@ -1,9 +1,9 @@
 import {
   AdapterType,
+  ChainType,
   IBridgeChain,
   IBridgeConfig,
   IBridgeToken,
-  IChainConfig,
 } from '@/modules/aggregator/types';
 import { env } from '@/core/configs/env';
 import { isChainOrTokenCompatible } from '@/modules/aggregator/shared/isChainOrTokenCompatible';
@@ -28,7 +28,6 @@ export interface IAggregateChainsParams {
 export function aggregateChains({ direction, adapters, params, config }: IAggregateChainsParams) {
   const chainMap = new Map<number, IBridgeChain>();
 
-  const chainConfigs = config.chainConfigs;
   const chainOrder = config.order.chains;
 
   adapters.forEach((adapter) => {
@@ -36,25 +35,18 @@ export function aggregateChains({ direction, adapters, params, config }: IAggreg
 
     const tmpSymbol = params.token?.[bridgeType]?.symbol?.toUpperCase();
     const isNotSelf = params.token && !tmpSymbol;
-    const tokenSymbol = isNotSelf ? '???????' : tmpSymbol;
-
-    let adapterParams: any;
-    if (direction === 'from') {
-      adapterParams = {
-        toChainId: (params as IGetFromChainsParams).toChainId,
-        tokenSymbol,
-      };
-    } else {
-      adapterParams = {
-        fromChainId: (params as IGetToChainsParams).fromChainId,
-        tokenSymbol,
-      };
-    }
+    const tokenSymbol = isNotSelf ? '???????' : tmpSymbol; // TODO
 
     const { chains, compatibleChainIds } =
       direction === 'from'
-        ? adapter.getFromChains(adapterParams)
-        : adapter.getToChains(adapterParams);
+        ? adapter.getFromChains({
+            toChainId: (params as IGetFromChainsParams).toChainId,
+            tokenSymbol,
+          })
+        : adapter.getToChains({
+            fromChainId: (params as IGetToChainsParams).fromChainId,
+            tokenSymbol,
+          });
 
     chains.forEach((item: any) => {
       const chainId = adapter.getChainId(item);
@@ -66,7 +58,7 @@ export function aggregateChains({ direction, adapters, params, config }: IAggreg
         bridgeChain = {
           ...getChainInfo({
             chainId,
-            chainConfigs,
+            config,
           }),
         };
       }
@@ -83,8 +75,8 @@ export function aggregateChains({ direction, adapters, params, config }: IAggreg
     });
   });
 
-  const finalChains = [...chainMap.values()];
-  finalChains.sort((a, b) => {
+  const chains = [...chainMap.values()];
+  chains.sort((a, b) => {
     if (direction === 'to') {
       const isA = isChainOrTokenCompatible(a);
       const isB = isChainOrTokenCompatible(b);
@@ -113,28 +105,28 @@ export function aggregateChains({ direction, adapters, params, config }: IAggreg
     return a.name < b.name ? -1 : 1;
   });
 
-  return finalChains;
+  return chains;
 }
 
-function getChainInfo({
-  chainId,
-  chainConfigs,
-}: {
-  chainId: number;
-  chainConfigs: IChainConfig[];
-}) {
-  const chain = chainConfigs.find((item) => item.id === chainId);
+function getChainInfo({ chainId, config }: { chainId: number; config: IBridgeConfig }) {
+  const chainConfig = config.chainConfigs.find((item) => item.id === chainId);
 
-  const explorerUrl = chain?.explorer.url?.replace(/\/$/, '') ?? '';
+  const explorerUrl = chainConfig?.explorer.url?.replace(/\/$/, '') ?? '';
   const tmpUrlPattern = explorerUrl ? `${explorerUrl}/token/{0}` : '';
-  const tokenUrlPattern = chain?.explorer?.tokenUrlPattern || tmpUrlPattern;
+  const tokenUrlPattern = chainConfig?.explorer?.tokenUrlPattern || tmpUrlPattern;
+
+  const externalConfig = config.externalChains?.find((item) => item.chainId === chainId);
+  const chainType: ChainType = externalConfig ? 'link' : 'evm';
+  const externalBridgeUrl = externalConfig?.bridgeUrl;
 
   return {
     id: chainId,
-    name: chain?.name ?? '',
+    name: chainConfig?.name ?? '',
     icon: `${env.ASSET_PREFIX}/images/chains/${chainId}.png`,
     explorerUrl,
-    rpcUrl: chain?.rpcUrl ?? '',
+    rpcUrl: chainConfig?.rpcUrl ?? '',
     tokenUrlPattern,
+    chainType,
+    externalBridgeUrl,
   };
 }

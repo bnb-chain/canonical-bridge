@@ -1,6 +1,5 @@
 import { IBridgeConfig } from '@/modules/aggregator/types';
 import { chains } from '@/dev/data/chains';
-import { testnetChains } from '@/dev/data/chains-testnet';
 
 import cBridgeConfig from './cbridge/config.json';
 import deBridgeConfig from './deBridge';
@@ -12,7 +11,6 @@ export const bridgeConfig: IBridgeConfig = {
     fromChainId: 1,
     toChainId: 56,
     tokenSymbol: 'USDT', // USDT
-    tokenAddress: '0xdAC17F958D2ee523a2206206994597C13D831ec7', // USDT
     amount: '',
   },
   order: {
@@ -86,11 +84,21 @@ export const bridgeConfig: IBridgeConfig = {
       '0x49D5c2BdFfac6CE2BFdB6640F4F80f226bc10bAB': 'WETH.e',
     },
   },
-  chainConfigs: [...chains, ...testnetChains],
+  chainConfigs: chains,
+  brandChains: [56, 204],
+  externalChains: [
+    {
+      chainId: 204,
+      bridgeUrl: 'https://opbnb-bridge.bnbchain.org/deposit',
+      tokens: {
+        56: ['BNB', 'BTCB', 'ETH', 'FDUSD', 'USDT', 'XCAD'],
+      },
+    },
+  ],
   cBridge: {
     config: cBridgeConfig,
     exclude: {
-      chains: [1990, 73772, 12340001, 12360001, 12370001, 999999996, 999999997, 16350],
+      chains: [],
       tokens: {
         56: ['0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c'],
         42161: [
@@ -104,7 +112,7 @@ export const bridgeConfig: IBridgeConfig = {
   deBridge: {
     config: deBridgeConfig,
     exclude: {
-      chains: [7565164, 100000001, 100000002, 100000003],
+      chains: [],
       tokens: {
         1: ['cUSDCv3'],
         56: ['0x67d66e8ec1fd25d98b3ccd3b19b7dc4b4b7fc493'],
