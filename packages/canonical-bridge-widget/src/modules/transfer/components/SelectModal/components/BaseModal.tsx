@@ -32,11 +32,13 @@ export function BaseModal(props: BaseModalProps) {
       <ModalOverlay />
       <ModalContent
         background={theme.colors[colorMode].background.modal}
-        borderRadius={'24px'}
+        borderRadius={{ base: '0', md: '24px' }}
         p={0}
-        h={'665px'}
-        w={'435px'}
+        h={{ base: '100vh', md: '665px' }}
+        w={{ base: '100vw', md: '435px' }}
+        maxW="100%"
         overflow="hidden"
+        marginInline={0}
       >
         <Flex
           h={'64px'}
@@ -63,7 +65,7 @@ export function BaseModal(props: BaseModalProps) {
             }}
           />
         </Flex>
-        <Flex flexDir="column" p="24px 0px 16px" flex={1}>
+        <Flex flexDir="column" p="20px 0px 16px" flex={1}>
           <Flex px={'20px'} mb={'24px'}>
             <SearchInput onChange={onSearch} placeholder={placeholder} />
           </Flex>

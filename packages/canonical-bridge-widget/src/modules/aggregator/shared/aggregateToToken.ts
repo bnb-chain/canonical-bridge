@@ -1,6 +1,6 @@
 import { formatTokenIcon } from '@/core/utils/string';
 import { getDisplayTokenSymbol } from '@/modules/aggregator/shared/getDisplayTokenSymbol';
-import { AdapterType, IBridgeConfig, IBridgeToken } from '@/modules/aggregator/types';
+import { AdapterType, ITransferConfig, IBridgeToken } from '@/modules/aggregator/types';
 
 export interface IGetToTokenParams {
   fromChainId: number;
@@ -11,7 +11,7 @@ export interface IGetToTokenParams {
 export interface IAggregateToTokenParams {
   adapters: AdapterType[];
   params: IGetToTokenParams;
-  config: IBridgeConfig;
+  config: ITransferConfig;
 }
 
 export function aggregateToToken({ adapters, params, config }: IAggregateToTokenParams) {

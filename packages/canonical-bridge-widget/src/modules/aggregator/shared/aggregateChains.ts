@@ -2,7 +2,7 @@ import {
   AdapterType,
   ChainType,
   IBridgeChain,
-  IBridgeConfig,
+  ITransferConfig,
   IBridgeToken,
 } from '@/modules/aggregator/types';
 import { env } from '@/core/configs/env';
@@ -22,7 +22,7 @@ export interface IAggregateChainsParams {
   direction: 'from' | 'to';
   adapters: AdapterType[];
   params: IGetFromChainsParams | IGetToChainsParams;
-  config: IBridgeConfig;
+  config: ITransferConfig;
 }
 
 export function aggregateChains({ direction, adapters, params, config }: IAggregateChainsParams) {
@@ -108,7 +108,7 @@ export function aggregateChains({ direction, adapters, params, config }: IAggreg
   return chains;
 }
 
-function getChainInfo({ chainId, config }: { chainId: number; config: IBridgeConfig }) {
+function getChainInfo({ chainId, config }: { chainId: number; config: ITransferConfig }) {
   const chainConfig = config.chainConfigs.find((item) => item.id === chainId);
 
   const explorerUrl = chainConfig?.explorer.url?.replace(/\/$/, '') ?? '';

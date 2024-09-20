@@ -3,7 +3,7 @@ import { CBridgePeggedPairConfig } from '@bnb-chain/canonical-bridge-sdk';
 import { formatTokenIcon } from '@/core/utils/string';
 import { ITransferTokenPair } from '@/modules/aggregator/shared/BaseAdapter';
 import { getDisplayTokenSymbol } from '@/modules/aggregator/shared/getDisplayTokenSymbol';
-import { AdapterType, IBridgeConfig, IBridgeToken } from '@/modules/aggregator/types';
+import { AdapterType, ITransferConfig, IBridgeToken } from '@/modules/aggregator/types';
 import { isChainOrTokenCompatible } from '@/modules/aggregator/shared/isChainOrTokenCompatible';
 
 export interface IGetTokensParams {
@@ -14,7 +14,7 @@ export interface IGetTokensParams {
 export interface IAggregateTokensParams {
   adapters: AdapterType[];
   params: IGetTokensParams;
-  config: IBridgeConfig;
+  config: ITransferConfig;
 }
 
 export function aggregateTokens({ adapters, params, config }: IAggregateTokensParams) {
