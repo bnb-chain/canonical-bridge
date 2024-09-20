@@ -18,6 +18,8 @@ export function ListItem(props: ListItemProps) {
     showTag = true,
     children,
     onClick,
+
+    _hover,
     ...restProps
   } = props;
 
@@ -39,6 +41,7 @@ export function ListItem(props: ListItemProps) {
         cursor={isDisabled ? 'inherit' : 'pointer'}
         transitionDuration="normal"
         _hover={{
+          ..._hover,
           bg: !isActive && !isDisabled ? theme.colors[colorMode].layer['3'].hover : undefined,
         }}
         gap={'12px'}

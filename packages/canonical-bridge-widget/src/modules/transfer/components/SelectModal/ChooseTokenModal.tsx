@@ -11,6 +11,7 @@ import { isChainOrTokenCompatible } from '@/modules/aggregator/shared/isChainOrT
 import { useSelection } from '@/modules/aggregator/hooks/useSelection';
 import { isSameAddress } from '@/core/utils/address';
 import { ExLinkIcon } from '@/core/components/icons/ExLinkIcon';
+import { formatTokenUrl } from '@/core/utils/string';
 
 interface ChooseTokenModalProps {
   isOpen: boolean;
@@ -61,13 +62,19 @@ export function ChooseTokenModal(props: ChooseTokenModalProps) {
         justifyContent="space-between"
       >
         <Text>{formatMessage({ id: 'select-modal.token.column.name' })}</Text>
-        {isConnected && <Text>{formatMessage({ id: 'select-modal.token.column.balance' })}</Text>}
+        {/* {isConnected && <Text>{formatMessage({ id: 'select-modal.token.column.balance' })}</Text>} */}
       </Flex>
       <Flex flexDir="column" flex={1}>
         <VirtualList data={result} itemHeight={56} itemKey="id">
           {(item) => {
             const isDisabled = !isChainOrTokenCompatible(item);
             const isActive = isSameAddress(selectedToken?.address, item.address);
+
+            const showAddressStyle = {
+              '.token-info': {
+                transform: 'translateY(-100%)',
+              },
+            };
 
             return (
               <ListItem
@@ -78,12 +85,13 @@ export function ChooseTokenModal(props: ChooseTokenModalProps) {
                   selectToken(item);
                   onClose();
                 }}
+                sx={isActive ? showAddressStyle : {}}
+                _hover={showAddressStyle}
               >
                 <Flex alignItems="center" justifyContent="space-between" flex={1} gap={'8px'}>
                   <Flex w="50%" flexDir="column" gap={'4px'}>
                     <Flex>{item.displaySymbol}</Flex>
                     <Flex
-                      flexDir="column"
                       fontSize="12px"
                       fontWeight={500}
                       lineHeight="16px"
@@ -91,16 +99,28 @@ export function ChooseTokenModal(props: ChooseTokenModalProps) {
                       h="16px"
                       overflow="hidden"
                     >
-                      <Flex>{item.name}</Flex>
-                      <Flex as="a">
-                        {formatAddress({
-                          value: item.address,
-                        })}
-                        <ExLinkIcon
-                          ml="4px"
-                          color={theme.colors[colorMode].text.secondary}
-                          boxSize={theme.sizes['4']}
-                        />
+                      <Flex
+                        flexDir="column"
+                        className="token-info"
+                        transitionDuration="normal"
+                        whiteSpace="nowrap"
+                      >
+                        <Flex>{item.name}</Flex>
+                        <Flex
+                          as="a"
+                          href={formatTokenUrl(fromChain?.tokenUrlPattern, item.address)}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          {formatAddress({
+                            value: item.address,
+                          })}
+                          <ExLinkIcon
+                            ml="4px"
+                            color={theme.colors[colorMode].text.secondary}
+                            boxSize={theme.sizes['4']}
+                          />
+                        </Flex>
                       </Flex>
                     </Flex>
                   </Flex>
