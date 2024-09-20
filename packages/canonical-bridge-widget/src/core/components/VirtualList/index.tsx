@@ -15,7 +15,7 @@ export function VirtualList<T>(props: VirtualListProps<T>) {
       const el = ref.current.nativeElement.parentNode;
       setHeight(el.clientHeight);
       setInnerData(data);
-    }, 200);
+    }, 50);
 
     return () => {
       clearTimeout(timer);

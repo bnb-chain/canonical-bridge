@@ -63,7 +63,7 @@ export function ChooseTokenModal(props: ChooseTokenModalProps) {
         {/* {isConnected && <Text>{formatMessage({ id: 'select-modal.token.column.balance' })}</Text>} */}
       </Flex>
       <Flex flexDir="column" flex={1}>
-        <VirtualList data={result} itemHeight={56} itemKey="id">
+        <VirtualList data={result} itemHeight={64} itemKey="id">
           {(item) => {
             const isDisabled = !isChainOrTokenCompatible(item);
             const isActive = isSameAddress(selectedToken?.address, item.address);
