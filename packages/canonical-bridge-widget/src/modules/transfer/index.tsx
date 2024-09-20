@@ -1,4 +1,12 @@
-import { Box, Flex, useColorMode, useIntl, useTheme } from '@bnb-chain/space';
+import {
+  Box,
+  Flex,
+  useBreakpointValue,
+  useColorMode,
+  useDisclosure,
+  useIntl,
+  useTheme,
+} from '@bnb-chain/space';
 
 import { TransferOverview } from '@/modules/transfer/components/TransferOverview';
 import { TransferButtonGroup } from '@/modules/transfer/components/TransferButtonGroup';
@@ -6,6 +14,7 @@ import { NetWorkSection } from '@/modules/transfer/components/NetWorkSection';
 import { SendInput } from '@/modules/transfer/components/SendInput';
 import { ReceiveInfo } from '@/modules/transfer/components/ReceiveInfo';
 import { useDefaultSelectedInfo } from '@/modules/aggregator/hooks/useDefaultSelectedInfo';
+import { RoutesModal } from '@/modules/transfer/components/TransferOverview/modal/RoutesModal';
 
 interface TransferPageProps {
   routeContentBottom?: React.ReactNode;
@@ -15,11 +24,19 @@ export function TransferPage({ routeContentBottom }: TransferPageProps) {
   const { colorMode } = useColorMode();
   const { formatMessage } = useIntl();
   const theme = useTheme();
+  const isBase = useBreakpointValue({ base: true, lg: false }) ?? false;
 
   useDefaultSelectedInfo();
 
+  const { isOpen, onClose, onOpen } = useDisclosure();
+
   return (
-    <Flex flexDir="row" mb={'160px'} alignItems={'flex-start'}>
+    <Flex
+      flexDir={['column', 'column', 'column', 'row']}
+      gap={[]}
+      mb={'160px'}
+      alignItems={'flex-start'}
+    >
       <Flex
         flexDir="column"
         background={theme.colors[colorMode].background.main}
@@ -45,12 +62,22 @@ export function TransferPage({ routeContentBottom }: TransferPageProps) {
         </Box>
         <NetWorkSection />
         <SendInput />
-        <ReceiveInfo />
+        <ReceiveInfo onOpen={onOpen} />
         <Flex flexDir="column">
           <TransferButtonGroup />
         </Flex>
       </Flex>
-      <TransferOverview routeContentBottom={routeContentBottom} />
+      {!isBase ? (
+        <TransferOverview routeContentBottom={routeContentBottom} />
+      ) : (
+        <RoutesModal
+          title={formatMessage({ id: 'route.title.select.routes' })}
+          isOpen={isOpen}
+          onClose={onClose}
+        >
+          <TransferOverview routeContentBottom={routeContentBottom} />
+        </RoutesModal>
+      )}
     </Flex>
   );
 }

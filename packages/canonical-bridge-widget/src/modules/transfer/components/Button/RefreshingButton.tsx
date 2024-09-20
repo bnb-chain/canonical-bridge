@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Box, useColorMode, useTheme } from '@bnb-chain/space';
+import { Box, BoxProps, useColorMode, useTheme } from '@bnb-chain/space';
 
 import { useAppDispatch, useAppSelector } from '@/modules/store/StoreProvider';
 import { setIsGlobalFeeLoading, setIsRefreshing } from '@/modules/transfer/action';
@@ -7,7 +7,7 @@ import { ESTIMATE_AMOUNT_DATA_RELOAD } from '@/core/constants';
 import { useLoadingBridgeFees } from '@/modules/transfer/hooks/useLoadingBridgeFees';
 import { RefreshingIcon } from '@/modules/transfer/components/LoadingImg/RefreshingIcon';
 
-export const RefreshingButton = () => {
+export const RefreshingButton = (props: BoxProps) => {
   const { colorMode } = useColorMode();
   const isGlobalFeeLoading = useAppSelector((state) => state.transfer.isGlobalFeeLoading);
   const isRefreshing = useAppSelector((state) => state.transfer.isRefreshing);
@@ -71,6 +71,7 @@ export const RefreshingButton = () => {
         setIsButtonPressed(true);
         dispatch(setIsRefreshing(true));
       }}
+      {...props}
     >
       <RefreshingIcon />
     </Box>

@@ -18,6 +18,8 @@ export const en = {
   'to.section.account.invalid': 'Invalid address.',
 
   'you.receive.title': 'You Receive',
+  'route.button.change-routes': 'Change Routes',
+  'route.title.select.routes': 'Select Bridge Routes',
   'route.fees.title': 'Fees:',
   'route.time.title': 'Time:',
   'route.allowed-send-amount': 'Allowed send range:',
