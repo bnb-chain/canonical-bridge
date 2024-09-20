@@ -16,9 +16,9 @@ export const SwitchNetworkButton = () => {
       h={'56px'}
       w="100%"
       color={theme.colors[colorMode].button.wallet.text}
-      background={theme.colors[colorMode].button.wallet.background.default}
+      background={theme.colors[colorMode].support.warning['3']}
       _hover={{
-        background: theme.colors[colorMode].button.wallet.background.hover,
+        background: theme.colors[colorMode].support.warning['2'],
       }}
       onClick={() => {
         if (fromChain?.id && switchChain) {
