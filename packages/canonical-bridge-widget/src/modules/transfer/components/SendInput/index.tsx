@@ -87,7 +87,9 @@ export const SendInput: React.FC = () => {
         h={'64px'}
         borderRadius={'8px'}
         border={`1px solid ${
-          !!error ? theme.colors[colorMode].text.danger : theme.colors[colorMode].input.border
+          !!error
+            ? theme.colors[colorMode].text.danger
+            : theme.colors[colorMode].input.border.default
         }`}
         background={theme.colors[colorMode].input.background}
         position={'relative'}

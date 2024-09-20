@@ -24,17 +24,17 @@ export function SelectButton(props: SelectButtonProps) {
       py={'12px'}
       justifyContent={'space-between'}
       gap={'8px'}
-      background={theme.colors[colorMode].button.select.background}
+      background={theme.colors[colorMode].input.background}
       color={theme.colors[colorMode].text.primary}
       transitionDuration="normal"
       outline={
         isActive
-          ? `2px solid ${theme.colors[colorMode].button.select.border.active}`
-          : `1px solid ${theme.colors[colorMode].button.select.border.default}`
+          ? `2px solid ${theme.colors[colorMode].input.border.active}`
+          : `1px solid ${theme.colors[colorMode].input.border.default}`
       }
       _hover={{
         outline: '2px solid',
-        outlineColor: theme.colors[colorMode].button.select.border.hover,
+        outlineColor: theme.colors[colorMode].input.border.hover,
       }}
       _active={{}}
       {...restProps}
