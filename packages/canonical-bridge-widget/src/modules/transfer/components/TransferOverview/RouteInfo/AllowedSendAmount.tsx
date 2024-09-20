@@ -1,4 +1,4 @@
-import { Box, BoxProps, useColorMode, useIntl, useTheme } from '@bnb-chain/space';
+import { Box, BoxProps, Flex, useColorMode, useIntl, useTheme } from '@bnb-chain/space';
 import { useMemo } from 'react';
 
 import { FinanceChip } from '@/core/components/icons/FinanceChip';
@@ -27,21 +27,21 @@ export const AllowedSendAmount = ({
   }, [selectedToken, allowedSendAmount]);
 
   return allowedSendAmt ? (
-    <Box
-      gap={'4px'}
+    <Flex
       flexDir={'row'}
       alignItems={'center'}
       color={!isError ? theme.colors[colorMode].text.tertiary : theme.colors[colorMode].text.danger}
       lineHeight={'16px'}
+      display={'inline-block'}
       {...otherProps}
     >
       <FinanceChip w={'16px'} h={'16px'} />
-      <Box ml={'4px'} display={'inline'} fontSize={'14px'} fontWeight={400}>
+      <Box ml={'4px'} display={'inline-block'} fontSize={'14px'} fontWeight={400}>
         {formatMessage({ id: 'route.allowed-send-amount' })}
       </Box>
-      <Box ml={'4px'} display={'inline'} fontSize={'14px'} fontWeight={500}>
+      <Box ml={'4px'} display={'inline-block'} fontSize={'14px'} fontWeight={500}>
         {allowedSendAmt}
       </Box>
-    </Box>
+    </Flex>
   ) : null;
 };

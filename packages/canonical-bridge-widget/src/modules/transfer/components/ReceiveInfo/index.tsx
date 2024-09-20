@@ -211,16 +211,18 @@ export const ReceiveInfo = ({ onOpen }: ReceiveInfoProps) => {
       if (!selectedToken || !Number(debouncedSendValue)) {
         dispatch(setEstimatedAmount(undefined));
         dispatch(setIsRefreshing(false));
+        dispatch(setIsGlobalFeeLoading(false));
         return;
       }
-      dispatch(setIsGlobalFeeLoading(true));
       dispatch(setIsRefreshing(true));
       loadingBridgeFees();
       dispatch(setIsRefreshing(false));
+    } else {
+      dispatch(setIsGlobalFeeLoading(true));
     }
   }, [selectedToken, debouncedSendValue, dispatch, sendValue, loadingBridgeFees, isBase]);
 
-  return debouncedSendValue === sendValue && !!Number(sendValue) ? (
+  return !!Number(sendValue) ? (
     <Flex flexDir={'column'} gap={'12px'}>
       <Flex flexDir={'row'} alignItems={'center'} justifyContent={'space-between'}>
         <Box color={theme.colors[colorMode].input.title} fontSize={'14px'} fontWeight={400}>
@@ -236,36 +238,40 @@ export const ReceiveInfo = ({ onOpen }: ReceiveInfoProps) => {
         background={theme.colors[colorMode].receive.background}
         position={'relative'}
       >
-        {!!Number(sendValue) && receiveAmt && !isGlobalFeeLoading ? (
-          <>
-            <RouteName bridgeType={bridgeType} isReceiveSection={true} />
-            {isBase && <RefreshingButton position={'absolute'} right={'16px'} top={'16px'} />}
-            <RouteTitle
-              receiveAmt={receiveAmt ? formatNumber(Number(Number(receiveAmt)), 8) : undefined}
-              tokenAddress={toTokenInfo?.address}
-              toTokenInfo={toTokenInfo}
-            />
-            <Flex flexDir={'column'} gap={'4px'}>
-              <EstimatedArrivalTime bridgeType={bridgeType} />
-              <FeesInfo
-                bridgeType={bridgeType}
-                summary={feeDetails.summary}
-                breakdown={feeDetails.breakdown}
+        {debouncedSendValue === sendValue ? (
+          receiveAmt && !isGlobalFeeLoading ? (
+            <>
+              <RouteName bridgeType={bridgeType} isReceiveSection={true} />
+              {isBase && <RefreshingButton position={'absolute'} right={'16px'} top={'16px'} />}
+              <RouteTitle
+                receiveAmt={receiveAmt ? formatNumber(Number(Number(receiveAmt)), 8) : undefined}
+                tokenAddress={toTokenInfo?.address}
+                toTokenInfo={toTokenInfo}
               />
-              <AllowedSendAmount
-                allowedSendAmount={allowedAmtContent}
-                isError={
-                  bridgeType === 'cBridge'
-                    ? isAllowSendError
-                    : bridgeType === 'stargate'
-                    ? STIsAllowSendError
-                    : false
-                }
-              />
-            </Flex>
-          </>
-        ) : !isGlobalFeeLoading && !receiveAmt ? (
-          <NoRouteFound />
+              <Flex flexDir={'column'} gap={'4px'}>
+                <EstimatedArrivalTime bridgeType={bridgeType} />
+                <FeesInfo
+                  bridgeType={bridgeType}
+                  summary={feeDetails.summary}
+                  breakdown={feeDetails.breakdown}
+                />
+                <AllowedSendAmount
+                  allowedSendAmount={allowedAmtContent}
+                  isError={
+                    bridgeType === 'cBridge'
+                      ? isAllowSendError
+                      : bridgeType === 'stargate'
+                      ? STIsAllowSendError
+                      : false
+                  }
+                />
+              </Flex>
+            </>
+          ) : !receiveAmt && !isGlobalFeeLoading ? (
+            <NoRouteFound />
+          ) : (
+            <ReceiveLoading />
+          )
         ) : (
           <ReceiveLoading />
         )}
