@@ -12,7 +12,7 @@ import { useToTokenInfo } from '@/modules/transfer/hooks/useToTokenInfo';
 import { useDebounce } from '@/core/hooks/useDebounce';
 import { setError } from '@/modules/transfer/action';
 import { useGetTokenBalance } from '@/core/contract/hooks/useGetTokenBalance';
-import { useAdapter } from '@/modules/aggregator/components/BridgeConfigProvider';
+import { useAdapter } from '@/modules/aggregator/components/AggregatorProvider';
 import { DeBridgeAdapter } from '@/modules/aggregator/adapters/deBridge/DeBridgeAdapter';
 
 export const useGetDeBridgeFees = () => {

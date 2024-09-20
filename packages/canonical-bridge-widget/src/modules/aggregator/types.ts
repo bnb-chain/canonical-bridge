@@ -94,7 +94,7 @@ export interface IExternalChain {
   tokens: Record<number, string[]>;
 }
 
-export interface IBridgeConfig {
+export interface ITransferConfig {
   defaultSelectedInfo: {
     fromChainId: number;
     toChainId: number;

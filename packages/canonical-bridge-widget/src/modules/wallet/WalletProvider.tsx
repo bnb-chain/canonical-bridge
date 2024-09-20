@@ -10,14 +10,14 @@ import {
 } from '@node-real/walletkit/evm';
 
 import { env } from '@/core/configs/env';
-import { useBridgeConfig } from '@/modules/aggregator/components/BridgeConfigProvider';
+import { useAggregator } from '@/modules/aggregator/components/AggregatorProvider';
 import { APP_NAME } from '@/core/constants';
 import { IChainConfig } from '@/modules/aggregator/types';
 
 export function WalletProvider(props: PropsWithChildren) {
   const { children } = props;
 
-  const { chainConfigs } = useBridgeConfig();
+  const { chainConfigs } = useAggregator();
 
   const config = useMemo(() => {
     const config: WalletKitConfig = {
@@ -48,25 +48,23 @@ export function WalletProvider(props: PropsWithChildren) {
 }
 
 function getEvmChains(chainConfigs: IChainConfig[]) {
-  return chainConfigs
-    .filter((item) => !item.chainType || item.chainType === 'evm')
-    .map((item) => ({
-      id: item.id,
-      name: item.name,
-      nativeCurrency: item.nativeCurrency,
-      rpcUrls: {
-        default: {
-          http: [item.rpcUrl],
-        },
-        public: {
-          http: [item.rpcUrl],
-        },
+  return chainConfigs.map((item) => ({
+    id: item.id,
+    name: item.name,
+    nativeCurrency: item.nativeCurrency,
+    rpcUrls: {
+      default: {
+        http: [item.rpcUrl],
       },
-      blockExplorers: {
-        default: {
-          name: item.explorer.name,
-          url: item.explorer.url,
-        },
+      public: {
+        http: [item.rpcUrl],
       },
-    }));
+    },
+    blockExplorers: {
+      default: {
+        name: item.explorer.name,
+        url: item.explorer.url,
+      },
+    },
+  }));
 }

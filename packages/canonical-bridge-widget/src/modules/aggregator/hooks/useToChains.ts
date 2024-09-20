@@ -1,11 +1,11 @@
 import { useMemo } from 'react';
 
 import { useSavedValue } from '@/core/hooks/useSavedValue';
-import { useBridgeConfig } from '@/modules/aggregator/components/BridgeConfigProvider';
+import { useAggregator } from '@/modules/aggregator/components/AggregatorProvider';
 import { IGetToChainsParams } from '@/modules/aggregator/shared/aggregateChains';
 
 export function useToChains(props: IGetToChainsParams) {
-  const { getToChains } = useBridgeConfig();
+  const { getToChains } = useAggregator();
 
   const params = useSavedValue(props);
 
