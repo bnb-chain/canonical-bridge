@@ -35,23 +35,8 @@ export function FromSection() {
           </Typography>
         </Flex>
       ) : null}
-      <Flex
-        flexDir="column"
-        justifyContent="space-between"
-        borderRadius={'8px'}
-        gap={'8px'}
-        position={'relative'}
-      >
-        <Flex
-          flexDir="column"
-          justifyContent="space-between"
-          borderRadius={'8px'}
-          border={`1px solid ${theme.colors[colorMode].border['3']}`}
-        >
-          <SelectButton network={fromChain} onClick={onOpen} />
-        </Flex>
-      </Flex>
 
+      <SelectButton isActive={isOpen} chain={fromChain} onClick={onOpen} />
       <SourceNetworkModal isOpen={isOpen} onClose={onClose} />
     </Flex>
   );

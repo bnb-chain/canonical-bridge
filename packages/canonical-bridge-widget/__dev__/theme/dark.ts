@@ -2,9 +2,13 @@ import { rgba } from 'polished';
 
 export const dark = {
   input: {
-    border: '#373943',
     background: '#1E2026',
     title: '#8C8F9B',
+    border: {
+      default: '#373943',
+      hover: '#5C5F6A',
+      active: '#FFE900',
+    },
   },
   text: {
     primary: '#FFFFFF',

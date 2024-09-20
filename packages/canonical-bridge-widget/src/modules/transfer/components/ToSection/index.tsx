@@ -21,31 +21,22 @@ export function ToSection() {
   const toChain = useAppSelector((state) => state.transfer.toChain);
 
   return (
-    <>
-      <Flex flexDir="column" gap={'12px'} w={'100%'} flex={1} h={'64px'}>
-        {isBase ? (
-          <Flex alignItems="center" justifyContent={'space-between'}>
-            <Typography
-              variant="body"
-              lineHeight={'16px'}
-              size={'sm'}
-              color={theme.colors[colorMode].text.placeholder}
-            >
-              {formatMessage({ id: 'to.section.title' })}
-            </Typography>
-          </Flex>
-        ) : null}
-        <Flex
-          flexDir="column"
-          justifyContent="space-between"
-          borderRadius={'8px'}
-          border={`1px solid ${theme.colors[colorMode].border['3']}`}
-        >
-          <SelectButton network={toChain} onClick={onOpen} />
+    <Flex flexDir="column" gap={'12px'} w={'100%'} flex={1} h={'64px'}>
+      {isBase ? (
+        <Flex alignItems="center" justifyContent={'space-between'}>
+          <Typography
+            variant="body"
+            lineHeight={'16px'}
+            size={'sm'}
+            color={theme.colors[colorMode].text.placeholder}
+          >
+            {formatMessage({ id: 'to.section.title' })}
+          </Typography>
         </Flex>
-      </Flex>
+      ) : null}
 
+      <SelectButton isActive={isOpen} chain={toChain} onClick={onOpen} />
       <DestinationNetworkModal isOpen={isOpen} onClose={onClose} />
-    </>
+    </Flex>
   );
 }

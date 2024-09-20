@@ -74,6 +74,9 @@ export function ChooseTokenModal(props: ChooseTokenModalProps) {
                 iconUrl={item.icon}
                 isActive={isActive}
                 isDisabled={isDisabled}
+                incompatibleTooltip={formatMessage({
+                  id: 'select-modal.token.incompatible.tooltip',
+                })}
                 _hover={{
                   '.token-info': {
                     transform: 'translateY(-100%)',

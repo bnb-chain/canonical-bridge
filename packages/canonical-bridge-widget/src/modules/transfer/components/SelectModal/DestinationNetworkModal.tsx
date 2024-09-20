@@ -53,6 +53,9 @@ export function DestinationNetworkModal(props: DestinationNetworkModalProps) {
             iconUrl={item.icon}
             isActive={toChain?.id === item.id}
             isDisabled={!isChainOrTokenCompatible(item)}
+            incompatibleTooltip={formatMessage({
+              id: 'select-modal.destination.incompatible.tooltip',
+            })}
             onClick={() => {
               if (item.chainType === 'link') {
                 openLink(item.externalBridgeUrl);
