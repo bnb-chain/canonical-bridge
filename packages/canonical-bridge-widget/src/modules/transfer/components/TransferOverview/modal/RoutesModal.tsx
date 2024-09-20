@@ -15,13 +15,13 @@ export function RoutesModal(props: RoutesModalProps) {
   const { colorMode } = useColorMode();
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} size={{ base: 'full' }} isCentered>
+    <Modal isOpen={isOpen} onClose={onClose} size={{ base: 'full', md: 'lg' }} isCentered>
       <ModalOverlay w={'100%'} />
       <ModalContent
         background={theme.colors[colorMode].background.modal}
         p={0}
-        h={'100vh'}
-        w={'100%'}
+        h={['auto', 'auto', '665px']}
+        w={['100%', '100%', '558px']}
         overflow="hidden"
         margin={0}
       >
