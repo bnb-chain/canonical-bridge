@@ -48,3 +48,7 @@ export function isSameAddress(A?: string, B?: string) {
 export function isEvmAddress(address?: string) {
   return !!address && /^0x[a-f0-9]{40}$/i.test(address);
 }
+
+export function isNativeToken(tokenAddress: string) {
+  return tokenAddress === '0x0000000000000000000000000000000000000000';
+}
