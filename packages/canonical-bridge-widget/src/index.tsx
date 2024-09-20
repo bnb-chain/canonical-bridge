@@ -14,6 +14,8 @@ interface CanonicalBridgeContextProps {}
 
 const CanonicalBridgeContext = React.createContext({} as CanonicalBridgeContextProps);
 
+export function useWidget() {}
+
 export interface CanonicalBridgeConfig {
   appearance: {
     mode: 'dark';

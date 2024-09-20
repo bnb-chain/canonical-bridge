@@ -1,4 +1,4 @@
-import { Flex, Text, useColorMode, useIntl, useTheme } from '@bnb-chain/space';
+import { Flex, formatAddress, Text, useColorMode, useIntl, useTheme } from '@bnb-chain/space';
 import { useAccount } from 'wagmi';
 
 import { BaseModal } from '@/modules/transfer/components/SelectModal/components/BaseModal';
@@ -10,6 +10,7 @@ import { ListItem } from '@/modules/transfer/components/SelectModal/components/L
 import { isChainOrTokenCompatible } from '@/modules/aggregator/shared/isChainOrTokenCompatible';
 import { useSelection } from '@/modules/aggregator/hooks/useSelection';
 import { isSameAddress } from '@/core/utils/address';
+import { ExLinkIcon } from '@/core/components/icons/ExLinkIcon';
 
 interface ChooseTokenModalProps {
   isOpen: boolean;
@@ -64,19 +65,64 @@ export function ChooseTokenModal(props: ChooseTokenModalProps) {
       </Flex>
       <Flex flexDir="column" flex={1}>
         <VirtualList data={result} itemHeight={56} itemKey="id">
-          {(item) => (
-            <ListItem
-              iconUrl={item.icon}
-              isActive={isSameAddress(selectedToken?.address, item.address)}
-              isDisabled={!isChainOrTokenCompatible(item)}
-              onClick={() => {
-                selectToken(item);
-                onClose();
-              }}
-            >
-              <Flex>{item.displaySymbol}</Flex>
-            </ListItem>
-          )}
+          {(item) => {
+            const isDisabled = !isChainOrTokenCompatible(item);
+            const isActive = isSameAddress(selectedToken?.address, item.address);
+
+            return (
+              <ListItem
+                iconUrl={item.icon}
+                isActive={isActive}
+                isDisabled={isDisabled}
+                onClick={() => {
+                  selectToken(item);
+                  onClose();
+                }}
+              >
+                <Flex alignItems="center" justifyContent="space-between" flex={1} gap={'8px'}>
+                  <Flex w="50%" flexDir="column" gap={'4px'}>
+                    <Flex>{item.displaySymbol}</Flex>
+                    <Flex
+                      flexDir="column"
+                      fontSize="12px"
+                      fontWeight={500}
+                      lineHeight="16px"
+                      color={theme.colors[colorMode].text.secondary}
+                      h="16px"
+                      overflow="hidden"
+                    >
+                      <Flex>{item.name}</Flex>
+                      <Flex as="a">
+                        {formatAddress({
+                          value: item.address,
+                        })}
+                        <ExLinkIcon
+                          ml="4px"
+                          color={theme.colors[colorMode].text.secondary}
+                          boxSize={theme.sizes['4']}
+                        />
+                      </Flex>
+                    </Flex>
+                  </Flex>
+                  {/* 
+                  {!isDisabled && (
+                    <Flex w="50%" flexDir="column" alignItems="flex-end" gap={'4px'}>
+                      <Flex>0</Flex>
+                      <Flex
+                        flexDir="column"
+                        fontSize="12px"
+                        fontWeight={500}
+                        lineHeight="16px"
+                        color={theme.colors[colorMode].text.secondary}
+                      >
+                        -
+                      </Flex>
+                    </Flex>
+                  )} */}
+                </Flex>
+              </ListItem>
+            );
+          }}
         </VirtualList>
       </Flex>
     </BaseModal>
