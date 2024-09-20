@@ -8,7 +8,7 @@ export const useGetNativeToken = () => {
 
   if (fromChain?.id) {
     if (nativeCurrencies[fromChain.id]) {
-      return nativeCurrencies[fromChain.id];
+      return nativeCurrencies[fromChain.id].symbol;
     }
 
     const nativeToken = fromChain?.cBridge?.raw?.gas_token_symbol;

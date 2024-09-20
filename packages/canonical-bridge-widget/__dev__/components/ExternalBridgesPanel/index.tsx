@@ -42,7 +42,7 @@ export function ExternalBridgesPanel() {
 
   return (
     <Flex
-      p={theme.sizes['4']}
+      p={[0, 0, 0, theme.sizes['4']]}
       bg={theme.colors[colorMode].layer[3].default}
       w="100%"
       maxW={'384px'}

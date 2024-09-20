@@ -10,7 +10,12 @@ import { useGetBestTime } from '@/modules/transfer/hooks/useGetBestTime';
 import { getMaxValueKey } from '@/core/utils/number';
 import { BestRouteTag } from '@/modules/transfer/components/TransferOverview/RouteInfo/RouteName/BestRouteTag';
 
-export const RouteName = React.memo(({ bridgeType }: { bridgeType?: BridgeType }) => {
+interface RouteNameProps {
+  bridgeType?: BridgeType;
+  isReceiveSection?: boolean;
+}
+
+export const RouteName = React.memo(({ bridgeType, isReceiveSection = false }: RouteNameProps) => {
   const { formatMessage } = useIntl();
   const { getSortedReceiveAmount } = useGetReceiveAmount();
 
@@ -18,31 +23,46 @@ export const RouteName = React.memo(({ bridgeType }: { bridgeType?: BridgeType }
   const bestTimeRoute = useGetBestTime();
   const bestReturnRoute = getMaxValueKey(receiveValue);
   return (
-    <Flex flexDir={'row'} gap={'8px'}>
+    <Flex flexDir={'row'} gap={'8px'} alignItems={'center'}>
       {bridgeType === 'cBridge' ? (
-        <CBridgeIcon w={'20px'} h={'20px'} />
+        <CBridgeIcon w={['16px', '16px', '16px', '20px']} h={['16px', '16px', '16px', '20px']} />
       ) : bridgeType === 'deBridge' ? (
         <Image
           src={`${env.ASSET_PREFIX}/images/debridgeIcon.png`}
           alt="deBridge"
-          w={'20px'}
-          h={'20px'}
+          w={['16px', '16px', '16px', '20px']}
+          h={['16px', '16px', '16px', '20px']}
           borderRadius={'100%'}
+          mb={['4px', '4px', '4px', '0']}
         />
       ) : bridgeType === 'stargate' ? (
-        <StarGateLogo w={'20px'} h={'20px'} />
+        <StarGateLogo w={['16px', '16px', '16px', '20px']} h={['16px', '16px', '16px', '20px']} />
       ) : bridgeType === 'layerZero' ? (
         <Image
           src={`${env.ASSET_PREFIX}/images/layerZeroIcon.png`}
           alt="layerZero"
-          w={'20px'}
-          h={'20px'}
+          w={['16px', '16px', '16px', '20px']}
+          h={['16px', '16px', '16px', '20px']}
           borderRadius={'100%'}
         />
       ) : null}
 
-      <Flex justifyContent={'space-between'} alignItems={'center'} flex={1}>
-        <Box fontSize={'14px'} fontWeight={500} lineHeight={'20px'}>
+      <Flex
+        justifyContent={[
+          isReceiveSection ? 'flex-start' : 'space-between',
+          isReceiveSection ? 'flex-start' : 'space-between',
+          isReceiveSection ? 'flex-start' : 'space-between',
+          'space-between',
+        ]}
+        gap={'8px'}
+        alignItems={'center'}
+        flex={1}
+      >
+        <Box
+          fontSize={['12px', '12px', '12px', '14px']}
+          lineHeight={['16px', '16px', '16px', '20px']}
+          fontWeight={500}
+        >
           {bridgeType === 'cBridge'
             ? formatMessage({ id: 'route.option.cBridge.title' })
             : bridgeType === 'deBridge'

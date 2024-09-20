@@ -9,6 +9,7 @@ import { APP_NAME } from '@/core/constants';
 
 export interface ThemeProviderProps {
   children: React.ReactNode;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   themeConfig?: { dark?: any; light?: any };
 }
 
@@ -18,6 +19,10 @@ export const ThemeProvider = ({ children, themeConfig }: ThemeProviderProps) => 
   const customTheme = useMemo(() => {
     return {
       ...theme,
+      breakpoints: {
+        ...theme.breakpoints,
+        lg: '1080px',
+      },
       config: {
         ...theme.config,
         initialColorMode: 'dark',

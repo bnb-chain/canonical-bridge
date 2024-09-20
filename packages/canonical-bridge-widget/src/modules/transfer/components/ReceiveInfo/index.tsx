@@ -1,8 +1,8 @@
-import { Box, Flex, useColorMode, useIntl, useTheme } from '@bnb-chain/space';
-import { useMemo } from 'react';
+import { Box, Flex, useBreakpointValue, useColorMode, useIntl, useTheme } from '@bnb-chain/space';
+import { useEffect, useMemo } from 'react';
 import { formatUnits } from 'viem';
 
-import { useAppSelector } from '@/modules/store/StoreProvider';
+import { useAppDispatch, useAppSelector } from '@/modules/store/StoreProvider';
 import { useGetReceiveAmount } from '@/modules/transfer/hooks/useGetReceiveAmount';
 import { useToTokenInfo } from '@/modules/transfer/hooks/useToTokenInfo';
 import { formatNumber } from '@/core/utils/number';
@@ -20,17 +20,35 @@ import { ReceiveLoading } from '@/modules/transfer/components/ReceiveInfo/Receiv
 import { NoRouteFound } from '@/modules/transfer/components/TransferOverview/NoRouteFound';
 import { useDebounce } from '@/core/hooks/useDebounce';
 import { DEBOUNCE_DELAY } from '@/core/constants';
-export const ReceiveInfo = () => {
+import { RefreshingButton } from '@/modules/transfer/components/Button/RefreshingButton';
+import { RouteChangeButton } from '@/modules/transfer/components/ReceiveInfo/RouteChangeButton';
+import {
+  setEstimatedAmount,
+  setIsGlobalFeeLoading,
+  setIsRefreshing,
+  setTransferActionInfo,
+} from '@/modules/transfer/action';
+import { useLoadingBridgeFees } from '@/modules/transfer/hooks/useLoadingBridgeFees';
+
+interface ReceiveInfoProps {
+  onOpen: () => void;
+}
+
+export const ReceiveInfo = ({ onOpen }: ReceiveInfoProps) => {
   const { getSortedReceiveAmount } = useGetReceiveAmount();
   const { toTokenInfo } = useToTokenInfo();
   const theme = useTheme();
   const { colorMode } = useColorMode();
   const { formatMessage } = useIntl();
   const nativeToken = useGetNativeToken();
+  const { loadingBridgeFees } = useLoadingBridgeFees();
+  const dispatch = useAppDispatch();
+  const isBase = useBreakpointValue({ base: true, lg: false }) ?? false;
 
   const transferActionInfo = useAppSelector((state) => state.transfer.transferActionInfo);
   const isGlobalFeeLoading = useAppSelector((state) => state.transfer.isGlobalFeeLoading);
   const sendValue = useAppSelector((state) => state.transfer.sendValue);
+  const selectedToken = useAppSelector((state) => state.transfer.selectedToken);
 
   const receiveAmt = useMemo(() => {
     if (!Number(sendValue)) return null;
@@ -183,48 +201,64 @@ export const ReceiveInfo = () => {
   }, [cBridgeAllowedAmt, STAllowedSendAmount, transferActionInfo]);
 
   const debouncedSendValue = useDebounce(sendValue, DEBOUNCE_DELAY);
-  return debouncedSendValue === sendValue ? (
-    (receiveAmt && !!Number(sendValue)) || isGlobalFeeLoading ? (
-      <Flex flexDir={'column'} gap={'12px'}>
-        <Flex flexDir={'row'} justifyContent={'space-between'}>
-          <Box color={theme.colors[colorMode].input.title} fontSize={'14px'} fontWeight={400}>
-            {formatMessage({ id: 'you.receive.title' })}
-          </Box>
-        </Flex>
-        <Flex
-          borderRadius={'8px'}
-          p={'16px'}
-          flexDir={'column'}
-          gap={'12px'}
-          background={theme.colors[colorMode].receive.background}
-        >
-          {!isGlobalFeeLoading ? (
-            <>
-              <RouteName bridgeType={bridgeType} />
-              <RouteTitle
-                receiveAmt={receiveAmt ? formatNumber(Number(Number(receiveAmt)), 8) : undefined}
-                tokenAddress={toTokenInfo?.address}
-                toTokenInfo={toTokenInfo}
-              />
-              <Flex flexDir={'column'} gap={'4px'}>
-                <EstimatedArrivalTime bridgeType={bridgeType} />
-                <FeesInfo
-                  bridgeType={bridgeType}
-                  summary={feeDetails.summary}
-                  breakdown={feeDetails.breakdown}
-                />
-                <AllowedSendAmount allowedSendAmount={allowedAmtContent} />
-              </Flex>
-            </>
-          ) : (
-            <ReceiveLoading />
-          )}
-        </Flex>
+
+  useEffect(() => {
+    if (!isBase) return;
+    if (sendValue === debouncedSendValue) {
+      dispatch(setTransferActionInfo(undefined));
+      if (!selectedToken || !Number(debouncedSendValue)) {
+        dispatch(setEstimatedAmount(undefined));
+        dispatch(setIsRefreshing(false));
+        return;
+      }
+      dispatch(setIsGlobalFeeLoading(true));
+      dispatch(setIsRefreshing(true));
+      loadingBridgeFees();
+      dispatch(setIsRefreshing(false));
+    }
+  }, [selectedToken, debouncedSendValue, dispatch, sendValue, loadingBridgeFees, isBase]);
+
+  return debouncedSendValue === sendValue && !!Number(sendValue) ? (
+    <Flex flexDir={'column'} gap={'12px'}>
+      <Flex flexDir={'row'} alignItems={'center'} justifyContent={'space-between'}>
+        <Box color={theme.colors[colorMode].input.title} fontSize={'14px'} fontWeight={400}>
+          {formatMessage({ id: 'you.receive.title' })}
+        </Box>
+        {isBase ? <RouteChangeButton onOpen={onOpen} /> : null}
       </Flex>
-    ) : !!Number(debouncedSendValue) ? (
-      <NoRouteFound />
-    ) : null
-  ) : (
-    <ReceiveLoading />
-  );
+      <Flex
+        borderRadius={'8px'}
+        p={'16px'}
+        flexDir={'column'}
+        gap={'12px'}
+        background={theme.colors[colorMode].receive.background}
+        position={'relative'}
+      >
+        {!!Number(sendValue) && receiveAmt && !isGlobalFeeLoading ? (
+          <>
+            <RouteName bridgeType={bridgeType} isReceiveSection={true} />
+            {isBase && <RefreshingButton position={'absolute'} right={'16px'} top={'16px'} />}
+            <RouteTitle
+              receiveAmt={receiveAmt ? formatNumber(Number(Number(receiveAmt)), 8) : undefined}
+              tokenAddress={toTokenInfo?.address}
+              toTokenInfo={toTokenInfo}
+            />
+            <Flex flexDir={'column'} gap={'4px'}>
+              <EstimatedArrivalTime bridgeType={bridgeType} />
+              <FeesInfo
+                bridgeType={bridgeType}
+                summary={feeDetails.summary}
+                breakdown={feeDetails.breakdown}
+              />
+              <AllowedSendAmount allowedSendAmount={allowedAmtContent} />
+            </Flex>
+          </>
+        ) : !isGlobalFeeLoading && !receiveAmt ? (
+          <NoRouteFound />
+        ) : (
+          <ReceiveLoading />
+        )}
+      </Flex>
+    </Flex>
+  ) : null;
 };
