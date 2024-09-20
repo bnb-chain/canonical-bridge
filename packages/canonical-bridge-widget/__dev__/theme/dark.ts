@@ -35,8 +35,12 @@ export const dark = {
     select: {
       text: '#FFFFFF',
       arrow: '#C4C5CB',
-      border: '#373943',
-      background: { default: '#1E2026', hover: '#373943' },
+      background: '#1E2026',
+      border: {
+        default: '#373943',
+        hover: '#5C5F6A',
+        active: '#FFE900',
+      },
     },
     primary: {
       default: '#F7F7F8',
