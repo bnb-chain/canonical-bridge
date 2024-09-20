@@ -32,12 +32,6 @@ export const CLIENT_TIME_OUT = 60 * 1000;
 
 export const APP_NAME = 'bnb-chain-bridge';
 
-export const OP_BNB_SUPPORTED_TOKENS = ['BNB', 'BTCB', 'WETH', 'FDUSD', 'USDT', 'XCAD']; // WETH corresponds to ETH of opBNB bridge
-
-export const BSC_CHAIN_ID = 56;
-
-export const OP_BNB_CHAIN_ID = 204;
-
 export const OP_BNB_BRIDGE_URL = 'https://opbnb-bridge.bnbchain.org/deposit';
 
 export const GREENFIELD_BRIDGE_URL = 'https://greenfield.bnbchain.org/en/bridge?type=transfer-in';
