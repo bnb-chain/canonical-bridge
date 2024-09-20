@@ -50,7 +50,7 @@ export const EstimatedArrivalTime = ({
       {...otherProps}
     >
       <TimerIcon w={'16px'} h={'16px'} />
-      <Box fontSize={'16px'} fontWeight={400}>
+      <Box fontSize={['14px']} fontWeight={400}>
         {formatMessage({ id: 'route.time.title' })}
       </Box>
       {waitingTime ? (

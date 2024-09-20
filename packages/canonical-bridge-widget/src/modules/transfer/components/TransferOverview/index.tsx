@@ -154,7 +154,6 @@ export function TransferOverview({ routeContentBottom }: TransferOverviewProps) 
                     <RouteSkeleton />
                     <RouteSkeleton />
                     <RouteSkeleton />
-                    <RouteSkeleton />
                   </Flex>
                 ) : (
                   <Flex

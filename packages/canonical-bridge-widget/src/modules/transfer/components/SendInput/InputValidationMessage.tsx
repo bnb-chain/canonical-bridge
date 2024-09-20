@@ -1,5 +1,5 @@
 import { Box, useColorMode, useTheme } from '@bnb-chain/space';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useAccount, useBalance } from 'wagmi';
 
 import { useAppDispatch, useAppSelector } from '@/modules/store/StoreProvider';
@@ -7,7 +7,7 @@ import { useInputValidation } from '@/modules/transfer/hooks/useInputValidation'
 import { useDebounce } from '@/core/hooks/useDebounce';
 import { DEBOUNCE_DELAY } from '@/core/constants';
 import { useLoadingTokenBalance } from '@/modules/transfer/hooks/useLoadingTokenBalance';
-import { setError, setIsTransferable } from '@/modules/transfer/action';
+import { setIsTransferable } from '@/modules/transfer/action';
 import { useCBridgeSendMaxMin } from '@/modules/aggregator/adapters/cBridge/hooks/useCBridgeSendMaxMin';
 
 export const InputValidationMessage = () => {
@@ -28,6 +28,8 @@ export const InputValidationMessage = () => {
   const { data: nativeBalance } = useBalance({ address: address as `0x${string}` });
   const { minMaxSendAmt } = useCBridgeSendMaxMin();
 
+  const [balanceInputError, setBalanceInputError] = useState<string>('');
+
   useEffect(() => {
     const balanceResult = validateInput({
       balance,
@@ -42,9 +44,9 @@ export const InputValidationMessage = () => {
     });
     if (balanceResult?.isError === true) {
       dispatch(setIsTransferable(false));
-      dispatch(setError({ text: balanceResult.text }));
+      setBalanceInputError(balanceResult.text);
     } else {
-      dispatch(setError(undefined));
+      setBalanceInputError('');
       dispatch(setIsTransferable(true));
     }
   }, [
@@ -61,7 +63,7 @@ export const InputValidationMessage = () => {
     validateInput,
   ]);
 
-  return error ? (
+  return error || balanceInputError ? (
     <Box
       color={theme.colors[colorMode].text.danger}
       fontSize={'12px'}
@@ -70,7 +72,7 @@ export const InputValidationMessage = () => {
       position={'absolute'}
       top={`calc(100% + ${'8px'})`}
     >
-      {error.text}
+      {error?.text ?? balanceInputError}
     </Box>
   ) : null;
 };

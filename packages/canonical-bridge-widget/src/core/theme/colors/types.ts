@@ -35,6 +35,7 @@ export type ColorType = {
     route: string;
     warning: string;
     tag: string;
+    body: string;
   };
   receive: {
     background: string;

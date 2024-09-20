@@ -5,6 +5,7 @@ import { BridgeType, DeBridgeCreateQuoteResponse } from '@bnb-chain/canonical-br
 
 import { useAppDispatch, useAppSelector } from '@/modules/store/StoreProvider';
 import {
+  setError,
   setEstimatedAmount,
   setIsGlobalFeeLoading,
   setRouteError,
@@ -55,6 +56,15 @@ export const useLoadingBridgeFees = () => {
       }
     });
     try {
+      if (Number(parseUnits(debouncedSendValue, selectedToken.decimals)) <= 0) {
+        dispatch(
+          setError({ text: 'The amount is too small. Please enter a valid amount to transfer.' }),
+        );
+        dispatch(setIsGlobalFeeLoading(false));
+        return;
+      } else {
+        dispatch(setError(undefined));
+      }
       const response = await bridgeSDK.loadBridgeFees({
         bridgeType: bridgeTypeList,
         fromChainId: fromChain.id,

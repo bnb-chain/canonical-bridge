@@ -36,7 +36,7 @@ export const AllowedSendAmount = ({
       {...otherProps}
     >
       <FinanceChip w={'16px'} h={'16px'} />
-      <Box ml={'4px'} display={'inline'} fontSize={'16px'} fontWeight={400}>
+      <Box ml={'4px'} display={'inline'} fontSize={'14px'} fontWeight={400}>
         {formatMessage({ id: 'route.allowed-send-amount' })}
       </Box>
       <Box ml={'4px'} display={'inline'} fontSize={'14px'} fontWeight={500}>

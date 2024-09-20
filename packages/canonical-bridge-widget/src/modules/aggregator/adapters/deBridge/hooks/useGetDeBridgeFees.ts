@@ -10,7 +10,7 @@ import { bridgeSDK } from '@/core/constants/bridgeSDK';
 import { DEBOUNCE_DELAY } from '@/core/constants';
 import { useToTokenInfo } from '@/modules/transfer/hooks/useToTokenInfo';
 import { useDebounce } from '@/core/hooks/useDebounce';
-import { setError } from '@/modules/transfer/action';
+import { setRouteError } from '@/modules/transfer/action';
 import { useGetTokenBalance } from '@/core/contract/hooks/useGetTokenBalance';
 import { useAdapter } from '@/modules/aggregator/components/AggregatorProvider';
 import { DeBridgeAdapter } from '@/modules/aggregator/adapters/deBridge/DeBridgeAdapter';
@@ -68,7 +68,6 @@ export const useGetDeBridgeFees = () => {
           gas: 0n,
           gasPrice: 0n,
         });
-        dispatch(setError(undefined));
         if (estimatedAmount['deBridge']?.tx && address && publicClient) {
           // Check whether token allowance is enough before getting gas estimation
           const allowance = await bridgeSDK.getTokenAllowance({
@@ -107,7 +106,7 @@ export const useGetDeBridgeFees = () => {
         // eslint-disable-next-line no-console
         console.log(error, error.message, error.response);
         if (error?.response?.data?.errorMessage) {
-          dispatch(setError({ text: error.response.data.errorMessage, bridgeType: 'deBridge' }));
+          dispatch(setRouteError({ deBridge: error.response.data.errorMessage }));
         }
       }
     })();

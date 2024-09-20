@@ -29,6 +29,22 @@ export const useGetStargateFees = () => {
   const [allowedSendAmount, setAllowedSendAmount] = useState<{ min: string; max: string } | null>(
     null,
   );
+  const [isAllowSendError, setIsAllowSendError] = useState(false);
+
+  useEffect(() => {
+    setIsAllowSendError(false);
+    if (!sendValue || !selectedToken || !toTokenInfo) {
+      return;
+    }
+    if (allowedSendAmount?.min && allowedSendAmount?.max) {
+      if (Number(sendValue) < Number(allowedSendAmount.min)) {
+        setIsAllowSendError(true);
+      } else if (Number(sendValue) > Number(allowedSendAmount.max)) {
+        setIsAllowSendError(true);
+      }
+    }
+  }, [allowedSendAmount, sendValue, selectedToken, toTokenInfo]);
+
   const [gasInfo, setGasInfo] = useState<{
     gas: bigint;
     gasPrice: bigint;
@@ -171,5 +187,6 @@ export const useGetStargateFees = () => {
     nativeFee,
     gasInfo,
     allowedSendAmount,
+    isAllowSendError,
   };
 };

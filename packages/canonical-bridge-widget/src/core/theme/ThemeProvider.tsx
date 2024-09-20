@@ -31,8 +31,7 @@ export const ThemeProvider = ({ children, themeConfig }: ThemeProviderProps) => 
       styles: {
         global: ({ colorMode }: { colorMode: ColorMode }) => ({
           body: {
-            bg: theme.colors[colorMode].background[3],
-            minWidth: '768px',
+            bg: themeConfig?.[colorMode].background.body ?? theme.colors[colorMode].background[3],
           },
           ...walletStyles(colorMode),
         }),

@@ -34,32 +34,37 @@ export function TransferPage({ routeContentBottom }: TransferPageProps) {
     <Flex
       flexDir={['column', 'column', 'column', 'row']}
       gap={[]}
-      mb={'160px'}
+      w={['100%']}
+      mb={['120px', '120px', '160px']}
       alignItems={'flex-start'}
+      justifyContent={'center'}
     >
       <Flex
         flexDir="column"
-        background={theme.colors[colorMode].background.main}
+        background={['none', 'none', theme.colors[colorMode].background.main]}
         color={theme.colors[colorMode].text.primary}
-        boxShadow={`0 ${'24px'} ${'64px'} 0 rgba(0, 0, 0, 0.48)`}
+        boxShadow={['none', 'none', `0 ${'24px'} ${'64px'} 0 rgba(0, 0, 0, 0.48)`]}
         borderRadius={'24px'}
-        px={'24px'}
-        py={'32px'}
-        w={'588px'}
+        px={['0', '0', '24px']}
+        py={['0', '0', '32px']}
+        w={'100%'}
+        maxW={['100%', '100%', '100%', '588px']}
         gap={'24px'}
         position="relative"
       >
-        <Box
-          as="h1"
-          mb={'8px'}
-          fontSize={'20px'}
-          fontWeight={500}
-          textAlign={'center'}
-          borderBottom={`1px solid ${theme.colors[colorMode].border[2]}`}
-          pb={'24px'}
-        >
-          {formatMessage({ id: 'main.title' })}
-        </Box>
+        {!isBase && (
+          <Box
+            as="h1"
+            mb={'8px'}
+            fontSize={'20px'}
+            fontWeight={500}
+            textAlign={'center'}
+            borderBottom={`1px solid ${theme.colors[colorMode].border[2]}`}
+            pb={'24px'}
+          >
+            {formatMessage({ id: 'main.title' })}
+          </Box>
+        )}
         <NetWorkSection />
         <SendInput />
         <ReceiveInfo onOpen={onOpen} />
