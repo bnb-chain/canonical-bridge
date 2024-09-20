@@ -1,4 +1,4 @@
-import { Box, Tooltip, useColorMode, useIntl, useTheme } from '@bnb-chain/space';
+import { Box, Flex, Tooltip, useColorMode, useIntl, useTheme } from '@bnb-chain/space';
 import { InfoCircleIcon } from '@bnb-chain/icons';
 
 import { FeesIcon } from '@/core/components/icons/FeesIcon';
@@ -15,13 +15,13 @@ export const FeesInfo = ({ summary, breakdown, bridgeType }: FeesInfoProps) => {
   const { colorMode } = useColorMode();
   const { formatMessage } = useIntl();
   return (
-    <Box color={theme.colors[colorMode].text.tertiary} lineHeight={'16px'}>
+    <Box color={theme.colors[colorMode].text.tertiary} display={'inline-block'} lineHeight={'16px'}>
       <FeesIcon w={'16px'} h={'16px'} mr={'4px'} />
       <Box
         mr={'4px'}
         as="span"
-        display={'inline'}
-        fontSize={'16px'}
+        display={'inline-block'}
+        fontSize={'14px'}
         lineHeight={'16px'}
         fontWeight={400}
       >
@@ -30,7 +30,7 @@ export const FeesInfo = ({ summary, breakdown, bridgeType }: FeesInfoProps) => {
       <Box
         mr={'4px'}
         as="span"
-        display={'inline'}
+        display={'inline-block'}
         fontSize="14px"
         lineHeight={'16px'}
         fontWeight={500}
