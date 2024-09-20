@@ -5,7 +5,7 @@ import {
   AdapterConstructorType,
   AdapterType,
   IBridgeChain,
-  IBridgeConfig,
+  ITransferConfig,
   IBridgeToken,
   IChainConfig,
   INativeCurrency,
@@ -24,9 +24,9 @@ import {
 import { aggregateTokens, IGetTokensParams } from '@/modules/aggregator/shared/aggregateTokens';
 import { aggregateToToken, IGetToTokenParams } from '@/modules/aggregator/shared/aggregateToToken';
 
-export interface BridgeConfigContextProps {
+export interface AggregatorContextProps {
   isReady: boolean;
-  defaultSelectedInfo: IBridgeConfig['defaultSelectedInfo'];
+  defaultSelectedInfo: ITransferConfig['defaultSelectedInfo'];
   chainConfigs: IChainConfig[];
   nativeCurrencies: Record<number, INativeCurrency>;
   adapters: AdapterType[];
@@ -36,9 +36,9 @@ export interface BridgeConfigContextProps {
   getToToken: (params: IGetToTokenParams) => IBridgeToken | undefined;
 }
 
-const DEFAULT_CONTEXT: BridgeConfigContextProps = {
+const DEFAULT_CONTEXT: AggregatorContextProps = {
   isReady: false,
-  defaultSelectedInfo: {} as IBridgeConfig['defaultSelectedInfo'],
+  defaultSelectedInfo: {} as ITransferConfig['defaultSelectedInfo'],
   chainConfigs: [],
   nativeCurrencies: {},
   adapters: [],
@@ -48,14 +48,14 @@ const DEFAULT_CONTEXT: BridgeConfigContextProps = {
   getToToken: () => undefined,
 };
 
-export const BridgeConfigContext = React.createContext(DEFAULT_CONTEXT);
+export const AggregatorContext = React.createContext(DEFAULT_CONTEXT);
 
-export interface BridgeConfigProviderProps {
-  config: IBridgeConfig;
+export interface AggregatorProviderProps {
+  config: ITransferConfig;
   children: React.ReactNode;
 }
 
-export function BridgeConfigProvider(props: BridgeConfigProviderProps) {
+export function AggregatorProvider(props: AggregatorProviderProps) {
   const { config, children } = props;
 
   const value = useMemo(() => {
@@ -149,15 +149,15 @@ export function BridgeConfigProvider(props: BridgeConfigProviderProps) {
     };
   }, [config]);
 
-  return <BridgeConfigContext.Provider value={value}>{children}</BridgeConfigContext.Provider>;
+  return <AggregatorContext.Provider value={value}>{children}</AggregatorContext.Provider>;
 }
 
-export function useBridgeConfig() {
-  return useContext(BridgeConfigContext);
+export function useAggregator() {
+  return useContext(AggregatorContext);
 }
 
 export function useAdapter<T = unknown>(bridgeType: BridgeType) {
-  const { adapters } = useBridgeConfig();
+  const { adapters } = useAggregator();
 
   const adapter = useMemo(() => {
     return adapters.find((adapter) => adapter.bridgeType === bridgeType);

@@ -1,4 +1,4 @@
-import { IBridgeConfig } from '@/modules/aggregator/types';
+import { ITransferConfig } from '@/modules/aggregator/types';
 import { chains } from '@/dev/data/chains';
 
 import cBridgeConfig from './cbridge/config.json';
@@ -6,7 +6,7 @@ import deBridgeConfig from './deBridge';
 import stargateConfig from './stargate/config.json';
 import layerZeroConfig from './layerZero/config.json';
 
-export const bridgeConfig: IBridgeConfig = {
+export const transferConfig: ITransferConfig = {
   defaultSelectedInfo: {
     fromChainId: 1,
     toChainId: 56,

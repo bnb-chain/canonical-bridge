@@ -2,11 +2,11 @@ import { useEffect } from 'react';
 
 import { useAppDispatch } from '@/modules/store/StoreProvider';
 import { setSendValue } from '@/modules/transfer/action';
-import { useBridgeConfig } from '@/modules/aggregator/components/BridgeConfigProvider';
+import { useAggregator } from '@/modules/aggregator/components/AggregatorProvider';
 import { useSelection } from '@/modules/aggregator/hooks/useSelection';
 
 export function useDefaultSelectedInfo() {
-  const { isReady, defaultSelectedInfo } = useBridgeConfig();
+  const { isReady, defaultSelectedInfo } = useAggregator();
   const { selectDefault } = useSelection();
   const dispatch = useAppDispatch();
 

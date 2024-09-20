@@ -1,9 +1,9 @@
 import { nativeTokenMap } from '@/core/constants';
-import { useBridgeConfig } from '@/modules/aggregator/components/BridgeConfigProvider';
+import { useAggregator } from '@/modules/aggregator/components/AggregatorProvider';
 import { useAppSelector } from '@/modules/store/StoreProvider';
 
 export const useGetNativeToken = () => {
-  const { nativeCurrencies } = useBridgeConfig();
+  const { nativeCurrencies } = useAggregator();
   const fromChain = useAppSelector((state) => state.transfer.fromChain);
 
   if (fromChain?.id) {

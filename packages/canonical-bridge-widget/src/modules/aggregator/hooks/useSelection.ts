@@ -1,11 +1,11 @@
-import { useBridgeConfig } from '@/modules/aggregator/components/BridgeConfigProvider';
+import { useAggregator } from '@/modules/aggregator/components/AggregatorProvider';
 import { isChainOrTokenCompatible } from '@/modules/aggregator/shared/isChainOrTokenCompatible';
 import { IBridgeChain, IBridgeToken } from '@/modules/aggregator/types';
 import { useAppDispatch, useAppSelector } from '@/modules/store/StoreProvider';
 import { setFromChain, setSelectedToken, setToChain, setToToken } from '@/modules/transfer/action';
 
 export function useSelection() {
-  const { getFromChains, getToChains, getTokens, getToToken, adapters } = useBridgeConfig();
+  const { getFromChains, getToChains, getTokens, getToToken, adapters } = useAggregator();
 
   const fromChain = useAppSelector((state) => state.transfer.fromChain);
   const toChain = useAppSelector((state) => state.transfer.toChain);
