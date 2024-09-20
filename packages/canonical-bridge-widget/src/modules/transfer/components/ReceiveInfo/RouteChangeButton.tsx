@@ -17,7 +17,7 @@ export const RouteChangeButton = ({ onOpen }: { onOpen: () => void }) => {
       lineHeight={'16px'}
       fontWeight={500}
       color={theme.colors[colorMode].text.brand}
-      _hover={{ color: theme.colors[colorMode].support.brand['1'] }}
+      _hover={{ color: theme.colors[colorMode].button.brand.hover }}
       onClick={() => {
         onOpen();
       }}

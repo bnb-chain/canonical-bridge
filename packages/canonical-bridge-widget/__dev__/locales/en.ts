@@ -26,6 +26,9 @@ export const en = {
 
   'route.no-found.title': 'No Available Routes',
   'route.no-found.desc': `Low liquidity, small input, or incompatible network/token. Adjust and retry.`,
+  'route.no-found.mobile-desc': `Why we couldn't find a route: low liquidity on token, very low input amount or no routes available for the selected input/output token combination.`,
+  'route.no-found.mobile.view.routes.link': 'View Routes List',
+
   'route.option.cBridge.title': 'cBridge:',
   'route.option.deBridge.title': 'deBridge:',
   'route.option.stargate.title': 'Stargate:',
