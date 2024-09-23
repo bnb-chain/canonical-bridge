@@ -17,12 +17,14 @@ import { DEBOUNCE_DELAY, DEFAULT_ADDRESS } from '@/core/constants';
 import { bridgeSDK } from '@/core/constants/bridgeSDK';
 import { toObject } from '@/core/utils/string';
 import { useCBridgeTransferParams } from '@/modules/aggregator/adapters/cBridge/hooks/useCBridgeTransferParams';
+import { useGetCBridgeFees } from '@/modules/aggregator/adapters/cBridge/hooks/useGetCBridgeFees';
 
 export const useLoadingBridgeFees = () => {
   const dispatch = useAppDispatch();
   const { bridgeAddress: cBridgeAddress } = useCBridgeTransferParams();
   const { getToDecimals } = useToTokenInfo();
   const { address } = useAccount();
+  const { isAllowSendError } = useGetCBridgeFees();
 
   const toToken = useAppSelector((state) => state.transfer.toToken);
   const selectedToken = useAppSelector((state) => state.transfer.selectedToken);
@@ -118,13 +120,15 @@ export const useLoadingBridgeFees = () => {
       // cBridge
       if (cbridgeEst.status === 'fulfilled' && cbridgeEst?.value) {
         dispatch(setEstimatedAmount({ cBridge: cbridgeEst.value }));
-        valueArr.push({
-          type: 'cBridge',
-          value: formatUnits(
-            BigInt(cbridgeEst.value?.estimated_receive_amt),
-            getToDecimals()['cBridge'],
-          ),
-        });
+        if (!isAllowSendError) {
+          valueArr.push({
+            type: 'cBridge',
+            value: formatUnits(
+              BigInt(cbridgeEst.value?.estimated_receive_amt),
+              getToDecimals()['cBridge'],
+            ),
+          });
+        }
       } else if (cbridgeEst.status === 'rejected') {
         dispatch(setRouteError({ cBridge: cbridgeEst.reason.message }));
         dispatch(setEstimatedAmount({ cBridge: 'error' }));
@@ -135,10 +139,22 @@ export const useLoadingBridgeFees = () => {
       // stargate
       if (stargateEst.status === 'fulfilled' && stargateEst?.value) {
         dispatch(setEstimatedAmount({ stargate: toObject(stargateEst.value) }));
-        valueArr.push({
-          type: 'stargate',
-          value: formatUnits(stargateEst.value?.[2].amountReceivedLD, getToDecimals()['stargate']),
-        });
+
+        const allowedMin = Number(
+          formatUnits(stargateEst.value[0].minAmountLD, selectedToken.decimals),
+        );
+        const allowedMax = Number(
+          formatUnits(stargateEst.value[0].maxAmountLD, selectedToken.decimals),
+        );
+        if (Number(debouncedSendValue) >= allowedMin || Number(debouncedSendValue) <= allowedMax) {
+          valueArr.push({
+            type: 'stargate',
+            value: formatUnits(
+              stargateEst.value?.[2].amountReceivedLD,
+              getToDecimals()['stargate'],
+            ),
+          });
+        }
       } else if (stargateEst.status === 'rejected') {
         dispatch(setRouteError({ stargate: stargateEst.reason.message }));
         dispatch(setEstimatedAmount({ stargate: 'error' }));
@@ -164,6 +180,7 @@ export const useLoadingBridgeFees = () => {
         dispatch(setEstimatedAmount({ layerZero: undefined }));
       }
 
+      // pre-select best route
       if (valueArr.length > 0) {
         const highestValue = valueArr.reduce((max, entry) =>
           Number(entry['value']) > Number(max['value']) ? entry : max,
@@ -226,6 +243,7 @@ export const useLoadingBridgeFees = () => {
     toChain,
     selectedToken,
     max_slippage,
+    isAllowSendError,
   ]);
 
   return {
