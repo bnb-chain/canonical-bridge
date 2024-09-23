@@ -56,6 +56,7 @@
     "stargate",
     "tanstack",
     "unauthenticate",
+    "viem",
     "Wagmi",
     "walletkit"
   ]

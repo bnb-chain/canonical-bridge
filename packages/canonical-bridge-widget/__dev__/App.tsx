@@ -23,8 +23,6 @@ const config: CanonicalBridgeConfig = {
       dark: dark,
       light: {},
     },
-  },
-  i18n: {
     locale: 'en',
     messages,
   },

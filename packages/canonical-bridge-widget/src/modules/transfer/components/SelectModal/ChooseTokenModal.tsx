@@ -1,4 +1,6 @@
 import { Flex, formatAddress, Text, useColorMode, useIntl, useTheme } from '@bnb-chain/space';
+import { formatUnits } from 'viem';
+import { useAccount } from 'wagmi';
 
 import { BaseModal } from '@/modules/transfer/components/SelectModal/components/BaseModal';
 import { useAppSelector } from '@/modules/store/StoreProvider';
@@ -12,6 +14,9 @@ import { isNativeToken, isSameAddress } from '@/core/utils/address';
 import { ExLinkIcon } from '@/core/components/icons/ExLinkIcon';
 import { formatTokenUrl } from '@/core/utils/string';
 import { useResponsive } from '@/core/hooks/useResponsive';
+import { useTokenBalances } from '@/modules/transfer/components/SelectModal/hooks/useTokenBalances';
+import { useTokenPrices } from '@/modules/transfer/components/SelectModal/hooks/useTokenPrices';
+import { formatNumber } from '@/core/utils/number';
 
 interface ChooseTokenModalProps {
   isOpen: boolean;
@@ -23,6 +28,7 @@ export function ChooseTokenModal(props: ChooseTokenModalProps) {
   const { formatMessage } = useIntl();
   const theme = useTheme();
   const { colorMode } = useColorMode();
+  const { isConnected } = useAccount();
 
   const fromChain = useAppSelector((state) => state.transfer.fromChain);
   const toChain = useAppSelector((state) => state.transfer.toChain);
@@ -37,9 +43,17 @@ export function ChooseTokenModal(props: ChooseTokenModalProps) {
   });
 
   const { isNoResult, result, onSearch } = useSearch({
-    filter: (item, keyword) => item.displaySymbol.toLowerCase().includes(keyword),
     data: tokens,
+    filter: (item, keyword) => {
+      return (
+        item.displaySymbol.toLowerCase().includes(keyword) ||
+        item.name.toLowerCase().includes(keyword)
+      );
+    },
   });
+
+  const { isLoading, data: tokenBalances } = useTokenBalances(tokens, isOpen);
+  const { data: tokenPrices } = useTokenPrices(tokens, isOpen);
 
   return (
     <BaseModal
@@ -60,7 +74,9 @@ export function ChooseTokenModal(props: ChooseTokenModalProps) {
         justifyContent="space-between"
       >
         <Text>{formatMessage({ id: 'select-modal.token.column.name' })}</Text>
-        {/* {isConnected && <Text>{formatMessage({ id: 'select-modal.token.column.balance' })}</Text>} */}
+        {isConnected && !isLoading && (
+          <Text>{formatMessage({ id: 'select-modal.token.column.balance' })}</Text>
+        )}
       </Flex>
       <Flex flexDir="column" flex={1}>
         <VirtualList data={result} itemHeight={64} itemKey="id">
@@ -68,6 +84,11 @@ export function ChooseTokenModal(props: ChooseTokenModalProps) {
             const isDisabled = !isChainOrTokenCompatible(item);
             const isActive = isSameAddress(selectedToken?.address, item.address);
             const isNative = isNativeToken(item.address);
+
+            const rawBalance = tokenBalances?.[item.displaySymbol];
+            const balance =
+              rawBalance === undefined ? undefined : Number(formatUnits(rawBalance, item.decimals));
+            const price = tokenPrices?.[item.displaySymbol];
 
             return (
               <ListItem
@@ -87,9 +108,9 @@ export function ChooseTokenModal(props: ChooseTokenModalProps) {
                   onClose();
                 }}
               >
-                <Flex alignItems="center" justifyContent="space-between" flex={1} gap={'8px'}>
+                <Flex alignItems="center" justifyContent="space-between" w="100%" gap={'12px'}>
                   <Flex w="50%" flexDir="column" gap={'4px'}>
-                    <Flex>{item.displaySymbol}</Flex>
+                    <Text isTruncated>{item.displaySymbol}</Text>
 
                     {isMobile && !isNative && (
                       <TokenAddress
@@ -108,9 +129,14 @@ export function ChooseTokenModal(props: ChooseTokenModalProps) {
                           fontSize="12px"
                           fontWeight={500}
                           lineHeight="16px"
+                          w="100%"
                           color={theme.colors[colorMode].text.secondary}
                         >
-                          {(!isActive || isNative) && <Flex>{item.name}</Flex>}
+                          {(!isActive || isNative) && (
+                            <Text isTruncated flexShrink={0}>
+                              {item.name}
+                            </Text>
+                          )}
                           {!isNative && (
                             <TokenAddress
                               tokenUrlPattern={fromChain?.tokenUrlPattern}
@@ -121,10 +147,10 @@ export function ChooseTokenModal(props: ChooseTokenModalProps) {
                       </Flex>
                     )}
                   </Flex>
-                  {/* 
-                  {!isDisabled && (
+
+                  {!isDisabled && !isLoading && (
                     <Flex w="50%" flexDir="column" alignItems="flex-end" gap={'4px'}>
-                      <Flex>0</Flex>
+                      <Flex>{balance === undefined ? '-' : formatNumber(balance, 4)}</Flex>
                       <Flex
                         flexDir="column"
                         fontSize="12px"
@@ -132,10 +158,10 @@ export function ChooseTokenModal(props: ChooseTokenModalProps) {
                         lineHeight="16px"
                         color={theme.colors[colorMode].text.secondary}
                       >
-                        -
+                        {balance && price ? `$${formatNumber(balance * price, 2)}` : ''}
                       </Flex>
                     </Flex>
-                  )} */}
+                  )}
                 </Flex>
               </ListItem>
             );
@@ -158,11 +184,13 @@ function TokenAddress(props: TokenAddressProps) {
   const { colorMode } = useColorMode();
 
   return (
-    <Flex
+    <Text
       as="a"
       href={formatTokenUrl(tokenUrlPattern, address)}
       target="_blank"
       rel="noopener noreferrer"
+      isTruncated
+      flexShrink={0}
     >
       {formatAddress({
         value: address,
@@ -172,6 +200,6 @@ function TokenAddress(props: TokenAddressProps) {
         color={theme.colors[colorMode].text.secondary}
         boxSize={theme.sizes['4']}
       />
-    </Flex>
+    </Text>
   );
 }

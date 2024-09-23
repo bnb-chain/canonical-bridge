@@ -8,6 +8,7 @@ import {
   okxWallet,
   defaultEvmConfig,
 } from '@node-real/walletkit/evm';
+import * as allChains from 'viem/chains';
 
 import { env } from '@/core/configs/env';
 import { useAggregator } from '@/modules/aggregator/components/AggregatorProvider';
@@ -48,23 +49,30 @@ export function WalletProvider(props: PropsWithChildren) {
 }
 
 function getEvmChains(chainConfigs: IChainConfig[]) {
-  return chainConfigs.map((item) => ({
-    id: item.id,
-    name: item.name,
-    nativeCurrency: item.nativeCurrency,
-    rpcUrls: {
-      default: {
-        http: [item.rpcUrl],
+  return chainConfigs.map((item) => {
+    const evmChain = Object.values(allChains).find((e) => e.id === item.id);
+    return {
+      id: item.id,
+      name: item.name,
+      nativeCurrency: item.nativeCurrency,
+      rpcUrls: {
+        default: {
+          http: [item.rpcUrl],
+        },
+        public: {
+          http: [item.rpcUrl],
+        },
       },
-      public: {
-        http: [item.rpcUrl],
+      blockExplorers: {
+        default: {
+          name: item.explorer.name,
+          url: item.explorer.url,
+        },
       },
-    },
-    blockExplorers: {
-      default: {
-        name: item.explorer.name,
-        url: item.explorer.url,
+      contracts: {
+        ...evmChain?.contracts,
+        ...item.contracts,
       },
-    },
-  }));
+    };
+  });
 }

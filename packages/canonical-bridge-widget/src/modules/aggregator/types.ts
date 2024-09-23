@@ -157,6 +157,7 @@ export interface IChainConfig {
     url: string;
     tokenUrlPattern?: string;
   };
+  contracts?: any;
 }
 
 export type ChainType = 'link' | 'evm';

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 
 interface UseSearchProps<T = unknown> {
   data: T[];
@@ -14,9 +14,10 @@ export function useSearch<T>(props: UseSearchProps<T>) {
     setKeyword(keyword);
   };
 
-  const result = data.filter((item) => {
-    return filter(item, keyword.toLowerCase());
-  });
+  const result = useMemo(() => {
+    return data.filter((item) => filter(item, keyword.toLowerCase()));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data, keyword]);
 
   const isNoResult = keyword.length > 0 && !result.length;
 

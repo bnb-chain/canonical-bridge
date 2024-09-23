@@ -14,8 +14,6 @@ interface CanonicalBridgeContextProps {
   appearance: {
     mode: 'dark';
     theme?: ThemeProviderProps['themeConfig'];
-  };
-  i18n: {
     locale: 'en';
     messages: Record<string, string>;
   };
@@ -48,7 +46,7 @@ export function CanonicalBridgeProvider(props: CanonicalBridgeProviderProvider) 
     <CanonicalBridgeContext.Provider value={value}>
       <StoreProvider>
         <ThemeProvider themeConfig={value.appearance.theme}>
-          <IntlProvider locale={value.i18n.locale} messages={value.i18n.messages}>
+          <IntlProvider locale={value.appearance.locale} messages={value.appearance.messages}>
             <AggregatorProvider config={transferConfig}>
               <WalletProvider>
                 <Layout>
