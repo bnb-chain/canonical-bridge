@@ -109,7 +109,7 @@ export function ChooseTokenModal(props: ChooseTokenModalProps) {
                 }}
               >
                 <Flex alignItems="center" justifyContent="space-between" w="100%" gap={'12px'}>
-                  <Flex w="50%" flexDir="column" gap={'4px'}>
+                  <Flex flex={1} minW={0} flexDir="column" gap={'4px'}>
                     <Text isTruncated>{item.displaySymbol}</Text>
 
                     {isMobile && !isNative && (
@@ -149,7 +149,7 @@ export function ChooseTokenModal(props: ChooseTokenModalProps) {
                   </Flex>
 
                   {!isDisabled && !isLoading && (
-                    <Flex w="50%" flexDir="column" alignItems="flex-end" gap={'4px'}>
+                    <Flex flexShrink={0} flexDir="column" alignItems="flex-end" gap={'4px'}>
                       <Flex>{balance === undefined ? '-' : formatNumber(balance, 4)}</Flex>
                       <Flex
                         flexDir="column"
