@@ -5,14 +5,15 @@ import { encodePacked, pad, parseUnits } from 'viem';
 import { useAppSelector } from '@/modules/store/StoreProvider';
 import { useToTokenInfo } from '@/modules/transfer/hooks/useToTokenInfo';
 import { DEFAULT_ADDRESS } from '@/core/constants';
-import { bridgeSDK } from '@/core/constants/bridgeSDK';
 import { useGetTokenBalance } from '@/core/contract/hooks/useGetTokenBalance';
 import { CAKE_PROXY_OFT_ABI } from '@/modules/aggregator/adapters/layerZero/abi/cakeProxyOFT';
+import { useBridgeSDK } from '@/core/hooks/useBridgeSDK';
 
 export const useGetLayerZeroFees = () => {
   const publicClient = usePublicClient();
   const { address } = useAccount();
   const { toTokenInfo } = useToTokenInfo();
+  const bridgeSDK = useBridgeSDK();
 
   const selectedToken = useAppSelector((state) => state.transfer.selectedToken);
   const sendValue = useAppSelector((state) => state.transfer.sendValue);
@@ -98,7 +99,7 @@ export const useGetLayerZeroFees = () => {
     return () => {
       mount = false;
     };
-  }, [publicClient, address, selectedToken, sendValue, toTokenInfo, balance]);
+  }, [publicClient, address, selectedToken, sendValue, toTokenInfo, balance, bridgeSDK.layerZero]);
 
   return {
     nativeFee,

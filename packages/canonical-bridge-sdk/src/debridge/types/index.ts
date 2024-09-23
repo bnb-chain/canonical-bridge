@@ -83,6 +83,7 @@ export interface IDeBridgeEstimatedFeesInput {
   userAddress: `0x${string}`;
   affiliateFeePercent?: number;
   prependOperatingExpenses?: boolean;
+  accesstoken?: string;
 }
 
 export interface ISendDebridgeTokenInput {

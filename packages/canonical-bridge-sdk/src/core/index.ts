@@ -181,6 +181,7 @@ export class CanonicalBridgeSDK {
     toAccount,
     isPegged,
     slippage,
+    deBridgeAccessToken,
   }: {
     bridgeType: BridgeType[];
     fromChainId: number;
@@ -196,6 +197,7 @@ export class CanonicalBridgeSDK {
     toAccount?: `0x${string}`;
     isPegged?: boolean;
     slippage?: number;
+    deBridgeAccessToken?: string;
   }) {
     const promiseArr = [];
     if (
@@ -211,6 +213,7 @@ export class CanonicalBridgeSDK {
         toChainId,
         toTokenAddress,
         userAddress: toAccount,
+        accesstoken: deBridgeAccessToken,
       });
       promiseArr.push(debridgeFeeAPICall);
     } else {

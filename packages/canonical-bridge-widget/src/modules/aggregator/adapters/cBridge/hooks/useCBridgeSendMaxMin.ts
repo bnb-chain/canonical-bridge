@@ -2,13 +2,14 @@ import { useEffect, useState } from 'react';
 import { usePublicClient } from 'wagmi';
 import { formatUnits } from 'viem';
 
-import { bridgeSDK } from '@/core/constants/bridgeSDK';
 import { useAppSelector } from '@/modules/store/StoreProvider';
 import { useCBridgeTransferParams } from '@/modules/aggregator/adapters/cBridge/hooks/useCBridgeTransferParams';
 import { ICBridgeMaxMinSendAmt } from '@/modules/aggregator/adapters/cBridge/types';
+import { useBridgeSDK } from '@/core/hooks/useBridgeSDK';
 
 export const useCBridgeSendMaxMin = (isDisabled = false) => {
   const { bridgeAddress } = useCBridgeTransferParams();
+  const bridgeSDK = useBridgeSDK();
   const fromChain = useAppSelector((state) => state.transfer.fromChain);
   const publicClient = usePublicClient({ chainId: fromChain?.id });
   const selectedToken = useAppSelector((state) => state.transfer.selectedToken);
@@ -24,7 +25,8 @@ export const useCBridgeSendMaxMin = (isDisabled = false) => {
           !publicClient ||
           !bridgeAddress ||
           !selectedToken?.address ||
-          isDisabled
+          isDisabled ||
+          !bridgeSDK?.cBridge
         ) {
           return;
         }
@@ -44,7 +46,7 @@ export const useCBridgeSendMaxMin = (isDisabled = false) => {
         console.log('error', error);
       }
     })();
-  }, [selectedToken, publicClient, bridgeAddress, isDisabled]);
+  }, [selectedToken, publicClient, bridgeAddress, isDisabled, bridgeSDK?.cBridge]);
 
   return {
     minMaxSendAmt,

@@ -17,6 +17,9 @@ interface CanonicalBridgeContextProps {
     locale: 'en';
     messages: Record<string, string>;
   };
+  refetchingInterval?: number;
+  apiTimeOut?: number;
+  deBridgeAccessToken?: string;
 }
 
 const CanonicalBridgeContext = React.createContext({} as CanonicalBridgeContextProps);
