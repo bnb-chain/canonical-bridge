@@ -2,12 +2,13 @@ import { useQuery } from '@tanstack/react-query';
 
 import { useAppSelector } from '@/modules/store/StoreProvider';
 import { useToTokenInfo } from '@/modules/transfer/hooks/useToTokenInfo';
-import { bridgeSDK } from '@/core/constants/bridgeSDK';
 import { IStargateBusDriveSettings } from '@/modules/aggregator/adapters/stargate/types';
+import { useBridgeSDK } from '@/core/hooks/useBridgeSDK';
 
 export const useStargateWaitTime = () => {
   const selectedToken = useAppSelector((state) => state.transfer.selectedToken);
   const { toTokenInfo } = useToTokenInfo();
+  const bridgeSDK = useBridgeSDK();
 
   const fromEndpointId = selectedToken?.stargate?.raw?.endpointID;
   const toEndpointId = toTokenInfo?.stargate?.raw?.endpointID;

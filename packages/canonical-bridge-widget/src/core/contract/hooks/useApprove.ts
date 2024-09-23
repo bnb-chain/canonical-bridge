@@ -1,13 +1,14 @@
 import { useAccount, usePublicClient, useWalletClient } from 'wagmi';
 import { useCallback, useState } from 'react';
 
-import { bridgeSDK } from '@/core/constants/bridgeSDK';
+import { useBridgeSDK } from '@/core/hooks/useBridgeSDK';
 
 export const useApprove = () => {
   const { address } = useAccount();
   const [isLoadingApprove, setIsLoadingApprove] = useState(false);
   const { data: walletClient } = useWalletClient();
   const publicClient = usePublicClient();
+  const bridgeSDK = useBridgeSDK();
 
   const approveErc20Token = useCallback(
     async (tokenAddress: string, spender: `0x${string}`, amount: bigint) => {
@@ -39,7 +40,7 @@ export const useApprove = () => {
         setIsLoadingApprove(false);
       }
     },
-    [walletClient, publicClient, address],
+    [walletClient, publicClient, address, bridgeSDK],
   );
   return {
     approveErc20Token,

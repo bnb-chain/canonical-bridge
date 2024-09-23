@@ -5,19 +5,20 @@ import { formatUnits, parseUnits } from 'viem';
 import { useAppDispatch, useAppSelector } from '@/modules/store/StoreProvider';
 import { useToTokenInfo } from '@/modules/transfer/hooks/useToTokenInfo';
 import { DEFAULT_ADDRESS } from '@/core/constants';
-import { bridgeSDK } from '@/core/constants/bridgeSDK';
 import { useGetAllowance } from '@/core/contract/hooks/useGetAllowance';
 import { formatNumber } from '@/core/utils/number';
 import { useStargateTransferParams } from '@/modules/aggregator/adapters/stargate/hooks/useStargateTransferParams';
 import { STARGATE_POOL } from '@/modules/aggregator/adapters/stargate/abi/stargatePool';
 import { useGetTokenBalance } from '@/core/contract/hooks/useGetTokenBalance';
 import { setRouteError } from '@/modules/transfer/action';
+import { useBridgeSDK } from '@/core/hooks/useBridgeSDK';
 
 export const useGetStargateFees = () => {
   const dispatch = useAppDispatch();
   const { toTokenInfo, getToDecimals } = useToTokenInfo();
   const { address } = useAccount();
   const { args } = useStargateTransferParams();
+  const bridgeSDK = useBridgeSDK();
 
   const fromChain = useAppSelector((state) => state.transfer.fromChain);
   const selectedToken = useAppSelector((state) => state.transfer.selectedToken);
@@ -160,6 +161,7 @@ export const useGetStargateFees = () => {
     toTokenInfo,
     args,
     balance,
+    bridgeSDK?.stargate,
   ]);
 
   const protocolFee = useMemo(() => {

@@ -76,6 +76,7 @@ export class DeBridge {
     toTokenAddress,
     userAddress,
     affiliateFeePercent = 0,
+    accesstoken = '',
     prependOperatingExpenses = false,
   }: IDeBridgeEstimatedFeesInput): Promise<DeBridgeCreateQuoteResponse> {
     try {
@@ -91,6 +92,9 @@ export class DeBridge {
         dstChainOrderAuthorityAddress: userAddress,
         srcChainOrderAuthorityAddress: userAddress,
       } as any;
+      if (accesstoken) {
+        deBridgeParams.accesstoken = accesstoken;
+      }
       const urlParams = new URLSearchParams(deBridgeParams as any);
       const deBridgeQuote = await this.createTxQuote(urlParams);
       return deBridgeQuote;

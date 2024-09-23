@@ -6,7 +6,6 @@ import { useAccount, usePublicClient } from 'wagmi';
 import { formatNumber } from '@/core/utils/number';
 import { useAppDispatch, useAppSelector } from '@/modules/store/StoreProvider';
 import { useGetNativeToken } from '@/modules/transfer/hooks/useGetNativeToken';
-import { bridgeSDK } from '@/core/constants/bridgeSDK';
 import { DEBOUNCE_DELAY } from '@/core/constants';
 import { useToTokenInfo } from '@/modules/transfer/hooks/useToTokenInfo';
 import { useDebounce } from '@/core/hooks/useDebounce';
@@ -14,6 +13,7 @@ import { setRouteError } from '@/modules/transfer/action';
 import { useGetTokenBalance } from '@/core/contract/hooks/useGetTokenBalance';
 import { useAdapter } from '@/modules/aggregator/components/AggregatorProvider';
 import { DeBridgeAdapter } from '@/modules/aggregator/adapters/deBridge/DeBridgeAdapter';
+import { useBridgeSDK } from '@/core/hooks/useBridgeSDK';
 
 export const useGetDeBridgeFees = () => {
   const dispatch = useAppDispatch();
@@ -21,6 +21,7 @@ export const useGetDeBridgeFees = () => {
   const nativeToken = useGetNativeToken();
   const { toTokenInfo } = useToTokenInfo();
   const { address, chain } = useAccount();
+  const bridgeSDK = useBridgeSDK();
 
   const estimatedAmount = useAppSelector((state) => state.transfer.estimatedAmount);
   const fromChain = useAppSelector((state) => state.transfer.fromChain);
@@ -126,6 +127,7 @@ export const useGetDeBridgeFees = () => {
     chain?.id,
     balance,
     sendValue,
+    bridgeSDK,
   ]);
 
   const debridgeFee = useMemo(() => {

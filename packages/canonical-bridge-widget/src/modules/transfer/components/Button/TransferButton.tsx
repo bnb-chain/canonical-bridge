@@ -5,8 +5,8 @@ import { formatUnits, parseUnits } from 'viem';
 
 import { useAppSelector } from '@/modules/store/StoreProvider';
 import { useGetAllowance } from '@/core/contract/hooks/useGetAllowance';
-import { bridgeSDK } from '@/core/constants/bridgeSDK';
 import { useCBridgeTransferParams } from '@/modules/aggregator/adapters/cBridge/hooks/useCBridgeTransferParams';
+import { useBridgeSDK } from '@/core/hooks/useBridgeSDK';
 
 export function TransferButton({
   onOpenSubmittedModal,
@@ -27,6 +27,7 @@ export function TransferButton({
 }) {
   const { data: walletClient } = useWalletClient();
   const { args: cBridgeArgs } = useCBridgeTransferParams();
+  const bridgeSDK = useBridgeSDK();
 
   const { address } = useAccount();
   const publicClient = usePublicClient();
@@ -188,6 +189,7 @@ export function TransferButton({
     sendValue,
     onOpenConfirmingModal,
     cBridgeArgs,
+    bridgeSDK,
 
     onOpenApproveModal,
     onCloseConfirmingModal,

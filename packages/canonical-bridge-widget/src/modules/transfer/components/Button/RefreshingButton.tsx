@@ -3,9 +3,9 @@ import { Box, BoxProps, useColorMode, useTheme } from '@bnb-chain/space';
 
 import { useAppDispatch, useAppSelector } from '@/modules/store/StoreProvider';
 import { setIsGlobalFeeLoading, setIsRefreshing } from '@/modules/transfer/action';
-import { ESTIMATE_AMOUNT_DATA_RELOAD } from '@/core/constants';
 import { useLoadingBridgeFees } from '@/modules/transfer/hooks/useLoadingBridgeFees';
 import { RefreshingIcon } from '@/modules/transfer/components/LoadingImg/RefreshingIcon';
+import { useBridgeConfig } from '@/index';
 
 export const RefreshingButton = (props: BoxProps) => {
   const { colorMode } = useColorMode();
@@ -17,6 +17,7 @@ export const RefreshingButton = (props: BoxProps) => {
   const [isButtonPressed, setIsButtonPressed] = useState(false);
 
   const { loadingBridgeFees } = useLoadingBridgeFees();
+  const configs = useBridgeConfig();
 
   // Load estimated bridge fees every 30 seconds when there is bridge route available
   useEffect(() => {
@@ -26,7 +27,7 @@ export const RefreshingButton = (props: BoxProps) => {
       let interval = setInterval(() => {
         dispatch(setIsGlobalFeeLoading(true));
         loadingBridgeFees();
-      }, ESTIMATE_AMOUNT_DATA_RELOAD);
+      }, configs?.refetchingInterval ?? 30000);
 
       // Stop and restart fee loading
       if (isButtonPressed === true) {
@@ -39,7 +40,7 @@ export const RefreshingButton = (props: BoxProps) => {
           interval = setInterval(() => {
             dispatch(setIsGlobalFeeLoading(true));
             loadingBridgeFees();
-          }, ESTIMATE_AMOUNT_DATA_RELOAD);
+          }, configs?.refetchingInterval ?? 30000);
         }
         setIsButtonPressed(false);
       }
@@ -55,7 +56,13 @@ export const RefreshingButton = (props: BoxProps) => {
         setIsButtonPressed(false);
       };
     }
-  }, [transferActionInfo, loadingBridgeFees, dispatch, isButtonPressed]);
+  }, [
+    transferActionInfo,
+    loadingBridgeFees,
+    dispatch,
+    isButtonPressed,
+    configs?.refetchingInterval,
+  ]);
 
   return transferActionInfo ? (
     <Box

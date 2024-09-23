@@ -14,10 +14,11 @@ import {
 import { useToTokenInfo } from '@/modules/transfer/hooks/useToTokenInfo';
 import { useDebounce } from '@/core/hooks/useDebounce';
 import { DEBOUNCE_DELAY, DEFAULT_ADDRESS } from '@/core/constants';
-import { bridgeSDK } from '@/core/constants/bridgeSDK';
 import { toObject } from '@/core/utils/string';
 import { useCBridgeTransferParams } from '@/modules/aggregator/adapters/cBridge/hooks/useCBridgeTransferParams';
 import { useGetCBridgeFees } from '@/modules/aggregator/adapters/cBridge/hooks/useGetCBridgeFees';
+import { useBridgeSDK } from '@/core/hooks/useBridgeSDK';
+import { useBridgeConfig } from '@/index';
 
 export const useLoadingBridgeFees = () => {
   const dispatch = useAppDispatch();
@@ -25,6 +26,8 @@ export const useLoadingBridgeFees = () => {
   const { getToDecimals } = useToTokenInfo();
   const { address } = useAccount();
   const { isAllowSendError } = useGetCBridgeFees();
+  const bridgeSDK = useBridgeSDK();
+  const { deBridgeAccessToken } = useBridgeConfig();
 
   const toToken = useAppSelector((state) => state.transfer.toToken);
   const selectedToken = useAppSelector((state) => state.transfer.selectedToken);
@@ -86,9 +89,10 @@ export const useLoadingBridgeFees = () => {
           layerZero: selectedToken?.layerZero?.raw?.bridgeAddress as `0x${string}`,
         },
         toTokenAddress: toToken?.address as `0x${string}`,
-        toAccount: address,
+        toAccount: address || DEFAULT_ADDRESS,
         isPegged: selectedToken?.isPegged,
         slippage: max_slippage,
+        deBridgeAccessToken: deBridgeAccessToken,
       });
       // eslint-disable-next-line no-console
       console.log('API response deBridge[0], cBridge[1], stargate[2], layerZero[3]', response);
@@ -244,6 +248,8 @@ export const useLoadingBridgeFees = () => {
     selectedToken,
     max_slippage,
     isAllowSendError,
+    bridgeSDK,
+    deBridgeAccessToken,
   ]);
 
   return {

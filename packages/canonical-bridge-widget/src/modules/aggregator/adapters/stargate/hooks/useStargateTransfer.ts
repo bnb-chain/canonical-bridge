@@ -8,13 +8,14 @@ import { toObject } from '@/core/utils/string';
 import { useDebounce } from '@/core/hooks/useDebounce';
 import { DEBOUNCE_DELAY, DEFAULT_ADDRESS } from '@/core/constants';
 import { useToTokenInfo } from '@/modules/transfer/hooks/useToTokenInfo';
-import { bridgeSDK } from '@/core/constants/bridgeSDK';
 import { useStargateTransferParams } from '@/modules/aggregator/adapters/stargate/hooks/useStargateTransferParams';
+import { useBridgeSDK } from '@/core/hooks/useBridgeSDK';
 
 export const useStargateTransfer = () => {
   const { data: walletClient } = useWalletClient();
   const { address } = useAccount();
   const dispatch = useAppDispatch();
+  const bridgeSDK = useBridgeSDK();
 
   const selectedToken = useAppSelector((state) => state.transfer.selectedToken);
   const sendValue = useAppSelector((state) => state.transfer.sendValue);
@@ -36,7 +37,8 @@ export const useStargateTransfer = () => {
       !debouncedSendValue ||
       !Number(debouncedSendValue) ||
       !toTokenInfo ||
-      !publicClient
+      !publicClient ||
+      !bridgeSDK
     ) {
       return;
     }
@@ -69,6 +71,7 @@ export const useStargateTransfer = () => {
     dispatch,
     publicClient,
     address,
+    bridgeSDK,
   ]);
 
   const sendToken = useCallback(
@@ -110,7 +113,16 @@ export const useStargateTransfer = () => {
         onOpenFailedModal();
       }
     },
-    [address, args, estimatedAmount, publicClient, selectedToken, walletClient, sendValue],
+    [
+      address,
+      args,
+      estimatedAmount,
+      publicClient,
+      selectedToken,
+      walletClient,
+      sendValue,
+      bridgeSDK?.stargate,
+    ],
   );
 
   return {
