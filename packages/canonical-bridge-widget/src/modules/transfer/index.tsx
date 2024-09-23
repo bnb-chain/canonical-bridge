@@ -36,7 +36,7 @@ export function TransferPage({ routeContentBottom }: TransferPageProps) {
       gap={[]}
       w={['100%']}
       mb={['120px', '120px', '160px']}
-      alignItems={'flex-start'}
+      alignItems={['flex-start', 'flex-start', 'center', 'flex-start']}
       justifyContent={'center'}
     >
       <Flex
