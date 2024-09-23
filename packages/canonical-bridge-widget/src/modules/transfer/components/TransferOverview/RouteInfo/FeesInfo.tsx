@@ -20,7 +20,7 @@ export const FeesInfo = ({ summary, breakdown, bridgeType }: FeesInfoProps) => {
       <Box
         mr={'4px'}
         as="span"
-        display={'inline-block'}
+        display={'inline'}
         fontSize={'14px'}
         lineHeight={'16px'}
         fontWeight={400}
@@ -30,7 +30,7 @@ export const FeesInfo = ({ summary, breakdown, bridgeType }: FeesInfoProps) => {
       <Box
         mr={'4px'}
         as="span"
-        display={'inline-block'}
+        display={'inline'}
         fontSize="14px"
         lineHeight={'16px'}
         fontWeight={500}
