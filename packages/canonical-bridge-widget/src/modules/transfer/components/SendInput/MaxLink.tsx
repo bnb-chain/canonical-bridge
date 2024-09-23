@@ -16,23 +16,27 @@ export const MaxLink: React.FC = () => {
   const { balance } = useLoadingTokenBalance();
 
   const setMaxAmount = () => {
-    if (balance && selectedToken) {
+    if (!!balance && selectedToken) {
       dispatch(setSendValue(formatUnits(balance, selectedToken?.decimals || 0)));
     }
   };
 
   return (
     <Flex alignItems={'center'}>
-      {!!balance && !!selectedToken ? (
+      {balance !== null && !!selectedToken ? (
         <Box
           onClick={setMaxAmount}
           color={theme.colors[colorMode].text.tertiary}
           textDecoration={'underline'}
-          cursor={'pointer'}
+          cursor={!!balance ? 'pointer' : 'auto'}
           fontSize={'12px'}
           fontWeight={500}
           pb={`1px`}
-          _hover={{ color: theme.colors[colorMode].text.primary }}
+          _hover={{
+            color: !!balance
+              ? theme.colors[colorMode].text.primary
+              : theme.colors[colorMode].text.tertiary,
+          }}
         >
           {formatMessage({ id: 'from.section.balance.button.max' })}{' '}
           {formatNumber(Number(formatUnits(balance, selectedToken?.decimals || 0)), 8)}{' '}

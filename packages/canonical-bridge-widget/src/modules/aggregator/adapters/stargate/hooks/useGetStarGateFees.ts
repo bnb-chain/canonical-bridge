@@ -164,6 +164,7 @@ export const useGetStargateFees = () => {
 
   const protocolFee = useMemo(() => {
     try {
+      if (estimatedAmount?.['stargate'] === 'error') return null;
       const fee = Math.abs(
         Number(
           estimatedAmount?.['stargate']?.[1].filter(
