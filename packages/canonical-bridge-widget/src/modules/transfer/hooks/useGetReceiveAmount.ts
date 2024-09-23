@@ -1,5 +1,5 @@
 import { BridgeType } from '@bnb-chain/canonical-bridge-sdk';
-import { formatUnits, parseUnits } from 'viem';
+import { formatUnits } from 'viem';
 import { useCallback } from 'react';
 
 import { useToTokenInfo } from '@/modules/transfer/hooks/useToTokenInfo';

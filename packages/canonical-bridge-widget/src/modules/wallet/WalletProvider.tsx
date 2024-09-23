@@ -14,6 +14,7 @@ import { useAggregator } from '@/modules/aggregator/components/AggregatorProvide
 import { IChainConfig } from '@/modules/aggregator/types';
 import { useBridgeConfig } from '@/CanonicalBridgeProvider';
 
+
 export function WalletProvider(props: PropsWithChildren) {
   const { children } = props;
 

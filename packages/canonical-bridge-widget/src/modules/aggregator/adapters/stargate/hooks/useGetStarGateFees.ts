@@ -65,7 +65,7 @@ export const useGetStargateFees = () => {
 
   useEffect(() => {
     let mount = true;
-    if (!mount || !args || !publicClient) {
+    if (!mount || !args || !publicClient || !args.dstEid) {
       return;
     }
     (async () => {

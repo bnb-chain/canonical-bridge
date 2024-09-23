@@ -151,7 +151,7 @@ export const CBridgeOption = () => {
         zIndex={2}
         isError={isAllowSendError}
         allowedSendAmount={
-          cBridgeAllowedAmt && selectedToken
+          !!Number(cBridgeAllowedAmt.min) && !!Number(cBridgeAllowedAmt.max) && selectedToken
             ? {
                 min: cBridgeAllowedAmt.min,
                 max: cBridgeAllowedAmt.max,
