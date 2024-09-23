@@ -1,5 +1,5 @@
-import { ITransferConfig } from '@/modules/aggregator/types';
 import { chains } from '@/dev/data/chains';
+import { ITransferConfig } from '@/modules/aggregator/types';
 
 import cBridgeConfig from './cbridge/config.json';
 import deBridgeConfig from './deBridge';

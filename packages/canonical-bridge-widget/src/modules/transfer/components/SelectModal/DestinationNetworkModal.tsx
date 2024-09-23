@@ -1,4 +1,4 @@
-import { Flex, useColorMode, useIntl, useTheme } from '@bnb-chain/space';
+import { Flex, useColorMode, useIntl, useTheme, Text } from '@bnb-chain/space';
 
 import { BaseModal } from '@/modules/transfer/components/SelectModal/components/BaseModal';
 import { VirtualList } from '@/core/components/VirtualList';
@@ -65,8 +65,8 @@ export function DestinationNetworkModal(props: DestinationNetworkModalProps) {
               }
             }}
           >
-            <Flex alignItems="center">
-              {item.name}
+            <Flex alignItems="center" w="100%">
+              <Text isTruncated>{item.name}</Text>
               {item.chainType === 'link' && (
                 <ExLinkIcon
                   ml={'4px'}

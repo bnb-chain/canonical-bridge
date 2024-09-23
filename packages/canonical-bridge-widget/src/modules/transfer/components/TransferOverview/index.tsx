@@ -26,16 +26,15 @@ import { LayerZeroOption } from '@/modules/transfer/components/TransferOverview/
 import { useGetReceiveAmount } from '@/modules/transfer/hooks/useGetReceiveAmount';
 import { RefreshingButton } from '@/modules/transfer/components/Button/RefreshingButton';
 import { RouteSkeleton } from '@/modules/transfer/components/TransferOverview/RouteInfo/RouteSkeleton';
+import { useBridgeConfig } from '@/CanonicalBridgeProvider';
 
-interface TransferOverviewProps {
-  routeContentBottom?: React.ReactNode;
-}
-
-export function TransferOverview({ routeContentBottom }: TransferOverviewProps) {
+export function TransferOverview() {
   const dispatch = useAppDispatch();
   const { formatMessage } = useIntl();
   const { colorMode } = useColorMode();
   const theme = useTheme();
+
+  const { routeContentBottom } = useBridgeConfig();
 
   const { loadingBridgeFees } = useLoadingBridgeFees();
   const { getSortedReceiveAmount } = useGetReceiveAmount();

@@ -8,17 +8,17 @@ import {
   okxWallet,
   defaultEvmConfig,
 } from '@node-real/walletkit/evm';
+import * as allChains from 'viem/chains';
 
-import { env } from '@/core/configs/env';
 import { useAggregator } from '@/modules/aggregator/components/AggregatorProvider';
 import { IChainConfig } from '@/modules/aggregator/types';
-import { useBridgeConfig } from '@/index';
+import { useBridgeConfig } from '@/CanonicalBridgeProvider';
 
 export function WalletProvider(props: PropsWithChildren) {
   const { children } = props;
 
   const { chainConfigs } = useAggregator();
-  const { appName: APP_NAME } = useBridgeConfig();
+  const { appName, walletConfig } = useBridgeConfig();
 
   const config = useMemo(() => {
     const config: WalletKitConfig = {
@@ -29,16 +29,16 @@ export function WalletProvider(props: PropsWithChildren) {
       evmConfig: defaultEvmConfig({
         autoConnect: true,
         initialChainId: 1,
-        walletConnectProjectId: env.WALLET_CONNECT_PROJECT_ID,
+        walletConnectProjectId: walletConfig.walletConnectProjectId,
         metadata: {
-          name: APP_NAME || 'bnb-chain-bridge',
+          name: appName || 'bnb-chain-bridge',
         },
         wallets: [metaMask(), trustWallet(), binanceWeb3Wallet(), okxWallet(), walletConnect()],
         chains: getEvmChains(chainConfigs),
       }),
     };
     return config;
-  }, [chainConfigs, APP_NAME]);
+  }, [appName, chainConfigs, walletConfig.walletConnectProjectId]);
 
   return (
     <WalletKitProvider config={config} mode="light">
@@ -49,23 +49,30 @@ export function WalletProvider(props: PropsWithChildren) {
 }
 
 function getEvmChains(chainConfigs: IChainConfig[]) {
-  return chainConfigs.map((item) => ({
-    id: item.id,
-    name: item.name,
-    nativeCurrency: item.nativeCurrency,
-    rpcUrls: {
-      default: {
-        http: [item.rpcUrl],
+  return chainConfigs.map((item) => {
+    const evmChain = Object.values(allChains).find((e) => e.id === item.id);
+    return {
+      id: item.id,
+      name: item.name,
+      nativeCurrency: item.nativeCurrency,
+      rpcUrls: {
+        default: {
+          http: [item.rpcUrl],
+        },
+        public: {
+          http: [item.rpcUrl],
+        },
       },
-      public: {
-        http: [item.rpcUrl],
+      blockExplorers: {
+        default: {
+          name: item.explorer.name,
+          url: item.explorer.url,
+        },
       },
-    },
-    blockExplorers: {
-      default: {
-        name: item.explorer.name,
-        url: item.explorer.url,
+      contracts: {
+        ...evmChain?.contracts,
+        ...item.contracts,
       },
-    },
-  }));
+    };
+  });
 }

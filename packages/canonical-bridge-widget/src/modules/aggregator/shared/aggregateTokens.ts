@@ -15,9 +15,15 @@ export interface IAggregateTokensParams {
   adapters: AdapterType[];
   params: IGetTokensParams;
   config: ITransferConfig;
+  assetsPrefix?: string;
 }
 
-export function aggregateTokens({ adapters, params, config }: IAggregateTokensParams) {
+export function aggregateTokens({
+  adapters,
+  params,
+  config,
+  assetsPrefix,
+}: IAggregateTokensParams) {
   const tokenMap = new Map<string, IBridgeToken>();
 
   adapters.forEach((adapter) => {
@@ -43,7 +49,7 @@ export function aggregateTokens({ adapters, params, config }: IAggregateTokensPa
       if (!bridgeToken) {
         bridgeToken = {
           ...baseInfo,
-          icon: formatTokenIcon(displaySymbol),
+          icon: formatTokenIcon(assetsPrefix, displaySymbol),
           displaySymbol,
           isPegged: !!item.isPegged,
         };

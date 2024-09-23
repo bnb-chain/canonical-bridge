@@ -5,7 +5,6 @@ import {
   ITransferConfig,
   IBridgeToken,
 } from '@/modules/aggregator/types';
-import { env } from '@/core/configs/env';
 import { isChainOrTokenCompatible } from '@/modules/aggregator/shared/isChainOrTokenCompatible';
 
 export interface IGetFromChainsParams {
@@ -23,9 +22,16 @@ export interface IAggregateChainsParams {
   adapters: AdapterType[];
   params: IGetFromChainsParams | IGetToChainsParams;
   config: ITransferConfig;
+  assetsPrefix?: string;
 }
 
-export function aggregateChains({ direction, adapters, params, config }: IAggregateChainsParams) {
+export function aggregateChains({
+  direction,
+  adapters,
+  params,
+  config,
+  assetsPrefix,
+}: IAggregateChainsParams) {
   const chainMap = new Map<number, IBridgeChain>();
 
   const chainOrder = config.order.chains;
@@ -57,6 +63,7 @@ export function aggregateChains({ direction, adapters, params, config }: IAggreg
       if (!bridgeChain) {
         bridgeChain = {
           ...getChainInfo({
+            assetsPrefix,
             chainId,
             config,
           }),
@@ -108,7 +115,15 @@ export function aggregateChains({ direction, adapters, params, config }: IAggreg
   return chains;
 }
 
-function getChainInfo({ chainId, config }: { chainId: number; config: ITransferConfig }) {
+function getChainInfo({
+  assetsPrefix,
+  chainId,
+  config,
+}: {
+  assetsPrefix?: string;
+  chainId: number;
+  config: ITransferConfig;
+}) {
   const chainConfig = config.chainConfigs.find((item) => item.id === chainId);
 
   const explorerUrl = chainConfig?.explorer.url?.replace(/\/$/, '') ?? '';
@@ -122,7 +137,7 @@ function getChainInfo({ chainId, config }: { chainId: number; config: ITransferC
   return {
     id: chainId,
     name: chainConfig?.name ?? '',
-    icon: `${env.ASSET_PREFIX}/images/chains/${chainId}.png`,
+    icon: `${assetsPrefix}/images/chains/${chainId}.png`,
     explorerUrl,
     rpcUrl: chainConfig?.rpcUrl ?? '',
     tokenUrlPattern,

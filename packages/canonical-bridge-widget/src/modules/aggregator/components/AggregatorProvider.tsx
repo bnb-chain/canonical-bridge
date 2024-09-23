@@ -23,6 +23,7 @@ import {
 } from '@/modules/aggregator/shared/aggregateChains';
 import { aggregateTokens, IGetTokensParams } from '@/modules/aggregator/shared/aggregateTokens';
 import { aggregateToToken, IGetToTokenParams } from '@/modules/aggregator/shared/aggregateToToken';
+import { useBridgeConfig } from '@/CanonicalBridgeProvider';
 
 export interface AggregatorContextProps {
   isReady: boolean;
@@ -57,6 +58,8 @@ export interface AggregatorProviderProps {
 
 export function AggregatorProvider(props: AggregatorProviderProps) {
   const { config, children } = props;
+
+  const { assetsPrefix } = useBridgeConfig();
 
   const value = useMemo(() => {
     if (!config) {
@@ -119,6 +122,7 @@ export function AggregatorProvider(props: AggregatorProviderProps) {
       getFromChains: (params: IGetFromChainsParams) => {
         return aggregateChains({
           direction: 'from',
+          assetsPrefix,
           adapters,
           params,
           config,
@@ -127,6 +131,7 @@ export function AggregatorProvider(props: AggregatorProviderProps) {
       getToChains: (params: IGetToChainsParams) => {
         return aggregateChains({
           direction: 'to',
+          assetsPrefix,
           adapters,
           params,
           config,
@@ -134,6 +139,7 @@ export function AggregatorProvider(props: AggregatorProviderProps) {
       },
       getTokens: (params: IGetTokensParams) => {
         return aggregateTokens({
+          assetsPrefix,
           adapters,
           params,
           config,
@@ -141,13 +147,14 @@ export function AggregatorProvider(props: AggregatorProviderProps) {
       },
       getToToken: (params: IGetToTokenParams) => {
         return aggregateToToken({
+          assetsPrefix,
           adapters,
           params,
           config,
         });
       },
     };
-  }, [config]);
+  }, [assetsPrefix, config]);
 
   return <AggregatorContext.Provider value={value}>{children}</AggregatorContext.Provider>;
 }

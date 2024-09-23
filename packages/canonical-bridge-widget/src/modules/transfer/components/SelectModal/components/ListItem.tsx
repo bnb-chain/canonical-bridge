@@ -57,8 +57,9 @@ export function ListItem(props: ListItemProps) {
           src={iconUrl}
           filter={isDisabled ? 'grayscale(100%)' : undefined}
           opacity={isDisabled ? 0.5 : 1}
+          flexShrink={0}
         />
-        <Flex flex={1} overflow="hidden" opacity={isDisabled ? 0.5 : 1}>
+        <Flex w={'100%'} overflow="hidden" opacity={isDisabled ? 0.5 : 1}>
           {children}
         </Flex>
         {showTag && isDisabled && (

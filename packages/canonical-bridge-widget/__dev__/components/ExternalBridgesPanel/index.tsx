@@ -1,22 +1,22 @@
 import { Flex, theme, useColorMode, useBreakpointValue, Box } from '@bnb-chain/space';
 
-import { env } from '@/core/configs/env';
 import { BridgeLinkItem } from '@/dev/components/ExternalBridgesPanel/BridgeLinkItem';
 import { MobileBridgeLinkItem } from '@/dev/components/ExternalBridgesPanel/MobileBridgeLinkItem';
+import { ASSET_PREFIX } from '@/dev/constants';
 
 export const OP_BNB_BRIDGE_URL = 'https://opbnb-bridge.bnbchain.org/deposit';
 export const GREENFIELD_BRIDGE_URL = 'https://greenfield.bnbchain.org/en/bridge?type=transfer-in';
 
 const options = [
   {
-    icon: `${env.ASSET_PREFIX}/images/bnb_blockchain.png`,
+    icon: `${ASSET_PREFIX}/images/bnb_blockchain.png`,
     name: 'opBNB Bridge',
     description: 'Transfer tokens between BSC & opBNB',
     url: OP_BNB_BRIDGE_URL,
     eventId: 'click_bridge_opBNB',
   },
   {
-    icon: `${env.ASSET_PREFIX}/images/bnb_blockchain.png`,
+    icon: `${ASSET_PREFIX}/images/bnb_blockchain.png`,
     name: 'Greenfield Bridge',
     description: 'Transfer tokens between BSC & BNB Greenfield',
     url: GREENFIELD_BRIDGE_URL,
