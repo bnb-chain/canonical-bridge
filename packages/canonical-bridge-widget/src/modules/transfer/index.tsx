@@ -71,6 +71,7 @@ export function TransferPage({ routeContentBottom }: TransferPageProps) {
         <Flex flexDir="column">
           <TransferButtonGroup />
         </Flex>
+        {isBase ? routeContentBottom : null}
       </Flex>
       {!isBase ? (
         <TransferOverview routeContentBottom={routeContentBottom} />
@@ -80,7 +81,7 @@ export function TransferPage({ routeContentBottom }: TransferPageProps) {
           isOpen={isOpen}
           onClose={onClose}
         >
-          <TransferOverview routeContentBottom={routeContentBottom} />
+          <TransferOverview />
         </RoutesModal>
       )}
     </Flex>

@@ -49,10 +49,10 @@ export const NetWorkSection = () => {
         flexDir={['column', 'column', 'row']}
         justifyContent={'space-between'}
         alignItems={'center'}
-        gap={'12px'}
+        gap={['16px', '16px', '16px', '12px']}
       >
         <FromSection />
-        <TransferToIcon transform={!isBase ? '' : 'rotate(90deg)'} />
+        <TransferToIcon w={'24px'} h={'24px'} transform={!isBase ? '' : 'rotate(90deg)'} />
         <ToSection />
       </Flex>
     </Flex>

@@ -31,6 +31,8 @@ const config: CanonicalBridgeConfig = {
   refetchingInterval: 30000, // 30s
   apiTimeOut: 60 * 1000, // 30s
   deBridgeAccessToken: '',
+  appName: 'bnb-chain-bridge',
+  enableGTM: true,
 };
 
 export default function App() {

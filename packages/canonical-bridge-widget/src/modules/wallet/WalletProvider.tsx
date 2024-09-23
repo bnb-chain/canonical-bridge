@@ -11,13 +11,14 @@ import {
 
 import { env } from '@/core/configs/env';
 import { useAggregator } from '@/modules/aggregator/components/AggregatorProvider';
-import { APP_NAME } from '@/core/constants';
 import { IChainConfig } from '@/modules/aggregator/types';
+import { useBridgeConfig } from '@/index';
 
 export function WalletProvider(props: PropsWithChildren) {
   const { children } = props;
 
   const { chainConfigs } = useAggregator();
+  const { appName: APP_NAME } = useBridgeConfig();
 
   const config = useMemo(() => {
     const config: WalletKitConfig = {
@@ -30,14 +31,14 @@ export function WalletProvider(props: PropsWithChildren) {
         initialChainId: 1,
         walletConnectProjectId: env.WALLET_CONNECT_PROJECT_ID,
         metadata: {
-          name: APP_NAME,
+          name: APP_NAME || 'bnb-chain-bridge',
         },
         wallets: [metaMask(), trustWallet(), binanceWeb3Wallet(), okxWallet(), walletConnect()],
         chains: getEvmChains(chainConfigs),
       }),
     };
     return config;
-  }, [chainConfigs]);
+  }, [chainConfigs, APP_NAME]);
 
   return (
     <WalletKitProvider config={config} mode="light">

@@ -5,7 +5,7 @@ import { merge } from 'lodash';
 import { light } from '@/core/theme/colors/light';
 import { dark } from '@/core/theme/colors/dark';
 import { walletStyles } from '@/core/theme/walletStyles';
-import { APP_NAME } from '@/core/constants';
+import { useBridgeConfig } from '@/index';
 
 export interface ThemeProviderProps {
   children: React.ReactNode;
@@ -13,9 +13,9 @@ export interface ThemeProviderProps {
   themeConfig?: { dark?: any; light?: any };
 }
 
-const colorModeManager = createLocalStorageManager(`${APP_NAME}-color-mode`);
-
 export const ThemeProvider = ({ children, themeConfig }: ThemeProviderProps) => {
+  const { appName: APP_NAME } = useBridgeConfig();
+  const colorModeManager = createLocalStorageManager(`${APP_NAME}-color-mode`);
   const customTheme = useMemo(() => {
     return {
       ...theme,

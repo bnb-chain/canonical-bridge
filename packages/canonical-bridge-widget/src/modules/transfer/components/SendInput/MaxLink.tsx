@@ -1,5 +1,6 @@
 import { Box, Flex, useColorMode, useIntl, useTheme } from '@bnb-chain/space';
 import { formatUnits } from 'viem';
+import { useAccount } from 'wagmi';
 
 import { useAppDispatch, useAppSelector } from '@/modules/store/StoreProvider';
 import { setSendValue } from '@/modules/transfer/action';
@@ -9,11 +10,13 @@ import { useLoadingTokenBalance } from '@/modules/transfer/hooks/useLoadingToken
 export const MaxLink: React.FC = () => {
   const theme = useTheme();
   const selectedToken = useAppSelector((state) => state.transfer.selectedToken);
+  const fromChain = useAppSelector((state) => state.transfer.fromChain);
 
   const dispatch = useAppDispatch();
   const { colorMode } = useColorMode();
   const { formatMessage } = useIntl();
   const { balance } = useLoadingTokenBalance();
+  const { chain } = useAccount();
 
   const setMaxAmount = () => {
     if (!!balance && selectedToken) {
@@ -23,7 +26,7 @@ export const MaxLink: React.FC = () => {
 
   return (
     <Flex alignItems={'center'}>
-      {balance !== null && !!selectedToken ? (
+      {balance !== null && !!selectedToken && fromChain?.id === chain?.id ? (
         <Box
           onClick={setMaxAmount}
           color={theme.colors[colorMode].text.tertiary}

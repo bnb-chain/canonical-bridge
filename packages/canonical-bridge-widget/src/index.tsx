@@ -22,6 +22,8 @@ interface CanonicalBridgeContextProps {
   refetchingInterval?: number;
   apiTimeOut?: number;
   deBridgeAccessToken?: string;
+  appName?: string;
+  enableGTM?: boolean;
 }
 
 const CanonicalBridgeContext = React.createContext({} as CanonicalBridgeContextProps);
@@ -43,6 +45,11 @@ export function CanonicalBridgeProvider(props: CanonicalBridgeProviderProvider) 
 
   const value = useMemo(() => {
     return {
+      enableGTM: false,
+      appName: 'canonical-bridge-widget',
+      refetchingInterval: 30000,
+      apiTimeOut: 60000,
+      deBridgeAccessToken: '',
       ...config,
     };
   }, [config]);
