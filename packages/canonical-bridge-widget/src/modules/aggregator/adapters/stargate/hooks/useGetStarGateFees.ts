@@ -71,10 +71,6 @@ export const useGetStargateFees = () => {
     (async () => {
       try {
         const decimal = selectedToken?.stargate?.raw?.decimals ?? (18 as number);
-        const amount = parseUnits(sendValue, decimal);
-        if (!balance || balance < amount) {
-          return;
-        }
         const receiver = address || DEFAULT_ADDRESS;
         const bridgeAddress = selectedToken?.stargate?.raw?.bridgeAddress as `0x${string}`;
         const quoteOFTResponse = await bridgeSDK.stargate.getQuoteOFT({

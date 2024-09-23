@@ -43,13 +43,17 @@ export class TokenProcessor extends WorkerHost {
     const config = tokens
       .filter((t) => t.price)
       .reduce((r, c) => {
-        const { symbol, address } = c;
+        const { symbol, address, platform } = c;
         if (!symbol) return r;
+        const _symbol = symbol.toLowerCase();
 
-        const key = !address
-          ? symbol.toLowerCase()
-          : `${symbol.toLowerCase()}:${address.toLowerCase()}`;
+        if (platform === 'ethereum') {
+          r[_symbol] = { price: c.price, decimals: c.decimals };
+        }
+
+        const key = !address ? _symbol : `${_symbol}:${address.toLowerCase()}`;
         r[key] = { price: c.price, decimals: c.decimals };
+
         return r;
       }, {});
 
@@ -62,14 +66,19 @@ export class TokenProcessor extends WorkerHost {
     const config = tokens
       .filter((t) => t.price)
       .reduce((r, c) => {
-        const { symbol, address } = c;
+        const { symbol, address, platformName } = c;
         if (!symbol) return r;
-        const key = !address
-          ? symbol.toLowerCase()
-          : `${symbol.toLowerCase()}:${address.toLowerCase()}`;
+        const _symbol = symbol.toLowerCase();
+
+        if (platformName === 'Ethereum') {
+          r[_symbol] = { price: c.price, id: c.id };
+        }
+
+        const key = !address ? _symbol : `${_symbol}:${address.toLowerCase()}`;
         r[key] = { price: c.price, id: c.id };
         return r;
       }, {});
+
     await this.cache.set(`${CACHE_KEY.CMC_CONFIG}`, config);
     return config;
   }
@@ -83,6 +92,16 @@ export class TokenProcessor extends WorkerHost {
 
     if (!platforms || !coins) return;
 
+    const mapping = platforms
+      .filter((p) => !!p.shortname)
+      .map((p) => ({ ...p, shortname: p.shortname.toLowerCase().replaceAll(' ', '-') }))
+      .filter((p) => p.id !== p.shortname)
+      .reduce(
+        (r, c) => ({ ...r, [c.id]: c.shortname, [c.shortname]: c.id }),
+        {} as Record<string, string>,
+      );
+
+    await this.cache.set(`${CACHE_KEY.PLATFORM_MAPPING}`, mapping);
     this.tokenService.syncCoingeckoTokens(coins, platforms);
   }
 

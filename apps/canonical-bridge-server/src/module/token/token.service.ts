@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import { DatabaseService } from '@/shared/database/database.service';
 import {
   IAssetPlatform,
@@ -7,15 +7,19 @@ import {
   ICryptoCurrencyMapEntity,
   ICryptoCurrencyQuoteEntity,
 } from '@/shared/web3/web3.interface';
-import { PRICE_REQUEST_LIMIT } from '@/common/constants';
-import { isEmpty } from 'lodash';
+import { CACHE_KEY, PRICE_REQUEST_LIMIT } from '@/common/constants';
+import { get, isEmpty } from 'lodash';
 import { Prisma } from '@prisma/client';
+import { Cache, CACHE_MANAGER } from '@nestjs/cache-manager';
 
 @Injectable()
 export class TokenService {
   private logger = new Logger(TokenService.name);
 
-  constructor(private databaseService: DatabaseService) {}
+  constructor(
+    private databaseService: DatabaseService,
+    @Inject(CACHE_MANAGER) private cache: Cache,
+  ) {}
 
   async syncTokens(tokens: ICryptoCurrencyMapEntity[]) {
     const payload = tokens.map((token) => ({
@@ -85,9 +89,13 @@ export class TokenService {
   async getLlamaJobIds() {
     const tokens = await this.databaseService.getCoingeckoTokens(PRICE_REQUEST_LIMIT / 2);
     const keyMap: Record<string, string> = {};
+    const platformMapping = await this.cache.get<Record<string, string>>(
+      `${CACHE_KEY.PLATFORM_MAPPING}`,
+    );
     const _tokens = tokens.map((l) => {
       if (l.platform) {
-        const key = `${l.platform}:${l.address}`;
+        const platform = get(platformMapping, l.platform, l.platform);
+        const key = `${platform}:${l.address}`;
         keyMap[key] = l.id;
         return key.replaceAll('/', '%2F');
       }

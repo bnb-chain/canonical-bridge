@@ -5,7 +5,7 @@ export const RouteMask = () => {
   const { colorMode } = useColorMode();
   return (
     <Box
-      zIndex={1}
+      zIndex={0}
       position={'absolute'}
       w={'100%'}
       h={'100%'}

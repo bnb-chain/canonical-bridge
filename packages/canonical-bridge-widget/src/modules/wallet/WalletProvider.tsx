@@ -11,15 +11,14 @@ import {
 import * as allChains from 'viem/chains';
 
 import { useAggregator } from '@/modules/aggregator/components/AggregatorProvider';
-import { APP_NAME } from '@/core/constants';
 import { IChainConfig } from '@/modules/aggregator/types';
 import { useBridgeConfig } from '@/CanonicalBridgeProvider';
 
 export function WalletProvider(props: PropsWithChildren) {
   const { children } = props;
 
-  const { walletConfig } = useBridgeConfig();
   const { chainConfigs } = useAggregator();
+  const { appName, walletConfig } = useBridgeConfig();
 
   const config = useMemo(() => {
     const config: WalletKitConfig = {
@@ -32,14 +31,14 @@ export function WalletProvider(props: PropsWithChildren) {
         initialChainId: 1,
         walletConnectProjectId: walletConfig.walletConnectProjectId,
         metadata: {
-          name: APP_NAME,
+          name: appName || 'bnb-chain-bridge',
         },
         wallets: [metaMask(), trustWallet(), binanceWeb3Wallet(), okxWallet(), walletConnect()],
         chains: getEvmChains(chainConfigs),
       }),
     };
     return config;
-  }, [chainConfigs, walletConfig.walletConnectProjectId]);
+  }, [appName, chainConfigs, walletConfig.walletConnectProjectId]);
 
   return (
     <WalletKitProvider config={config} mode="light">

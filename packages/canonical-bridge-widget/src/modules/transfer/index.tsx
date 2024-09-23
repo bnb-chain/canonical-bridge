@@ -15,6 +15,7 @@ import { SendInput } from '@/modules/transfer/components/SendInput';
 import { ReceiveInfo } from '@/modules/transfer/components/ReceiveInfo';
 import { useDefaultSelectedInfo } from '@/modules/aggregator/hooks/useDefaultSelectedInfo';
 import { RoutesModal } from '@/modules/transfer/components/TransferOverview/modal/RoutesModal';
+import { useBridgeConfig } from '@/CanonicalBridgeProvider';
 
 export function TransferWidget() {
   const { colorMode } = useColorMode();
@@ -23,6 +24,7 @@ export function TransferWidget() {
   const isBase = useBreakpointValue({ base: true, lg: false }) ?? false;
 
   useDefaultSelectedInfo();
+  const { routeContentBottom } = useBridgeConfig();
 
   const { isOpen, onClose, onOpen } = useDisclosure();
 
@@ -67,6 +69,7 @@ export function TransferWidget() {
         <Flex flexDir="column">
           <TransferButtonGroup />
         </Flex>
+        {isBase ? routeContentBottom : null}
       </Flex>
       {!isBase ? (
         <TransferOverview />

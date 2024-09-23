@@ -18,6 +18,8 @@ export interface CanonicalBridgeConfig {
   walletConfig: {
     walletConnectProjectId: string;
   };
+  appName?: string;
+  enableGTM?: boolean;
   refetchingInterval?: number;
   apiTimeOut?: number;
   deBridgeAccessToken?: string;
@@ -47,8 +49,13 @@ export function CanonicalBridgeProvider(props: CanonicalBridgeProviderProvider) 
 
   const value = useMemo(() => {
     return {
-      ...config,
+      enableGTM: false,
+      appName: 'canonical-bridge-widget',
+      refetchingInterval: 30000,
+      apiTimeOut: 60000,
+      deBridgeAccessToken: '',
       routeContentBottom,
+      ...config,
     };
   }, [config, routeContentBottom]);
 

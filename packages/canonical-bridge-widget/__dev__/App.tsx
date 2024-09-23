@@ -36,6 +36,8 @@ const config: CanonicalBridgeConfig = {
   deBridgeAccessToken: '',
   assetsPrefix: ASSET_PREFIX,
   transferConfigEndpoint: TRANSFER_CONFIG_ENDPOINT,
+  appName: 'bnb-chain-bridge',
+  enableGTM: true,
 };
 
 export default function App() {

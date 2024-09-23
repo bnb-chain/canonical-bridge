@@ -1,4 +1,4 @@
-import { Flex, theme, useColorMode, useBreakpointValue } from '@bnb-chain/space';
+import { Flex, theme, useColorMode, useBreakpointValue, Box } from '@bnb-chain/space';
 
 import { BridgeLinkItem } from '@/dev/components/ExternalBridgesPanel/BridgeLinkItem';
 import { MobileBridgeLinkItem } from '@/dev/components/ExternalBridgesPanel/MobileBridgeLinkItem';
@@ -30,22 +30,33 @@ export function ExternalBridgesPanel() {
 
   return (
     <Flex
-      p={[0, 0, 0, theme.sizes['4']]}
-      bg={theme.colors[colorMode].layer[3].default}
-      w="100%"
-      maxW={['100%', '100%', '100%', '384px']}
+      flexDir={'column'}
+      mt={[theme.sizes['12'], theme.sizes['12'], theme.sizes['12'], 0]}
       gap={theme.sizes['3']}
-      borderRadius={theme.sizes['2']}
-      color={theme.colors[colorMode].text.primary}
-      flexDir={['column', 'column', 'column', 'row']}
     >
-      {options.map((item, index) => {
-        return !isBase ? (
-          <BridgeLinkItem key={index} item={item} />
-        ) : (
-          <MobileBridgeLinkItem key={index} item={item} />
-        );
-      })}
+      {isBase && (
+        <Box fontWeight={700} fontSize={theme.sizes['3.5']}>
+          Transfer Tokens within BNB Chain Ecosystem
+        </Box>
+      )}
+      <Flex
+        p={[0, 0, 0, theme.sizes['4']]}
+        bg={['none', 'none', 'none', theme.colors[colorMode].layer[3].default]}
+        w="100%"
+        maxW={['100%', '100%', '100%', '384px']}
+        gap={[theme.sizes['2'], theme.sizes['2'], theme.sizes['2'], theme.sizes['3']]}
+        borderRadius={[theme.sizes['3'], theme.sizes['3'], theme.sizes['3'], theme.sizes['6']]}
+        color={theme.colors[colorMode].text.primary}
+        flexDir={['column', 'column', 'column', 'row']}
+      >
+        {options.map((item, index) => {
+          return !isBase ? (
+            <BridgeLinkItem key={index} item={item} />
+          ) : (
+            <MobileBridgeLinkItem key={index} item={item} />
+          );
+        })}
+      </Flex>
     </Flex>
   );
 }
