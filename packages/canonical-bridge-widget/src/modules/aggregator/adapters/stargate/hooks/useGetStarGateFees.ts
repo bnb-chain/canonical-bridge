@@ -37,9 +37,10 @@ export const useGetStargateFees = () => {
       return;
     }
     if (allowedSendAmount?.min && allowedSendAmount?.max) {
-      if (Number(sendValue) < Number(allowedSendAmount.min)) {
-        setIsAllowSendError(true);
-      } else if (Number(sendValue) > Number(allowedSendAmount.max)) {
+      if (
+        Number(sendValue) < Number(allowedSendAmount.min) ||
+        Number(sendValue) > Number(allowedSendAmount.max)
+      ) {
         setIsAllowSendError(true);
       }
     }
