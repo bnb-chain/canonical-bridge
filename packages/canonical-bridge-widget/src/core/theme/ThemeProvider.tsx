@@ -32,6 +32,7 @@ export const ThemeProvider = ({ children, themeConfig }: ThemeProviderProps) => 
         global: ({ colorMode }: { colorMode: ColorMode }) => ({
           body: {
             bg: themeConfig?.[colorMode].background.body ?? theme.colors[colorMode].background[3],
+            fontFamily: 'Space Grotesk',
           },
           ...walletStyles(colorMode),
         }),

@@ -11,7 +11,8 @@ export const useCBridgeSendMaxMin = (isDisabled = false) => {
   const { bridgeAddress } = useCBridgeTransferParams();
   const bridgeSDK = useBridgeSDK();
   const fromChain = useAppSelector((state) => state.transfer.fromChain);
-  const publicClient = usePublicClient({ chainId: fromChain?.id });
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const publicClient = usePublicClient({ chainId: fromChain?.id }) as any;
   const selectedToken = useAppSelector((state) => state.transfer.selectedToken);
   const [minMaxSendAmt, setMinMaxSendAmt] = useState<ICBridgeMaxMinSendAmt>({
     min: '0',

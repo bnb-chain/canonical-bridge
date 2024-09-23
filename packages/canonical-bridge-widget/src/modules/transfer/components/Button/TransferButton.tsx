@@ -30,7 +30,6 @@ export function TransferButton({
   const bridgeSDK = useBridgeSDK();
 
   const { address } = useAccount();
-  const publicClient = usePublicClient();
 
   const { data: balance } = useBalance({ address: address as `0x${string}` });
 
@@ -42,6 +41,8 @@ export function TransferButton({
   const toToken = useAppSelector((state) => state.transfer.toToken);
   const fromChain = useAppSelector((state) => state.transfer.fromChain);
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const publicClient = usePublicClient({ chainId: fromChain?.id }) as any;
   const [isLoading, setIsLoading] = useState(false);
 
   const { allowance } = useGetAllowance({

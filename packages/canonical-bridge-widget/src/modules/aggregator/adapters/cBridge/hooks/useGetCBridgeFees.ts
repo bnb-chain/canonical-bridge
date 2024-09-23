@@ -15,13 +15,15 @@ import { useGetTokenBalance } from '@/core/contract/hooks/useGetTokenBalance';
 export const useGetCBridgeFees = () => {
   const { toTokenInfo, getToDecimals } = useToTokenInfo();
   const { args, bridgeAddress } = useCBridgeTransferParams();
-  const publicClient = usePublicClient();
   const { minMaxSendAmt: cBridgeAllowedAmt } = useCBridgeSendMaxMin();
 
   const estimatedAmount = useAppSelector((state) => state.transfer.estimatedAmount);
   const sendValue = useAppSelector((state) => state.transfer.sendValue);
   const selectedToken = useAppSelector((state) => state.transfer.selectedToken);
+  const fromChain = useAppSelector((state) => state.transfer.fromChain);
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const publicClient = usePublicClient({ chainId: fromChain?.id }) as any;
   const [isAllowSendError, setIsAllowSendError] = useState(false);
   const [gasInfo, setGasInfo] = useState<{
     gas: bigint;

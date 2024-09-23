@@ -24,7 +24,8 @@ export const useStargateTransfer = () => {
   const toChain = useAppSelector((state) => state.transfer.toChain);
   const { toTokenInfo } = useToTokenInfo();
 
-  const publicClient = usePublicClient({ chainId: fromChain?.id });
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const publicClient = usePublicClient({ chainId: fromChain?.id }) as any;
   const debouncedSendValue = useDebounce(sendValue, DEBOUNCE_DELAY);
   const { args } = useStargateTransferParams();
 

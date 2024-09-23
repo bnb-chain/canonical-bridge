@@ -10,14 +10,16 @@ import { CAKE_PROXY_OFT_ABI } from '@/modules/aggregator/adapters/layerZero/abi/
 import { useBridgeSDK } from '@/core/hooks/useBridgeSDK';
 
 export const useGetLayerZeroFees = () => {
-  const publicClient = usePublicClient();
   const { address } = useAccount();
   const { toTokenInfo } = useToTokenInfo();
   const bridgeSDK = useBridgeSDK();
 
   const selectedToken = useAppSelector((state) => state.transfer.selectedToken);
   const sendValue = useAppSelector((state) => state.transfer.sendValue);
+  const fromChain = useAppSelector((state) => state.transfer.fromChain);
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const publicClient = usePublicClient({ chainId: fromChain?.id }) as any;
   const [nativeFee, setNativeFee] = useState<bigint>(0n);
 
   const { balance } = useGetTokenBalance({

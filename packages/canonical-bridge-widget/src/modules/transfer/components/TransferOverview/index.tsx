@@ -60,6 +60,7 @@ export function TransferOverview() {
         dispatch(setIsGlobalFeeLoading(false));
         return;
       }
+      dispatch(setIsGlobalFeeLoading(true));
       dispatch(setIsRefreshing(true));
       loadingBridgeFees();
       dispatch(setIsRefreshing(false));

@@ -2,12 +2,16 @@ import { useAccount, usePublicClient, useWalletClient } from 'wagmi';
 import { useCallback, useState } from 'react';
 
 import { useBridgeSDK } from '@/core/hooks/useBridgeSDK';
+import { useAppSelector } from '@/modules/store/StoreProvider';
 
 export const useApprove = () => {
   const { address } = useAccount();
   const [isLoadingApprove, setIsLoadingApprove] = useState(false);
-  const { data: walletClient } = useWalletClient();
-  const publicClient = usePublicClient();
+  const fromChain = useAppSelector((state) => state.transfer.fromChain);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const { data: walletClient } = useWalletClient() as any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const publicClient = usePublicClient({ chainId: fromChain?.id }) as any;
   const bridgeSDK = useBridgeSDK();
 
   const approveErc20Token = useCallback(
