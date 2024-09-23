@@ -25,6 +25,7 @@ export function BaseModal(props: BaseModalProps) {
     if (!isOpen) {
       onSearch('');
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen]);
 
   return (

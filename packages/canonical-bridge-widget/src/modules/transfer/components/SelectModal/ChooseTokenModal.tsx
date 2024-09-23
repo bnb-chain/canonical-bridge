@@ -149,7 +149,13 @@ export function ChooseTokenModal(props: ChooseTokenModalProps) {
                   </Flex>
 
                   {!isDisabled && !isLoading && (
-                    <Flex flexShrink={0} flexDir="column" alignItems="flex-end" gap={'4px'}>
+                    <Flex
+                      flexShrink={0}
+                      flexDir="column"
+                      alignItems="flex-end"
+                      gap={'4px'}
+                      alignSelf="flex-start"
+                    >
                       <Flex>{balance === undefined ? '-' : formatNumber(balance, 4)}</Flex>
                       <Flex
                         flexDir="column"
@@ -184,22 +190,26 @@ function TokenAddress(props: TokenAddressProps) {
   const { colorMode } = useColorMode();
 
   return (
-    <Text
-      as="a"
-      href={formatTokenUrl(tokenUrlPattern, address)}
-      target="_blank"
-      rel="noopener noreferrer"
-      isTruncated
-      flexShrink={0}
-    >
-      {formatAddress({
-        value: address,
-      })}
-      <ExLinkIcon
-        ml="4px"
-        color={theme.colors[colorMode].text.secondary}
-        boxSize={theme.sizes['4']}
-      />
-    </Text>
+    <Flex>
+      <Text
+        as="a"
+        href={formatTokenUrl(tokenUrlPattern, address)}
+        target="_blank"
+        rel="noopener noreferrer"
+        isTruncated
+        flexShrink={0}
+        display="inline-flex"
+        alignItems="center"
+      >
+        {formatAddress({
+          value: address,
+        })}
+        <ExLinkIcon
+          ml="4px"
+          color={theme.colors[colorMode].text.secondary}
+          boxSize={theme.sizes['4']}
+        />
+      </Text>
+    </Flex>
   );
 }

@@ -15,6 +15,7 @@ export function useTokenBalances(tokens: IBridgeToken[], isEnabled = true) {
   const result = useQuery<Record<string, bigint | undefined>>({
     enabled: isEnabled,
     staleTime: TIME.SECOND * 10,
+    refetchInterval: TIME.SECOND * 10,
     queryKey: ['token-balances', address, fromChain?.id],
     queryFn: async () => {
       const chain = chains?.find((item) => item.id === fromChain?.id);

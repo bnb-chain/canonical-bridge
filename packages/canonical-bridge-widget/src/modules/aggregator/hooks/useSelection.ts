@@ -9,13 +9,13 @@ export function useSelection() {
 
   const fromChain = useAppSelector((state) => state.transfer.fromChain);
   const toChain = useAppSelector((state) => state.transfer.toChain);
-  const selectToken = useAppSelector((state) => state.transfer.selectedToken);
+  const selectedToken = useAppSelector((state) => state.transfer.selectedToken);
   const dispatch = useAppDispatch();
 
   const updateToToken = ({
     fromChainId = fromChain?.id,
     toChainId = toChain?.id,
-    token = selectToken,
+    token = selectedToken,
   }: {
     fromChainId?: number;
     toChainId?: number;
@@ -27,6 +27,41 @@ export function useSelection() {
       token: token!,
     });
     dispatch(setToToken(newToToken));
+  };
+
+  const updateSelectedInfo = ({
+    nextFromChain = fromChain,
+    nextToChain = toChain,
+    nextToken = selectedToken,
+  }: {
+    nextFromChain?: IBridgeChain;
+    nextToChain?: IBridgeChain;
+    nextToken?: IBridgeToken;
+  }) => {
+    const newToken = getTokens({
+      fromChainId: nextFromChain?.id,
+      toChainId: nextToChain?.id,
+    }).find((t) => t.displaySymbol === nextToken?.displaySymbol);
+
+    const newFromChain = getFromChains({
+      toChainId: nextToChain?.id,
+      token: newToken,
+    }).find((c) => c.id === nextFromChain?.id);
+
+    const newToChain = getToChains({
+      fromChainId: nextFromChain?.id,
+      token: newToken,
+    }).find((c) => c.id === nextToChain?.id);
+
+    dispatch(setFromChain(newFromChain));
+    dispatch(setToChain(newToChain));
+    dispatch(setSelectedToken(newToken));
+
+    updateToToken({
+      fromChainId: newFromChain?.id,
+      toChainId: newToChain?.id,
+      token: newToken,
+    });
   };
 
   return {
@@ -78,9 +113,8 @@ export function useSelection() {
       const isCompatible = isChainOrTokenCompatible(fromChain);
 
       if (isCompatible) {
-        dispatch(setFromChain(fromChain));
-        updateToToken({
-          fromChainId: fromChain?.id,
+        updateSelectedInfo({
+          nextFromChain: fromChain,
         });
       } else {
         const toChain = getToChains({
@@ -115,16 +149,14 @@ export function useSelection() {
     },
 
     selectToChain(toChain: IBridgeChain) {
-      dispatch(setToChain(toChain));
-      updateToToken({
-        toChainId: toChain?.id,
+      updateSelectedInfo({
+        nextToChain: toChain,
       });
     },
 
-    selectToken(token: IBridgeToken) {
-      dispatch(setSelectedToken(token));
-      updateToToken({
-        token,
+    selectToken(newToken: IBridgeToken) {
+      updateSelectedInfo({
+        nextToken: newToken,
       });
     },
   };
