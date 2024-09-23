@@ -40,12 +40,8 @@ export const useGetReceiveAmount = () => {
             BigInt(estimatedAmount?.['stargate']?.[2].amountReceivedLD),
             getToDecimals()['stargate'] || 18,
           );
-        } else if (bridgeType === 'layerZero' && sendValue && getToDecimals()['layerZero']) {
-          if (getToDecimals()['layerZero']) {
-            return String(parseUnits(sendValue, getToDecimals()['layerZero']));
-          } else {
-            return null;
-          }
+        } else if (bridgeType === 'layerZero' && sendValue) {
+          return sendValue;
         }
       }
       return null;
