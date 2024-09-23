@@ -10,14 +10,15 @@ import {
 } from '@node-real/walletkit/evm';
 import * as allChains from 'viem/chains';
 
-import { env } from '@/core/configs/env';
 import { useAggregator } from '@/modules/aggregator/components/AggregatorProvider';
 import { APP_NAME } from '@/core/constants';
 import { IChainConfig } from '@/modules/aggregator/types';
+import { useBridgeConfig } from '@/CanonicalBridgeProvider';
 
 export function WalletProvider(props: PropsWithChildren) {
   const { children } = props;
 
+  const { walletConfig } = useBridgeConfig();
   const { chainConfigs } = useAggregator();
 
   const config = useMemo(() => {
@@ -29,7 +30,7 @@ export function WalletProvider(props: PropsWithChildren) {
       evmConfig: defaultEvmConfig({
         autoConnect: true,
         initialChainId: 1,
-        walletConnectProjectId: env.WALLET_CONNECT_PROJECT_ID,
+        walletConnectProjectId: walletConfig.walletConnectProjectId,
         metadata: {
           name: APP_NAME,
         },
@@ -38,7 +39,7 @@ export function WalletProvider(props: PropsWithChildren) {
       }),
     };
     return config;
-  }, [chainConfigs]);
+  }, [chainConfigs, walletConfig.walletConnectProjectId]);
 
   return (
     <WalletKitProvider config={config} mode="light">

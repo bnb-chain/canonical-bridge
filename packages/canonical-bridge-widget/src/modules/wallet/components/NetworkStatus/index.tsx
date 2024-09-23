@@ -2,11 +2,12 @@ import { Flex, theme, useColorMode, useIntl } from '@bnb-chain/space';
 import { useAccount } from 'wagmi';
 
 import { IconImage } from '@/core/components/IconImage';
-import { env } from '@/core/configs/env';
 import { useAppSelector } from '@/modules/store/StoreProvider';
+import { useBridgeConfig } from '@/CanonicalBridgeProvider';
 
 export function HeaderNetworkStatus() {
   const fromChain = useAppSelector((state) => state.transfer.fromChain);
+  const { assetsPrefix } = useBridgeConfig();
 
   const { colorMode } = useColorMode();
   const { chain } = useAccount();
@@ -17,7 +18,7 @@ export function HeaderNetworkStatus() {
   }
 
   const isWrongNetwork = fromChain && fromChain.id !== chain.id;
-  const iconUrl = `${env.ASSET_PREFIX}/images/chains/${chain.id}.png`;
+  const iconUrl = `${assetsPrefix}/images/chains/${chain.id}.png`;
 
   const props = isWrongNetwork
     ? {

@@ -1,18 +1,22 @@
-import { Button, Flex } from '@bnb-chain/space';
 import { useConnectModal } from '@node-real/walletkit';
 import { useAccount } from 'wagmi';
+import { Button, Flex } from '@bnb-chain/space';
 
-import { ProfileMenu } from '@/core/components/ProfileMenu';
-import { HeaderNetworkStatus } from '@/core/components/HeaderNetworkStatus';
 import { useAppSelector } from '@/modules/store/StoreProvider';
+import { HeaderNetworkStatus } from '@/modules/wallet/components/NetworkStatus';
+import { ProfileMenu } from '@/modules/wallet/components/ProfileMenu';
 
-export const HeaderInfo = () => {
+interface ConnectButtonProps {}
+
+export function ConnectButton(props: ConnectButtonProps) {
+  const { ...restProps } = props;
+
   const { isConnected } = useAccount();
   const { onOpen } = useConnectModal();
   const fromChain = useAppSelector((state) => state.transfer.fromChain);
 
   return (
-    <Flex alignItems="center" gap={'16px'}>
+    <Flex alignItems="center" gap={'16px'} {...restProps}>
       {!isConnected && (
         <Button
           size="lg"
@@ -34,4 +38,4 @@ export const HeaderInfo = () => {
       )}
     </Flex>
   );
-};
+}

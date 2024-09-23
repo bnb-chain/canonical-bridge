@@ -16,11 +16,7 @@ import { ReceiveInfo } from '@/modules/transfer/components/ReceiveInfo';
 import { useDefaultSelectedInfo } from '@/modules/aggregator/hooks/useDefaultSelectedInfo';
 import { RoutesModal } from '@/modules/transfer/components/TransferOverview/modal/RoutesModal';
 
-interface TransferPageProps {
-  routeContentBottom?: React.ReactNode;
-}
-
-export function TransferPage({ routeContentBottom }: TransferPageProps) {
+export function TransferWidget() {
   const { colorMode } = useColorMode();
   const { formatMessage } = useIntl();
   const theme = useTheme();
@@ -73,14 +69,14 @@ export function TransferPage({ routeContentBottom }: TransferPageProps) {
         </Flex>
       </Flex>
       {!isBase ? (
-        <TransferOverview routeContentBottom={routeContentBottom} />
+        <TransferOverview />
       ) : (
         <RoutesModal
           title={formatMessage({ id: 'route.title.select.routes' })}
           isOpen={isOpen}
           onClose={onClose}
         >
-          <TransferOverview routeContentBottom={routeContentBottom} />
+          <TransferOverview />
         </RoutesModal>
       )}
     </Flex>

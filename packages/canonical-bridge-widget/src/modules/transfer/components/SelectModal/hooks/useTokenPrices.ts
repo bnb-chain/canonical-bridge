@@ -4,7 +4,7 @@ import axios from 'axios';
 
 import { TIME } from '@/core/constants';
 import { IBridgeToken } from '@/modules/aggregator/types';
-import { env } from '@/core/configs/env';
+import { useBridgeConfig } from '@/CanonicalBridgeProvider';
 
 interface ITokenPriceResponse {
   code: number;
@@ -14,14 +14,16 @@ interface ITokenPriceResponse {
 export function useTokenPrices(tokens: IBridgeToken[], isEnabled = true) {
   const { address } = useAccount();
 
+  const { transferConfigEndpoint } = useBridgeConfig();
+
   const result = useQuery<Record<string, number | undefined>>({
     enabled: isEnabled && !!address,
     staleTime: TIME.MINUTE * 5,
     queryKey: ['token-prices'],
     queryFn: async () => {
       const [cmcRes, llamaRes] = await Promise.allSettled([
-        axios.get<ITokenPriceResponse>(`${env.CONFIG_ENDPOINT}/api/token/cmc`),
-        axios.get<ITokenPriceResponse>(`${env.CONFIG_ENDPOINT}/api/token/llama`),
+        axios.get<ITokenPriceResponse>(`${transferConfigEndpoint}/api/token/cmc`),
+        axios.get<ITokenPriceResponse>(`${transferConfigEndpoint}/api/token/llama`),
       ]);
 
       const cmcPrices = cmcRes.status === 'fulfilled' ? cmcRes.value.data.data : {};

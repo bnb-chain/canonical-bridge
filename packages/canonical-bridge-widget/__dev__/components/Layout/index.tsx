@@ -1,7 +1,7 @@
 import { Flex } from '@bnb-chain/space';
 
-import { Footer } from '@/core/components/Layout/Footer';
-import { Header } from '@/core/components/Layout/Header';
+import { Footer } from '@/dev/components/Layout/Footer';
+import { Header } from '@/dev/components/Layout/Header';
 
 export function Layout({ children }: React.PropsWithChildren) {
   return (

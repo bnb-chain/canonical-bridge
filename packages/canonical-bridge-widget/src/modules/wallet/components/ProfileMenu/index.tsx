@@ -14,12 +14,11 @@ import { DisconnectIcon } from '@bnb-chain/icons';
 import { useAccount, useDisconnect } from 'wagmi';
 
 import { CopyAddress } from '@/core/components/CopyAddress';
-import { AccountAvatar } from '@/core/components/AccountAvatar';
-import { ProfileBg } from '@/core/components/ProfileIcon/ProfileBg';
 import { formatNumber } from '@/core/utils/number';
 import { formatAppAddress } from '@/core/utils/address';
 import { WalletIcon } from '@/core/components/icons/WalletIcon';
 import { useEvmBalance } from '@/modules/wallet/hooks/useEvmBalance';
+import { AccountAvatar } from '@/modules/wallet/components/AccountAvatar';
 
 export const ProfileMenu = () => {
   const { formatMessage } = useIntl();
@@ -68,9 +67,10 @@ export const ProfileMenu = () => {
             overflow={'hidden'}
             fontSize={'14px'}
             fontWeight={400}
+            background={theme.colors[colorMode].layer['4'].default}
           >
             <Box>
-              <ProfileBg />
+              <Box h={'80px'} />
               <Flex
                 borderRadius={'50%'}
                 justifyContent={'center'}
@@ -92,7 +92,6 @@ export const ProfileMenu = () => {
               pb={'4px'}
               gap={'8px'}
               color={theme.colors[colorMode].text.primary}
-              background={theme.colors[colorMode].layer['4'].default}
               {...TYPOGRAPHY_STYLES['body']['lg']}
               fontWeight={500}
             >
