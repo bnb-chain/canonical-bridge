@@ -6,6 +6,8 @@ import { MaxLink } from '@/modules/transfer/components/SendInput/MaxLink';
 import { TokenSelectButton } from '@/modules/transfer/components/SelectButton/TokenSelectButton';
 import { InputValidationMessage } from '@/modules/transfer/components/SendInput/InputValidationMessage';
 import { ChooseTokenModal } from '@/modules/transfer/components/SelectModal/ChooseTokenModal';
+import { useDebounce } from '@/core/hooks/useDebounce';
+import { DEBOUNCE_DELAY } from '@/core/constants';
 
 const handleKeyPress = (e: React.KeyboardEvent) => {
   // only allow number and decimal
@@ -38,9 +40,11 @@ export const SendInput: React.FC = () => {
   const sendValue = useAppSelector((state) => state.transfer.sendValue);
   const theme = useTheme();
   const selectedToken = useAppSelector((state) => state.transfer.selectedToken);
+  const isGlobalFeeLoading = useAppSelector((state) => state.transfer.isGlobalFeeLoading);
   const error = useAppSelector((state) => state.transfer.error);
 
   const { isOpen, onClose, onOpen } = useDisclosure();
+  const debouncedSendValue = useDebounce(sendValue, DEBOUNCE_DELAY);
 
   const onChangeSendValue = (event: React.ChangeEvent<HTMLInputElement>) => {
     let value = event.target.value.trim() ?? 0;
@@ -101,7 +105,7 @@ export const SendInput: React.FC = () => {
           onChange={onChangeSendValue}
           placeholder={'0.0'}
           border={'none'}
-          disabled={!selectedToken}
+          disabled={!selectedToken || (isGlobalFeeLoading && sendValue === debouncedSendValue)}
           _hover={{
             border: 'none',
             background: 'none',

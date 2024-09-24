@@ -103,6 +103,7 @@ export const dark = {
   route: {
     background: { highlight: 'rgba(255, 233, 0, 0.06)' },
     border: '#373943',
+    warning: '#BC4E00',
   },
   overlay: rgba('#14151A', 0.6),
 };

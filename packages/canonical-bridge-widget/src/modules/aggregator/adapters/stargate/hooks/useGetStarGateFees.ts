@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useAccount, usePublicClient } from 'wagmi';
-import { formatUnits, parseUnits } from 'viem';
+import { formatUnits } from 'viem';
 
 import { useAppDispatch, useAppSelector } from '@/modules/store/StoreProvider';
 import { useToTokenInfo } from '@/modules/transfer/hooks/useToTokenInfo';
@@ -33,21 +33,6 @@ export const useGetStargateFees = () => {
   );
   const [isAllowSendError, setIsAllowSendError] = useState(false);
 
-  useEffect(() => {
-    setIsAllowSendError(false);
-    if (!sendValue || !selectedToken || !toTokenInfo) {
-      return;
-    }
-    if (allowedSendAmount?.min && allowedSendAmount?.max) {
-      if (
-        Number(sendValue) < Number(allowedSendAmount.min) ||
-        Number(sendValue) > Number(allowedSendAmount.max)
-      ) {
-        setIsAllowSendError(true);
-      }
-    }
-  }, [allowedSendAmount, sendValue, selectedToken, toTokenInfo]);
-
   const [gasInfo, setGasInfo] = useState<{
     gas: bigint;
     gasPrice: bigint;
@@ -66,6 +51,7 @@ export const useGetStargateFees = () => {
 
   useEffect(() => {
     let mount = true;
+    setIsAllowSendError(false);
     if (!mount || !args || !publicClient || !args.dstEid) {
       return;
     }
@@ -91,6 +77,7 @@ export const useGetStargateFees = () => {
         }
         // Can not retrieve other fees if token amount is out of range
         if (Number(sendValue) < allowedMin || Number(sendValue) > allowedMax) {
+          setIsAllowSendError(true);
           return;
         }
         if (!Number(quoteOFTResponse?.[2].amountReceivedLD)) {

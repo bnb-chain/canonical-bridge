@@ -32,7 +32,10 @@ export function TransactionSubmittedModal(
             window.open(`${EXPLORER_URL[chosenBridge]}${hash}`);
           } else if (chosenBridge === 'deBridge') {
             window.open(`${EXPLORER_URL[chosenBridge]}${address}`);
-          } else if (chosenBridge === 'stargate' && chain?.blockExplorers) {
+          } else if (
+            (chosenBridge === 'stargate' || chosenBridge === 'layerZero') &&
+            chain?.blockExplorers
+          ) {
             window.open(`${chain?.blockExplorers.default.url}//tx/${hash}`);
           }
         }

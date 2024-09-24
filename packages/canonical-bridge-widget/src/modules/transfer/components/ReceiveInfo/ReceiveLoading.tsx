@@ -9,8 +9,8 @@ export const ReceiveLoading = () => {
         <Skeleton height={'24px'} width={'160px'} />
         <Skeleton height={'24px'} width={'80px'} />
       </Flex>
-      <Skeleton height={'12px'} width={'100%'} />
-      <Skeleton height={'12px'} width={'100%'} />
+      <Skeleton height={'12px'} maxW={'333px'} width={'100%'} />
+      <Skeleton height={'12px'} maxW={'371px'} width={'100%'} />
     </Flex>
   ) : (
     <Flex flexDir={'row'} alignItems={'flex-start'} justifyContent={'space-between'} gap={'23px'}>

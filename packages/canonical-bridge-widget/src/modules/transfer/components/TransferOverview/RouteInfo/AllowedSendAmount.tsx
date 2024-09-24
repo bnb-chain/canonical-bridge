@@ -26,11 +26,13 @@ export const AllowedSendAmount = ({
       : null;
   }, [selectedToken, allowedSendAmount]);
 
-  return allowedSendAmt ? (
+  return allowedSendAmt && isError ? (
     <Flex
       flexDir={'row'}
       alignItems={'center'}
-      color={!isError ? theme.colors[colorMode].text.tertiary : theme.colors[colorMode].text.danger}
+      color={
+        !isError ? theme.colors[colorMode].text.tertiary : theme.colors[colorMode].route.warning
+      }
       lineHeight={'16px'}
       display={'inline-block'}
       {...otherProps}

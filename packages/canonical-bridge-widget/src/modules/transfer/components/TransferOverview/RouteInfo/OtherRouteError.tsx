@@ -17,7 +17,7 @@ export const OtherRouteError = ({ bridgeType }: OtherRouteErrorProps) => {
     <Box
       position={'static'}
       zIndex={2}
-      color={theme.colors[colorMode].text.danger}
+      color={theme.colors[colorMode].route.warning}
       lineHeight={'16px'}
     >
       <InfoCircleIcon display={'inline'} w={'16px'} h={'16px'} />

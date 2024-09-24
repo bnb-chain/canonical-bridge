@@ -1,4 +1,4 @@
-import { Button, ButtonProps, Flex, useIntl } from '@bnb-chain/space';
+import { Button, ButtonProps, Flex, useColorMode, useIntl, useTheme } from '@bnb-chain/space';
 import { useCallback, useState } from 'react';
 import { useAccount, useBalance, usePublicClient, useWalletClient } from 'wagmi';
 import { formatUnits, parseUnits } from 'viem';
@@ -219,10 +219,20 @@ export function TransferButton({
 export function StyledTransferButton(props: ButtonProps) {
   const { ...restProps } = props;
   const { formatMessage } = useIntl();
+  const theme = useTheme();
+  const { colorMode } = useColorMode();
 
   return (
     <Flex flexDir="column" w={'100%'}>
-      <Button size={'lg'} h={'56px'} w="100%" {...restProps}>
+      <Button
+        bg={theme.colors[colorMode].button.brand.default}
+        size={'lg'}
+        fontWeight={500}
+        h={'56px'}
+        w="100%"
+        _hover={{ bg: theme.colors[colorMode].button.brand.hover }}
+        {...restProps}
+      >
         {formatMessage({ id: 'transfer.button.confirm' })}
       </Button>
     </Flex>

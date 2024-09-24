@@ -65,7 +65,7 @@ export const useGetCBridgeFees = () => {
           sendValue,
           selectedToken?.cBridge?.raw?.token?.decimal ?? (18 as number),
         );
-        if (!balance || balance < amount) {
+        if (!balance || Number(balance) < Number(amount)) {
           return;
         }
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
