@@ -40,7 +40,7 @@ export const useGetCBridgeFees = () => {
     if (!sendValue || !selectedToken || !toTokenInfo) {
       return;
     }
-    if (cBridgeAllowedAmt?.min && cBridgeAllowedAmt?.max) {
+    if (!!Number(cBridgeAllowedAmt?.min) && !!Number(cBridgeAllowedAmt?.max)) {
       if (Number(sendValue) < Number(cBridgeAllowedAmt.min)) {
         setIsAllowSendError(true);
       } else if (Number(sendValue) > Number(cBridgeAllowedAmt.max)) {
