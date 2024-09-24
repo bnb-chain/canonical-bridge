@@ -76,17 +76,17 @@ export const CBridgeOption = () => {
       });
     }
     if (baseFee) {
-      feeContent += (!!feeContent ? ` + ` : '') + `${baseFee}`;
+      feeContent += (!!feeContent ? ` + ` : '') + `${baseFee.shorten}`;
       feeBreakdown.push({
         label: formatMessage({ id: 'route.option.info.base-fee' }),
-        value: baseFee,
+        value: baseFee.formatted,
       });
     }
     if (protocolFee) {
-      feeContent += (!!feeContent ? ` + ` : '') + `${protocolFee}`;
+      feeContent += (!!feeContent ? ` + ` : '') + `${protocolFee.shorten}`;
       feeBreakdown.push({
         label: formatMessage({ id: 'route.option.info.protocol-fee' }),
-        value: protocolFee,
+        value: protocolFee.formatted,
       });
     }
     return { summary: feeContent ? feeContent : '--', breakdown: feeBreakdown };

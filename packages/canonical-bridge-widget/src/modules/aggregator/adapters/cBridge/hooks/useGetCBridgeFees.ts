@@ -2,7 +2,6 @@ import { useEffect, useMemo, useState } from 'react';
 import { formatUnits, parseUnits } from 'viem';
 import { usePublicClient } from 'wagmi';
 
-import { formatNumber } from '@/core/utils/number';
 import { useAppSelector } from '@/modules/store/StoreProvider';
 import { useToTokenInfo } from '@/modules/transfer/hooks/useToTokenInfo';
 import { useDebounce } from '@/core/hooks/useDebounce';
@@ -11,6 +10,8 @@ import { useGetAllowance } from '@/core/contract/hooks/useGetAllowance';
 import { useCBridgeSendMaxMin } from '@/modules/aggregator/adapters/cBridge/hooks/useCBridgeSendMaxMin';
 import { useCBridgeTransferParams } from '@/modules/aggregator/adapters/cBridge/hooks/useCBridgeTransferParams';
 import { useGetTokenBalance } from '@/core/contract/hooks/useGetTokenBalance';
+import { formatFeeAmount } from '@/core/utils/string';
+import { formatNumber } from '@/core/utils/number';
 
 export const useGetCBridgeFees = () => {
   const { toTokenInfo, getToDecimals } = useToTokenInfo();
@@ -99,12 +100,17 @@ export const useGetCBridgeFees = () => {
       toTokenInfo &&
       Number(sendValue) > 0 &&
       Number(estimatedAmount?.['cBridge']?.base_fee) > 0
-      ? `${formatNumber(
-          Number(
+      ? {
+          shorten: `${formatFeeAmount(
             formatUnits(estimatedAmount?.['cBridge']?.base_fee, getToDecimals().cBridge || 18),
-          ),
-          8,
-        )} ${toTokenInfo?.symbol}`
+          )} ${toTokenInfo?.symbol}`,
+          formatted: `${formatNumber(
+            Number(
+              formatUnits(estimatedAmount?.['cBridge']?.base_fee, getToDecimals().cBridge || 18),
+            ),
+            8,
+          )} ${toTokenInfo?.symbol}`,
+        }
       : null;
   }, [estimatedAmount, toTokenInfo, sendValue, getToDecimals]);
 
@@ -112,9 +118,17 @@ export const useGetCBridgeFees = () => {
     return estimatedAmount?.['cBridge'] &&
       toTokenInfo &&
       Number(estimatedAmount?.['cBridge']?.perc_fee) > 0
-      ? `${formatUnits(estimatedAmount?.['cBridge']?.perc_fee, getToDecimals().cBridge || 18)} ${
-          toTokenInfo?.symbol
-        }`
+      ? {
+          shorten: `${formatFeeAmount(
+            formatUnits(estimatedAmount?.['cBridge']?.perc_fee, getToDecimals().cBridge || 18),
+          )} ${toTokenInfo?.symbol}`,
+          formatted: `${formatNumber(
+            Number(
+              formatUnits(estimatedAmount?.['cBridge']?.perc_fee, getToDecimals().cBridge || 18),
+            ),
+            8,
+          )} ${toTokenInfo?.symbol}`,
+        }
       : null;
   }, [estimatedAmount, toTokenInfo, getToDecimals]);
 

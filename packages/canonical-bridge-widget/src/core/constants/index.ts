@@ -32,3 +32,5 @@ export const TIME = {
   HOUR: 1000 * 60 * 60,
   DAY: 1000 * 60 * 60 * 24,
 };
+
+export const MIN_FEE = 0.0001;

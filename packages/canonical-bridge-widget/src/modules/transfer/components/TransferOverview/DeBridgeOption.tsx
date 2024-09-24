@@ -52,35 +52,32 @@ export const DeBridgeOption = ({}: DeBridgeOptionProps) => {
     let feeContent = '';
     const feeBreakdown = [];
     if (gasInfo?.gas && gasInfo?.gasPrice) {
-      const gasFee = `${formatNumber(
-        Number(formatUnits(gasInfo.gas * gasInfo.gasPrice, 18)),
-        8,
-      )} ${nativeToken}`;
-      feeContent += gasFee;
+      const gasFee = `${formatUnits(gasInfo.gas * gasInfo.gasPrice, 18)}`;
+      feeContent += `${formatNumber(Number(gasFee), 4)} ${nativeToken}`;
       feeBreakdown.push({
         label: formatMessage({ id: 'route.option.info.gas-fee' }),
-        value: gasFee,
+        value: `${formatNumber(Number(gasFee), 8)} ${nativeToken}`,
       });
     }
     if (marketMakerFee) {
-      feeContent += (!!feeContent ? ` + ` : '') + `${marketMakerFee}`;
+      feeContent += (!!feeContent ? ` + ` : '') + `${marketMakerFee.shorten}`;
       feeBreakdown.push({
         label: formatMessage({ id: 'route.option.info.market-maker-fee' }),
-        value: marketMakerFee,
+        value: marketMakerFee.formatted,
       });
     }
     if (debridgeFee) {
-      feeContent += (!!feeContent ? ` + ` : '') + `${debridgeFee}`;
+      feeContent += (!!feeContent ? ` + ` : '') + `${debridgeFee.shorten}`;
       feeBreakdown.push({
         label: formatMessage({ id: 'route.option.info.debridge-fee' }),
-        value: debridgeFee,
+        value: debridgeFee.formatted,
       });
     }
     if (protocolFee) {
-      feeContent += (!!feeContent ? ` + ` : '') + `${protocolFee}`;
+      feeContent += (!!feeContent ? ` + ` : '') + `${protocolFee.shorten}`;
       feeBreakdown.push({
         label: formatMessage({ id: 'route.option.info.protocol-fee' }),
-        value: protocolFee,
+        value: protocolFee.formatted,
       });
     }
     return { summary: feeContent ? feeContent : '--', breakdown: feeBreakdown };
