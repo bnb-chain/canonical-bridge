@@ -11,6 +11,7 @@ import {
 import { SelectButton } from '@/modules/transfer/components/SelectButton';
 import { useAppSelector } from '@/modules/store/StoreProvider';
 import { DestinationNetworkModal } from '@/modules/transfer/components/SelectModal/DestinationNetworkModal';
+import { reportEvent } from '@/core/utils/gtm';
 
 export function ToSection() {
   const { isOpen, onClose, onOpen } = useDisclosure();
@@ -35,7 +36,16 @@ export function ToSection() {
         </Flex>
       ) : null}
 
-      <SelectButton isActive={isOpen} chain={toChain} onClick={onOpen} />
+      <SelectButton
+        isActive={isOpen}
+        chain={toChain}
+        onClick={() => {
+          onOpen();
+          reportEvent({
+            id: 'click_bridge_toDropdown',
+          });
+        }}
+      />
       <DestinationNetworkModal isOpen={isOpen} onClose={onClose} />
     </Flex>
   );

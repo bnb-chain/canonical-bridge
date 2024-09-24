@@ -11,6 +11,7 @@ import {
 import { SelectButton } from '@/modules/transfer/components/SelectButton';
 import { useAppSelector } from '@/modules/store/StoreProvider';
 import { SourceNetworkModal } from '@/modules/transfer/components/SelectModal/SourceNetworkModal';
+import { reportEvent } from '@/core/utils/gtm';
 
 export function FromSection() {
   const { colorMode } = useColorMode();
@@ -36,7 +37,16 @@ export function FromSection() {
         </Flex>
       ) : null}
 
-      <SelectButton isActive={isOpen} chain={fromChain} onClick={onOpen} />
+      <SelectButton
+        isActive={isOpen}
+        chain={fromChain}
+        onClick={() => {
+          onOpen();
+          reportEvent({
+            id: 'click_bridge_fromDropdown',
+          });
+        }}
+      />
       <SourceNetworkModal isOpen={isOpen} onClose={onClose} />
     </Flex>
   );

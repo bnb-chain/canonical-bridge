@@ -7,6 +7,7 @@ import { useAppSelector } from '@/modules/store/StoreProvider';
 import { useGetAllowance } from '@/core/contract/hooks/useGetAllowance';
 import { useCBridgeTransferParams } from '@/modules/aggregator/adapters/cBridge/hooks/useCBridgeTransferParams';
 import { useBridgeSDK } from '@/core/hooks/useBridgeSDK';
+import { reportEvent } from '@/core/utils/gtm';
 
 export function TransferButton({
   onOpenSubmittedModal,
@@ -40,6 +41,7 @@ export function TransferButton({
   const isTransferable = useAppSelector((state) => state.transfer.isTransferable);
   const toToken = useAppSelector((state) => state.transfer.toToken);
   const fromChain = useAppSelector((state) => state.transfer.fromChain);
+  const toChain = useAppSelector((state) => state.transfer.toChain);
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const publicClient = usePublicClient({ chainId: fromChain?.id }) as any;
@@ -81,13 +83,30 @@ export function TransferButton({
           selectedToken?.decimals,
         );
         onOpenApproveModal();
+
+        reportEvent({
+          id: 'click_bridge_goal',
+          params: {
+            item_name: 'Approval',
+          },
+        });
+
         return;
       }
       onOpenConfirmingModal();
+
+      reportEvent({
+        id: 'click_bridge_goal',
+        params: {
+          item_name: 'Send',
+        },
+      });
+
       if (transferActionInfo.bridgeType === 'cBridge' && cBridgeArgs && fromChain) {
         try {
           const cBridgeHash = await bridgeSDK.cBridge.sendToken({
-            walletClient,
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            walletClient: walletClient as any,
             publicClient,
             bridgeAddress: transferActionInfo.bridgeAddress as string,
             fromChainId: fromChain?.id,
@@ -100,6 +119,16 @@ export function TransferButton({
             hash: cBridgeHash,
           });
           if (cBridgeHash) {
+            reportEvent({
+              id: 'transaction_bridge_success',
+              params: {
+                item_category: fromChain?.name,
+                item_category2: toChain?.name,
+                token: selectedToken.symbol,
+                value: sendValue,
+                item_variant: 'cBridge',
+              },
+            });
             onCloseConfirmingModal();
             setHash(cBridgeHash);
             setChosenBridge('cBridge');
@@ -118,7 +147,8 @@ export function TransferButton({
             throw new Error('Could not cover deBridge Protocol Fee. Insufficient balance.');
           }
           const deBridgeHash = await bridgeSDK.deBridge.sendToken({
-            walletClient,
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            walletClient: walletClient as any,
             bridgeAddress: transferActionInfo.bridgeAddress as string,
             data: transferActionInfo.data as `0x${string}`,
             amount: BigInt(transferActionInfo.value),
@@ -128,6 +158,16 @@ export function TransferButton({
             hash: deBridgeHash,
           });
           if (deBridgeHash) {
+            reportEvent({
+              id: 'transaction_bridge_success',
+              params: {
+                item_category: fromChain?.name,
+                item_category2: toChain?.name,
+                token: selectedToken.symbol,
+                value: sendValue,
+                item_variant: 'deBridge',
+              },
+            });
             onCloseConfirmingModal();
             setChosenBridge('deBridge');
             setHash(deBridgeHash);
@@ -140,7 +180,8 @@ export function TransferButton({
         }
       } else if (transferActionInfo.bridgeType === 'stargate') {
         const stargateHash = await bridgeSDK.stargate.sendToken({
-          walletClient,
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          walletClient: walletClient as any,
           publicClient,
           bridgeAddress: transferActionInfo.bridgeAddress as `0x${string}`,
           tokenAddress: selectedToken.address as `0x${string}`,
@@ -149,6 +190,16 @@ export function TransferButton({
           amount: parseUnits(sendValue, selectedToken.decimals),
         });
         if (stargateHash) {
+          reportEvent({
+            id: 'transaction_bridge_success',
+            params: {
+              item_category: fromChain?.name,
+              item_category2: toChain?.name,
+              token: selectedToken.symbol,
+              value: sendValue,
+              item_variant: 'stargate',
+            },
+          });
           onCloseConfirmingModal();
           setChosenBridge('stargate');
           setHash(stargateHash);
@@ -160,10 +211,21 @@ export function TransferButton({
           dstEndpoint: toToken?.layerZero?.raw?.endpointID as number,
           userAddress: address,
           amount: parseUnits(sendValue, selectedToken.decimals),
-          walletClient,
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          walletClient: walletClient as any,
           publicClient,
         });
         if (layerZeroHash) {
+          reportEvent({
+            id: 'transaction_bridge_success',
+            params: {
+              item_category: fromChain?.name,
+              item_category2: toChain?.name,
+              token: selectedToken.symbol,
+              value: sendValue,
+              item_variant: 'layerZero',
+            },
+          });
           onCloseConfirmingModal();
           setChosenBridge('layerZero');
           setHash(layerZeroHash);
@@ -173,6 +235,17 @@ export function TransferButton({
     } catch (e: any) {
       // eslint-disable-next-line no-console
       console.error(e, e.message);
+      reportEvent({
+        id: 'transaction_bridge_fail',
+        params: {
+          item_category: fromChain?.name,
+          item_category2: toChain?.name,
+          token: selectedToken.symbol,
+          value: sendValue,
+          item_variant: transferActionInfo?.bridgeType,
+          message: JSON.stringify(e),
+        },
+      });
       onOpenFailedModal();
     } finally {
       onCloseConfirmingModal();
@@ -199,6 +272,7 @@ export function TransferButton({
     balance,
     toToken,
     fromChain,
+    toChain,
   ]);
 
   return (

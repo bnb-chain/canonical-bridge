@@ -1,4 +1,5 @@
 import { Box, Flex, Input, useColorMode, useDisclosure, useIntl, useTheme } from '@bnb-chain/space';
+import { useRef } from 'react';
 
 import { useAppDispatch, useAppSelector } from '@/modules/store/StoreProvider';
 import { setSendValue } from '@/modules/transfer/action';
@@ -8,6 +9,7 @@ import { InputValidationMessage } from '@/modules/transfer/components/SendInput/
 import { ChooseTokenModal } from '@/modules/transfer/components/SelectModal/ChooseTokenModal';
 import { useDebounce } from '@/core/hooks/useDebounce';
 import { DEBOUNCE_DELAY } from '@/core/constants';
+import { reportEvent } from '@/core/utils/gtm';
 
 const handleKeyPress = (e: React.KeyboardEvent) => {
   // only allow number and decimal
@@ -37,11 +39,13 @@ export const SendInput: React.FC = () => {
   const { colorMode } = useColorMode();
   const dispatch = useAppDispatch();
   const { formatMessage } = useIntl();
+  const timerRef = useRef<any>();
 
   const sendValue = useAppSelector((state) => state.transfer.sendValue);
   const theme = useTheme();
   const selectedToken = useAppSelector((state) => state.transfer.selectedToken);
   const isGlobalFeeLoading = useAppSelector((state) => state.transfer.isGlobalFeeLoading);
+  const fromChain = useAppSelector((state) => state.transfer.fromChain);
   const error = useAppSelector((state) => state.transfer.error);
 
   const { isOpen, onClose, onOpen } = useDisclosure();
@@ -68,11 +72,20 @@ export const SendInput: React.FC = () => {
         return args[1] || args[2] ? '0.' + (args[1] || args[2]) : '';
       });
     }
-    if (!isNaN(Number(value))) {
-      dispatch(setSendValue(value));
-    } else {
-      dispatch(setSendValue('0'));
-    }
+    const finalValue = !isNaN(Number(value)) ? value : '0';
+    dispatch(setSendValue(finalValue));
+
+    clearTimeout(timerRef.current);
+    timerRef.current = setTimeout(() => {
+      reportEvent({
+        id: 'input_bridge_amount',
+        params: {
+          item_name: fromChain?.name,
+          token: selectedToken?.symbol,
+          value: finalValue,
+        },
+      });
+    }, DEBOUNCE_DELAY);
   };
 
   return (

@@ -10,6 +10,7 @@ import { ListItem } from '@/modules/transfer/components/SelectModal/components/L
 import { useSelection } from '@/modules/aggregator/hooks/useSelection';
 import { ExLinkIcon } from '@/core/components/icons/ExLinkIcon';
 import { openLink } from '@/core/utils/common';
+import { reportEvent } from '@/core/utils/gtm';
 
 interface DestinationNetworkModalProps {
   isOpen: boolean;
@@ -61,6 +62,12 @@ export function DestinationNetworkModal(props: DestinationNetworkModalProps) {
                 openLink(item.externalBridgeUrl);
               } else {
                 selectToChain(item);
+                reportEvent({
+                  id: 'select_bridge_toDropdown',
+                  params: {
+                    item_name: item.name,
+                  },
+                });
                 onClose();
               }
             }}
