@@ -38,6 +38,7 @@ const config: CanonicalBridgeConfig = {
   transferConfigEndpoint: TRANSFER_CONFIG_ENDPOINT,
   appName: 'bnb-chain-bridge',
   enableGTM: true,
+  bridgeTitle: 'BNB Chain Cross-Chain Bridge',
 };
 
 export default function App() {

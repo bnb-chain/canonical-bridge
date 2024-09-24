@@ -26,6 +26,7 @@ export interface CanonicalBridgeConfig {
   deBridgeAccessToken?: string;
   assetsPrefix?: string;
   transferConfigEndpoint: string;
+  bridgeTitle?: string;
 }
 
 interface CanonicalBridgeContextProps extends CanonicalBridgeConfig {

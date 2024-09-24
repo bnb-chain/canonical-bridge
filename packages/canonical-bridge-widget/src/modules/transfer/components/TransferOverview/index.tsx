@@ -26,15 +26,12 @@ import { LayerZeroOption } from '@/modules/transfer/components/TransferOverview/
 import { useGetReceiveAmount } from '@/modules/transfer/hooks/useGetReceiveAmount';
 import { RefreshingButton } from '@/modules/transfer/components/Button/RefreshingButton';
 import { RouteSkeleton } from '@/modules/transfer/components/TransferOverview/RouteInfo/RouteSkeleton';
-import { useBridgeConfig } from '@/CanonicalBridgeProvider';
 
-export function TransferOverview() {
+export function TransferOverview({ routeContentBottom }: { routeContentBottom?: ReactNode }) {
   const dispatch = useAppDispatch();
   const { formatMessage } = useIntl();
   const { colorMode } = useColorMode();
   const theme = useTheme();
-
-  const { routeContentBottom } = useBridgeConfig();
 
   const { loadingBridgeFees } = useLoadingBridgeFees();
   const { getSortedReceiveAmount } = useGetReceiveAmount();
@@ -127,6 +124,7 @@ export function TransferOverview() {
                   px={['0', '0', '0', '24px']}
                   color={theme.colors[colorMode].text.route.title}
                   fontSize={'14px'}
+                  fontWeight={500}
                   h={'32px'}
                   sx={{
                     svg: {

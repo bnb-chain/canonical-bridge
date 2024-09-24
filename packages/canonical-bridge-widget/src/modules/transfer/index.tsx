@@ -27,6 +27,7 @@ export function TransferWidget() {
   const { routeContentBottom } = useBridgeConfig();
 
   const { isOpen, onClose, onOpen } = useDisclosure();
+  const { bridgeTitle } = useBridgeConfig();
 
   return (
     <Flex
@@ -50,19 +51,20 @@ export function TransferWidget() {
         gap={'24px'}
         position="relative"
       >
-        {!isBase && (
+        {bridgeTitle && (
           <Box
             as="h1"
-            mb={'8px'}
-            fontSize={'20px'}
+            display={['none', 'none', 'block']}
+            fontSize={'24px'}
             fontWeight={500}
             textAlign={'center'}
             borderBottom={`1px solid ${theme.colors[colorMode].border[2]}`}
             pb={'24px'}
           >
-            {formatMessage({ id: 'main.title' })}
+            {bridgeTitle}
           </Box>
         )}
+
         <NetWorkSection />
         <SendInput />
         <ReceiveInfo onOpen={onOpen} />
@@ -72,7 +74,7 @@ export function TransferWidget() {
         {isBase ? routeContentBottom : null}
       </Flex>
       {!isBase ? (
-        <TransferOverview />
+        <TransferOverview routeContentBottom={routeContentBottom} />
       ) : (
         <RoutesModal
           title={formatMessage({ id: 'route.title.select.routes' })}
