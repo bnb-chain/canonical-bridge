@@ -2,7 +2,6 @@ export const en = {
   'seo.title': 'BNB Chain Bridge | Cross-Chain Transfer',
   'seo.description':
     'Bridge and transfer your assets between networks (Ethereum, Polygon and etc.) and BNB Chain blockchain ecosystem.',
-  'main.title': 'BNB Chain Cross-Chain Bridge',
   'main.address.link.text': 'Token address:',
   'header.network-status.wrong': 'Wrong network',
 
@@ -17,6 +16,7 @@ export const en = {
   'to.section.account.placeholder': 'Enter Destination Address',
   'to.section.account.invalid': 'Invalid address.',
 
+  'you.send.title': 'You Send',
   'you.receive.title': 'You Receive',
   'route.button.change-routes': 'Change Routes',
   'route.title.select.routes': 'Select Bridge Routes',

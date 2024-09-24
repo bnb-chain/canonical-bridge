@@ -1,4 +1,4 @@
-import { Box, Flex, Input, useColorMode, useDisclosure, useTheme } from '@bnb-chain/space';
+import { Box, Flex, Input, useColorMode, useDisclosure, useIntl, useTheme } from '@bnb-chain/space';
 
 import { useAppDispatch, useAppSelector } from '@/modules/store/StoreProvider';
 import { setSendValue } from '@/modules/transfer/action';
@@ -36,6 +36,7 @@ const handleKeyPress = (e: React.KeyboardEvent) => {
 export const SendInput: React.FC = () => {
   const { colorMode } = useColorMode();
   const dispatch = useAppDispatch();
+  const { formatMessage } = useIntl();
 
   const sendValue = useAppSelector((state) => state.transfer.sendValue);
   const theme = useTheme();
@@ -78,7 +79,7 @@ export const SendInput: React.FC = () => {
     <Flex flexDir={'column'} gap={'12px'} position={'relative'}>
       <Flex flexDir={'row'} justifyContent={'space-between'}>
         <Box color={theme.colors[colorMode].input.title} fontSize={'14px'} fontWeight={400}>
-          You Send
+          {formatMessage({ id: 'you.send.title' })}
         </Box>
         <MaxLink />
       </Flex>

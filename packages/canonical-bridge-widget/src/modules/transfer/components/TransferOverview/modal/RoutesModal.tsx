@@ -50,7 +50,7 @@ export function RoutesModal(props: RoutesModalProps) {
             }}
           />
         </Flex>
-        <Flex flexDir="column" p={['20px', '20px', '20px', '24px 20px 16px']} flex={1}>
+        <Flex flexDir="column" p={['20px', '20px', '24px 20px 16px']} flex={1}>
           <Flex flexDir="column" mt={['0', '0', '0', '24px']} flex={1} overflowY="auto">
             {children}
           </Flex>

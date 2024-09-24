@@ -1,11 +1,13 @@
 import { Box, Flex, useColorMode, useIntl, useTheme } from '@bnb-chain/space';
 import { formatUnits } from 'viem';
 import { useAccount } from 'wagmi';
+import { useEffect, useState } from 'react';
 
 import { useAppDispatch, useAppSelector } from '@/modules/store/StoreProvider';
 import { setSendValue } from '@/modules/transfer/action';
 import { formatNumber } from '@/core/utils/number';
 import { useLoadingTokenBalance } from '@/modules/transfer/hooks/useLoadingTokenBalance';
+import { useTokenPrice } from '@/modules/aggregator/components/TokenPricesProvider';
 
 export const MaxLink: React.FC = () => {
   const theme = useTheme();
@@ -17,12 +19,24 @@ export const MaxLink: React.FC = () => {
   const { formatMessage } = useIntl();
   const { balance } = useLoadingTokenBalance();
   const { chain } = useAccount();
+  const { getTokenPrice } = useTokenPrice();
+  const [tokenPrice, setTokenPrice] = useState<number | undefined>(undefined);
 
   const setMaxAmount = () => {
     if (!!balance && selectedToken) {
       dispatch(setSendValue(formatUnits(balance, selectedToken?.decimals || 0)));
     }
   };
+
+  useEffect(() => {
+    if (selectedToken) {
+      const price = getTokenPrice(selectedToken);
+      setTokenPrice(price);
+    }
+    return () => {
+      setTokenPrice(undefined);
+    };
+  }, [getTokenPrice, selectedToken]);
 
   return (
     <Flex alignItems={'center'}>
@@ -43,9 +57,12 @@ export const MaxLink: React.FC = () => {
         >
           {formatMessage({ id: 'from.section.balance.button.max' })}{' '}
           {formatNumber(Number(formatUnits(balance, selectedToken?.decimals || 0)), 8)}{' '}
-          {/* TODO: Token dollars */}
           {selectedToken?.symbol}
-          {/* ({'$0xxxxx.xx'}) */}
+          {tokenPrice &&
+            ` ($${formatNumber(
+              tokenPrice * Number(formatUnits(balance, selectedToken?.decimals || 0)),
+              2,
+            )})`}
         </Box>
       ) : null}
     </Flex>
