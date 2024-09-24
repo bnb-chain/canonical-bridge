@@ -26,7 +26,7 @@ export function ChooseTokenModal(props: ChooseTokenModalProps) {
   const { formatMessage } = useIntl();
   const theme = useTheme();
   const { colorMode } = useColorMode();
-  const { isConnected, chainId } = useAccount();
+  const { isConnected } = useAccount();
 
   const fromChain = useAppSelector((state) => state.transfer.fromChain);
   const toChain = useAppSelector((state) => state.transfer.toChain);
@@ -52,7 +52,7 @@ export function ChooseTokenModal(props: ChooseTokenModalProps) {
 
   const { isLoading, data } = useTokenList(result);
   const activeIndex = data.findIndex((item) => isSameAddress(selectedToken?.address, item.address));
-  const showBalance = isConnected && chainId === fromChain?.id && !isLoading;
+  const showBalance = isConnected && !isLoading;
 
   return (
     <BaseModal
