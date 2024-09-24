@@ -1,7 +1,9 @@
 import transfer from '@/modules/transfer/reducer';
+import aggregator from '@/modules/aggregator/reducer';
 
 const reducers = {
   transfer,
+  aggregator,
 } as const;
 
 type Reducers = typeof reducers;
