@@ -1,3 +1,6 @@
+import { MIN_FEE } from '@/core/constants';
+import { formatNumber } from '@/core/utils/number';
+
 export function truncateStr(str: string, headLen = 6, tailLen = 6) {
   if (!str) {
     return '';
@@ -36,4 +39,12 @@ export function formatTokenUrl(pattern?: string, address?: string) {
 export function formatTokenIcon(assetsPrefix = '', tokenSymbol: string) {
   const iconSymbol = tokenSymbol.replace(/[+]$/, '_ICON')?.toUpperCase();
   return `${assetsPrefix}/images/tokens/${iconSymbol}.png`;
+}
+
+export function formatFeeAmount(amount: string | number) {
+  if (Number(amount) < MIN_FEE) {
+    return `< ${MIN_FEE}`;
+  } else {
+    return formatNumber(Number(amount), 4);
+  }
 }

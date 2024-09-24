@@ -13,6 +13,7 @@ import { FeesInfo } from '@/modules/transfer/components/TransferOverview/RouteIn
 import { RouteMask } from '@/modules/transfer/components/TransferOverview/RouteInfo/RouteMask';
 import { OtherRouteError } from '@/modules/transfer/components/TransferOverview/RouteInfo/OtherRouteError';
 import { RouteName } from '@/modules/transfer/components/TransferOverview/RouteInfo/RouteName';
+import { formatFeeAmount } from '@/core/utils/string';
 
 export const LayerZeroOption = () => {
   const dispatch = useAppDispatch();
@@ -34,22 +35,19 @@ export const LayerZeroOption = () => {
     let feeContent = '';
     const feeBreakdown = [];
     if (gasInfo?.gas && gasInfo?.gasPrice) {
-      const gasFee = `${formatNumber(
-        Number(formatUnits(gasInfo.gas * gasInfo.gasPrice, 18)),
-        8,
-      )} ${nativeToken}`;
-      feeContent += gasFee;
+      const gas = formatUnits(gasInfo.gas * gasInfo.gasPrice, 18);
+      feeContent += `${formatFeeAmount(Number(gas))} ${nativeToken}`;
       feeBreakdown.push({
         label: formatMessage({ id: 'route.option.info.gas-fee' }),
-        value: gasFee,
+        value: `${formatNumber(Number(gas), 8)} ${nativeToken}`,
       });
     }
     if (nativeFee) {
-      const formattedNativeFee = formatNumber(Number(formatUnits(nativeFee, 18)), 8);
-      feeContent += (!!feeContent ? ` + ` : '') + `${formattedNativeFee} ${nativeToken}`;
+      const fee = formatUnits(nativeFee, 18);
+      feeContent += (!!feeContent ? ` + ` : '') + `${formatFeeAmount(fee)} ${nativeToken}`;
       feeBreakdown.push({
         label: formatMessage({ id: 'route.option.info.native-fee' }),
-        value: `${formattedNativeFee} ${nativeToken}`,
+        value: `${formatNumber(Number(fee), 8)} ${nativeToken}`,
       });
     }
     return { summary: feeContent ? feeContent : '--', breakdown: feeBreakdown };

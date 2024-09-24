@@ -29,6 +29,7 @@ import {
   setTransferActionInfo,
 } from '@/modules/transfer/action';
 import { useLoadingBridgeFees } from '@/modules/transfer/hooks/useLoadingBridgeFees';
+import { formatFeeAmount } from '@/core/utils/string';
 
 interface ReceiveInfoProps {
   onOpen: () => void;
@@ -113,64 +114,67 @@ export const ReceiveInfo = ({ onOpen }: ReceiveInfoProps) => {
     // Other fees
     if (bridgeType === 'cBridge') {
       if (CBBaseFee) {
-        feeContent += (!!feeContent ? ` + ` : '') + `${CBBaseFee}`;
+        feeContent += (!!feeContent ? ` + ` : '') + `${CBBaseFee.shorten}`;
         feeBreakdown.push({
           label: formatMessage({ id: 'route.option.info.base-fee' }),
-          value: CBBaseFee,
+          value: CBBaseFee.formatted ?? '',
         });
       }
       if (CBProtocolFee) {
-        feeContent += (!!feeContent ? ` + ` : '') + `${CBProtocolFee}`;
+        feeContent += (!!feeContent ? ` + ` : '') + `${CBProtocolFee.shorten}`;
         feeBreakdown.push({
           label: formatMessage({ id: 'route.option.info.protocol-fee' }),
-          value: CBProtocolFee,
+          value: CBProtocolFee.formatted ?? '',
         });
       }
     } else if (bridgeType === 'deBridge') {
       if (DBMarketMakerFee) {
-        feeContent += (!!feeContent ? ` + ` : '') + `${DBMarketMakerFee}`;
+        feeContent += (!!feeContent ? ` + ` : '') + `${DBMarketMakerFee.shorten}`;
         feeBreakdown.push({
           label: formatMessage({ id: 'route.option.info.market-maker-fee' }),
-          value: DBMarketMakerFee,
+          value: DBMarketMakerFee.formatted ?? '',
         });
       }
       if (debridgeFee) {
-        feeContent += (!!feeContent ? ` + ` : '') + `${debridgeFee}`;
+        feeContent += (!!feeContent ? ` + ` : '') + `${debridgeFee.shorten}`;
         feeBreakdown.push({
           label: formatMessage({ id: 'route.option.info.debridge-fee' }),
-          value: debridgeFee,
+          value: debridgeFee.formatted ?? '',
         });
       }
       if (DBProtocolFee) {
-        feeContent += (!!feeContent ? ` + ` : '') + `${DBProtocolFee}`;
+        feeContent += (!!feeContent ? ` + ` : '') + `${DBProtocolFee.shorten}`;
         feeBreakdown.push({
           label: formatMessage({ id: 'route.option.info.protocol-fee' }),
-          value: DBProtocolFee,
+          value: DBProtocolFee.formatted ?? '',
         });
       }
     } else if (bridgeType === 'stargate') {
       if (STNativeFee) {
-        const formattedNativeFee = formatNumber(Number(formatUnits(STNativeFee, 18)), 8);
-        feeContent += (!!feeContent ? ` + ` : '') + `${formattedNativeFee} ${nativeToken}`;
+        const fee = formatUnits(STNativeFee, 18);
+        feeContent +=
+          (!!feeContent ? ` + ` : '') +
+          `${formatFeeAmount(formatNumber(Number(fee), 8))} ${nativeToken}`;
         feeBreakdown.push({
           label: formatMessage({ id: 'route.option.info.native-fee' }),
-          value: `${formattedNativeFee} ${nativeToken}`,
+          value: `${formatNumber(Number(fee), 8)} ${nativeToken}`,
         });
       }
       if (STProtocolFee) {
-        feeContent += (!!feeContent ? ` + ` : '') + `${STProtocolFee}`;
+        feeContent += (!!feeContent ? ` + ` : '') + `${STProtocolFee.shorten}`;
         feeBreakdown.push({
           label: formatMessage({ id: 'route.option.info.protocol-fee' }),
-          value: STProtocolFee,
+          value: STProtocolFee.formatted ?? '',
         });
       }
     } else if (bridgeType === 'layerZero') {
       if (LZNativeFee) {
-        const formattedNativeFee = formatNumber(Number(formatUnits(LZNativeFee, 18)), 8);
-        feeContent += (!!feeContent ? ` + ` : '') + `${formattedNativeFee} ${nativeToken}`;
+        const gas = formatUnits(LZNativeFee, 18);
+        feeContent +=
+          (!!feeContent ? ` + ` : '') + `${formatNumber(Number(gas), 4)} ${nativeToken}`;
         feeBreakdown.push({
           label: formatMessage({ id: 'route.option.info.native-fee' }),
-          value: `${formattedNativeFee} ${nativeToken}`,
+          value: `${formatNumber(Number(gas), 8)} ${nativeToken}`,
         });
       }
     }
@@ -241,7 +245,7 @@ export const ReceiveInfo = ({ onOpen }: ReceiveInfoProps) => {
         {debouncedSendValue === sendValue ? (
           receiveAmt && !isGlobalFeeLoading ? (
             <>
-              <RouteName bridgeType={bridgeType} isReceiveSection={true} />
+              {isBase && <RouteName bridgeType={bridgeType} isReceiveSection={true} />}
               {isBase && <RefreshingButton position={'absolute'} right={'16px'} top={'16px'} />}
               <RouteTitle
                 receiveAmt={receiveAmt ? formatNumber(Number(Number(receiveAmt)), 8) : undefined}

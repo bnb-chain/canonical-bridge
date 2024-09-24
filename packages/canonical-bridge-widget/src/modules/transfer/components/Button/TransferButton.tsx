@@ -230,7 +230,10 @@ export function StyledTransferButton(props: ButtonProps) {
         fontWeight={500}
         h={'56px'}
         w="100%"
-        _hover={{ bg: theme.colors[colorMode].button.brand.hover }}
+        _hover={{
+          bg: theme.colors[colorMode].button.brand.hover,
+          _disabled: { bg: theme.colors[colorMode].button.disabled },
+        }}
         {...restProps}
       >
         {formatMessage({ id: 'transfer.button.confirm' })}

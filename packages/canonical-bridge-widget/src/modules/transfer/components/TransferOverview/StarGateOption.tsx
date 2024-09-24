@@ -36,29 +36,26 @@ export const StarGateOption = () => {
     let feeContent = '';
     const feeBreakdown = [];
     if (gasInfo?.gas && gasInfo?.gasPrice) {
-      const gasFee = `${formatNumber(
-        Number(formatUnits(gasInfo.gas * gasInfo.gasPrice, 18)),
-        8,
-      )} ${nativeToken}`;
-      feeContent += gasFee;
+      const gas = formatUnits(gasInfo.gas * gasInfo.gasPrice, 18);
+      feeContent += `${formatNumber(Number(gas), 4)} ${nativeToken}`;
       feeBreakdown.push({
         label: formatMessage({ id: 'route.option.info.gas-fee' }),
-        value: gasFee,
+        value: `${formatNumber(Number(gas), 8)} ${nativeToken}`,
       });
     }
     if (nativeFee) {
-      const formattedNativeFee = formatNumber(Number(formatUnits(nativeFee, 18)), 8);
-      feeContent += (!!feeContent ? ` + ` : '') + `${formattedNativeFee} ${nativeToken}`;
+      const fee = formatUnits(nativeFee, 18);
+      feeContent += (!!feeContent ? ` + ` : '') + `${formatNumber(Number(fee), 4)} ${nativeToken}`;
       feeBreakdown.push({
         label: formatMessage({ id: 'route.option.info.native-fee' }),
-        value: `${formattedNativeFee} ${nativeToken}`,
+        value: `${formatNumber(Number(fee), 8)} ${nativeToken}`,
       });
     }
     if (protocolFee) {
-      feeContent += (!!feeContent ? ` + ` : '') + `${protocolFee}`;
+      feeContent += (!!feeContent ? ` + ` : '') + `${protocolFee.shorten}`;
       feeBreakdown.push({
         label: formatMessage({ id: 'route.option.info.protocol-fee' }),
-        value: protocolFee,
+        value: protocolFee.formatted ?? '',
       });
     }
     return { summary: feeContent ? feeContent : '--', breakdown: feeBreakdown };

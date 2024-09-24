@@ -12,6 +12,7 @@ import { STARGATE_POOL } from '@/modules/aggregator/adapters/stargate/abi/starga
 import { useGetTokenBalance } from '@/core/contract/hooks/useGetTokenBalance';
 import { setRouteError } from '@/modules/transfer/action';
 import { useBridgeSDK } from '@/core/hooks/useBridgeSDK';
+import { formatFeeAmount } from '@/core/utils/string';
 
 export const useGetStargateFees = () => {
   const dispatch = useAppDispatch();
@@ -159,9 +160,21 @@ export const useGetStargateFees = () => {
           )[0]?.feeAmountLD,
         ),
       );
-      return estimatedAmount?.['stargate'] && toTokenInfo && fee
-        ? `${formatUnits(BigInt(fee), getToDecimals().stargate || 18)} ${toTokenInfo?.symbol}`
-        : null;
+      return {
+        shorten:
+          estimatedAmount?.['stargate'] && toTokenInfo && fee
+            ? `${formatFeeAmount(formatUnits(BigInt(fee), getToDecimals().stargate || 18))} ${
+                toTokenInfo?.symbol
+              }`
+            : null,
+        formatted:
+          estimatedAmount?.['stargate'] && toTokenInfo && fee
+            ? `${formatNumber(
+                Number(formatUnits(BigInt(fee), getToDecimals().stargate || 18)),
+                8,
+              )} ${toTokenInfo?.symbol}`
+            : null,
+      };
       // eslint-disable-next-line
     } catch (error: any) {
       // eslint-disable-next-line no-console

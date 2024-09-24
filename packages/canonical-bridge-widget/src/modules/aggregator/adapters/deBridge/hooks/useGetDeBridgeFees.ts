@@ -14,6 +14,7 @@ import { useGetTokenBalance } from '@/core/contract/hooks/useGetTokenBalance';
 import { useAdapter } from '@/modules/aggregator/components/AggregatorProvider';
 import { DeBridgeAdapter } from '@/modules/aggregator/adapters/deBridge/DeBridgeAdapter';
 import { useBridgeSDK } from '@/core/hooks/useBridgeSDK';
+import { formatFeeAmount } from '@/core/utils/string';
 
 export const useGetDeBridgeFees = () => {
   const dispatch = useAppDispatch();
@@ -141,9 +142,14 @@ export const useGetDeBridgeFees = () => {
       response?.estimation.costsDetails?.filter((cost) => cost.type === 'DlnProtocolFee')?.[0]
         ?.payload.feeAmount || null;
     if (srcReserveTokenInfo?.decimals && srcReserveTokenInfo?.symbol) {
-      return `${formatNumber(
-        Number(formatUnits(BigInt(debridgeFee), srcReserveTokenInfo?.decimals)),
-      )} ${srcReserveTokenInfo?.symbol}`;
+      return {
+        shorten: `${formatFeeAmount(
+          formatUnits(BigInt(debridgeFee), srcReserveTokenInfo?.decimals),
+        )} ${srcReserveTokenInfo?.symbol}`,
+        formatted: `${formatNumber(
+          Number(formatUnits(BigInt(debridgeFee), srcReserveTokenInfo?.decimals)),
+        )} ${srcReserveTokenInfo?.symbol}`,
+      };
     } else {
       return null;
     }
@@ -152,22 +158,19 @@ export const useGetDeBridgeFees = () => {
   const marketMakerFee = useMemo(() => {
     if (!estimatedAmount?.deBridge?.estimation) return null;
     const response = estimatedAmount?.deBridge as DeBridgeCreateQuoteResponse;
-    let marketFeeStr = '';
     const estimatedOperatingExpenses = response?.estimation?.costsDetails?.filter(
       (cost) => cost.type === 'EstimatedOperatingExpenses',
     )?.[0];
-
     const srcChainInTokenIn = response?.estimation?.srcChainTokenIn;
     if (srcChainInTokenIn) {
-      marketFeeStr += `${formatNumber(
-        Number(
-          formatUnits(
-            BigInt(srcChainInTokenIn.approximateOperatingExpense),
-            srcChainInTokenIn.decimals,
-          ),
-        ),
-        8,
-      )} ${srcChainInTokenIn?.symbol}`;
+      const fee = formatUnits(
+        BigInt(srcChainInTokenIn.approximateOperatingExpense),
+        srcChainInTokenIn.decimals,
+      );
+      return {
+        shorten: `${formatFeeAmount(fee)} ${srcChainInTokenIn?.symbol}`,
+        formatted: `${formatNumber(Number(fee), 8)} ${srcChainInTokenIn?.symbol}`,
+      };
     } else if (estimatedOperatingExpenses) {
       const { chain, tokenIn } = estimatedOperatingExpenses ?? {};
       const token = deBridgeAdapter.getTokenByAddress({
@@ -176,18 +179,26 @@ export const useGetDeBridgeFees = () => {
       });
 
       if (token) {
-        marketFeeStr += `${formatNumber(
-          Number(formatUnits(BigInt(estimatedOperatingExpenses.payload.feeAmount), token.decimals)),
-          8,
-        )} ${token.symbol}`;
+        const gas = formatUnits(
+          BigInt(estimatedOperatingExpenses.payload.feeAmount),
+          token.decimals,
+        );
+        return {
+          shorten: `${formatFeeAmount(Number(gas))} ${token.symbol}`,
+          formatted: `${formatNumber(Number(gas), 8)} ${token.symbol}`,
+        };
       }
     }
-    return marketFeeStr;
+    return null;
   }, [estimatedAmount?.deBridge, deBridgeAdapter]);
 
   const protocolFee = useMemo(() => {
     if (estimatedAmount?.['deBridge']?.fixFee) {
-      return `${formatUnits(BigInt(estimatedAmount?.['deBridge']?.fixFee), 18)} ${nativeToken}`;
+      const gas = formatUnits(BigInt(estimatedAmount?.['deBridge']?.fixFee), 18);
+      return {
+        shorten: `${formatFeeAmount(gas)} ${nativeToken}`,
+        formatted: `${formatNumber(Number(gas), 8)} ${nativeToken}`,
+      };
     } else {
       return null;
     }
