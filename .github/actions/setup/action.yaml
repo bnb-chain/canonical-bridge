@@ -38,6 +38,9 @@ runs:
         node common/scripts/install-run-rush.js install -t @bnb-chain/canonical-bridge-sdk
         node common/scripts/install-run-rush.js build -t @bnb-chain/canonical-bridge-sdk
 
+        node common/scripts/install-run-rush.js install -t @bnb-chain/canonical-bridge-widget
+        node common/scripts/install-run-rush.js build -t @bnb-chain/canonical-bridge-widget
+
     - name: Creating .npmrc
       shell: bash
       run: |

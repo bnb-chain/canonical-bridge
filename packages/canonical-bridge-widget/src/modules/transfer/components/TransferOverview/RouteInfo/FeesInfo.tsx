@@ -1,4 +1,4 @@
-import { Box, Flex, Tooltip, useColorMode, useIntl, useTheme } from '@bnb-chain/space';
+import { Box, Tooltip, useColorMode, useIntl, useTheme } from '@bnb-chain/space';
 import { InfoCircleIcon } from '@bnb-chain/icons';
 
 import { FeesIcon } from '@/core/components/icons/FeesIcon';

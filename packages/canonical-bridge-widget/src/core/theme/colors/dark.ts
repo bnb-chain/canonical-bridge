@@ -1,8 +1,6 @@
 import { rgba } from 'polished';
 
-import { ColorType } from './types';
-
-export const dark: ColorType = {
+export const dark = {
   primitives: {
     logo: '#F0B90B',
     white: '#FFFFFF',
@@ -184,3 +182,5 @@ export const dark: ColorType = {
   },
   overlay: rgba('#14151A', 0.6),
 };
+
+export type ColorType = typeof dark;

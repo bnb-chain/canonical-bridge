@@ -94,7 +94,7 @@ export const useStargateTransfer = () => {
           sendParams.minAmountLD = BigInt(amountReceivedLD);
         }
         const hash = await bridgeSDK.stargate.sendToken({
-          walletClient: walletClient,
+          walletClient: walletClient as any,
           publicClient: publicClient,
           bridgeAddress,
           tokenAddress: selectedToken.address as `0x${string}`,

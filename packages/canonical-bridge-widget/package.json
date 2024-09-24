@@ -8,6 +8,13 @@
     "lint-staged": "lint-staged"
   },
   "type": "module",
+  "peerDependencies": {
+    "viem": "^2",
+    "react": "^18",
+    "react-dom": "^18",
+    "wagmi": "^2",
+    "@tanstack/react-query": "^5"
+  },
   "dependencies": {
     "@bnb-chain/canonical-bridge-sdk": "workspace:*",
     "@bnb-chain/icons": "workspace:*",
@@ -15,21 +22,17 @@
     "@emotion/react": "^11",
     "@emotion/styled": "^11",
     "@node-real/walletkit": "2.3.6-alpha.0",
-    "@tanstack/react-query": "~5.36.0",
     "accept-language-parser": "~1.5.0",
     "axios": "~1.6.8",
     "ethers": "^5.7.2",
     "lodash": "~4.17.21",
     "polished": "~4.3.1",
-    "rc-virtual-list": "~3.14.5",
-    "react": "^18",
-    "react-dom": "^18",
-    "viem": "~2.21.11",
-    "wagmi": "^2"
+    "rc-virtual-list": "~3.14.5"
   },
   "devDependencies": {
     "@bnb-chain/eslint-config": "workspace:*",
     "@bnb-chain/prettier-config": "workspace:*",
+    "@tanstack/react-query": "~5.36.0",
     "@types/lodash": "~4.17.7",
     "@types/node": "^20",
     "@types/react": "^18",
@@ -40,12 +43,16 @@
     "eslint-config-next": "14.2.3",
     "lint-staged": "~13.0.3",
     "prettier": "~2.7.1",
+    "react": "^18",
+    "react-dom": "^18",
     "rollup-plugin-peer-deps-external": "^2.2.4",
     "tsc-alias": "~1.8.10",
     "tsx": "~4.15.7",
     "typescript": "5.5.4",
+    "viem": "~2.21.11",
     "vite": "^4.5.3",
-    "vite-plugin-dts": "^3.9.1"
+    "vite-plugin-dts": "^3.9.1",
+    "wagmi": "^2"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": [

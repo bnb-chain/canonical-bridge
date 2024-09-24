@@ -1,7 +1,6 @@
 import { rgba } from 'polished';
 
-import { dark } from './dark';
-import type { ColorType } from './types';
+import { ColorType, dark } from './dark';
 
 export const light: ColorType = {
   primitives: {
@@ -106,6 +105,7 @@ export const light: ColorType = {
     route: '#F7F7F8',
     warning: '#FFEADB',
     tag: '#E1E2E5',
+    body: '#F1F2F3',
   },
   border: {
     1: '#F7F7F8',
@@ -163,6 +163,8 @@ export const light: ColorType = {
       // 5: '#FDC4C7',
     },
     brand: {
+      1: '#665800',
+      2: '#948700',
       3: '#EBD600',
       4: '#FFE900',
       5: '#FFFAC2',
