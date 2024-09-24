@@ -39,7 +39,8 @@ import { BridgeModule } from '@/module/bridge/bridge.module';
       connection: { host: REDIS_HOST, port: REDIS_PORT },
       defaultJobOptions: {
         attempts: 3,
-        removeOnComplete: 10000,
+        removeOnComplete: 100,
+        removeOnFail: 10,
       },
     }),
   ],

@@ -29,7 +29,8 @@ export const useGetDeBridgeFees = () => {
   const selectedToken = useAppSelector((state) => state.transfer.selectedToken);
   const toChain = useAppSelector((state) => state.transfer.toChain);
 
-  const publicClient = usePublicClient({ chainId: fromChain?.id });
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const publicClient = usePublicClient({ chainId: fromChain?.id }) as any;
   const [gasInfo, setGasInfo] = useState<{ gas: bigint; gasPrice: bigint }>({
     gas: 0n,
     gasPrice: 0n,

@@ -60,6 +60,7 @@ export function TransferOverview() {
         dispatch(setIsGlobalFeeLoading(false));
         return;
       }
+      dispatch(setIsGlobalFeeLoading(true));
       dispatch(setIsRefreshing(true));
       loadingBridgeFees();
       dispatch(setIsRefreshing(false));
@@ -102,7 +103,7 @@ export function TransferOverview() {
     if (!options?.length) return options;
 
     return options.sort((a) => {
-      return a.key === bridgeType ? -1 : 0;
+      return a.key === `${bridgeType}-option` ? -1 : 0;
     });
   }, [options, bridgeType]);
 

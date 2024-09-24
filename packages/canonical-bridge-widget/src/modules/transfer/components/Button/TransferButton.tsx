@@ -1,4 +1,4 @@
-import { Button, ButtonProps, Flex, useIntl } from '@bnb-chain/space';
+import { Button, ButtonProps, Flex, useColorMode, useIntl, useTheme } from '@bnb-chain/space';
 import { useCallback, useState } from 'react';
 import { useAccount, useBalance, usePublicClient, useWalletClient } from 'wagmi';
 import { formatUnits, parseUnits } from 'viem';
@@ -30,7 +30,6 @@ export function TransferButton({
   const bridgeSDK = useBridgeSDK();
 
   const { address } = useAccount();
-  const publicClient = usePublicClient();
 
   const { data: balance } = useBalance({ address: address as `0x${string}` });
 
@@ -42,6 +41,8 @@ export function TransferButton({
   const toToken = useAppSelector((state) => state.transfer.toToken);
   const fromChain = useAppSelector((state) => state.transfer.fromChain);
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const publicClient = usePublicClient({ chainId: fromChain?.id }) as any;
   const [isLoading, setIsLoading] = useState(false);
 
   const { allowance } = useGetAllowance({
@@ -218,10 +219,20 @@ export function TransferButton({
 export function StyledTransferButton(props: ButtonProps) {
   const { ...restProps } = props;
   const { formatMessage } = useIntl();
+  const theme = useTheme();
+  const { colorMode } = useColorMode();
 
   return (
     <Flex flexDir="column" w={'100%'}>
-      <Button size={'lg'} h={'56px'} w="100%" {...restProps}>
+      <Button
+        bg={theme.colors[colorMode].button.brand.default}
+        size={'lg'}
+        fontWeight={500}
+        h={'56px'}
+        w="100%"
+        _hover={{ bg: theme.colors[colorMode].button.brand.hover }}
+        {...restProps}
+      >
         {formatMessage({ id: 'transfer.button.confirm' })}
       </Button>
     </Flex>

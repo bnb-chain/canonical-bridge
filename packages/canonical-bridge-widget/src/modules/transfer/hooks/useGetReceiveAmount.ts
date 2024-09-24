@@ -1,5 +1,5 @@
 import { BridgeType } from '@bnb-chain/canonical-bridge-sdk';
-import { formatUnits, parseUnits } from 'viem';
+import { formatUnits } from 'viem';
 import { useCallback } from 'react';
 
 import { useToTokenInfo } from '@/modules/transfer/hooks/useToTokenInfo';
@@ -40,7 +40,7 @@ export const useGetReceiveAmount = () => {
             BigInt(estimatedAmount?.['stargate']?.[2].amountReceivedLD),
             getToDecimals()['stargate'] || 18,
           );
-        } else if (bridgeType === 'layerZero' && sendValue) {
+        } else if (bridgeType === 'layerZero' && sendValue && estimatedAmount?.['layerZero']) {
           return sendValue;
         }
       }

@@ -40,7 +40,7 @@ export const EstimatedArrivalTime = ({
       : null;
   }, [bridgeType, time, estimatedAmount, estimatedTime]);
 
-  return (
+  return waitingTime ? (
     <Flex
       gap={'4px'}
       flexDir={'row'}
@@ -61,5 +61,5 @@ export const EstimatedArrivalTime = ({
         '--'
       )}
     </Flex>
-  );
+  ) : null;
 };

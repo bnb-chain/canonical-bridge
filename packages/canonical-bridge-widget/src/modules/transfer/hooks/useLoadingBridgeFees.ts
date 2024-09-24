@@ -36,7 +36,8 @@ export const useLoadingBridgeFees = () => {
   const toChain = useAppSelector((state) => state.transfer.toChain);
   const max_slippage = useAppSelector((state) => state.transfer.slippage);
 
-  const publicClient = usePublicClient({ chainId: fromChain?.id });
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const publicClient = usePublicClient({ chainId: fromChain?.id }) as any;
   const debouncedSendValue = useDebounce(sendValue, DEBOUNCE_DELAY);
   const loadingBridgeFees = useCallback(async () => {
     if (!selectedToken || !publicClient || !fromChain || !toChain || !debouncedSendValue) {
@@ -123,8 +124,7 @@ export const useLoadingBridgeFees = () => {
 
       // cBridge
       if (cbridgeEst.status === 'fulfilled' && cbridgeEst?.value) {
-        dispatch(setEstimatedAmount({ cBridge: cbridgeEst.value }));
-        if (!isAllowSendError) {
+        if (!isAllowSendError && !cbridgeEst.value?.err?.msg) {
           valueArr.push({
             type: 'cBridge',
             value: formatUnits(
@@ -132,6 +132,12 @@ export const useLoadingBridgeFees = () => {
               getToDecimals()['cBridge'],
             ),
           });
+        }
+        if (cbridgeEst.value?.err?.msg) {
+          dispatch(setRouteError({ cBridge: cbridgeEst.value?.err?.msg }));
+          dispatch(setEstimatedAmount({ cBridge: 'error' }));
+        } else {
+          dispatch(setEstimatedAmount({ cBridge: cbridgeEst.value }));
         }
       } else if (cbridgeEst.status === 'rejected') {
         dispatch(setRouteError({ cBridge: cbridgeEst.reason.message }));

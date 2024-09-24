@@ -25,7 +25,7 @@ export class TokenSchedule implements OnModuleInit {
     );
   }
 
-  @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
+  @Cron(CronExpression.EVERY_DAY_AT_11PM)
   async syncCoingeckoTokens() {
     this.logger.log('syncCoingeckoTokens');
     await this.syncToken.add(Tasks.fetchCoingeckoToken, null, {
@@ -58,7 +58,7 @@ export class TokenSchedule implements OnModuleInit {
     );
   }
 
-  @Cron(CronExpression.EVERY_5_MINUTES)
+  @Cron(CronExpression.EVERY_10_MINUTES)
   async syncTokenConfig() {
     this.logger.log('syncTokenConfig');
     await this.syncToken.add(Tasks.cacheCmcConfig, null, {
