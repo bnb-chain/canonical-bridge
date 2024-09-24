@@ -27,6 +27,7 @@ import { useBridgeConfig } from '@/CanonicalBridgeProvider';
 
 export interface AggregatorContextProps {
   isReady: boolean;
+  config: ITransferConfig;
   defaultSelectedInfo: ITransferConfig['defaultSelectedInfo'];
   chainConfigs: IChainConfig[];
   nativeCurrencies: Record<number, INativeCurrency>;
@@ -39,6 +40,7 @@ export interface AggregatorContextProps {
 
 const DEFAULT_CONTEXT: AggregatorContextProps = {
   isReady: false,
+  config: {} as ITransferConfig,
   defaultSelectedInfo: {} as ITransferConfig['defaultSelectedInfo'],
   chainConfigs: [],
   nativeCurrencies: {},
@@ -114,6 +116,8 @@ export function AggregatorProvider(props: AggregatorProviderProps) {
 
     return {
       isReady: true,
+      config,
+
       defaultSelectedInfo: config.defaultSelectedInfo,
       chainConfigs: config.chainConfigs,
       nativeCurrencies,

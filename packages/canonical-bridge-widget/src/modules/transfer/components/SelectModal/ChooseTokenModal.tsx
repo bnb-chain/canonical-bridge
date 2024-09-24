@@ -1,5 +1,4 @@
 import { Flex, formatAddress, Text, useColorMode, useIntl, useTheme } from '@bnb-chain/space';
-import { formatUnits } from 'viem';
 import { useAccount } from 'wagmi';
 
 import { BaseModal } from '@/modules/transfer/components/SelectModal/components/BaseModal';
@@ -14,9 +13,8 @@ import { isNativeToken, isSameAddress } from '@/core/utils/address';
 import { ExLinkIcon } from '@/core/components/icons/ExLinkIcon';
 import { formatTokenUrl } from '@/core/utils/string';
 import { useResponsive } from '@/core/hooks/useResponsive';
-import { useTokenBalances } from '@/modules/transfer/components/SelectModal/hooks/useTokenBalances';
-import { useTokenPrices } from '@/modules/transfer/components/SelectModal/hooks/useTokenPrices';
 import { formatNumber } from '@/core/utils/number';
+import { useTokenList } from '@/modules/transfer/components/SelectModal/hooks/useTokenList';
 
 interface ChooseTokenModalProps {
   isOpen: boolean;
@@ -28,7 +26,7 @@ export function ChooseTokenModal(props: ChooseTokenModalProps) {
   const { formatMessage } = useIntl();
   const theme = useTheme();
   const { colorMode } = useColorMode();
-  const { isConnected } = useAccount();
+  const { isConnected, chainId } = useAccount();
 
   const fromChain = useAppSelector((state) => state.transfer.fromChain);
   const toChain = useAppSelector((state) => state.transfer.toChain);
@@ -52,8 +50,9 @@ export function ChooseTokenModal(props: ChooseTokenModalProps) {
     },
   });
 
-  const { isLoading, data: tokenBalances } = useTokenBalances(tokens, isOpen);
-  const { data: tokenPrices } = useTokenPrices(tokens, isOpen);
+  const { isLoading, data } = useTokenList(result);
+  const activeIndex = data.findIndex((item) => isSameAddress(selectedToken?.address, item.address));
+  const showBalance = isConnected && chainId === fromChain?.id && !isLoading;
 
   return (
     <BaseModal
@@ -74,21 +73,14 @@ export function ChooseTokenModal(props: ChooseTokenModalProps) {
         justifyContent="space-between"
       >
         <Text>{formatMessage({ id: 'select-modal.token.column.name' })}</Text>
-        {isConnected && !isLoading && (
-          <Text>{formatMessage({ id: 'select-modal.token.column.balance' })}</Text>
-        )}
+        {showBalance && <Text>{formatMessage({ id: 'select-modal.token.column.balance' })}</Text>}
       </Flex>
       <Flex flexDir="column" flex={1}>
-        <VirtualList data={result} itemHeight={64} itemKey="id">
-          {(item) => {
+        <VirtualList data={data} itemHeight={64} itemKey="id">
+          {(item, index) => {
             const isDisabled = !isChainOrTokenCompatible(item);
-            const isActive = isSameAddress(selectedToken?.address, item.address);
+            const isActive = index === activeIndex;
             const isNative = isNativeToken(item.address);
-
-            const rawBalance = tokenBalances?.[item.displaySymbol];
-            const balance =
-              rawBalance === undefined ? undefined : Number(formatUnits(rawBalance, item.decimals));
-            const price = tokenPrices?.[item.displaySymbol];
 
             return (
               <ListItem
@@ -148,7 +140,7 @@ export function ChooseTokenModal(props: ChooseTokenModalProps) {
                     )}
                   </Flex>
 
-                  {!isDisabled && !isLoading && (
+                  {!isDisabled && showBalance && (
                     <Flex
                       flexShrink={0}
                       flexDir="column"
@@ -156,7 +148,9 @@ export function ChooseTokenModal(props: ChooseTokenModalProps) {
                       gap={'4px'}
                       alignSelf="flex-start"
                     >
-                      <Flex>{balance === undefined ? '-' : formatNumber(balance, 4)}</Flex>
+                      <Flex>
+                        {item.balance !== undefined ? formatNumber(item.balance, 4) : '-'}
+                      </Flex>
                       <Flex
                         flexDir="column"
                         fontSize="12px"
@@ -164,7 +158,7 @@ export function ChooseTokenModal(props: ChooseTokenModalProps) {
                         lineHeight="16px"
                         color={theme.colors[colorMode].text.secondary}
                       >
-                        {balance && price ? `$${formatNumber(balance * price, 2)}` : ''}
+                        {item.value ? `$${formatNumber(item.value, 2)}` : ''}
                       </Flex>
                     </Flex>
                   )}

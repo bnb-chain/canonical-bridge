@@ -1,4 +1,3 @@
-import { useAccount } from 'wagmi';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 
@@ -12,13 +11,12 @@ interface ITokenPriceResponse {
 }
 
 export function useTokenPrices(tokens: IBridgeToken[], isEnabled = true) {
-  const { address } = useAccount();
-
   const { transferConfigEndpoint } = useBridgeConfig();
 
   const result = useQuery<Record<string, number | undefined>>({
-    enabled: isEnabled && !!address,
+    enabled: isEnabled,
     staleTime: TIME.MINUTE * 5,
+    refetchInterval: TIME.MINUTE * 5,
     queryKey: ['token-prices'],
     queryFn: async () => {
       const [cmcRes, llamaRes] = await Promise.allSettled([

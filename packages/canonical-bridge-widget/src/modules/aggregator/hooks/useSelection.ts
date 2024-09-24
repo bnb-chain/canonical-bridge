@@ -95,7 +95,7 @@ export function useSelection() {
       const newFromChain = fromChains.find((item) => item.id === fromChainId);
       const newToChain = toChains.find((item) => item.id === toChainId);
       const newToken = tokens.find(
-        (item) => item.symbol.toUpperCase() === tokenSymbol.toUpperCase(),
+        (item) => item.displaySymbol.toUpperCase() === tokenSymbol.toUpperCase(),
       );
 
       dispatch(setFromChain(newFromChain));

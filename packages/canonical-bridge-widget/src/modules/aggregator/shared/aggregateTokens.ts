@@ -55,6 +55,15 @@ export function aggregateTokens({
         };
       }
 
+      // update base info
+      if (isCompatible) {
+        bridgeToken = {
+          ...bridgeToken,
+          address: baseInfo.address,
+          decimals: baseInfo.decimals,
+        };
+      }
+
       const common = {
         isCompatible,
         symbol: baseInfo.symbol,
