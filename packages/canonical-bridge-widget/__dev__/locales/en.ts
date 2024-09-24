@@ -16,6 +16,7 @@ export const en = {
   'to.section.account.placeholder': 'Enter Destination Address',
   'to.section.account.invalid': 'Invalid address.',
 
+  'you.send.title': 'You Send',
   'you.receive.title': 'You Receive',
   'route.button.change-routes': 'Change Routes',
   'route.title.select.routes': 'Select Bridge Routes',
