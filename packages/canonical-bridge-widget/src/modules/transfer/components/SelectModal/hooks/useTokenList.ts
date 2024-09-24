@@ -7,7 +7,6 @@ import { isChainOrTokenCompatible } from '@/modules/aggregator/shared/isChainOrT
 import { IBridgeToken } from '@/modules/aggregator/types';
 import { useTokenBalances } from '@/modules/transfer/components/SelectModal/hooks/useTokenBalances';
 import { useTokenPrices } from '@/modules/transfer/components/SelectModal/hooks/useTokenPrices';
-import { useAppSelector } from '@/modules/store/StoreProvider';
 
 interface IBridgeTokenWithBalance extends IBridgeToken {
   balance: number | undefined;
@@ -16,13 +15,10 @@ interface IBridgeTokenWithBalance extends IBridgeToken {
 
 export function useTokenList(tokens: IBridgeToken[] = []) {
   const { config } = useAggregator();
+  const { isConnected } = useAccount();
 
-  const { chainId, isConnected } = useAccount();
-  const fromChain = useAppSelector((state) => state.transfer.fromChain);
-  const isEnabled = chainId === fromChain?.id && isConnected;
-
-  const { isLoading, data: tokenBalances } = useTokenBalances(tokens, isEnabled);
-  const { data: tokenPrices } = useTokenPrices(tokens, isEnabled);
+  const { isLoading, data: tokenBalances } = useTokenBalances(tokens, isConnected);
+  const { data: tokenPrices } = useTokenPrices(tokens, isConnected);
 
   const data = useMemo(() => {
     const tokenOrder = config.order.tokens.map((item) => item.toUpperCase());

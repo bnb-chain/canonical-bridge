@@ -1,4 +1,4 @@
-import { useAccount } from 'wagmi';
+import { useAccount, useChains } from 'wagmi';
 import { Address, createPublicClient, http } from 'viem';
 import { useQuery } from '@tanstack/react-query';
 
@@ -9,15 +9,17 @@ import { TIME } from '@/core/constants';
 import { isChainOrTokenCompatible } from '@/modules/aggregator/shared/isChainOrTokenCompatible';
 
 export function useTokenBalances(tokens: IBridgeToken[], isEnabled = true) {
-  const { address, chain, chainId } = useAccount();
+  const { address } = useAccount();
   const fromChain = useAppSelector((state) => state.transfer.fromChain);
+  const chains = useChains();
 
   const result = useQuery<Record<string, bigint | undefined>>({
     enabled: isEnabled,
     refetchInterval: TIME.SECOND * 5,
     queryKey: ['token-balances', address, fromChain?.id],
     queryFn: async () => {
-      if (!chain || !address || fromChain?.id !== chainId) {
+      const chain = chains?.find((item) => item.id === fromChain?.id);
+      if (!chain || !address || !fromChain?.id) {
         return {};
       }
 
