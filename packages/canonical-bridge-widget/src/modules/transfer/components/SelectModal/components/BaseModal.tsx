@@ -29,7 +29,7 @@ export function BaseModal(props: BaseModalProps) {
   }, [isOpen]);
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} isCentered>
+    <Modal isOpen={isOpen} onClose={onClose} isCentered autoFocus={false}>
       <ModalOverlay />
       <ModalContent
         background={theme.colors[colorMode].background.modal}
