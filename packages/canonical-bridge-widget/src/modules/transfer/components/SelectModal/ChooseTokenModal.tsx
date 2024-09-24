@@ -15,6 +15,7 @@ import { formatTokenUrl } from '@/core/utils/string';
 import { useResponsive } from '@/core/hooks/useResponsive';
 import { formatNumber } from '@/core/utils/number';
 import { useTokenList } from '@/modules/transfer/components/SelectModal/hooks/useTokenList';
+import { reportEvent } from '@/core/utils/gtm';
 
 interface ChooseTokenModalProps {
   isOpen: boolean;
@@ -98,6 +99,13 @@ export function ChooseTokenModal(props: ChooseTokenModalProps) {
                 onClick={() => {
                   selectToken(item);
                   onClose();
+                  reportEvent({
+                    id: 'select_bridge_fromDropdown',
+                    params: {
+                      item_name: fromChain?.name || '',
+                      token: item?.symbol,
+                    },
+                  });
                 }}
               >
                 <Flex alignItems="center" justifyContent="space-between" w="100%" gap={'12px'}>

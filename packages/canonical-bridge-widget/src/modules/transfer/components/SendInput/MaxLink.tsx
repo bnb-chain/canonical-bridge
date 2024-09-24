@@ -8,6 +8,7 @@ import { setSendValue } from '@/modules/transfer/action';
 import { formatNumber } from '@/core/utils/number';
 import { useLoadingTokenBalance } from '@/modules/transfer/hooks/useLoadingTokenBalance';
 import { useTokenPrice } from '@/modules/aggregator/components/TokenPricesProvider';
+import { reportEvent } from '@/core/utils/gtm';
 
 export const MaxLink: React.FC = () => {
   const theme = useTheme();
@@ -24,7 +25,16 @@ export const MaxLink: React.FC = () => {
 
   const setMaxAmount = () => {
     if (!!balance && selectedToken) {
-      dispatch(setSendValue(formatUnits(balance, selectedToken?.decimals || 0)));
+      const value = formatUnits(balance, selectedToken?.decimals || 0);
+      dispatch(setSendValue(value));
+      reportEvent({
+        id: 'click_bridge_max',
+        params: {
+          item_name: fromChain?.name,
+          token: selectedToken.symbol,
+          value,
+        },
+      });
     }
   };
 

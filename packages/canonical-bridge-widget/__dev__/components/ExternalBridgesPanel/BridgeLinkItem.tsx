@@ -1,5 +1,7 @@
 import { Box, Center, Flex, Icon, IconProps, Image, theme, useColorMode } from '@bnb-chain/space';
 
+import { reportEvent } from '@/core/utils/gtm';
+
 export interface ExternalBridgesPanelProps {
   item: {
     icon: string;
@@ -48,6 +50,11 @@ export const BridgeLinkItem = ({ item }: ExternalBridgesPanelProps) => {
         '.arrow': {
           color: theme.colors[colorMode].text.primary,
         },
+      }}
+      onClick={() => {
+        reportEvent({
+          id: item.eventId,
+        });
       }}
     >
       <Flex justifyContent="space-between" alignItems="flex-start">
