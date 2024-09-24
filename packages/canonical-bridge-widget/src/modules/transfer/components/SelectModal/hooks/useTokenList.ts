@@ -6,7 +6,7 @@ import { useAggregator } from '@/modules/aggregator/components/AggregatorProvide
 import { isChainOrTokenCompatible } from '@/modules/aggregator/shared/isChainOrTokenCompatible';
 import { IBridgeToken } from '@/modules/aggregator/types';
 import { useTokenBalances } from '@/modules/transfer/components/SelectModal/hooks/useTokenBalances';
-import { useTokenPrices } from '@/modules/transfer/components/SelectModal/hooks/useTokenPrices';
+import { useTokenPrice } from '@/modules/aggregator/components/TokenPricesProvider';
 
 interface IBridgeTokenWithBalance extends IBridgeToken {
   balance: number | undefined;
@@ -18,14 +18,14 @@ export function useTokenList(tokens: IBridgeToken[] = []) {
   const { isConnected } = useAccount();
 
   const { isLoading, data: tokenBalances } = useTokenBalances(tokens, isConnected);
-  const { data: tokenPrices } = useTokenPrices(tokens, isConnected);
+  const { getTokenPrice } = useTokenPrice();
 
   const data = useMemo(() => {
     const tokenOrder = config.order.tokens.map((item) => item.toUpperCase());
     return tokens
       .map((item) => {
         const rawBalance = tokenBalances?.[item.displaySymbol];
-        const price = tokenPrices?.[item.displaySymbol];
+        const price = getTokenPrice(item);
 
         let balance: number | undefined;
         if (rawBalance !== undefined) {
@@ -68,7 +68,7 @@ export function useTokenList(tokens: IBridgeToken[] = []) {
 
         return a.displaySymbol < b.displaySymbol ? -1 : 1;
       });
-  }, [config.order.tokens, tokenBalances, tokenPrices, tokens]);
+  }, [config.order.tokens, getTokenPrice, tokenBalances, tokens]);
 
   return {
     data,

@@ -7,6 +7,7 @@ import { ITransferConfig } from '@/modules/aggregator/types';
 import { StoreProvider } from '@/modules/store/StoreProvider';
 import { WalletProvider } from '@/modules/wallet/WalletProvider';
 import { ThemeProvider, ThemeProviderProps } from '@/core/theme/ThemeProvider';
+import { TokenPricesProvider } from '@/modules/aggregator/components/TokenPricesProvider';
 
 export interface CanonicalBridgeConfig {
   appearance: {
@@ -65,7 +66,10 @@ export function CanonicalBridgeProvider(props: CanonicalBridgeProviderProvider) 
         <ThemeProvider themeConfig={value.appearance.theme}>
           <IntlProvider locale={value.appearance.locale} messages={value.appearance.messages}>
             <AggregatorProvider config={transferConfig}>
-              <WalletProvider>{children}</WalletProvider>
+              <WalletProvider>
+                <TokenPricesProvider />
+                {children}
+              </WalletProvider>
             </AggregatorProvider>
           </IntlProvider>
         </ThemeProvider>
