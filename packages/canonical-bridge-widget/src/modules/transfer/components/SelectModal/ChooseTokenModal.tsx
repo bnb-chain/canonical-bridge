@@ -194,6 +194,7 @@ function TokenAddress(props: TokenAddressProps) {
         flexShrink={0}
         display="inline-flex"
         alignItems="center"
+        onClick={(e) => e.stopPropagation()}
       >
         {formatAddress({
           value: address,
