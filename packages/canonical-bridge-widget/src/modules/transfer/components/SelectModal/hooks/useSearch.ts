@@ -7,7 +7,7 @@ interface UseSearchProps<T = unknown> {
 }
 
 export function useSearch<T>(props: UseSearchProps<T>) {
-  const { data, filter } = props;
+  const { data, filter, sorter = () => 0 } = props;
   const [keyword, setKeyword] = useState('');
 
   const onSearch = (keyword: string) => {
@@ -15,7 +15,7 @@ export function useSearch<T>(props: UseSearchProps<T>) {
   };
 
   const result = useMemo(() => {
-    return data.filter((item) => filter(item, keyword.toLowerCase()));
+    return data.filter((item) => filter(item, keyword.toLowerCase())).sort(sorter);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data, keyword]);
 
