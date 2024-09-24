@@ -2,9 +2,6 @@ import {
   Box,
   Button,
   Flex,
-  Menu,
-  MenuButton,
-  MenuList,
   TYPOGRAPHY_STYLES,
   theme,
   useColorMode,
@@ -19,6 +16,9 @@ import { formatAppAddress } from '@/core/utils/address';
 import { WalletIcon } from '@/core/components/icons/WalletIcon';
 import { useEvmBalance } from '@/modules/wallet/hooks/useEvmBalance';
 import { AccountAvatar } from '@/modules/wallet/components/AccountAvatar';
+import { Dropdown } from '@/modules/wallet/components/Dropdown/Dropdown';
+import { DropdownButton } from '@/modules/wallet/components/Dropdown/DropdownButton';
+import { DropdownList } from '@/modules/wallet/components/Dropdown/DropdownList';
 
 export const ProfileMenu = () => {
   const { formatMessage } = useIntl();
@@ -28,47 +28,19 @@ export const ProfileMenu = () => {
   const { disconnect } = useDisconnect();
 
   return (
-    <Menu>
+    <Dropdown>
       {({ isOpen }) => (
         <>
-          <MenuButton
-            flexShrink={0}
-            border={'solid'}
-            borderColor={theme.colors[colorMode].border['3']}
-            borderWidth={'1px'}
-            borderRadius={'96px'}
-            h="min-content"
-            pl={{ base: '4px', md: '8px' }}
-            pr={{ base: '4px', md: '16px' }}
-            py={{ base: '4px', md: '8px' }}
-            color={theme.colors[colorMode].text.primary}
-            background={
-              isOpen
-                ? theme.colors[colorMode].layer['3'].active
-                : theme.colors[colorMode].layer['3'].default
-            }
-            _hover={{
-              background: isOpen ? undefined : theme.colors[colorMode].layer['3'].hover,
-            }}
-            {...TYPOGRAPHY_STYLES['label']['md']}
-            fontWeight={500}
-          >
+          <DropdownButton isActive={isOpen}>
             <Flex alignItems="center">
               <Box mr={{ base: 0, md: '8px' }}>
                 <WalletIcon boxSize={'24px'} color={theme.colors[colorMode].text.tertiary} />
               </Box>
               {formatAppAddress({ address })}
             </Flex>
-          </MenuButton>
-          <MenuList
-            zIndex={1}
-            color={theme.colors[colorMode].text.secondary}
-            borderRadius={'8px'}
-            overflow={'hidden'}
-            fontSize={'14px'}
-            fontWeight={400}
-            background={theme.colors[colorMode].layer['4'].default}
-          >
+          </DropdownButton>
+
+          <DropdownList>
             <Box>
               <Box h={'80px'} />
               <Flex
@@ -142,9 +114,9 @@ export const ProfileMenu = () => {
                 {formatMessage({ id: 'wallet.button.disconnect' })}
               </Button>
             </Flex>
-          </MenuList>
+          </DropdownList>
         </>
       )}
-    </Menu>
+    </Dropdown>
   );
 };

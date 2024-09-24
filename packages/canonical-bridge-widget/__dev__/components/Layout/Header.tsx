@@ -1,7 +1,7 @@
 import { Flex, FlexProps, theme, useColorMode } from '@bnb-chain/space';
 
 import { LogoIcon } from '@/dev/components/icons/Logo';
-import { ConnectButton } from '@/index';
+import { ConnectWalletButton } from '@/index';
 
 export function Header(props: FlexProps) {
   const { colorMode } = useColorMode();
@@ -18,7 +18,7 @@ export function Header(props: FlexProps) {
       {...props}
     >
       <LogoIcon />
-      <ConnectButton />
+      <ConnectWalletButton />
     </Flex>
   );
 }

@@ -3,6 +3,7 @@ import React from 'react';
 
 import App from './App.tsx';
 
+import './public/fonts/index.css';
 import './global.css';
 
 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion

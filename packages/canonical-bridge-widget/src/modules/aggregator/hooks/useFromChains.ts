@@ -4,7 +4,7 @@ import { useSavedValue } from '@/core/hooks/useSavedValue';
 import { useAggregator } from '@/modules/aggregator/components/AggregatorProvider';
 import { IGetFromChainsParams } from '@/modules/aggregator/shared/aggregateChains';
 
-export function useFromChains(props: IGetFromChainsParams) {
+export function useFromChains(props: IGetFromChainsParams = {}) {
   const { getFromChains } = useAggregator();
 
   const params = useSavedValue(props);

@@ -1,3 +1,4 @@
+import { background } from '@bnb-chain/space';
 import { rgba } from 'polished';
 
 export const dark = {
@@ -106,4 +107,9 @@ export const dark = {
     warning: '#BC4E00',
   },
   overlay: rgba('#14151A', 0.6),
+  popover: {
+    background: '#373943',
+    selected: '#5C5F6A',
+    shadow: ' 0px 4px 8px 0px rgba(0, 0, 0, 0.48)',
+  },
 };
