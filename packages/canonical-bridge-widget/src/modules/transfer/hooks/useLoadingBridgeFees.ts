@@ -117,14 +117,24 @@ export const useLoadingBridgeFees = () => {
           ),
         });
       } else if (debridgeEst.status === 'rejected') {
-        dispatch(setRouteError({ deBridge: debridgeEst.reason.message }));
-        dispatch(setEstimatedAmount({ deBridge: 'error' }));
+        // Only show route on low amount error
+        if (debridgeEst.reason.message === 'ERROR_LOW_GIVE_AMOUNT') {
+          dispatch(setRouteError({ deBridge: 'Token amount is too small' }));
+          dispatch(setEstimatedAmount({ deBridge: 'error' }));
+        } else {
+          dispatch(setEstimatedAmount({ deBridge: undefined }));
+        }
       } else {
         dispatch(setEstimatedAmount({ deBridge: undefined }));
       }
 
       // cBridge
       if (cbridgeEst.status === 'fulfilled' && cbridgeEst?.value) {
+        // Do not show route on error
+        if (cbridgeEst?.value.err) {
+          dispatch(setEstimatedAmount({ cBridge: undefined }));
+          return;
+        }
         if (!isAllowSendError && !cbridgeEst.value?.err?.msg) {
           valueArr.push({
             type: 'cBridge',

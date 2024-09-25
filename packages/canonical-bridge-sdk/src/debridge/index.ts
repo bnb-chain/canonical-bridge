@@ -100,7 +100,7 @@ export class DeBridge {
       return deBridgeQuote;
     } catch (error: any) {
       if (error.response?.data?.errorMessage) {
-        throw new Error(error.response.data.errorMessage);
+        throw new Error(error.response.data.errorId);
       } else {
         throw new Error(`${error.message || error}`);
       }
