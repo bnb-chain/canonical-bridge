@@ -1,18 +1,21 @@
 import { useEffect, useState } from 'react';
-import { useAccount, usePublicClient } from 'wagmi';
+import { useAccount, useBalance, usePublicClient } from 'wagmi';
 import { encodePacked, pad, parseUnits } from 'viem';
 
-import { useAppSelector } from '@/modules/store/StoreProvider';
+import { useAppDispatch, useAppSelector } from '@/modules/store/StoreProvider';
 import { useToTokenInfo } from '@/modules/transfer/hooks/useToTokenInfo';
 import { DEFAULT_ADDRESS } from '@/core/constants';
 import { useGetTokenBalance } from '@/core/contract/hooks/useGetTokenBalance';
 import { CAKE_PROXY_OFT_ABI } from '@/modules/aggregator/adapters/layerZero/abi/cakeProxyOFT';
 import { useBridgeSDK } from '@/core/hooks/useBridgeSDK';
+import { setRouteError } from '@/modules/transfer/action';
 
 export const useGetLayerZeroFees = () => {
   const { address } = useAccount();
   const { toTokenInfo } = useToTokenInfo();
   const bridgeSDK = useBridgeSDK();
+  const dispatch = useAppDispatch();
+  const { data: nativeBalance } = useBalance({ address });
 
   const selectedToken = useAppSelector((state) => state.transfer.selectedToken);
   const sendValue = useAppSelector((state) => state.transfer.sendValue);
@@ -82,6 +85,14 @@ export const useGetLayerZeroFees = () => {
         if (!balance || balance < amount) {
           return;
         }
+        if (
+          nativeBalance?.value &&
+          (!nativeBalance?.value || nativeBalance?.value < Number(nativeFee))
+        ) {
+          dispatch(setRouteError({ layerZero: 'Insufficient funds to cover native fees' }));
+          return;
+        }
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const gas = await publicClient.estimateContractGas(cakeArgs as any);
         const gasPrice = await publicClient.getGasPrice();
         if (gas && gasPrice) {
@@ -93,15 +104,25 @@ export const useGetLayerZeroFees = () => {
         // eslint-disable-next-line
       } catch (error: any) {
         // eslint-disable-next-line no-console
-        console.log(error, error.message);
-        setNativeFee(0n);
+        console.log(error.message);
         setGasInfo({ gas: 0n, gasPrice: 0n });
+        dispatch(setRouteError({ layerZero: error.message }));
       }
     })();
     return () => {
       mount = false;
     };
-  }, [publicClient, address, selectedToken, sendValue, toTokenInfo, balance, bridgeSDK.layerZero]);
+  }, [
+    publicClient,
+    address,
+    selectedToken,
+    sendValue,
+    toTokenInfo,
+    balance,
+    bridgeSDK.layerZero,
+    dispatch,
+    nativeBalance?.value,
+  ]);
 
   return {
     nativeFee,

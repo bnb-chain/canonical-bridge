@@ -96,10 +96,7 @@ export const useGetCBridgeFees = () => {
   ]);
 
   const baseFee = useMemo(() => {
-    return estimatedAmount?.['cBridge'] &&
-      toTokenInfo &&
-      Number(sendValue) > 0 &&
-      Number(estimatedAmount?.['cBridge']?.base_fee) > 0
+    return estimatedAmount?.['cBridge'] && toTokenInfo && Number(sendValue) > 0
       ? {
           shorten: `${formatFeeAmount(
             formatUnits(estimatedAmount?.['cBridge']?.base_fee, getToDecimals().cBridge || 18),
@@ -115,9 +112,7 @@ export const useGetCBridgeFees = () => {
   }, [estimatedAmount, toTokenInfo, sendValue, getToDecimals]);
 
   const protocolFee = useMemo(() => {
-    return estimatedAmount?.['cBridge'] &&
-      toTokenInfo &&
-      Number(estimatedAmount?.['cBridge']?.perc_fee) > 0
+    return estimatedAmount?.['cBridge'] && toTokenInfo && Number(sendValue) > 0
       ? {
           shorten: `${formatFeeAmount(
             formatUnits(estimatedAmount?.['cBridge']?.perc_fee, getToDecimals().cBridge || 18),
@@ -130,7 +125,7 @@ export const useGetCBridgeFees = () => {
           )} ${toTokenInfo?.symbol}`,
         }
       : null;
-  }, [estimatedAmount, toTokenInfo, getToDecimals]);
+  }, [estimatedAmount, toTokenInfo, getToDecimals, sendValue]);
 
   return { baseFee, protocolFee, gasInfo, isAllowSendError, bridgeAddress, cBridgeAllowedAmt };
 };

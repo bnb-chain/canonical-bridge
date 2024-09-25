@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 import { formatUnits, parseUnits } from 'viem';
-import { useAccount, usePublicClient } from 'wagmi';
+import { useAccount, useBalance, usePublicClient } from 'wagmi';
 import { BridgeType, DeBridgeCreateQuoteResponse } from '@bnb-chain/canonical-bridge-sdk';
 
 import { useAppDispatch, useAppSelector } from '@/modules/store/StoreProvider';
@@ -28,6 +28,7 @@ export const useLoadingBridgeFees = () => {
   const { isAllowSendError } = useGetCBridgeFees();
   const bridgeSDK = useBridgeSDK();
   const { deBridgeAccessToken } = useBridgeConfig();
+  const { data: nativeBalance } = useBalance({ address });
 
   const toToken = useAppSelector((state) => state.transfer.toToken);
   const selectedToken = useAppSelector((state) => state.transfer.selectedToken);
@@ -174,6 +175,12 @@ export const useLoadingBridgeFees = () => {
 
       // layerZero
       if (layerZeroEst.status === 'fulfilled' && layerZeroEst?.value) {
+        const nativeFee = layerZeroEst?.value[0];
+        if (nativeBalance?.value && nativeBalance.value < Number(nativeFee)) {
+          dispatch(setRouteError({ layerZero: 'Insufficient funds to cover native fees' }));
+          dispatch(setEstimatedAmount({ layerZero: 'error' }));
+          return;
+        }
         dispatch(
           setEstimatedAmount({
             layerZero: String(parseUnits(debouncedSendValue, getToDecimals()['layerZero'])),
@@ -256,6 +263,7 @@ export const useLoadingBridgeFees = () => {
     isAllowSendError,
     bridgeSDK,
     deBridgeAccessToken,
+    nativeBalance?.value,
   ]);
 
   return {
