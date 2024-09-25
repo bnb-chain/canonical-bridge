@@ -1,11 +1,15 @@
 import { formatUnits } from 'viem';
 import { BridgeType } from '@bnb-chain/canonical-bridge-sdk';
 import { useCallback } from 'react';
+import { useAccount } from 'wagmi';
 
 import { formatNumber } from '@/core/utils/number';
 import { ICBridgeMaxMinSendAmt } from '@/modules/aggregator/adapters/cBridge/types';
+import { useAppSelector } from '@/modules/store/StoreProvider';
 
 export const useInputValidation = () => {
+  const { chain } = useAccount();
+  const fromChain = useAppSelector((state) => state.transfer.fromChain);
   const validateInput = useCallback(
     ({
       balance,
@@ -32,7 +36,13 @@ export const useInputValidation = () => {
         if (!decimal || !value) {
           return null;
         }
-        if (balance && value > Number(formatUnits(balance, decimal))) {
+        if (
+          balance &&
+          value > Number(formatUnits(balance, decimal)) &&
+          fromChain?.id === chain?.id &&
+          chain &&
+          isConnected
+        ) {
           return { text: `You have insufficient balance`, isError: true };
         }
         if (estimatedAmount?.stargate && bridgeType === 'stargate' && value) {
@@ -70,7 +80,9 @@ export const useInputValidation = () => {
           }
           return { text: `${formatNumber(Number(formatUnits(balance, decimal)))}`, isError: false };
         } else {
-          return { isError: true, text: 'You have insufficient balance' };
+          if (fromChain?.id === chain?.id && chain) {
+            return { isError: true, text: 'You have insufficient balance' };
+          }
         }
       } catch (e: any) {
         // eslint-disable-next-line no-console
