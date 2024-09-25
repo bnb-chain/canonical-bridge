@@ -1,7 +1,7 @@
 {
   "name": "@bnb-chain/canonical-bridge-sdk",
   "version": "0.0.14",
-  "description": "bnb chain bridge aggregator sdk",
+  "description": "canonical bridge sdk",
   "author": "bnb-chain",
   "private": false,
   "license": "MIT",
@@ -11,11 +11,7 @@
     "directory": "packages/canonical-bridge-sdk"
   },
   "keywords": [
-    "bridge",
-    "ethereum",
-    "cBridge",
-    "deBridge",
-    "stargate"
+    "bridge"
   ],
   "type": "module",
   "files": [
@@ -38,16 +34,16 @@
   },
   "devDependencies": {
     "@node-real/walletkit": "2.3.0-alpha.2",
-    "@tanstack/react-query": "^5",
+    "@tanstack/react-query": "~5.56.2",
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "@vitejs/plugin-react": "^4.2.0",
     "axios": "~0.27.2",
-    "react": "^18",
-    "react-dom": "^18",
+    "react": "~18.3.1",
+    "react-dom": "~18.3.1",
     "rollup-plugin-peer-deps-external": "^2.2.4",
     "typescript": "^5",
-    "viem": "~2.0.0",
+    "viem": "~2.21.14",
     "vite": "^4.5.0",
     "vite-plugin-dts": "^3.6.3",
     "wagmi": "^2"

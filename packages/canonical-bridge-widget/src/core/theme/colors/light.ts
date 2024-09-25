@@ -1,8 +1,7 @@
 import { rgba } from 'polished';
 
-import { dark } from './dark';
-
 import { ColorType } from '@/core/theme/colors/types';
+import { dark } from '@/core/theme/colors/dark';
 
 export const light: ColorType = {
   primitives: {
