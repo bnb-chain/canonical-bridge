@@ -55,6 +55,7 @@ export const MaxLink: React.FC = () => {
           onClick={setMaxAmount}
           color={theme.colors[colorMode].text.tertiary}
           textDecoration={'underline'}
+          textUnderlineOffset={'2px'}
           cursor={!!balance ? 'pointer' : 'auto'}
           fontSize={'12px'}
           fontWeight={500}
