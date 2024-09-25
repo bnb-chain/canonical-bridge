@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { formatUnits, parseUnits } from 'viem';
 import { DeBridgeCreateQuoteResponse } from '@bnb-chain/canonical-bridge-sdk';
 import { useAccount, usePublicClient } from 'wagmi';
+import { useIntl } from '@bnb-chain/space';
 
 import { formatNumber } from '@/core/utils/number';
 import { useAppDispatch, useAppSelector } from '@/modules/store/StoreProvider';
@@ -16,6 +17,11 @@ import { DeBridgeAdapter } from '@/modules/aggregator/adapters/deBridge/DeBridge
 import { useBridgeSDK } from '@/core/hooks/useBridgeSDK';
 import { formatFeeAmount } from '@/core/utils/string';
 
+export interface IFeeDetails {
+  value: string;
+  symbol: string;
+}
+
 export const useGetDeBridgeFees = () => {
   const dispatch = useAppDispatch();
   const deBridgeAdapter = useAdapter<DeBridgeAdapter>('deBridge');
@@ -23,6 +29,7 @@ export const useGetDeBridgeFees = () => {
   const { toTokenInfo } = useToTokenInfo();
   const { address, chain } = useAccount();
   const bridgeSDK = useBridgeSDK();
+  const { formatMessage } = useIntl();
 
   const estimatedAmount = useAppSelector((state) => state.transfer.estimatedAmount);
   const fromChain = useAppSelector((state) => state.transfer.fromChain);
@@ -143,9 +150,10 @@ export const useGetDeBridgeFees = () => {
         ?.payload.feeAmount || null;
     if (srcReserveTokenInfo?.decimals && srcReserveTokenInfo?.symbol) {
       return {
-        shorten: `${formatFeeAmount(
-          formatUnits(BigInt(debridgeFee), srcReserveTokenInfo?.decimals),
-        )} ${srcReserveTokenInfo?.symbol}`,
+        shorten: {
+          value: formatFeeAmount(formatUnits(BigInt(debridgeFee), srcReserveTokenInfo?.decimals)),
+          symbol: srcReserveTokenInfo?.symbol,
+        },
         formatted: `${formatNumber(
           Number(formatUnits(BigInt(debridgeFee), srcReserveTokenInfo?.decimals)),
         )} ${srcReserveTokenInfo?.symbol}`,
@@ -168,7 +176,7 @@ export const useGetDeBridgeFees = () => {
         srcChainInTokenIn.decimals,
       );
       return {
-        shorten: `${formatFeeAmount(fee)} ${srcChainInTokenIn?.symbol}`,
+        shorten: { value: formatFeeAmount(fee), symbol: srcChainInTokenIn?.symbol },
         formatted: `${formatNumber(Number(fee), 8)} ${srcChainInTokenIn?.symbol}`,
       };
     } else if (estimatedOperatingExpenses) {
@@ -179,13 +187,13 @@ export const useGetDeBridgeFees = () => {
       });
 
       if (token) {
-        const gas = formatUnits(
+        const fee = formatUnits(
           BigInt(estimatedOperatingExpenses.payload.feeAmount),
           token.decimals,
         );
         return {
-          shorten: `${formatFeeAmount(Number(gas))} ${token.symbol}`,
-          formatted: `${formatNumber(Number(gas), 8)} ${token.symbol}`,
+          shorten: { value: formatFeeAmount(Number(fee)), symbol: token.symbol },
+          formatted: `${formatNumber(Number(fee), 8)} ${token.symbol}`,
         };
       }
     }
@@ -194,20 +202,82 @@ export const useGetDeBridgeFees = () => {
 
   const protocolFee = useMemo(() => {
     if (estimatedAmount?.['deBridge']?.fixFee) {
-      const gas = formatUnits(BigInt(estimatedAmount?.['deBridge']?.fixFee), 18);
+      const fee = formatUnits(BigInt(estimatedAmount?.['deBridge']?.fixFee), 18);
       return {
-        shorten: `${formatFeeAmount(gas)} ${nativeToken}`,
-        formatted: `${formatNumber(Number(gas), 8)} ${nativeToken}`,
+        shorten: `${formatFeeAmount(fee)}`,
+        formatted: `${formatNumber(Number(fee), 8)} ${nativeToken}`,
       };
     } else {
       return null;
     }
   }, [estimatedAmount, nativeToken]);
 
+  const feeDetails = useMemo(() => {
+    const feePerSymbol: IFeeDetails[] = [];
+    const feeBreakdown = [];
+    if (gasInfo?.gas && gasInfo?.gasPrice && nativeToken) {
+      const gasFee = `${formatUnits(gasInfo.gas * gasInfo.gasPrice, 18)}`;
+      feePerSymbol.push({
+        symbol: nativeToken,
+        value: gasFee,
+      });
+      feeBreakdown.push({
+        label: formatMessage({ id: 'route.option.info.gas-fee' }),
+        value: `${formatNumber(Number(gasFee), 8)} ${nativeToken}`,
+      });
+    }
+    if (marketMakerFee) {
+      feePerSymbol.push({
+        symbol: marketMakerFee.shorten.symbol,
+        value: marketMakerFee.shorten.value,
+      });
+      feeBreakdown.push({
+        label: formatMessage({ id: 'route.option.info.market-maker-fee' }),
+        value: marketMakerFee.formatted,
+      });
+    }
+    if (debridgeFee) {
+      feePerSymbol.push({
+        symbol: debridgeFee.shorten.symbol,
+        value: debridgeFee.shorten.value,
+      });
+      feeBreakdown.push({
+        label: formatMessage({ id: 'route.option.info.debridge-fee' }),
+        value: debridgeFee.formatted,
+      });
+    }
+    if (protocolFee && nativeToken) {
+      // native token
+      feePerSymbol.push({
+        symbol: nativeToken,
+        value: protocolFee.shorten,
+      });
+      feeBreakdown.push({
+        label: formatMessage({ id: 'route.option.info.protocol-fee' }),
+        value: protocolFee.formatted,
+      });
+    }
+    const result = feePerSymbol.reduce((acc: { [key: string]: number }, item) => {
+      const symbol = item.symbol;
+      const value = parseFloat(item.value);
+      if (symbol && !acc[symbol]) acc[symbol] = 0;
+      acc[symbol] += value;
+      return acc;
+    }, {} as { [key: string]: number });
+    const resultString = Object.keys(result)
+      .map((symbol) => {
+        return `${result[symbol]} ${symbol}`;
+      })
+      .join(' + ');
+
+    return { summary: resultString ? resultString : '--', breakdown: feeBreakdown };
+  }, [debridgeFee, gasInfo, marketMakerFee, nativeToken, protocolFee, formatMessage]);
+
   return {
     debridgeFee,
     marketMakerFee,
     protocolFee,
     gasInfo,
+    feeDetails,
   };
 };

@@ -1,8 +1,12 @@
-import { ButtonProps, Flex, Text, useColorMode, Button, useTheme } from '@bnb-chain/space';
+import { ButtonProps, Flex, Text, useColorMode, Button, useTheme, Box } from '@bnb-chain/space';
 import { CaretDownIcon } from '@bnb-chain/icons';
+import { useMemo } from 'react';
 
 import { IconImage } from '@/core/components/IconImage';
 import { IBridgeToken } from '@/modules/aggregator/types';
+import { TokenInfoTooltip } from '@/modules/transfer/components/TransferOverview/RouteInfo/TokenInfoTooltip';
+import { formatTokenUrl } from '@/core/utils/string';
+import { useAppSelector } from '@/modules/store/StoreProvider';
 
 export interface SelectButtonProps extends Omit<ButtonProps, 'value'> {
   token?: IBridgeToken;
@@ -11,8 +15,13 @@ export interface SelectButtonProps extends Omit<ButtonProps, 'value'> {
 export function TokenSelectButton(props: SelectButtonProps) {
   const { token, ...restProps } = props;
   const { colorMode } = useColorMode();
+  const fromChain = useAppSelector((state) => state.transfer.fromChain);
 
   const theme = useTheme();
+
+  const tokenUrl = useMemo(() => {
+    return token ? formatTokenUrl(fromChain?.tokenUrlPattern, token.address) : '';
+  }, [token, fromChain?.tokenUrlPattern]);
 
   return (
     <Button
@@ -30,12 +39,16 @@ export function TokenSelectButton(props: SelectButtonProps) {
       {...restProps}
     >
       <Flex gap={'8px'} alignItems={'center'} position={'relative'} overflow="hidden">
-        <IconImage
-          src={token?.icon}
-          w={'32px'}
-          h={'32px'}
-          fallbackBgColor={theme.colors[colorMode].support.primary[4]}
-        />
+        <TokenInfoTooltip tokenAddress={token?.address ?? ''} tokenLinkUrl={tokenUrl}>
+          <Box>
+            <IconImage
+              src={token?.icon}
+              w={'32px'}
+              h={'32px'}
+              fallbackBgColor={theme.colors[colorMode].support.primary[4]}
+            />
+          </Box>
+        </TokenInfoTooltip>
         <Flex
           flexDir={'column'}
           alignItems={'flex-start'}

@@ -1,6 +1,7 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useAccount, useBalance, usePublicClient } from 'wagmi';
-import { encodePacked, pad, parseUnits } from 'viem';
+import { encodePacked, formatUnits, pad, parseUnits } from 'viem';
+import { useIntl } from '@bnb-chain/space';
 
 import { useAppDispatch, useAppSelector } from '@/modules/store/StoreProvider';
 import { useToTokenInfo } from '@/modules/transfer/hooks/useToTokenInfo';
@@ -9,6 +10,8 @@ import { useGetTokenBalance } from '@/core/contract/hooks/useGetTokenBalance';
 import { CAKE_PROXY_OFT_ABI } from '@/modules/aggregator/adapters/layerZero/abi/cakeProxyOFT';
 import { useBridgeSDK } from '@/core/hooks/useBridgeSDK';
 import { setRouteError } from '@/modules/transfer/action';
+import { useGetNativeToken } from '@/modules/transfer/hooks/useGetNativeToken';
+import { formatNumber } from '@/core/utils/number';
 
 export const useGetLayerZeroFees = () => {
   const { address } = useAccount();
@@ -16,6 +19,8 @@ export const useGetLayerZeroFees = () => {
   const bridgeSDK = useBridgeSDK();
   const dispatch = useAppDispatch();
   const { data: nativeBalance } = useBalance({ address });
+  const nativeToken = useGetNativeToken();
+  const { formatMessage } = useIntl();
 
   const selectedToken = useAppSelector((state) => state.transfer.selectedToken);
   const sendValue = useAppSelector((state) => state.transfer.sendValue);
@@ -124,8 +129,33 @@ export const useGetLayerZeroFees = () => {
     nativeBalance?.value,
   ]);
 
+  const feeDetails = useMemo(() => {
+    let feeContent = '';
+    let totalFee = null;
+    const feeBreakdown = [];
+    if (gasInfo?.gas && gasInfo?.gasPrice) {
+      const gas = formatUnits(gasInfo.gas * gasInfo.gasPrice, 18);
+      totalFee = Number(gas);
+      feeBreakdown.push({
+        label: formatMessage({ id: 'route.option.info.gas-fee' }),
+        value: `${formatNumber(Number(gas), 8)} ${nativeToken}`,
+      });
+    }
+    if (nativeFee) {
+      const fee = formatUnits(nativeFee, 18);
+      totalFee = totalFee ? totalFee + Number(fee) : Number(fee);
+      feeBreakdown.push({
+        label: formatMessage({ id: 'route.option.info.native-fee' }),
+        value: `${formatNumber(Number(fee), 8)} ${nativeToken}`,
+      });
+    }
+    feeContent = totalFee !== null ? `${formatNumber(totalFee, 4)} ${nativeToken}` : '';
+    return { summary: feeContent ? feeContent : '--', breakdown: feeBreakdown };
+  }, [gasInfo, nativeToken, nativeFee, formatMessage]);
+
   return {
     nativeFee,
     gasInfo,
+    feeDetails,
   };
 };
