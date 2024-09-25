@@ -36,9 +36,6 @@
     "@tanstack/react-query": "^5"
   },
   "dependencies": {
-    "@bnb-chain/canonical-bridge-sdk": "workspace:*",
-    "@bnb-chain/icons": "workspace:*",
-    "@bnb-chain/space": "workspace:*",
     "@emotion/react": "^11",
     "@emotion/styled": "^11",
     "@node-real/walletkit": "2.3.6-alpha.0",
@@ -50,8 +47,11 @@
     "rc-virtual-list": "~3.14.5"
   },
   "devDependencies": {
+    "@bnb-chain/canonical-bridge-sdk": "workspace:*",
     "@bnb-chain/eslint-config": "workspace:*",
+    "@bnb-chain/icons": "workspace:*",
     "@bnb-chain/prettier-config": "workspace:*",
+    "@bnb-chain/space": "workspace:*",
     "@tanstack/react-query": "~5.56.2",
     "@types/lodash": "~4.17.7",
     "@types/node": "^20",

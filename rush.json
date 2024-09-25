@@ -16,7 +16,8 @@
     "preRushInstall": [],
     "postRushInstall": [
       "node common/scripts/post-rush-install.js",
-      "find ./common -name node_gyp_bins -type d -exec rm -r '{}' \\;"
+      "find ./common -name node_gyp_bins -type d -exec rm -r '{}' \\;",
+      "cd .release && npm install && cd -"
     ],
     "preRushBuild": [],
     "postRushBuild": []
