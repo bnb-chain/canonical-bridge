@@ -1,6 +1,6 @@
 {
   "name": "@bnb-chain/canonical-bridge-sdk",
-  "version": "0.0.14",
+  "version": "0.0.15",
   "description": "canonical bridge sdk",
   "author": "bnb-chain",
   "private": false,
