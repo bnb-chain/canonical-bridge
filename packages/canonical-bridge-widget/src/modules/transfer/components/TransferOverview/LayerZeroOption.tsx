@@ -1,10 +1,9 @@
-import { Flex, useColorMode, useIntl, useTheme } from '@bnb-chain/space';
+import { Flex, useColorMode, useTheme } from '@bnb-chain/space';
 import { useCallback, useMemo } from 'react';
 import { formatUnits } from 'viem';
 
 import { useAppDispatch, useAppSelector } from '@/modules/store/StoreProvider';
 import { useToTokenInfo } from '@/modules/transfer/hooks/useToTokenInfo';
-import { useGetNativeToken } from '@/modules/transfer/hooks/useGetNativeToken';
 import { setTransferActionInfo } from '@/modules/transfer/action';
 import { formatNumber } from '@/core/utils/number';
 import { useGetLayerZeroFees } from '@/modules/aggregator/adapters/layerZero/hooks/useGetLayerZeroFees';
@@ -13,15 +12,11 @@ import { FeesInfo } from '@/modules/transfer/components/TransferOverview/RouteIn
 import { RouteMask } from '@/modules/transfer/components/TransferOverview/RouteInfo/RouteMask';
 import { OtherRouteError } from '@/modules/transfer/components/TransferOverview/RouteInfo/OtherRouteError';
 import { RouteName } from '@/modules/transfer/components/TransferOverview/RouteInfo/RouteName';
-import { formatFeeAmount } from '@/core/utils/string';
 
 export const LayerZeroOption = () => {
   const dispatch = useAppDispatch();
   const { colorMode } = useColorMode();
   const { toTokenInfo, getToDecimals } = useToTokenInfo();
-  const nativeToken = useGetNativeToken();
-
-  const { formatMessage } = useIntl();
 
   const selectedToken = useAppSelector((state) => state.transfer.selectedToken);
   const sendValue = useAppSelector((state) => state.transfer.sendValue);
@@ -29,29 +24,7 @@ export const LayerZeroOption = () => {
   const theme = useTheme();
   const estimatedAmount = useAppSelector((state) => state.transfer.estimatedAmount);
 
-  const { nativeFee, gasInfo } = useGetLayerZeroFees();
-
-  const feeDetails = useMemo(() => {
-    let feeContent = '';
-    const feeBreakdown = [];
-    if (gasInfo?.gas && gasInfo?.gasPrice) {
-      const gas = formatUnits(gasInfo.gas * gasInfo.gasPrice, 18);
-      feeContent += `${formatFeeAmount(Number(gas))} ${nativeToken}`;
-      feeBreakdown.push({
-        label: formatMessage({ id: 'route.option.info.gas-fee' }),
-        value: `${formatNumber(Number(gas), 8)} ${nativeToken}`,
-      });
-    }
-    if (nativeFee) {
-      const fee = formatUnits(nativeFee, 18);
-      feeContent += (!!feeContent ? ` + ` : '') + `${formatFeeAmount(fee)} ${nativeToken}`;
-      feeBreakdown.push({
-        label: formatMessage({ id: 'route.option.info.native-fee' }),
-        value: `${formatNumber(Number(fee), 8)} ${nativeToken}`,
-      });
-    }
-    return { summary: feeContent ? feeContent : '--', breakdown: feeBreakdown };
-  }, [gasInfo, nativeToken, nativeFee, formatMessage]);
+  const { feeDetails } = useGetLayerZeroFees();
 
   const receiveAmt = useMemo(() => {
     return estimatedAmount &&

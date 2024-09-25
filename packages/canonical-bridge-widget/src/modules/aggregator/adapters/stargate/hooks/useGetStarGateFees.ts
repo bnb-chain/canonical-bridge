@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useAccount, usePublicClient } from 'wagmi';
 import { formatUnits } from 'viem';
+import { useIntl } from '@bnb-chain/space';
 
 import { useAppDispatch, useAppSelector } from '@/modules/store/StoreProvider';
 import { useToTokenInfo } from '@/modules/transfer/hooks/useToTokenInfo';
@@ -13,6 +14,7 @@ import { useGetTokenBalance } from '@/core/contract/hooks/useGetTokenBalance';
 import { setRouteError } from '@/modules/transfer/action';
 import { useBridgeSDK } from '@/core/hooks/useBridgeSDK';
 import { formatFeeAmount } from '@/core/utils/string';
+import { useGetNativeToken } from '@/modules/transfer/hooks/useGetNativeToken';
 
 export const useGetStargateFees = () => {
   const dispatch = useAppDispatch();
@@ -20,6 +22,8 @@ export const useGetStargateFees = () => {
   const { address } = useAccount();
   const { args } = useStargateTransferParams();
   const bridgeSDK = useBridgeSDK();
+  const { formatMessage } = useIntl();
+  const nativeToken = useGetNativeToken();
 
   const fromChain = useAppSelector((state) => state.transfer.fromChain);
   const selectedToken = useAppSelector((state) => state.transfer.selectedToken);
@@ -183,11 +187,48 @@ export const useGetStargateFees = () => {
     }
   }, [estimatedAmount, toTokenInfo, getToDecimals]);
 
+  const feeDetails = useMemo(() => {
+    let feeContent = '';
+    let nativeTokenFee = null;
+    const feeBreakdown = [];
+    if (gasInfo?.gas && gasInfo?.gasPrice) {
+      const gas = formatUnits(gasInfo.gas * gasInfo.gasPrice, 18);
+      nativeTokenFee = Number(gas);
+      feeBreakdown.push({
+        label: formatMessage({ id: 'route.option.info.gas-fee' }),
+        value: `${formatNumber(Number(gas), 8)} ${nativeToken}`,
+      });
+    }
+    if (nativeFee) {
+      const fee = formatUnits(nativeFee, 18);
+      nativeTokenFee = nativeTokenFee
+        ? nativeTokenFee + Number(formatUnits(nativeFee, 18))
+        : Number(formatUnits(nativeFee, 18));
+      feeBreakdown.push({
+        label: formatMessage({ id: 'route.option.info.native-fee' }),
+        value: `${formatNumber(Number(fee), 8)} ${nativeToken}`,
+      });
+    }
+    if (nativeTokenFee !== null) {
+      feeContent += `${formatFeeAmount(nativeTokenFee)} ${nativeToken}`;
+    }
+    if (protocolFee?.shorten) {
+      feeContent += (!!feeContent ? ` + ` : '') + `${protocolFee.shorten}`;
+      feeBreakdown.push({
+        label: formatMessage({ id: 'route.option.info.protocol-fee' }),
+        value: protocolFee.formatted ?? '',
+      });
+    }
+
+    return { summary: feeContent ? feeContent : '--', breakdown: feeBreakdown };
+  }, [gasInfo, nativeToken, protocolFee, nativeFee, formatMessage]);
+
   return {
     protocolFee,
     nativeFee,
     gasInfo,
     allowedSendAmount,
     isAllowSendError,
+    feeDetails,
   };
 };

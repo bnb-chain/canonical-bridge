@@ -5,8 +5,14 @@ interface TokenTooltipProps {
   tokenLinkUrl: string;
   tokenAddress: string;
   children: React.ReactNode;
+  isReceiveArea?: boolean;
 }
-export const TokenInfoTooltip = ({ children, tokenAddress, tokenLinkUrl }: TokenTooltipProps) => {
+export const TokenInfoTooltip = ({
+  children,
+  tokenAddress,
+  tokenLinkUrl,
+  isReceiveArea,
+}: TokenTooltipProps) => {
   const theme = useTheme();
   const [isOpen, setIsOpen] = useState(false);
   return (
@@ -45,8 +51,8 @@ export const TokenInfoTooltip = ({ children, tokenAddress, tokenLinkUrl }: Token
         hasArrow
         placement="top-start"
         maxW={'280px'}
-        marginLeft={'-42px'}
-        marginBottom={'-8px'}
+        marginLeft={isReceiveArea ? '-42px' : ''}
+        marginBottom={isReceiveArea ? '-8px' : ''}
       >
         {children}
       </Tooltip>

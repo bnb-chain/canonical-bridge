@@ -35,7 +35,7 @@ export const RouteTitle = ({ receiveAmt, tokenAddress, toTokenInfo }: RouteTitle
         {receiveAmt}
       </Flex>
       {toTokenInfo && tokenAddress && (
-        <TokenInfoTooltip tokenAddress={tokenAddress} tokenLinkUrl={tokenUrl}>
+        <TokenInfoTooltip tokenAddress={tokenAddress} tokenLinkUrl={tokenUrl} isReceiveArea={true}>
           <Flex
             flexDir={'row'}
             gap={'4px'}

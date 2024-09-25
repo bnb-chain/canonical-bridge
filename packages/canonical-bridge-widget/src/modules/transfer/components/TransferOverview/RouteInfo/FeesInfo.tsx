@@ -14,7 +14,7 @@ export const FeesInfo = ({ summary, breakdown, bridgeType }: FeesInfoProps) => {
   const theme = useTheme();
   const { colorMode } = useColorMode();
   const { formatMessage } = useIntl();
-  return summary !== '--' ? (
+  return (
     <Box color={theme.colors[colorMode].text.tertiary} display={'inline-block'} lineHeight={'16px'}>
       <FeesIcon w={'16px'} h={'16px'} mr={'4px'} />
       <Box
@@ -57,5 +57,5 @@ export const FeesInfo = ({ summary, breakdown, bridgeType }: FeesInfoProps) => {
         <InfoCircleIcon display={'inline'} w={'16px'} h={'16px'} />
       </Tooltip>
     </Box>
-  ) : null;
+  );
 };

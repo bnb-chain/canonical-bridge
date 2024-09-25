@@ -1,12 +1,10 @@
 import { Box, Flex, useBreakpointValue, useColorMode, useIntl, useTheme } from '@bnb-chain/space';
 import { useEffect, useMemo } from 'react';
-import { formatUnits } from 'viem';
 
 import { useAppDispatch, useAppSelector } from '@/modules/store/StoreProvider';
 import { useGetReceiveAmount } from '@/modules/transfer/hooks/useGetReceiveAmount';
 import { useToTokenInfo } from '@/modules/transfer/hooks/useToTokenInfo';
 import { formatNumber } from '@/core/utils/number';
-import { useGetNativeToken } from '@/modules/transfer/hooks/useGetNativeToken';
 import { useGetLayerZeroFees } from '@/modules/aggregator/adapters/layerZero/hooks/useGetLayerZeroFees';
 import { RouteTitle } from '@/modules/transfer/components/TransferOverview/RouteInfo/RouteTitle';
 import { EstimatedArrivalTime } from '@/modules/transfer/components/TransferOverview/RouteInfo/EstimatedArrivalTime';
@@ -29,7 +27,6 @@ import {
   setTransferActionInfo,
 } from '@/modules/transfer/action';
 import { useLoadingBridgeFees } from '@/modules/transfer/hooks/useLoadingBridgeFees';
-import { formatFeeAmount } from '@/core/utils/string';
 
 interface ReceiveInfoProps {
   onOpen: () => void;
@@ -41,7 +38,6 @@ export const ReceiveInfo = ({ onOpen }: ReceiveInfoProps) => {
   const theme = useTheme();
   const { colorMode } = useColorMode();
   const { formatMessage } = useIntl();
-  const nativeToken = useGetNativeToken();
   const { loadingBridgeFees } = useLoadingBridgeFees();
   const dispatch = useAppDispatch();
   const isBase = useBreakpointValue({ base: true, lg: false }) ?? false;
@@ -64,138 +60,36 @@ export const ReceiveInfo = ({ onOpen }: ReceiveInfoProps) => {
   const bridgeType = useMemo(() => transferActionInfo?.bridgeType, [transferActionInfo]);
 
   const {
-    baseFee: CBBaseFee,
-    protocolFee: CBProtocolFee,
-    gasInfo: CBGasInfo,
-    cBridgeAllowedAmt,
     isAllowSendError,
+    cBridgeAllowedAmt,
+    feeDetails: cBridgeFeeDetails,
   } = useGetCBridgeFees();
+  const { feeDetails: debridgeFeeDetails } = useGetDeBridgeFees();
   const {
-    debridgeFee,
-    marketMakerFee: DBMarketMakerFee,
-    protocolFee: DBProtocolFee,
-    gasInfo: DBGasInfo,
-  } = useGetDeBridgeFees();
-  const {
-    nativeFee: STNativeFee,
-    gasInfo: STGasInfo,
-    protocolFee: STProtocolFee,
     allowedSendAmount: STAllowedSendAmount,
     isAllowSendError: STIsAllowSendError,
+    feeDetails: STFeeDetails,
   } = useGetStargateFees();
-  const { nativeFee: LZNativeFee, gasInfo: LZGasInfo } = useGetLayerZeroFees();
+  const { feeDetails: LZFeeDetails } = useGetLayerZeroFees();
 
   const feeDetails = useMemo(() => {
     let feeContent = '';
     const feeBreakdown = [];
-    // Gas
-    const gasInfo =
-      bridgeType === 'cBridge'
-        ? CBGasInfo
-        : bridgeType === 'deBridge'
-        ? DBGasInfo
-        : bridgeType === 'stargate'
-        ? STGasInfo
-        : bridgeType === 'layerZero'
-        ? LZGasInfo
-        : null;
-    if (gasInfo && gasInfo?.gas && gasInfo?.gasPrice) {
-      const gasFee = `${formatNumber(
-        Number(formatUnits(gasInfo.gas * gasInfo.gasPrice, 18)),
-        8,
-      )} ${nativeToken}`;
-      feeContent += gasFee;
-      feeBreakdown.push({
-        label: formatMessage({ id: 'route.option.info.gas-fee' }),
-        value: gasFee,
-      });
-    }
-
-    // Other fees
-    if (bridgeType === 'cBridge') {
-      if (CBBaseFee) {
-        feeContent += (!!feeContent ? ` + ` : '') + `${CBBaseFee.shorten}`;
-        feeBreakdown.push({
-          label: formatMessage({ id: 'route.option.info.base-fee' }),
-          value: CBBaseFee.formatted ?? '',
-        });
-      }
-      if (CBProtocolFee) {
-        feeContent += (!!feeContent ? ` + ` : '') + `${CBProtocolFee.shorten}`;
-        feeBreakdown.push({
-          label: formatMessage({ id: 'route.option.info.protocol-fee' }),
-          value: CBProtocolFee.formatted ?? '',
-        });
-      }
-    } else if (bridgeType === 'deBridge') {
-      if (DBMarketMakerFee) {
-        feeContent += (!!feeContent ? ` + ` : '') + `${DBMarketMakerFee.shorten}`;
-        feeBreakdown.push({
-          label: formatMessage({ id: 'route.option.info.market-maker-fee' }),
-          value: DBMarketMakerFee.formatted ?? '',
-        });
-      }
-      if (debridgeFee) {
-        feeContent += (!!feeContent ? ` + ` : '') + `${debridgeFee.shorten}`;
-        feeBreakdown.push({
-          label: formatMessage({ id: 'route.option.info.debridge-fee' }),
-          value: debridgeFee.formatted ?? '',
-        });
-      }
-      if (DBProtocolFee) {
-        feeContent += (!!feeContent ? ` + ` : '') + `${DBProtocolFee.shorten}`;
-        feeBreakdown.push({
-          label: formatMessage({ id: 'route.option.info.protocol-fee' }),
-          value: DBProtocolFee.formatted ?? '',
-        });
-      }
-    } else if (bridgeType === 'stargate') {
-      if (STNativeFee) {
-        const fee = formatUnits(STNativeFee, 18);
-        feeContent +=
-          (!!feeContent ? ` + ` : '') +
-          `${formatFeeAmount(formatNumber(Number(fee), 8))} ${nativeToken}`;
-        feeBreakdown.push({
-          label: formatMessage({ id: 'route.option.info.native-fee' }),
-          value: `${formatNumber(Number(fee), 8)} ${nativeToken}`,
-        });
-      }
-      if (STProtocolFee) {
-        feeContent += (!!feeContent ? ` + ` : '') + `${STProtocolFee.shorten}`;
-        feeBreakdown.push({
-          label: formatMessage({ id: 'route.option.info.protocol-fee' }),
-          value: STProtocolFee.formatted ?? '',
-        });
-      }
-    } else if (bridgeType === 'layerZero') {
-      if (LZNativeFee) {
-        const gas = formatUnits(LZNativeFee, 18);
-        feeContent +=
-          (!!feeContent ? ` + ` : '') + `${formatNumber(Number(gas), 4)} ${nativeToken}`;
-        feeBreakdown.push({
-          label: formatMessage({ id: 'route.option.info.native-fee' }),
-          value: `${formatNumber(Number(gas), 8)} ${nativeToken}`,
-        });
-      }
+    if (bridgeType === 'cBridge' && cBridgeFeeDetails) {
+      feeContent = cBridgeFeeDetails.summary;
+      feeBreakdown.push(...cBridgeFeeDetails.breakdown);
+    } else if (bridgeType === 'deBridge' && debridgeFeeDetails) {
+      feeContent = debridgeFeeDetails.summary;
+      feeBreakdown.push(...debridgeFeeDetails.breakdown);
+    } else if (bridgeType === 'stargate' && STFeeDetails) {
+      feeContent = STFeeDetails.summary;
+      feeBreakdown.push(...STFeeDetails.breakdown);
+    } else if (bridgeType === 'layerZero' && LZFeeDetails) {
+      feeContent = LZFeeDetails.summary;
+      feeBreakdown.push(...LZFeeDetails.breakdown);
     }
     return { summary: feeContent ? feeContent : '--', breakdown: feeBreakdown };
-  }, [
-    formatMessage,
-    bridgeType,
-    CBGasInfo,
-    DBGasInfo,
-    STGasInfo,
-    LZGasInfo,
-    CBBaseFee,
-    CBProtocolFee,
-    DBMarketMakerFee,
-    debridgeFee,
-    DBProtocolFee,
-    STNativeFee,
-    STProtocolFee,
-    LZNativeFee,
-    nativeToken,
-  ]);
+  }, [bridgeType, debridgeFeeDetails, cBridgeFeeDetails, STFeeDetails, LZFeeDetails]);
 
   const allowedAmtContent = useMemo(() => {
     if (cBridgeAllowedAmt && transferActionInfo?.bridgeType === 'cBridge') {

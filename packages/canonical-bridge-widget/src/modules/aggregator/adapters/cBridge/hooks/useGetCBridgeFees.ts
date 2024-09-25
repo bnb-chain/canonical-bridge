@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { formatUnits, parseUnits } from 'viem';
 import { usePublicClient } from 'wagmi';
+import { useIntl } from '@bnb-chain/space';
 
 import { useAppSelector } from '@/modules/store/StoreProvider';
 import { useToTokenInfo } from '@/modules/transfer/hooks/useToTokenInfo';
@@ -10,13 +11,15 @@ import { useGetAllowance } from '@/core/contract/hooks/useGetAllowance';
 import { useCBridgeSendMaxMin } from '@/modules/aggregator/adapters/cBridge/hooks/useCBridgeSendMaxMin';
 import { useCBridgeTransferParams } from '@/modules/aggregator/adapters/cBridge/hooks/useCBridgeTransferParams';
 import { useGetTokenBalance } from '@/core/contract/hooks/useGetTokenBalance';
-import { formatFeeAmount } from '@/core/utils/string';
 import { formatNumber } from '@/core/utils/number';
+import { useGetNativeToken } from '@/modules/transfer/hooks/useGetNativeToken';
 
 export const useGetCBridgeFees = () => {
   const { toTokenInfo, getToDecimals } = useToTokenInfo();
   const { args, bridgeAddress } = useCBridgeTransferParams();
   const { minMaxSendAmt: cBridgeAllowedAmt } = useCBridgeSendMaxMin();
+  const nativeToken = useGetNativeToken();
+  const { formatMessage } = useIntl();
 
   const estimatedAmount = useAppSelector((state) => state.transfer.estimatedAmount);
   const sendValue = useAppSelector((state) => state.transfer.sendValue);
@@ -96,41 +99,96 @@ export const useGetCBridgeFees = () => {
   ]);
 
   const baseFee = useMemo(() => {
-    return estimatedAmount?.['cBridge'] &&
-      toTokenInfo &&
-      Number(sendValue) > 0 &&
-      Number(estimatedAmount?.['cBridge']?.base_fee) > 0
-      ? {
-          shorten: `${formatFeeAmount(
-            formatUnits(estimatedAmount?.['cBridge']?.base_fee, getToDecimals().cBridge || 18),
-          )} ${toTokenInfo?.symbol}`,
-          formatted: `${formatNumber(
-            Number(
-              formatUnits(estimatedAmount?.['cBridge']?.base_fee, getToDecimals().cBridge || 18),
-            ),
-            8,
-          )} ${toTokenInfo?.symbol}`,
-        }
-      : null;
+    try {
+      return estimatedAmount?.['cBridge'] &&
+        Number(sendValue) > 0 &&
+        !!estimatedAmount?.['cBridge']?.base_fee
+        ? {
+            shorten: `${formatUnits(
+              estimatedAmount?.['cBridge']?.base_fee,
+              getToDecimals().cBridge || 18,
+            )}`,
+            formatted: `${formatNumber(
+              Number(
+                formatUnits(estimatedAmount?.['cBridge']?.base_fee, getToDecimals().cBridge || 18),
+              ),
+              8,
+            )} ${toTokenInfo?.symbol}`,
+          }
+        : null;
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.log(error);
+      return null;
+    }
   }, [estimatedAmount, toTokenInfo, sendValue, getToDecimals]);
 
   const protocolFee = useMemo(() => {
-    return estimatedAmount?.['cBridge'] &&
-      toTokenInfo &&
-      Number(estimatedAmount?.['cBridge']?.perc_fee) > 0
-      ? {
-          shorten: `${formatFeeAmount(
-            formatUnits(estimatedAmount?.['cBridge']?.perc_fee, getToDecimals().cBridge || 18),
-          )} ${toTokenInfo?.symbol}`,
-          formatted: `${formatNumber(
-            Number(
-              formatUnits(estimatedAmount?.['cBridge']?.perc_fee, getToDecimals().cBridge || 18),
-            ),
-            8,
-          )} ${toTokenInfo?.symbol}`,
-        }
-      : null;
-  }, [estimatedAmount, toTokenInfo, getToDecimals]);
+    try {
+      return estimatedAmount?.['cBridge'] &&
+        Number(sendValue) > 0 &&
+        !!estimatedAmount?.['cBridge']?.perc_fee
+        ? {
+            shorten: `${formatUnits(
+              estimatedAmount?.['cBridge']?.perc_fee,
+              getToDecimals().cBridge || 18,
+            )}`,
+            formatted: `${formatNumber(
+              Number(
+                formatUnits(estimatedAmount?.['cBridge']?.perc_fee, getToDecimals().cBridge || 18),
+              ),
+              8,
+            )} ${toTokenInfo?.symbol}`,
+          }
+        : null;
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.log(error);
+    }
+  }, [estimatedAmount, toTokenInfo, getToDecimals, sendValue]);
 
-  return { baseFee, protocolFee, gasInfo, isAllowSendError, bridgeAddress, cBridgeAllowedAmt };
+  const feeDetails = useMemo(() => {
+    let feeContent = '';
+    let totalFee = null;
+    const feeBreakdown = [];
+    if (gasInfo?.gas && gasInfo?.gasPrice) {
+      const gasFee = `${formatNumber(
+        Number(formatUnits(gasInfo.gas * gasInfo.gasPrice, 18)),
+        8,
+      )} ${nativeToken}`;
+      feeContent += gasFee;
+      feeBreakdown.push({
+        label: formatMessage({ id: 'route.option.info.gas-fee' }),
+        value: gasFee,
+      });
+    }
+    if (baseFee) {
+      totalFee = Number(baseFee.shorten);
+      feeBreakdown.push({
+        label: formatMessage({ id: 'route.option.info.base-fee' }),
+        value: baseFee.formatted,
+      });
+    }
+    if (protocolFee) {
+      totalFee = totalFee ? totalFee + Number(protocolFee.shorten) : Number(protocolFee.shorten);
+      feeBreakdown.push({
+        label: formatMessage({ id: 'route.option.info.protocol-fee' }),
+        value: protocolFee.formatted,
+      });
+    }
+    if (totalFee !== null) {
+      feeContent += `${totalFee.toString()} ${toTokenInfo?.symbol}`;
+    }
+    return { summary: !!feeContent ? feeContent : '--', breakdown: feeBreakdown };
+  }, [gasInfo, nativeToken, protocolFee, baseFee, formatMessage, toTokenInfo?.symbol]);
+
+  return {
+    baseFee,
+    protocolFee,
+    gasInfo,
+    isAllowSendError,
+    bridgeAddress,
+    cBridgeAllowedAmt,
+    feeDetails,
+  };
 };

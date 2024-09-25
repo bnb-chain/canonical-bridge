@@ -1,10 +1,9 @@
-import { Flex, useColorMode, useIntl, useTheme } from '@bnb-chain/space';
+import { Flex, useColorMode, useTheme } from '@bnb-chain/space';
 import { useCallback, useMemo } from 'react';
 import { formatUnits } from 'viem';
 
 import { setTransferActionInfo } from '@/modules/transfer/action';
 import { useToTokenInfo } from '@/modules/transfer/hooks/useToTokenInfo';
-import { useGetNativeToken } from '@/modules/transfer/hooks/useGetNativeToken';
 import { useAppDispatch, useAppSelector } from '@/modules/store/StoreProvider';
 import { formatNumber } from '@/core/utils/number';
 import { RouteTitle } from '@/modules/transfer/components/TransferOverview/RouteInfo/RouteTitle';
@@ -20,16 +19,14 @@ interface DeBridgeOptionProps {
 }
 
 export const DeBridgeOption = ({}: DeBridgeOptionProps) => {
-  const nativeToken = useGetNativeToken();
   const { colorMode } = useColorMode();
   const dispatch = useAppDispatch();
   const { toTokenInfo, getToDecimals } = useToTokenInfo();
-  const { formatMessage } = useIntl();
 
   const transferActionInfo = useAppSelector((state) => state.transfer.transferActionInfo);
   const estimatedAmount = useAppSelector((state) => state.transfer.estimatedAmount);
   const theme = useTheme();
-  const { protocolFee, marketMakerFee, debridgeFee, gasInfo } = useGetDeBridgeFees();
+  const { feeDetails } = useGetDeBridgeFees();
 
   const receiveAmt = useMemo(() => {
     return estimatedAmount?.['deBridge'] &&
@@ -47,41 +44,6 @@ export const DeBridgeOption = ({}: DeBridgeOptionProps) => {
         )
       : '--';
   }, [estimatedAmount, toTokenInfo, getToDecimals]);
-
-  const feeDetails = useMemo(() => {
-    let feeContent = '';
-    const feeBreakdown = [];
-    if (gasInfo?.gas && gasInfo?.gasPrice) {
-      const gasFee = `${formatUnits(gasInfo.gas * gasInfo.gasPrice, 18)}`;
-      feeContent += `${formatNumber(Number(gasFee), 4)} ${nativeToken}`;
-      feeBreakdown.push({
-        label: formatMessage({ id: 'route.option.info.gas-fee' }),
-        value: `${formatNumber(Number(gasFee), 8)} ${nativeToken}`,
-      });
-    }
-    if (marketMakerFee) {
-      feeContent += (!!feeContent ? ` + ` : '') + `${marketMakerFee.shorten}`;
-      feeBreakdown.push({
-        label: formatMessage({ id: 'route.option.info.market-maker-fee' }),
-        value: marketMakerFee.formatted,
-      });
-    }
-    if (debridgeFee) {
-      feeContent += (!!feeContent ? ` + ` : '') + `${debridgeFee.shorten}`;
-      feeBreakdown.push({
-        label: formatMessage({ id: 'route.option.info.debridge-fee' }),
-        value: debridgeFee.formatted,
-      });
-    }
-    if (protocolFee) {
-      feeContent += (!!feeContent ? ` + ` : '') + `${protocolFee.shorten}`;
-      feeBreakdown.push({
-        label: formatMessage({ id: 'route.option.info.protocol-fee' }),
-        value: protocolFee.formatted,
-      });
-    }
-    return { summary: feeContent ? feeContent : '--', breakdown: feeBreakdown };
-  }, [debridgeFee, gasInfo, marketMakerFee, nativeToken, protocolFee, formatMessage]);
 
   const isError = useMemo(
     () => estimatedAmount?.deBridge === 'error' || receiveAmt === '--' || false,

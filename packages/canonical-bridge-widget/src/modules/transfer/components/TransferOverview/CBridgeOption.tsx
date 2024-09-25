@@ -6,7 +6,6 @@ import { useToTokenInfo } from '@/modules/transfer/hooks/useToTokenInfo';
 import { setRouteError, setTransferActionInfo } from '@/modules/transfer/action';
 import { useAppDispatch, useAppSelector } from '@/modules/store/StoreProvider';
 import { formatNumber } from '@/core/utils/number';
-import { useGetNativeToken } from '@/modules/transfer/hooks/useGetNativeToken';
 import { RouteTitle } from '@/modules/transfer/components/TransferOverview/RouteInfo/RouteTitle';
 import { EstimatedArrivalTime } from '@/modules/transfer/components/TransferOverview/RouteInfo/EstimatedArrivalTime';
 import { FeesInfo } from '@/modules/transfer/components/TransferOverview/RouteInfo/FeesInfo';
@@ -20,11 +19,7 @@ export const CBridgeOption = () => {
   const dispatch = useAppDispatch();
   const { colorMode } = useColorMode();
   const { toTokenInfo, getToDecimals } = useToTokenInfo();
-  const nativeToken = useGetNativeToken();
-  const { baseFee, protocolFee, gasInfo, isAllowSendError, bridgeAddress, cBridgeAllowedAmt } =
-    useGetCBridgeFees();
-
-  const { formatMessage } = useIntl();
+  const { feeDetails, isAllowSendError, bridgeAddress, cBridgeAllowedAmt } = useGetCBridgeFees();
 
   const selectedToken = useAppSelector((state) => state.transfer.selectedToken);
   const transferActionInfo = useAppSelector((state) => state.transfer.transferActionInfo);
@@ -60,37 +55,6 @@ export const CBridgeOption = () => {
       );
     }
   }, [dispatch, estimatedAmount]);
-
-  const feeDetails = useMemo(() => {
-    let feeContent = '';
-    const feeBreakdown = [];
-    if (gasInfo?.gas && gasInfo?.gasPrice) {
-      const gasFee = `${formatNumber(
-        Number(formatUnits(gasInfo.gas * gasInfo.gasPrice, 18)),
-        8,
-      )} ${nativeToken}`;
-      feeContent += gasFee;
-      feeBreakdown.push({
-        label: formatMessage({ id: 'route.option.info.gas-fee' }),
-        value: gasFee,
-      });
-    }
-    if (baseFee) {
-      feeContent += (!!feeContent ? ` + ` : '') + `${baseFee.shorten}`;
-      feeBreakdown.push({
-        label: formatMessage({ id: 'route.option.info.base-fee' }),
-        value: baseFee.formatted,
-      });
-    }
-    if (protocolFee) {
-      feeContent += (!!feeContent ? ` + ` : '') + `${protocolFee.shorten}`;
-      feeBreakdown.push({
-        label: formatMessage({ id: 'route.option.info.protocol-fee' }),
-        value: protocolFee.formatted,
-      });
-    }
-    return { summary: feeContent ? feeContent : '--', breakdown: feeBreakdown };
-  }, [gasInfo, nativeToken, protocolFee, baseFee, formatMessage]);
 
   const isError = useMemo(
     () => estimatedAmount?.cBridge === 'error' || isAllowSendError || receiveAmt === '--' || false,
@@ -159,7 +123,7 @@ export const CBridgeOption = () => {
             : null
         }
       />
-      <OtherRouteError bridgeType={'cBridge'} />
+      {!isAllowSendError && <OtherRouteError bridgeType={'cBridge'} />}
     </Flex>
   );
 };
