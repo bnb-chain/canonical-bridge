@@ -16,6 +16,7 @@ export function Header(props: FlexProps) {
       justifyContent="space-between"
       px={['20px', '20px', '20px', '64px']}
       bg={theme.colors[colorMode].layer[2].default}
+      zIndex={1}
       {...props}
     >
       <LogoIcon />
