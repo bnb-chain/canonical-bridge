@@ -24,6 +24,7 @@ import {
 import { aggregateTokens, IGetTokensParams } from '@/modules/aggregator/shared/aggregateTokens';
 import { aggregateToToken, IGetToTokenParams } from '@/modules/aggregator/shared/aggregateToToken';
 import { useBridgeConfig } from '@/CanonicalBridgeProvider';
+import { useIsMounted } from '@/core/hooks/useIsMounted';
 
 export interface AggregatorContextProps {
   isReady: boolean;
@@ -159,6 +160,11 @@ export function AggregatorProvider(props: AggregatorProviderProps) {
       },
     };
   }, [assetsPrefix, config]);
+
+  const isMounted = useIsMounted();
+  if (!isMounted || !value.isReady) {
+    return null;
+  }
 
   return <AggregatorContext.Provider value={value}>{children}</AggregatorContext.Provider>;
 }

@@ -16,7 +16,7 @@ export const ProfileMenu = () => {
   const { formatMessage } = useIntl();
   const { colorMode } = useColorMode();
   const { address } = useAccount();
-  const { data: balance } = useEvmBalance();
+  const { data: balance } = useEvmBalance(address);
   const { disconnect } = useDisconnect();
 
   const walletIcon = useWalletIcon();
