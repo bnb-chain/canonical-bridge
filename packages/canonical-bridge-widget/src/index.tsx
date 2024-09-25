@@ -1,3 +1,3 @@
 export * from '@/CanonicalBridgeProvider';
 export * from '@/modules/transfer';
-export * from '@/modules/wallet/components/ConnectWalletButton';
+export * from '@/modules/wallet/components/ConnectButton';

@@ -8,6 +8,7 @@ import { StoreProvider } from '@/modules/store/StoreProvider';
 import { WalletProvider } from '@/modules/wallet/WalletProvider';
 import { ThemeProvider, ThemeProviderProps } from '@/core/theme/ThemeProvider';
 import { TokenPricesProvider } from '@/modules/aggregator/components/TokenPricesProvider';
+import { useIsMounted } from '@/core/hooks/useIsMounted';
 
 export interface CanonicalBridgeConfig {
   appearance: {
@@ -58,6 +59,11 @@ export function CanonicalBridgeProvider(props: CanonicalBridgeProviderProvider) 
       ...config,
     };
   }, [config, routeContentBottom]);
+
+  const isMounted = useIsMounted();
+  if (!isMounted) {
+    return null;
+  }
 
   return (
     <CanonicalBridgeContext.Provider value={value}>

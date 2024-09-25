@@ -35,6 +35,8 @@ runs:
     - name: Install & build
       shell: bash
       run: |
+        node .release/scripts/install.js
+
         node common/scripts/install-run-rush.js install -t @bnb-chain/canonical-bridge-sdk
         node common/scripts/install-run-rush.js build -t @bnb-chain/canonical-bridge-sdk
 

@@ -4,11 +4,13 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import dts from 'vite-plugin-dts';
 import peerDepsExternal from 'rollup-plugin-peer-deps-external';
+import cssInjectedByJsPlugin from 'vite-plugin-css-injected-by-js';
 
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
     react(),
+    cssInjectedByJsPlugin(),
     dts({
       include: 'src',
     }),
@@ -21,19 +23,14 @@ export default defineConfig({
   },
   build: {
     target: 'esnext',
-    minify: false,
     lib: {
       formats: ['es'],
       entry: {
-        'src/index': 'src/index.tsx',
+        index: 'src/index.tsx',
       },
     },
     rollupOptions: {
-      plugins: [
-        peerDepsExternal({
-          includeDependencies: true,
-        }),
-      ],
+      plugins: [peerDepsExternal()],
     },
   },
 });

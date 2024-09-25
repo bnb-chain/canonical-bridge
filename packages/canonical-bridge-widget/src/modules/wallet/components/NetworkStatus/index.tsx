@@ -12,7 +12,7 @@ import { DropdownButton } from '@/modules/wallet/components/Dropdown/DropdownBut
 import { DropdownList } from '@/modules/wallet/components/Dropdown/DropdownList';
 import { DropdownItem } from '@/modules/wallet/components/Dropdown/DropdownItem';
 
-export function HeaderNetworkStatus() {
+export function NetworkStatus() {
   const fromChain = useAppSelector((state) => state.transfer.fromChain);
   const { assetsPrefix } = useBridgeConfig();
 
@@ -36,20 +36,21 @@ export function HeaderNetworkStatus() {
         return (
           <>
             <DropdownButton isActive={isOpen} isWarning={isWrongNetwork}>
-              <Flex alignItems="center" gap="8px">
-                <IconImage src={iconUrl} boxSize="24px" />
-                <Flex flexDir="column" gap="0" alignItems="flex-start">
-                  <Text fontSize="14px">{chain.name}</Text>
-                  {isWrongNetwork && (
-                    <Text
-                      color={theme.colors[colorMode].support.warning['3']}
-                      fontSize={'12px'}
-                      fontWeight={400}
-                    >
-                      {formatMessage({ id: 'wallet.network.wrong-network' })}
-                    </Text>
-                  )}
-                </Flex>
+              <IconImage src={iconUrl} boxSize="24px" />
+              <Flex flexDir="column" gap="0" alignItems="flex-start" textAlign="left">
+                <Text fontSize="14px" noOfLines={1}>
+                  {chain.name}
+                </Text>
+                {isWrongNetwork && (
+                  <Text
+                    color={theme.colors[colorMode].support.warning['3']}
+                    fontSize={'12px'}
+                    fontWeight={400}
+                    noOfLines={1}
+                  >
+                    {formatMessage({ id: 'wallet.network.wrong-network' })}
+                  </Text>
+                )}
               </Flex>
             </DropdownButton>
 

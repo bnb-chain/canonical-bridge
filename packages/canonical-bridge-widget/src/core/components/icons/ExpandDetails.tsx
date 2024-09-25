@@ -4,8 +4,8 @@ export const ExpandDetailsIcon = (props: IconProps) => {
   return (
     <Icon
       xmlns="http://www.w3.org/2000/svg"
-      width="17"
-      height="16"
+      width="17px"
+      height="16px"
       viewBox="0 0 17 16"
       fill="none"
       {...props}

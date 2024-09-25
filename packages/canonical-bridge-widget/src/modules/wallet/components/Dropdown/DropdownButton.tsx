@@ -15,12 +15,10 @@ export function DropdownButton(props: DropdownButtonProps) {
     warning: {
       default: theme.colors[colorMode].support.warning['3'],
       hover: theme.colors[colorMode].support.warning['3'],
-      active: theme.colors[colorMode].support.warning['3'],
     },
     normal: {
-      default: theme.colors[colorMode].border['3'],
-      hover: theme.colors[colorMode].border['4'],
-      active: theme.colors[colorMode].border.brand,
+      default: theme.colors[colorMode].button.select.border,
+      hover: theme.colors[colorMode].button.select.hover,
     },
   };
 
@@ -28,24 +26,27 @@ export function DropdownButton(props: DropdownButtonProps) {
 
   return (
     <MenuButton
-      flexShrink={0}
       h={'40px'}
+      minW={'40px'}
       pl="12px"
       pr="16px"
       lineHeight="16px"
       outline={isActive ? '2px solid' : '1px solid'}
-      outlineColor={isActive ? colors.active : colors.default}
-      bg={isActive ? theme.colors[colorMode].layer['3'].hover : undefined}
+      outlineColor={colors.default}
+      bg={isActive ? theme.colors[colorMode].button.select.background.hover : undefined}
       borderRadius={'100px'}
       fontWeight={500}
       transitionDuration="normal"
+      justifyContent="center"
+      border="none"
       _hover={{
         outlineWidth: 2,
-        outlineColor: isActive ? colors.active : colors.hover,
+        outlineColor: colors.hover,
+        bg: theme.colors[colorMode].button.select.background.hover,
       }}
       {...restProps}
     >
-      <Flex alignItems="center" gap="8px">
+      <Flex alignItems="center" gap="8px" justifyContent="center">
         {children}
       </Flex>
     </MenuButton>

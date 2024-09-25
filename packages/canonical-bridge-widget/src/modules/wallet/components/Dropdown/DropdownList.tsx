@@ -13,7 +13,8 @@ export function DropdownList(props: DropdownListProps) {
       bg={theme.colors[colorMode].popover.background}
       borderRadius={'8px'}
       maxH={'400px'}
-      w="240px"
+      minW="200px"
+      maxW="300px"
       overflowY="auto"
       sx={{
         '::-webkit-scrollbar': {

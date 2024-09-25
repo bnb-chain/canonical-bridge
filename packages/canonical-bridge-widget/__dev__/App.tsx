@@ -2,11 +2,11 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 import { CanonicalBridgeConfig, CanonicalBridgeProvider, TransferWidget } from '@/index';
 import { transferConfig } from '@/dev/data';
-import { en as messages } from '@/dev/locales/en';
-import { dark } from '@/dev/theme/dark';
-import { ExternalBridgesPanel } from '@/dev/components/ExternalBridgesPanel';
-import { Layout } from '@/dev/components/Layout';
-import { ASSET_PREFIX, TRANSFER_CONFIG_ENDPOINT } from '@/dev/constants';
+import { en as messages } from '@/dev/core/locales/en';
+import { dark } from '@/dev/core/theme/dark';
+import { ASSET_PREFIX, TRANSFER_CONFIG_ENDPOINT } from '@/dev/core/constants';
+import { ExternalBridgesPanel } from '@/dev/core/components/ExternalBridgesPanel';
+import { Layout } from '@/dev/core/components/Layout';
 
 const queryClient = new QueryClient({
   defaultOptions: {

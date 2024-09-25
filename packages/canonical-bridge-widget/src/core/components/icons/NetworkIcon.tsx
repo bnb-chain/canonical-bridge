@@ -2,7 +2,7 @@ import { Icon, IconProps } from '@bnb-chain/space';
 
 export function NetworkIcon(props: IconProps) {
   return (
-    <Icon width="16" height="16" viewBox="0 0 16 16" fill="currentColor" {...props}>
+    <Icon width="16px" height="16px" viewBox="0 0 16 16" fill="currentColor" {...props}>
       <mask id="mask0_2473_30846" maskUnits="userSpaceOnUse" x="0" y="0" width="16" height="16">
         <rect width="16" height="16" fill="#D9D9D9" />
       </mask>

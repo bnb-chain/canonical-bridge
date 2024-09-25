@@ -2,7 +2,7 @@ import { Icon, IconProps } from '@bnb-chain/space';
 
 export function ErrorIcon(props: IconProps) {
   return (
-    <Icon width="16" height="16" viewBox="0 0 16 16" fill="none" {...props}>
+    <Icon width="16px" height="16px" viewBox="0 0 16 16" fill="none" {...props}>
       <path
         d="M1.3335 8.00065C1.3335 4.31875 4.31826 1.33398 8.00016 1.33398C11.6821 1.33398 14.6668 4.31875 14.6668 8.00065C14.6668 11.6825 11.6821 14.6673 8.00016 14.6673C4.31826 14.6673 1.3335 11.6825 1.3335 8.00065Z"
         fill="#D31724"

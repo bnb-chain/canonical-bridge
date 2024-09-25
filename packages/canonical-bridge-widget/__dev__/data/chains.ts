@@ -1,9 +1,7 @@
-import { IChainConfig } from '@/modules/aggregator/types';
-
-export const chains: IChainConfig[] = [
+export const chains = [
   {
     id: 1,
-    name: 'Ethereum Mainnet',
+    name: 'Ethereum',
     nativeCurrency: {
       name: 'Ether',
       symbol: 'ETH',
@@ -17,7 +15,7 @@ export const chains: IChainConfig[] = [
   },
   {
     id: 10,
-    name: 'OP Mainnet',
+    name: 'Optimism',
     nativeCurrency: {
       name: 'Ether',
       symbol: 'ETH',
@@ -31,7 +29,7 @@ export const chains: IChainConfig[] = [
   },
   {
     id: 14,
-    name: 'Flare Mainnet',
+    name: 'Flare',
     nativeCurrency: {
       name: 'FLR',
       symbol: 'FLR',
@@ -73,7 +71,7 @@ export const chains: IChainConfig[] = [
   },
   {
     id: 57,
-    name: 'Syscoin Mainnet',
+    name: 'Syscoin',
     nativeCurrency: {
       name: 'Syscoin',
       symbol: 'SYS',
@@ -87,7 +85,7 @@ export const chains: IChainConfig[] = [
   },
   {
     id: 58,
-    name: 'Ontology Mainnet',
+    name: 'Ontology',
     nativeCurrency: {
       name: 'ONG',
       symbol: 'ONG',
@@ -101,7 +99,7 @@ export const chains: IChainConfig[] = [
   },
   {
     id: 66,
-    name: 'OKXChain Mainnet',
+    name: 'OKXChain',
     nativeCurrency: {
       name: 'OKXChain Global Utility Token',
       symbol: 'OKT',
@@ -143,7 +141,7 @@ export const chains: IChainConfig[] = [
   },
   {
     id: 128,
-    name: 'Huobi ECO Chain Mainnet',
+    name: 'Huobi ECO Chain',
     nativeCurrency: {
       name: 'Huobi ECO Chain Native Token',
       symbol: 'HT',
@@ -158,7 +156,7 @@ export const chains: IChainConfig[] = [
   },
   {
     id: 137,
-    name: 'Polygon Mainnet',
+    name: 'Polygon',
     nativeCurrency: {
       name: 'MATIC',
       symbol: 'MATIC',
@@ -172,7 +170,7 @@ export const chains: IChainConfig[] = [
   },
   {
     id: 169,
-    name: 'Manta Pacific Mainnet',
+    name: 'Manta Pacific',
     nativeCurrency: {
       name: 'Ether',
       symbol: 'ETH',
@@ -186,7 +184,7 @@ export const chains: IChainConfig[] = [
   },
   {
     id: 196,
-    name: 'X Layer Mainnet',
+    name: 'X Layer',
     nativeCurrency: {
       name: 'X Layer Global Utility Token',
       symbol: 'OKB',
@@ -200,7 +198,7 @@ export const chains: IChainConfig[] = [
   },
   {
     id: 204,
-    name: 'opBNB Mainnet',
+    name: 'opBNB',
     nativeCurrency: {
       name: 'BNB Chain Native Token',
       symbol: 'BNB',
@@ -214,7 +212,7 @@ export const chains: IChainConfig[] = [
   },
   {
     id: 248,
-    name: 'Oasys Mainnet',
+    name: 'Oasys',
     nativeCurrency: {
       name: 'OAS',
       symbol: 'OAS',
@@ -256,7 +254,7 @@ export const chains: IChainConfig[] = [
   },
   {
     id: 314,
-    name: 'Filecoin - Mainnet',
+    name: 'Filecoin',
     nativeCurrency: {
       name: 'filecoin',
       symbol: 'FIL',
@@ -270,7 +268,7 @@ export const chains: IChainConfig[] = [
   },
   {
     id: 324,
-    name: 'zkSync Mainnet',
+    name: 'zkSync',
     nativeCurrency: {
       name: 'Ether',
       symbol: 'ETH',
@@ -299,7 +297,7 @@ export const chains: IChainConfig[] = [
   },
   {
     id: 416,
-    name: 'SX Network Mainnet',
+    name: 'SX Network',
     nativeCurrency: {
       name: 'SX Network',
       symbol: 'SX',
@@ -355,7 +353,7 @@ export const chains: IChainConfig[] = [
   },
   {
     id: 1088,
-    name: 'Metis Andromeda Mainnet',
+    name: 'Metis Andromeda',
     nativeCurrency: {
       name: 'Metis',
       symbol: 'METIS',
@@ -425,7 +423,7 @@ export const chains: IChainConfig[] = [
   },
   {
     id: 1625,
-    name: 'Gravity Alpha Mainnet',
+    name: 'Gravity Alpha',
     nativeCurrency: {
       name: 'Gravity',
       symbol: 'G.',
@@ -439,7 +437,7 @@ export const chains: IChainConfig[] = [
   },
   {
     id: 2001,
-    name: 'Milkomeda C1 Mainnet',
+    name: 'Milkomeda C1',
     nativeCurrency: {
       name: 'milkAda',
       symbol: 'mADA',
@@ -453,7 +451,7 @@ export const chains: IChainConfig[] = [
   },
   {
     id: 2002,
-    name: 'Milkomeda A1 Mainnet',
+    name: 'Milkomeda A1',
     nativeCurrency: {
       name: 'milkALGO',
       symbol: 'mALGO',
@@ -509,7 +507,7 @@ export const chains: IChainConfig[] = [
   },
   {
     id: 8217,
-    name: 'Klaytn Mainnet Cypress',
+    name: 'Klaytn',
     nativeCurrency: {
       name: 'KLAY',
       symbol: 'KLAY',
@@ -622,7 +620,7 @@ export const chains: IChainConfig[] = [
   },
   {
     id: 42220,
-    name: 'Celo Mainnet',
+    name: 'Celo',
     nativeCurrency: {
       name: 'CELO',
       symbol: 'CELO',
@@ -650,7 +648,7 @@ export const chains: IChainConfig[] = [
   },
   {
     id: 43114,
-    name: 'Avalanche C-Chain',
+    name: 'Avalanche',
     nativeCurrency: {
       name: 'Avalanche',
       symbol: 'AVAX',
@@ -692,7 +690,7 @@ export const chains: IChainConfig[] = [
   },
   {
     id: 71402,
-    name: 'Godwoken Mainnet',
+    name: 'Godwoken',
     nativeCurrency: {
       name: 'pCKB',
       symbol: 'pCKB',
@@ -721,7 +719,7 @@ export const chains: IChainConfig[] = [
   },
   {
     id: 112358,
-    name: 'Metachain One Mainnet',
+    name: 'Metachain One',
     nativeCurrency: {
       name: 'Metao',
       symbol: 'METAO',
@@ -735,7 +733,7 @@ export const chains: IChainConfig[] = [
   },
   {
     id: 167000,
-    name: 'Taiko Mainnet',
+    name: 'Taiko',
     nativeCurrency: {
       name: 'Ether',
       symbol: 'ETH',
@@ -749,7 +747,7 @@ export const chains: IChainConfig[] = [
   },
   {
     id: 210425,
-    name: 'PlatON Mainnet',
+    name: 'PlatON',
     nativeCurrency: {
       name: 'LAT',
       symbol: 'lat',
@@ -778,7 +776,7 @@ export const chains: IChainConfig[] = [
   },
   {
     id: 1313161554,
-    name: 'Aurora Mainnet',
+    name: 'Aurora',
     nativeCurrency: {
       name: 'Ether',
       symbol: 'ETH',

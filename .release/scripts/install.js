@@ -6,6 +6,7 @@ process.chdir(rootDir);
 
 console.log('Install changeset dependencies...');
 exec('pnpm install', (err, stdout) => {
+  console.log('shshshshsh');
   if (stdout) {
     console.log(stdout);
   }

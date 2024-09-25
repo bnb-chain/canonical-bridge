@@ -1,4 +1,3 @@
-import { CopyIcon } from '@bnb-chain/icons';
 import {
   Box,
   theme,
@@ -9,6 +8,8 @@ import {
   FlexProps,
   IconProps,
 } from '@bnb-chain/space';
+
+import { CopyIcon } from '@/core/components/icons/CopyIcon';
 
 export const CopyAddress = ({
   content,
@@ -28,11 +29,8 @@ export const CopyAddress = ({
   return (
     <Flex justifyContent={'center'} alignItems={'center'} position={'relative'} {...otherProps}>
       <CopyIcon
-        color={theme.colors[colorMode].text.placeholder}
-        h={'20px'}
-        w={'20px'}
+        boxSize={'20px'}
         cursor={'pointer'}
-        _hover={{ color: theme.colors[colorMode].text.primary }}
         {...iconStyle}
         onClick={() => {
           onCopy();

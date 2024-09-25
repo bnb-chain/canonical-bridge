@@ -18,7 +18,7 @@
   "devDependencies": {
     "@bnb-chain/eslint-config": "workspace:*",
     "@bnb-chain/prettier-config": "workspace:*",
-    "@types/react": "18.0.12",
+    "@types/react": "~18.3.8",
     "eslint": "^8.8.0",
     "eslint-plugin-sort-exports": "~0.7.0",
     "lint-staged": "~12.1.7",
@@ -29,7 +29,7 @@
     "@chakra-ui/icons": "~2.0.19",
     "@chakra-ui/system": "~2.5.8",
     "@typescript-eslint/eslint-plugin": "~8.2.0",
-    "react": "~18.2.0"
+    "react": "~18.3.1"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": [

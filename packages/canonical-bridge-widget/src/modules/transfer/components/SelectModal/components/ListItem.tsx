@@ -1,5 +1,6 @@
 import { Box, Flex, FlexProps, Tooltip, useColorMode, useIntl, useTheme } from '@bnb-chain/space';
 import { InfoCircleIcon } from '@bnb-chain/icons';
+import React from 'react';
 
 import { IconImage } from '@/core/components/IconImage';
 
@@ -11,7 +12,7 @@ interface ListItemProps extends FlexProps {
   incompatibleTooltip?: string;
 }
 
-export function ListItem(props: ListItemProps) {
+export const ListItem = React.forwardRef((props: ListItemProps) => {
   const {
     isActive = false,
     isDisabled = false,
@@ -79,4 +80,6 @@ export function ListItem(props: ListItemProps) {
       </Flex>
     </Box>
   );
-}
+});
+
+ListItem.displayName = 'ListItem';

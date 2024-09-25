@@ -2,7 +2,7 @@ import { Icon, IconProps } from '@bnb-chain/space';
 
 export function WalletIcon(props: IconProps) {
   return (
-    <Icon width="24" height="24" viewBox="0 0 24 24" fill="currentColor" {...props}>
+    <Icon width="24px" height="24px" viewBox="0 0 24 24" fill="currentColor" {...props}>
       <mask id="mask0_2324_9279" maskUnits="userSpaceOnUse" x="0" y="0" width="24" height="24">
         <rect width="24" height="24" fill="#D9D9D9" />
       </mask>

@@ -1,21 +1,13 @@
-import {
-  Box,
-  Button,
-  Flex,
-  TYPOGRAPHY_STYLES,
-  theme,
-  useColorMode,
-  useIntl,
-} from '@bnb-chain/space';
+import { Box, Center, Flex, useColorMode, useIntl, useTheme } from '@bnb-chain/space';
 import { DisconnectIcon } from '@bnb-chain/icons';
 import { useAccount, useDisconnect } from 'wagmi';
+import { useWalletKit } from '@node-real/walletkit';
+import { useMemo } from 'react';
 
 import { CopyAddress } from '@/core/components/CopyAddress';
 import { formatNumber } from '@/core/utils/number';
 import { formatAppAddress } from '@/core/utils/address';
-import { WalletIcon } from '@/core/components/icons/WalletIcon';
 import { useEvmBalance } from '@/modules/wallet/hooks/useEvmBalance';
-import { AccountAvatar } from '@/modules/wallet/components/AccountAvatar';
 import { Dropdown } from '@/modules/wallet/components/Dropdown/Dropdown';
 import { DropdownButton } from '@/modules/wallet/components/Dropdown/DropdownButton';
 import { DropdownList } from '@/modules/wallet/components/Dropdown/DropdownList';
@@ -27,92 +19,82 @@ export const ProfileMenu = () => {
   const { data: balance } = useEvmBalance();
   const { disconnect } = useDisconnect();
 
+  const walletIcon = useWalletIcon();
+  const theme = useTheme();
+
   return (
     <Dropdown>
       {({ isOpen }) => (
         <>
-          <DropdownButton isActive={isOpen}>
-            <Flex alignItems="center">
-              <Box mr={{ base: 0, md: '8px' }}>
-                <WalletIcon boxSize={'24px'} color={theme.colors[colorMode].text.tertiary} />
-              </Box>
-              {formatAppAddress({ address })}
-            </Flex>
+          <DropdownButton
+            isActive={isOpen}
+            pl={{ base: '0', md: '12px' }}
+            pr={{ base: '0', md: '16px' }}
+          >
+            <Center
+              sx={{
+                'svg, img': {
+                  boxSize: '24px',
+                },
+              }}
+            >
+              {walletIcon}
+            </Center>
+            <Box display={{ base: 'none', md: 'block' }}>{formatAppAddress({ address })}</Box>
           </DropdownButton>
 
-          <DropdownList>
-            <Box>
-              <Box h={'80px'} />
-              <Flex
-                borderRadius={'50%'}
-                justifyContent={'center'}
-                alignItems={'center'}
-                position={'absolute'}
-                top={'48px'}
-                left={'50%'}
-                transform={`translateX(-50%)`}
-                border={`2px solid ${theme.colors[colorMode].layer['4'].default}`}
-              >
-                <AccountAvatar size={'64px'} address={address} />
-              </Flex>
-            </Box>
+          <DropdownList overflowY="visible" minW="240px">
+            <Flex alignItems="center" p="16px 16px 12px">
+              <Flex gap="12px">
+                <Center
+                  sx={{
+                    'svg, img': {
+                      boxSize: '32px',
+                    },
+                  }}
+                >
+                  {walletIcon}
+                </Center>
 
-            <Flex
-              justifyContent={'center'}
-              alignItems={'center'}
-              pt={'48px'}
-              pb={'4px'}
-              gap={'8px'}
-              color={theme.colors[colorMode].text.primary}
-              {...TYPOGRAPHY_STYLES['body']['lg']}
-              fontWeight={500}
-            >
-              {formatAppAddress({ address })}
-              <CopyAddress
-                iconStyle={{
-                  height: '24px',
-                  width: '24px',
-                }}
-                h={'24px'}
-                w={'24px'}
-                content={address}
-              />
+                <Flex flexDir="column">
+                  <Flex gap="4px" alignItems="center">
+                    {formatAppAddress({ address })}
+                    <CopyAddress boxSize={'20px'} content={address} />
+                  </Flex>
+                  <Flex color={theme.colors[colorMode].text.secondary}>
+                    {formatNumber(Number(balance?.formatted), 4)} {balance?.symbol}
+                  </Flex>
+                </Flex>
+              </Flex>
             </Flex>
 
-            {balance && (
-              <Flex
-                alignItems={'center'}
-                px={'24px'}
-                fontSize={'16px'}
-                lineHeight={'24px'}
-                background={theme.colors[colorMode].layer['4'].default}
-                justifyContent={'center'}
-                color={theme.colors[colorMode].text.secondary}
-              >
-                {formatNumber(Number(balance?.formatted), 4)} {balance?.symbol}
-              </Flex>
-            )}
             <Flex
-              alignItems={'center'}
-              px={'24px'}
-              pt={'24px'}
-              pb={'32px'}
-              fontSize={'16px'}
-              lineHeight={'24px'}
-              background={theme.colors[colorMode].layer['4'].default}
-              justifyContent={'center'}
-              color={theme.colors[colorMode].text.secondary}
+              borderTop={`1px solid ${theme.colors[colorMode].popover.separator}`}
+              py="8px"
+              onClick={() => {
+                disconnect();
+              }}
             >
-              <Button
-                size={'lg'}
-                variant={'outline'}
-                leftIcon={<DisconnectIcon w={'24px'} h={'24px'} />}
-                onClick={() => {
-                  disconnect();
+              <Flex
+                h="40px"
+                alignItems="center"
+                w="100%"
+                gap="8px"
+                cursor="pointer"
+                fontSize={'14px'}
+                lineHeight={'16px'}
+                fontWeight={400}
+                color={theme.colors[colorMode].text.danger}
+                transitionDuration="normal"
+                _hover={{
+                  bg: theme.colors[colorMode].popover.selected,
+                  color: theme.colors[colorMode].text.primary,
                 }}
+                px="16px"
               >
-                {formatMessage({ id: 'wallet.button.disconnect' })}
-              </Button>
+                <DisconnectIcon boxSize={'16px'} />
+                {formatMessage({ id: 'wallet.popover.disconnect' })}
+              </Flex>
             </Flex>
           </DropdownList>
         </>
@@ -120,3 +102,22 @@ export const ProfileMenu = () => {
     </Dropdown>
   );
 };
+
+function useWalletIcon() {
+  const { connector } = useAccount();
+  const { colorMode } = useColorMode();
+  const { wallets } = useWalletKit();
+
+  const icon = useMemo(() => {
+    const selectedWallet = wallets.find((item) => item.id === connector?.id);
+    if (selectedWallet) {
+      const { transparent: transparentLogos } = selectedWallet.logos ?? {};
+      const transparentLogo = (transparentLogos as any)?.[colorMode] ?? transparentLogos;
+      return transparentLogo;
+    }
+
+    return null;
+  }, [colorMode, connector?.id, wallets]);
+
+  return icon;
+}
