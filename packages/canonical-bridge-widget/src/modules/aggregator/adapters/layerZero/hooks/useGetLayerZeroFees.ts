@@ -12,6 +12,7 @@ import { useBridgeSDK } from '@/core/hooks/useBridgeSDK';
 import { setRouteError } from '@/modules/transfer/action';
 import { useGetNativeToken } from '@/modules/transfer/hooks/useGetNativeToken';
 import { formatNumber } from '@/core/utils/number';
+import { formatFeeAmount } from '@/core/utils/string';
 
 export const useGetLayerZeroFees = () => {
   const { address } = useAccount();
@@ -149,7 +150,7 @@ export const useGetLayerZeroFees = () => {
         value: `${formatNumber(Number(fee), 8)} ${nativeToken}`,
       });
     }
-    feeContent = totalFee !== null ? `${formatNumber(totalFee, 4)} ${nativeToken}` : '';
+    feeContent = totalFee !== null ? `${formatFeeAmount(totalFee)} ${nativeToken}` : '';
     return { summary: feeContent ? feeContent : '--', breakdown: feeBreakdown };
   }, [gasInfo, nativeToken, nativeFee, formatMessage]);
 

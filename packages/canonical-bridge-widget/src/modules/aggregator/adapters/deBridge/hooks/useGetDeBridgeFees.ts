@@ -154,9 +154,9 @@ export const useGetDeBridgeFees = () => {
           value: formatFeeAmount(formatUnits(BigInt(debridgeFee), srcReserveTokenInfo?.decimals)),
           symbol: srcReserveTokenInfo?.symbol,
         },
-        formatted: `${formatNumber(
-          Number(formatUnits(BigInt(debridgeFee), srcReserveTokenInfo?.decimals)),
-        )} ${srcReserveTokenInfo?.symbol}`,
+        formatted: `${
+          (formatNumber(Number(formatUnits(BigInt(debridgeFee), srcReserveTokenInfo?.decimals))), 8)
+        } ${srcReserveTokenInfo?.symbol}`,
       };
     } else {
       return null;

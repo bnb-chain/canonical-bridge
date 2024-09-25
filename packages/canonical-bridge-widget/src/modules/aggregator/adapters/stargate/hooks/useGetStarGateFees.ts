@@ -210,15 +210,16 @@ export const useGetStargateFees = () => {
       });
     }
     if (nativeTokenFee !== null) {
-      feeContent += `${formatNumber(nativeTokenFee, 4)} ${nativeToken}`;
+      feeContent += `${formatFeeAmount(nativeTokenFee)} ${nativeToken}`;
     }
-    if (protocolFee) {
+    if (protocolFee?.shorten) {
       feeContent += (!!feeContent ? ` + ` : '') + `${protocolFee.shorten}`;
       feeBreakdown.push({
         label: formatMessage({ id: 'route.option.info.protocol-fee' }),
         value: protocolFee.formatted ?? '',
       });
     }
+
     return { summary: feeContent ? feeContent : '--', breakdown: feeBreakdown };
   }, [gasInfo, nativeToken, protocolFee, nativeFee, formatMessage]);
 
