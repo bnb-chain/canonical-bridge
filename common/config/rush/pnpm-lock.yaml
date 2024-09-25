@@ -265,13 +265,19 @@ importers:
         version: 2.12.2(@react-native-async-storage/async-storage@1.24.0)(@tanstack/query-core@5.56.2)(@tanstack/react-query@5.56.2(react@18.3.1))(@types/react@18.3.8)(bufferutil@4.0.8)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(rollup@3.29.4)(supports-color@9.4.0)(typescript@5.5.4)(utf-8-validate@5.0.9)(viem@2.21.14(bufferutil@4.0.8)(typescript@5.5.4)(utf-8-validate@5.0.9))
 
   ../../packages/canonical-bridge-widget:
-    dependencies:
+    devDependencies:
       '@bnb-chain/canonical-bridge-sdk':
         specifier: workspace:*
         version: link:../canonical-bridge-sdk
+      '@bnb-chain/eslint-config':
+        specifier: workspace:*
+        version: link:../eslint-config
       '@bnb-chain/icons':
         specifier: workspace:*
         version: link:../icons
+      '@bnb-chain/prettier-config':
+        specifier: workspace:*
+        version: link:../prettier-config
       '@bnb-chain/space':
         specifier: workspace:*
         version: link:../space
@@ -284,31 +290,6 @@ importers:
       '@node-real/walletkit':
         specifier: 2.3.6-alpha.0
         version: 2.3.6-alpha.0(@babel/core@7.24.9)(@babel/runtime@7.25.0)(@react-native-async-storage/async-storage@1.24.0)(@tanstack/react-query@5.56.2(react@18.3.1))(bs58@5.0.0)(bufferutil@4.0.8)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(tslib@2.7.0)(utf-8-validate@5.0.9)(viem@2.21.14(bufferutil@4.0.8)(typescript@5.5.4)(utf-8-validate@5.0.9))(wagmi@2.12.14(@react-native-async-storage/async-storage@1.24.0)(@tanstack/query-core@5.56.2)(@tanstack/react-query@5.56.2(react@18.3.1))(@types/react@18.3.8)(bufferutil@4.0.8)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(rollup@3.29.4)(typescript@5.5.4)(utf-8-validate@5.0.9)(viem@2.21.14(bufferutil@4.0.8)(typescript@5.5.4)(utf-8-validate@5.0.9)))
-      accept-language-parser:
-        specifier: ~1.5.0
-        version: 1.5.0
-      axios:
-        specifier: ~1.6.8
-        version: 1.6.8
-      ethers:
-        specifier: ^5.7.2
-        version: 5.7.2(bufferutil@4.0.8)(utf-8-validate@5.0.9)
-      lodash:
-        specifier: ~4.17.21
-        version: 4.17.21
-      polished:
-        specifier: ~4.3.1
-        version: 4.3.1
-      rc-virtual-list:
-        specifier: ~3.14.5
-        version: 3.14.5(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-    devDependencies:
-      '@bnb-chain/eslint-config':
-        specifier: workspace:*
-        version: link:../eslint-config
-      '@bnb-chain/prettier-config':
-        specifier: workspace:*
-        version: link:../prettier-config
       '@tanstack/react-query':
         specifier: ~5.56.2
         version: 5.56.2(react@18.3.1)
@@ -330,18 +311,33 @@ importers:
       alchemy-sdk:
         specifier: ~3.4.1
         version: 3.4.1(bufferutil@4.0.8)(utf-8-validate@5.0.9)
+      axios:
+        specifier: ~1.6.8
+        version: 1.6.8
       eslint:
         specifier: ^8.8.0
         version: 8.47.0
       eslint-config-next:
         specifier: 14.2.3
         version: 14.2.3(eslint@8.47.0)(typescript@5.5.4)
+      ethers:
+        specifier: ^5.7.2
+        version: 5.7.2(bufferutil@4.0.8)(utf-8-validate@5.0.9)
       lint-staged:
         specifier: ~13.0.3
         version: 13.0.3(supports-color@9.4.0)
+      lodash:
+        specifier: ~4.17.21
+        version: 4.17.21
+      polished:
+        specifier: ~4.3.1
+        version: 4.3.1
       prettier:
         specifier: ~2.7.1
         version: 2.7.1
+      rc-virtual-list:
+        specifier: ~3.14.5
+        version: 3.14.5(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       react:
         specifier: ~18.3.1
         version: 18.3.1
@@ -5014,9 +5010,6 @@ packages:
   abort-controller@3.0.0:
     resolution: {integrity: sha512-h8lQ8tacZYnR3vNQTgibj+tODHI5/+l06Au2Pcriv/Gmet0eaj4TwWH41sO9wnHDiQsEj19q0drzdWdeAHtweg==}
     engines: {node: '>=6.5'}
-
-  accept-language-parser@1.5.0:
-    resolution: {integrity: sha512-QhyTbMLYo0BBGg1aWbeMG4ekWtds/31BrEU+DONOg/7ax23vxpL03Pb7/zBmha2v7vdD3AyzZVWBVGEZxKOXWw==}
 
   accepts@1.3.8:
     resolution: {integrity: sha512-PYAthTa2m2VKxuvSD3DPC/Gy+U+sOA1LAuT8mkmRuvw+NACSaeXEQ+NHcVF7rONl6qcaxV3Uuemwawk+7+SJLw==}
@@ -19275,8 +19268,6 @@ snapshots:
   abort-controller@3.0.0:
     dependencies:
       event-target-shim: 5.0.1
-
-  accept-language-parser@1.5.0: {}
 
   accepts@1.3.8:
     dependencies:
