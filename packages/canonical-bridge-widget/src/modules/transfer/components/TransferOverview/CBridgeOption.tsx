@@ -25,6 +25,7 @@ export const CBridgeOption = () => {
   const transferActionInfo = useAppSelector((state) => state.transfer.transferActionInfo);
   const estimatedAmount = useAppSelector((state) => state.transfer.estimatedAmount);
   const sendValue = useAppSelector((state) => state.transfer.sendValue);
+  const routeError = useAppSelector((state) => state.transfer.routeError);
   const theme = useTheme();
 
   const receiveAmt = useMemo(() => {
@@ -57,8 +58,13 @@ export const CBridgeOption = () => {
   }, [dispatch, estimatedAmount]);
 
   const isError = useMemo(
-    () => estimatedAmount?.cBridge === 'error' || isAllowSendError || receiveAmt === '--' || false,
-    [estimatedAmount?.cBridge, isAllowSendError, receiveAmt],
+    () =>
+      estimatedAmount?.cBridge === 'error' ||
+      (routeError && routeError?.['cBridge']) ||
+      isAllowSendError ||
+      receiveAmt === '--' ||
+      false,
+    [estimatedAmount?.cBridge, isAllowSendError, receiveAmt, routeError],
   );
 
   const onSelectBridge = useCallback(() => {
