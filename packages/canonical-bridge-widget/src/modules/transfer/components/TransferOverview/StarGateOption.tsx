@@ -13,7 +13,7 @@ import { AllowedSendAmount } from '@/modules/transfer/components/TransferOvervie
 import { RouteMask } from '@/modules/transfer/components/TransferOverview/RouteInfo/RouteMask';
 import { OtherRouteError } from '@/modules/transfer/components/TransferOverview/RouteInfo/OtherRouteError';
 import { RouteName } from '@/modules/transfer/components/TransferOverview/RouteInfo/RouteName';
-import { useGetStargateFees } from '@/modules/aggregator/adapters/stargate/hooks/useGetStargateFees';
+import { useGetStargateFees } from '@/modules/aggregator/adapters/stargate/hooks/useGetStarGateFees';
 
 export const StarGateOption = () => {
   const dispatch = useAppDispatch();

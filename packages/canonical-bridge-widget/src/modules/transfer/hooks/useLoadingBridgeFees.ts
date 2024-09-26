@@ -119,7 +119,7 @@ export const useLoadingBridgeFees = () => {
       } else if (debridgeEst.status === 'rejected') {
         // Only show route on low amount error
         if (debridgeEst.reason.message === 'ERROR_LOW_GIVE_AMOUNT') {
-          dispatch(setRouteError({ deBridge: 'Token amount is too small' }));
+          dispatch(setRouteError({ deBridge: 'Please increase your send amount' }));
           dispatch(setEstimatedAmount({ deBridge: 'error' }));
         } else {
           dispatch(setEstimatedAmount({ deBridge: undefined }));

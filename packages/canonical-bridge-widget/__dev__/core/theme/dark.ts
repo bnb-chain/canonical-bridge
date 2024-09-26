@@ -40,7 +40,7 @@ export const dark = {
       text: '#FFFFFF',
       arrow: '#C4C5CB',
       border: '#373943',
-      background: { default: '#1E2026', hover: '#373943' },
+      background: { default: '#373943', hover: '#373943' },
     },
     primary: {
       default: '#F7F7F8',
