@@ -15,10 +15,12 @@ export function DropdownButton(props: DropdownButtonProps) {
     warning: {
       default: theme.colors[colorMode].support.warning['3'],
       hover: theme.colors[colorMode].support.warning['3'],
+      active: theme.colors[colorMode].support.warning['3'],
     },
     normal: {
-      default: theme.colors[colorMode].button.select.border,
-      hover: theme.colors[colorMode].button.select.hover,
+      default: theme.colors[colorMode].input.border.default,
+      hover: theme.colors[colorMode].input.border.hover,
+      active: theme.colors[colorMode].input.border.active,
     },
   };
 
@@ -32,7 +34,7 @@ export function DropdownButton(props: DropdownButtonProps) {
       pr="16px"
       lineHeight="16px"
       outline={isActive ? '2px solid' : '1px solid'}
-      outlineColor={colors.default}
+      outlineColor={isActive ? colors.active : colors.default}
       bg={isActive ? theme.colors[colorMode].button.select.background.hover : undefined}
       borderRadius={'100px'}
       fontWeight={500}
@@ -41,8 +43,7 @@ export function DropdownButton(props: DropdownButtonProps) {
       border="none"
       _hover={{
         outlineWidth: 2,
-        outlineColor: colors.hover,
-        bg: theme.colors[colorMode].button.select.background.hover,
+        outlineColor: isActive ? colors.active : colors.hover,
       }}
       {...restProps}
     >

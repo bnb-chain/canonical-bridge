@@ -8,12 +8,17 @@ import { walletStyles } from '@/core/theme/walletStyles';
 import { useBridgeConfig } from '@/index';
 
 export interface ThemeProviderProps {
+  colorMode?: ColorMode;
   children: React.ReactNode;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   themeConfig?: { dark?: any; light?: any };
 }
 
-export const ThemeProvider = ({ children, themeConfig }: ThemeProviderProps) => {
+export const ThemeProvider = ({
+  children,
+  colorMode = 'dark',
+  themeConfig,
+}: ThemeProviderProps) => {
   const { appName: APP_NAME } = useBridgeConfig();
   const colorModeManager = createLocalStorageManager(`${APP_NAME}-color-mode`);
   const customTheme = useMemo(() => {
@@ -25,7 +30,7 @@ export const ThemeProvider = ({ children, themeConfig }: ThemeProviderProps) => 
       },
       config: {
         ...theme.config,
-        initialColorMode: 'dark',
+        initialColorMode: colorMode,
         useSystemColorMode: false,
       },
       styles: {
@@ -43,7 +48,7 @@ export const ThemeProvider = ({ children, themeConfig }: ThemeProviderProps) => 
         light: merge(light, themeConfig?.light),
       },
     };
-  }, [themeConfig]);
+  }, [colorMode, themeConfig]);
 
   return (
     <ChakraProvider

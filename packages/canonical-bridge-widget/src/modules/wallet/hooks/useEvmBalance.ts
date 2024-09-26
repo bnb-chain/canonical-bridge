@@ -10,12 +10,12 @@ export interface FormattedBalance {
 
 export function useEvmBalance(address?: Address, enabled = true) {
   const publicClient = usePublicClient();
-  const { chain } = useAccount();
+  const { chain, chainId } = useAccount();
 
   return useQuery<FormattedBalance>({
-    queryKey: ['evm:getBalance', address],
+    queryKey: ['evm:getBalance', address, chainId],
     refetchInterval: 1000 * 5,
-    enabled: !!address && enabled && !!chain,
+    enabled: !!address && enabled && !!chain && !!chainId,
     queryFn: async () => {
       const balance = await publicClient!.getBalance({
         address: address as Address,

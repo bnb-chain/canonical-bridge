@@ -24,22 +24,24 @@ export const ProfileMenu = () => {
 
   return (
     <Dropdown>
-      {({ isOpen }) => (
+      {({ isOpen, onClose }) => (
         <>
           <DropdownButton
             isActive={isOpen}
             pl={{ base: '0', md: '12px' }}
             pr={{ base: '0', md: '16px' }}
           >
-            <Center
-              sx={{
-                'svg, img': {
-                  boxSize: '24px',
-                },
-              }}
-            >
-              {walletIcon}
-            </Center>
+            {walletIcon && (
+              <Center
+                sx={{
+                  'svg, img': {
+                    boxSize: '24px',
+                  },
+                }}
+              >
+                {walletIcon}
+              </Center>
+            )}
             <Box display={{ base: 'none', md: 'block' }}>{formatAppAddress({ address })}</Box>
           </DropdownButton>
 
@@ -73,6 +75,7 @@ export const ProfileMenu = () => {
               py="8px"
               onClick={() => {
                 disconnect();
+                onClose();
               }}
             >
               <Flex

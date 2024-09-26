@@ -193,9 +193,19 @@ export type ColorType = {
   };
   input: {
     1: string;
-    border: string;
     background: string;
     title: string;
+    border: {
+      default: string;
+      hover: string;
+      active: string;
+    };
+  };
+  popover: {
+    background: string;
+    selected: string;
+    shadow: string;
+    separator: string;
   };
 };
 

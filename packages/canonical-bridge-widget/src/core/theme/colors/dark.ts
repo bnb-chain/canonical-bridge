@@ -10,9 +10,13 @@ export const dark: ColorType = {
   },
   input: {
     1: '#373943',
-    border: '#373943',
     background: '#1E2026',
     title: '#8C8F9B',
+    border: {
+      default: '#373943',
+      hover: '#5C5F6A',
+      active: '#FFE900',
+    },
   },
   text: {
     primary: '#FFFFFF',
@@ -183,4 +187,10 @@ export const dark: ColorType = {
     1: `linear-gradient(180deg, ${'#14151A'} 0%, ${'#000000'} 100%)`,
   },
   overlay: rgba('#14151A', 0.6),
+  popover: {
+    background: '#373943',
+    selected: '#5C5F6A',
+    shadow: ' 0px 4px 8px 0px rgba(0, 0, 0, 0.48)',
+    separator: '#5C5F6A',
+  },
 };

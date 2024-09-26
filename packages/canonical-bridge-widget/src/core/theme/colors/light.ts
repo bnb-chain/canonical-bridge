@@ -11,9 +11,13 @@ export const light: ColorType = {
   },
   input: {
     1: '#F7F7F8',
-    border: '#E1E2E5',
     background: '#FFFFFF',
     title: '#8C8F9B',
+    border: {
+      default: '#E1E2E5',
+      hover: '#E1E2E5',
+      active: '#FFE900',
+    },
   },
   text: {
     primary: '#181A1E',
@@ -189,4 +193,10 @@ export const light: ColorType = {
     ...dark.gradient,
   },
   overlay: rgba('#14151A', 0.2),
+  popover: {
+    background: '#F7F7F8',
+    selected: '#E1E2E5',
+    shadow: ' 0px 4px 8px 0px rgba(0, 0, 0, 0.48)',
+    separator: '#E1E2E5',
+  },
 };
