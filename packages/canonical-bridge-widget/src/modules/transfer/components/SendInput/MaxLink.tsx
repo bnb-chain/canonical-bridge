@@ -59,10 +59,14 @@ export const MaxLink: React.FC = () => {
           fontWeight={500}
           pb={`1px`}
           transitionDuration="normal"
-          _hover={{
-            color: !!balance
-              ? theme.colors[colorMode].text.primary
-              : theme.colors[colorMode].text.tertiary,
+          sx={{
+            '@media (hover:hover)': {
+              _hover: {
+                color: !!balance
+                  ? theme.colors[colorMode].text.primary
+                  : theme.colors[colorMode].text.tertiary,
+              },
+            },
           }}
         >
           {formatMessage({ id: 'from.section.balance.button.max' })}{' '}
