@@ -140,7 +140,7 @@ export const SendInput: React.FC = () => {
           background={'none'}
           borderRadius={0}
           onKeyDown={handleKeyPress}
-          pattern="[0-9]*"
+          // pattern="[0-9]*"
           step={'0.000000001'}
           onWheel={(e: any) => e.target.blur()}
         />

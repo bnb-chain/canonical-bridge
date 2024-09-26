@@ -13,6 +13,7 @@ import {
   setEstimatedAmount,
   setIsGlobalFeeLoading,
   setIsRefreshing,
+  setSortedRouteList,
   setTransferActionInfo,
 } from '@/modules/transfer/action';
 import { useAppDispatch, useAppSelector } from '@/modules/store/StoreProvider';
@@ -42,6 +43,7 @@ export function TransferOverview({ routeContentBottom }: { routeContentBottom?: 
   const estimatedAmount = useAppSelector((state) => state.transfer.estimatedAmount);
   const toTokenInfo = useAppSelector((state) => state.transfer.toToken);
   const bridgeType = useAppSelector((state) => state.transfer.transferActionInfo)?.bridgeType;
+  const sortedRouteList = useAppSelector((state) => state.transfer.sortedRouteList);
 
   const debouncedSendValue = useDebounce(sendValue, DEBOUNCE_DELAY);
 
@@ -104,6 +106,11 @@ export function TransferOverview({ routeContentBottom }: { routeContentBottom?: 
     });
   }, [options, bridgeType]);
 
+  useEffect(() => {
+    if (!sortedOptions || sortedOptions.length === 0) return;
+    dispatch(setSortedRouteList(sortedOptions));
+  }, [sortedOptions, dispatch]);
+
   return (
     <Flex flexDir="column" ml={['0', '0', '0', '24px']} gap={['12px', '12px', '12px', '24px']}>
       {showRoute && (
@@ -149,7 +156,7 @@ export function TransferOverview({ routeContentBottom }: { routeContentBottom?: 
                 maxHeight={'698px'}
                 w={['auto', 'auto', 'auto', '384px']}
               >
-                {!sortedOptions.length || isGlobalFeeLoading ? (
+                {!sortedRouteList || !sortedRouteList?.length || isGlobalFeeLoading ? (
                   <Flex flexDir={'column'} gap={'12px'}>
                     <RouteSkeleton />
                     <RouteSkeleton />
@@ -161,7 +168,7 @@ export function TransferOverview({ routeContentBottom }: { routeContentBottom?: 
                     gap={'12px'}
                     display={isGlobalFeeLoading ? 'none' : 'flex'}
                   >
-                    {sortedOptions?.map((bridge: ReactNode) => bridge)}
+                    {sortedRouteList?.map((bridge: ReactNode) => bridge)}
                   </Flex>
                 )}
               </Box>
