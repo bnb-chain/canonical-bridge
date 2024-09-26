@@ -1,4 +1,4 @@
-import { Flex, useColorMode, useIntl, useTheme } from '@bnb-chain/space';
+import { Flex, useColorMode, useTheme } from '@bnb-chain/space';
 import { useCallback, useEffect, useMemo } from 'react';
 import { formatUnits } from 'viem';
 

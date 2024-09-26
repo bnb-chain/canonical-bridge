@@ -19,11 +19,11 @@ export const useLoadingTokenBalance = () => {
     if (typeof initBalance === 'bigint') {
       setBalance(initBalance);
     } else if (!selectedToken) {
-      setBalance(0n);
-    } else {
-      setBalance(0n);
+      setBalance(null);
+    } else if (!chain || chain?.id !== fromChain?.id) {
+      setBalance(null);
     }
-  }, [initBalance, selectedToken]);
+  }, [initBalance, selectedToken, chain, fromChain]);
 
   useEffect(() => {
     let mount = true;
