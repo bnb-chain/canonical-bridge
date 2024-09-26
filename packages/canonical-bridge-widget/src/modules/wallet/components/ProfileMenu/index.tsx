@@ -109,7 +109,10 @@ function useWalletIcon() {
   const { wallets } = useWalletKit();
 
   const icon = useMemo(() => {
-    const selectedWallet = wallets.find((item) => item.id === connector?.id);
+    const selectedWallet = wallets.find(
+      (item) => item.id === connector?.id || item.name === connector?.name,
+    );
+
     if (selectedWallet) {
       const { transparent: transparentLogos } = selectedWallet.logos ?? {};
       const transparentLogo = (transparentLogos as any)?.[colorMode] ?? transparentLogos;
