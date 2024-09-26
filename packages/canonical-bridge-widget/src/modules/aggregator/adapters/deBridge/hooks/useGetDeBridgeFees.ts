@@ -153,14 +153,13 @@ export const useGetDeBridgeFees = () => {
       response?.estimation.costsDetails?.filter((cost) => cost.type === 'DlnProtocolFee')?.[0]
         ?.payload.feeAmount || null;
     if (srcReserveTokenInfo?.decimals && srcReserveTokenInfo?.symbol) {
+      const fees = formatUnits(BigInt(debridgeFee), srcReserveTokenInfo?.decimals);
       return {
         shorten: {
-          value: formatFeeAmount(formatUnits(BigInt(debridgeFee), srcReserveTokenInfo?.decimals)),
+          value: formatFeeAmount(fees),
           symbol: srcReserveTokenInfo?.symbol,
         },
-        formatted: `${
-          (formatNumber(Number(formatUnits(BigInt(debridgeFee), srcReserveTokenInfo?.decimals))), 8)
-        } ${srcReserveTokenInfo?.symbol}`,
+        formatted: `${formatNumber(Number(fees), 8)} ${srcReserveTokenInfo?.symbol}`,
       };
     } else {
       return null;
