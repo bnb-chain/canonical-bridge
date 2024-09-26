@@ -1,3 +1,5 @@
+import { ReactNode } from 'react';
+
 import * as actions from '@/modules/transfer/action';
 import { createReducer } from '@/modules/store/createReducer';
 import { IBridgeChain, IBridgeToken } from '@/modules/aggregator/types';
@@ -17,6 +19,7 @@ export interface ITransferState {
   isTransferable: boolean;
   isRefreshing?: boolean;
   estimatedAmount?: IEstimatedAmount;
+  sortedRouteList?: ReactNode[];
   toAccount: {
     address?: string;
   };
@@ -38,6 +41,7 @@ const initStates: ITransferState = {
   isTransferable: true,
   isRefreshing: false,
   estimatedAmount: undefined,
+  sortedRouteList: undefined,
   toAccount: {
     address: '',
   },
@@ -102,6 +106,11 @@ export default createReducer(initStates, (builder) => {
   builder.addCase(actions.setRouteError, (state, { payload }) => ({
     ...state,
     routeError: { ...state.routeError, ...payload },
+  }));
+
+  builder.addCase(actions.setSortedRouteList, (state, { payload }) => ({
+    ...state,
+    sortedRouteList: payload,
   }));
 
   builder.addCase(actions.setToAccount, (state, { payload }) => ({
