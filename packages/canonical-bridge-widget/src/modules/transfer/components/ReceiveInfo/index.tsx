@@ -13,7 +13,7 @@ import { AllowedSendAmount } from '@/modules/transfer/components/TransferOvervie
 import { RouteName } from '@/modules/transfer/components/TransferOverview/RouteInfo/RouteName';
 import { useGetCBridgeFees } from '@/modules/aggregator/adapters/cBridge/hooks/useGetCBridgeFees';
 import { useGetDeBridgeFees } from '@/modules/aggregator/adapters/deBridge/hooks/useGetDeBridgeFees';
-import { useGetStargateFees } from '@/modules/aggregator/adapters/stargate/hooks/useGetStargateFees';
+import { useGetStargateFees } from '@/modules/aggregator/adapters/stargate/hooks/useGetStarGateFees';
 import { ReceiveLoading } from '@/modules/transfer/components/ReceiveInfo/ReceiveLoading';
 import { NoRouteFound } from '@/modules/transfer/components/TransferOverview/NoRouteFound';
 import { useDebounce } from '@/core/hooks/useDebounce';
