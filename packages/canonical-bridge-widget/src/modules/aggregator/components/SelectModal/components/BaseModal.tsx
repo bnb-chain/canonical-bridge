@@ -2,8 +2,8 @@ import { CloseIcon } from '@bnb-chain/icons';
 import { Flex, Modal, ModalContent, ModalOverlay, useColorMode, useTheme } from '@bnb-chain/space';
 import { useEffect } from 'react';
 
-import { SearchInput } from '@/modules/transfer/components/SelectModal/components/SearchInput';
-import { NoResultFound } from '@/modules/transfer/components/SelectModal/components/NoResultFound';
+import { SearchInput } from '@/modules/aggregator/components/SelectModal/components/SearchInput';
+import { NoResultFound } from '@/modules/aggregator/components/SelectModal/components/NoResultFound';
 
 interface BaseModalProps {
   title: React.ReactNode;

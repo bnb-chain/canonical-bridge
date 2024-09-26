@@ -1,14 +1,13 @@
 import { Box, Flex, useColorMode, useIntl, useTheme } from '@bnb-chain/space';
 import { formatUnits } from 'viem';
-import { useAccount } from 'wagmi';
 import { useEffect, useState } from 'react';
 
 import { useAppDispatch, useAppSelector } from '@/modules/store/StoreProvider';
 import { setSendValue } from '@/modules/transfer/action';
 import { formatNumber } from '@/core/utils/number';
 import { useLoadingTokenBalance } from '@/modules/transfer/hooks/useLoadingTokenBalance';
-import { useTokenPrice } from '@/modules/aggregator/components/TokenPricesProvider';
 import { reportEvent } from '@/core/utils/gtm';
+import { useTokenPrice } from '@/modules/aggregator/hooks/useTokenPrice';
 
 export const MaxLink: React.FC = () => {
   const theme = useTheme();
@@ -19,7 +18,6 @@ export const MaxLink: React.FC = () => {
   const { colorMode } = useColorMode();
   const { formatMessage } = useIntl();
   const { balance } = useLoadingTokenBalance();
-  const { chain } = useAccount();
   const { getTokenPrice } = useTokenPrice();
   const [tokenPrice, setTokenPrice] = useState<number | undefined>(undefined);
 
@@ -50,7 +48,7 @@ export const MaxLink: React.FC = () => {
 
   return (
     <Flex alignItems={'center'}>
-      {balance !== null && !!selectedToken && fromChain?.id === chain?.id ? (
+      {balance !== null && !!selectedToken ? (
         <Box
           onClick={setMaxAmount}
           color={theme.colors[colorMode].text.tertiary}
@@ -60,6 +58,7 @@ export const MaxLink: React.FC = () => {
           fontSize={'12px'}
           fontWeight={500}
           pb={`1px`}
+          transitionDuration="normal"
           _hover={{
             color: !!balance
               ? theme.colors[colorMode].text.primary

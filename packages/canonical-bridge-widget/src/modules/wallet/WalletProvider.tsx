@@ -10,9 +10,9 @@ import {
 } from '@node-real/walletkit/evm';
 import * as allChains from 'viem/chains';
 
-import { useAggregator } from '@/modules/aggregator/components/AggregatorProvider';
 import { IChainConfig } from '@/modules/aggregator/types';
 import { useBridgeConfig } from '@/CanonicalBridgeProvider';
+import { useAggregator } from '@/modules/aggregator/components/AggregatorProvider';
 
 export function WalletProvider(props: PropsWithChildren) {
   const { children } = props;

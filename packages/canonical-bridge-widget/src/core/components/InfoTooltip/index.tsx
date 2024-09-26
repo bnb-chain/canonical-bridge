@@ -1,7 +1,19 @@
 import { InfoCircleIcon } from '@bnb-chain/icons';
-import { Tooltip, TooltipProps, useBreakpointValue, useDisclosure } from '@bnb-chain/space';
+import {
+  IconProps,
+  Tooltip,
+  TooltipProps,
+  useBreakpointValue,
+  useDisclosure,
+} from '@bnb-chain/space';
 
-export const InfoTooltip = (props: Pick<TooltipProps, 'label'>) => {
+interface InfoTooltipProps extends Omit<TooltipProps, 'children'> {
+  iconProps?: IconProps;
+}
+
+export const InfoTooltip = (props: InfoTooltipProps) => {
+  const { iconProps, ...restProps } = props;
+
   // Make tooltip controlled on mobile devices, default tooltip doesn't work.
   const isBase = useBreakpointValue({ base: true, md: false }) ?? false;
   const { isOpen, onOpen, onToggle, onClose } = useDisclosure();
@@ -14,7 +26,7 @@ export const InfoTooltip = (props: Pick<TooltipProps, 'label'>) => {
       {...(isBase && {
         isOpen,
       })}
-      {...props}
+      {...restProps}
     >
       <InfoCircleIcon
         display={'inline'}
@@ -25,6 +37,7 @@ export const InfoTooltip = (props: Pick<TooltipProps, 'label'>) => {
           onMouseLeave: onClose,
           onClick: onToggle,
         })}
+        {...iconProps}
       />
     </Tooltip>
   );

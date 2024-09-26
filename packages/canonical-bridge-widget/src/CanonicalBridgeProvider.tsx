@@ -2,12 +2,11 @@ import '@node-real/walletkit/styles.css';
 import React, { useContext, useMemo } from 'react';
 import { IntlProvider } from '@bnb-chain/space';
 
-import { AggregatorProvider } from '@/modules/aggregator/components/AggregatorProvider';
 import { ITransferConfig } from '@/modules/aggregator/types';
 import { StoreProvider } from '@/modules/store/StoreProvider';
 import { WalletProvider } from '@/modules/wallet/WalletProvider';
 import { ThemeProvider, ThemeProviderProps } from '@/core/theme/ThemeProvider';
-import { TokenPricesProvider } from '@/modules/aggregator/components/TokenPricesProvider';
+import { AggregatorProvider } from '@/modules/aggregator/components/AggregatorProvider';
 
 export interface CanonicalBridgeConfig {
   appearance: {
@@ -65,10 +64,7 @@ export function CanonicalBridgeProvider(props: CanonicalBridgeProviderProvider) 
         <ThemeProvider themeConfig={value.appearance.theme}>
           <IntlProvider locale={value.appearance.locale} messages={value.appearance.messages}>
             <AggregatorProvider config={transferConfig}>
-              <WalletProvider>
-                <TokenPricesProvider />
-                {children}
-              </WalletProvider>
+              <WalletProvider>{children}</WalletProvider>
             </AggregatorProvider>
           </IntlProvider>
         </ThemeProvider>

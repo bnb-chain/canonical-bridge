@@ -1,8 +1,8 @@
-import { Box, Flex, FlexProps, Tooltip, useColorMode, useIntl, useTheme } from '@bnb-chain/space';
-import { InfoCircleIcon } from '@bnb-chain/icons';
+import { Box, Flex, FlexProps, useColorMode, useIntl, useTheme } from '@bnb-chain/space';
 import React from 'react';
 
 import { IconImage } from '@/core/components/IconImage';
+import { InfoTooltip } from '@/core/components/InfoTooltip';
 
 interface ListItemProps extends FlexProps {
   isActive?: boolean;
@@ -71,9 +71,16 @@ export const ListItem = React.forwardRef((props: ListItemProps) => {
             gap="4px"
             color={theme.colors[colorMode].support.warning[3]}
           >
-            <Tooltip hasArrow label={incompatibleTooltip} placement={'top'} maxW={'280px'}>
-              <InfoCircleIcon mt={'1px'} boxSize={'16px'} />
-            </Tooltip>
+            <InfoTooltip
+              hasArrow
+              label={incompatibleTooltip}
+              placement={'top'}
+              maxW={'280px'}
+              iconProps={{
+                mt: '1px',
+                boxSize: '16px',
+              }}
+            />
             {formatMessage({ id: 'select-modal.tag.incompatible' })}
           </Flex>
         )}
