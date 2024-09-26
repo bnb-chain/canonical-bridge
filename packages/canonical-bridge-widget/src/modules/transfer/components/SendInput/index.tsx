@@ -113,6 +113,7 @@ export const SendInput: React.FC = () => {
         position={'relative'}
       >
         <Input
+          inputMode={'decimal'}
           value={sendValue}
           color={theme.colors[colorMode].text.primary}
           fontSize={'24px'}
