@@ -103,6 +103,7 @@ export const ReceiveInfo = ({ onOpen }: ReceiveInfoProps) => {
   const debouncedSendValue = useDebounce(sendValue, DEBOUNCE_DELAY);
 
   useEffect(() => {
+    // On mobile
     if (!isBase) return;
     if (sendValue === debouncedSendValue) {
       dispatch(setTransferActionInfo(undefined));
@@ -112,6 +113,7 @@ export const ReceiveInfo = ({ onOpen }: ReceiveInfoProps) => {
         dispatch(setIsGlobalFeeLoading(false));
         return;
       }
+      dispatch(setIsGlobalFeeLoading(true));
       dispatch(setIsRefreshing(true));
       loadingBridgeFees();
       dispatch(setIsRefreshing(false));

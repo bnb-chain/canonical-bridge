@@ -15,7 +15,7 @@ export const RefreshingIcon = (props: IconProps) => {
       fill="none"
       sx={{
         '.refreshBorder': {
-          animation: `${dash} 30s forwards infinite`,
+          animation: `${dash} 32s forwards infinite`,
         },
       }}
       {...props}
