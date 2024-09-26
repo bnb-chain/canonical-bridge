@@ -167,7 +167,7 @@ export const useLoadingBridgeFees = () => {
         const allowedMax = Number(
           formatUnits(stargateEst.value[0].maxAmountLD, selectedToken.decimals),
         );
-        if (Number(debouncedSendValue) >= allowedMin || Number(debouncedSendValue) <= allowedMax) {
+        if (Number(debouncedSendValue) >= allowedMin && Number(debouncedSendValue) <= allowedMax) {
           valueArr.push({
             type: 'stargate',
             value: formatUnits(
