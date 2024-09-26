@@ -1,14 +1,14 @@
 import { Flex, useColorMode, useIntl, useTheme } from '@bnb-chain/space';
 
-import { BaseModal } from '@/modules/transfer/components/SelectModal/components/BaseModal';
 import { useAppSelector } from '@/modules/store/StoreProvider';
 import { useFromChains } from '@/modules/aggregator/hooks/useFromChains';
 import { VirtualList } from '@/core/components/VirtualList';
-import { ListItem } from '@/modules/transfer/components/SelectModal/components/ListItem';
-import { useSearch } from '@/modules/transfer/components/SelectModal/hooks/useSearch';
 import { useSelection } from '@/modules/aggregator/hooks/useSelection';
 import { openLink } from '@/core/utils/common';
 import { ExLinkIcon } from '@/core/components/icons/ExLinkIcon';
+import { BaseModal } from '@/modules/aggregator/components/SelectModal/components/BaseModal';
+import { useSearch } from '@/modules/aggregator/components/SelectModal/hooks/useSearch';
+import { ListItem } from '@/modules/aggregator/components/SelectModal/components/ListItem';
 
 interface SourceNetworkModalProps {
   isOpen: boolean;
@@ -34,6 +34,7 @@ export function SourceNetworkModal(props: SourceNetworkModalProps) {
 
   const { isNoResult, result, onSearch } = useSearch({
     filter: (item, keyword) => item.name.toLowerCase().includes(keyword),
+    sorter: (a) => (fromChain?.id === a.id ? -1 : 0),
     data: fromChains,
   });
 

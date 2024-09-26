@@ -10,8 +10,8 @@ import {
 
 import { SelectButton } from '@/modules/transfer/components/SelectButton';
 import { useAppSelector } from '@/modules/store/StoreProvider';
-import { SourceNetworkModal } from '@/modules/transfer/components/SelectModal/SourceNetworkModal';
 import { reportEvent } from '@/core/utils/gtm';
+import { SourceNetworkModal } from '@/modules/aggregator/components/SelectModal/SourceNetworkModal';
 
 export function FromSection() {
   const { colorMode } = useColorMode();

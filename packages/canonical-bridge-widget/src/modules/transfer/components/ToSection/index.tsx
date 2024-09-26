@@ -10,8 +10,8 @@ import {
 
 import { SelectButton } from '@/modules/transfer/components/SelectButton';
 import { useAppSelector } from '@/modules/store/StoreProvider';
-import { DestinationNetworkModal } from '@/modules/transfer/components/SelectModal/DestinationNetworkModal';
 import { reportEvent } from '@/core/utils/gtm';
+import { DestinationNetworkModal } from '@/modules/aggregator/components/SelectModal/DestinationNetworkModal';
 
 export function ToSection() {
   const { isOpen, onClose, onOpen } = useDisclosure();

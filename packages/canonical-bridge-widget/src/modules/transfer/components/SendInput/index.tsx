@@ -6,10 +6,10 @@ import { setSendValue } from '@/modules/transfer/action';
 import { MaxLink } from '@/modules/transfer/components/SendInput/MaxLink';
 import { TokenSelectButton } from '@/modules/transfer/components/SelectButton/TokenSelectButton';
 import { InputValidationMessage } from '@/modules/transfer/components/SendInput/InputValidationMessage';
-import { ChooseTokenModal } from '@/modules/transfer/components/SelectModal/ChooseTokenModal';
 import { useDebounce } from '@/core/hooks/useDebounce';
 import { DEBOUNCE_DELAY } from '@/core/constants';
 import { reportEvent } from '@/core/utils/gtm';
+import { ChooseTokenModal } from '@/modules/aggregator/components/SelectModal/ChooseTokenModal';
 
 const handleKeyPress = (e: React.KeyboardEvent) => {
   // only allow number and decimal

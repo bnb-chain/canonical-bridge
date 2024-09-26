@@ -1,4 +1,5 @@
 import { useAggregator } from '@/modules/aggregator/components/AggregatorProvider';
+import { useSortTokens } from '@/modules/aggregator/hooks/useSortTokens';
 import { isChainOrTokenCompatible } from '@/modules/aggregator/shared/isChainOrTokenCompatible';
 import { IBridgeChain, IBridgeToken } from '@/modules/aggregator/types';
 import { useAppDispatch, useAppSelector } from '@/modules/store/StoreProvider';
@@ -6,6 +7,7 @@ import { setFromChain, setSelectedToken, setToChain, setToToken } from '@/module
 
 export function useSelection() {
   const { getFromChains, getToChains, getTokens, getToToken, adapters } = useAggregator();
+  const { sortTokens } = useSortTokens();
 
   const fromChain = useAppSelector((state) => state.transfer.fromChain);
   const toChain = useAppSelector((state) => state.transfer.toChain);
@@ -65,7 +67,7 @@ export function useSelection() {
   };
 
   return {
-    selectDefault({
+    async selectDefault({
       fromChainId,
       toChainId,
       tokenSymbol,
@@ -109,7 +111,7 @@ export function useSelection() {
       });
     },
 
-    selectFromChain(fromChain: IBridgeChain) {
+    async selectFromChain(fromChain: IBridgeChain) {
       const isCompatible = isChainOrTokenCompatible(fromChain);
 
       if (isCompatible) {
@@ -121,10 +123,22 @@ export function useSelection() {
           fromChainId: fromChain.id,
         }).find((chain) => isChainOrTokenCompatible(chain) && chain.chainType !== 'link');
 
-        const newToken = getTokens({
+        // dispatch(setFromChain(fromChain));
+        // dispatch(setToChain(toChain));
+
+        const newTokens = await sortTokens({
           fromChainId: fromChain.id,
-          toChainId: toChain?.id,
-        }).find((token) => isChainOrTokenCompatible(token));
+          tokens: getTokens({
+            fromChainId: fromChain.id,
+            toChainId: toChain?.id,
+          }),
+        });
+        const newToken =
+          newTokens.find(
+            (token) =>
+              isChainOrTokenCompatible(token) &&
+              token.displaySymbol.toUpperCase() === selectedToken?.displaySymbol.toUpperCase(),
+          ) || newTokens.find((token) => isChainOrTokenCompatible(token));
 
         const newFromChain = getFromChains({
           toChainId: toChain?.id,
@@ -148,13 +162,13 @@ export function useSelection() {
       }
     },
 
-    selectToChain(toChain: IBridgeChain) {
+    async selectToChain(toChain: IBridgeChain) {
       updateSelectedInfo({
         nextToChain: toChain,
       });
     },
 
-    selectToken(newToken: IBridgeToken) {
+    async selectToken(newToken: IBridgeToken) {
       updateSelectedInfo({
         nextToken: newToken,
       });

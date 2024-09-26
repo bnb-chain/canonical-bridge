@@ -12,10 +12,10 @@ import { useToTokenInfo } from '@/modules/transfer/hooks/useToTokenInfo';
 import { useDebounce } from '@/core/hooks/useDebounce';
 import { setRouteError } from '@/modules/transfer/action';
 import { useGetTokenBalance } from '@/core/contract/hooks/useGetTokenBalance';
-import { useAdapter } from '@/modules/aggregator/components/AggregatorProvider';
 import { DeBridgeAdapter } from '@/modules/aggregator/adapters/deBridge/DeBridgeAdapter';
 import { useBridgeSDK } from '@/core/hooks/useBridgeSDK';
 import { formatFeeAmount } from '@/core/utils/string';
+import { useAdapter } from '@/modules/aggregator/hooks/useAdapter';
 
 export interface IFeeDetails {
   value: string;

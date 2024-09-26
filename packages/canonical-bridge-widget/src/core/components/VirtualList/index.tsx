@@ -22,5 +22,15 @@ export function VirtualList<T>(props: VirtualListProps<T>) {
     };
   }, [data]);
 
-  return <List ref={ref} data={innerData} height={height} {...restProps} />;
+  return (
+    <List
+      ref={ref}
+      data={innerData}
+      height={height}
+      style={{
+        WebkitOverflowScrolling: 'touch',
+      }}
+      {...restProps}
+    />
+  );
 }

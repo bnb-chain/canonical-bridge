@@ -1,16 +1,16 @@
 import { Flex, useColorMode, useIntl, useTheme, Text } from '@bnb-chain/space';
 
-import { BaseModal } from '@/modules/transfer/components/SelectModal/components/BaseModal';
 import { VirtualList } from '@/core/components/VirtualList';
 import { isChainOrTokenCompatible } from '@/modules/aggregator/shared/isChainOrTokenCompatible';
 import { useAppSelector } from '@/modules/store/StoreProvider';
-import { useSearch } from '@/modules/transfer/components/SelectModal/hooks/useSearch';
 import { useToChains } from '@/modules/aggregator/hooks/useToChains';
-import { ListItem } from '@/modules/transfer/components/SelectModal/components/ListItem';
 import { useSelection } from '@/modules/aggregator/hooks/useSelection';
 import { ExLinkIcon } from '@/core/components/icons/ExLinkIcon';
 import { openLink } from '@/core/utils/common';
 import { reportEvent } from '@/core/utils/gtm';
+import { useSearch } from '@/modules/aggregator/components/SelectModal/hooks/useSearch';
+import { BaseModal } from '@/modules/aggregator/components/SelectModal/components/BaseModal';
+import { ListItem } from '@/modules/aggregator/components/SelectModal/components/ListItem';
 
 interface DestinationNetworkModalProps {
   isOpen: boolean;
@@ -36,6 +36,7 @@ export function DestinationNetworkModal(props: DestinationNetworkModalProps) {
 
   const { isNoResult, result, onSearch } = useSearch({
     filter: (item, keyword) => item.name.toLowerCase().includes(keyword),
+    sorter: (a) => (toChain?.id === a.id ? -1 : 0),
     data: toChains,
   });
 

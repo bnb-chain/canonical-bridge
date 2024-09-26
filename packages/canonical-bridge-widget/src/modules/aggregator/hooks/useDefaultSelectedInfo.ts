@@ -2,8 +2,8 @@ import { useEffect } from 'react';
 
 import { useAppDispatch } from '@/modules/store/StoreProvider';
 import { setSendValue } from '@/modules/transfer/action';
-import { useAggregator } from '@/modules/aggregator/components/AggregatorProvider';
 import { useSelection } from '@/modules/aggregator/hooks/useSelection';
+import { useAggregator } from '@/modules/aggregator/components/AggregatorProvider';
 
 export function useDefaultSelectedInfo() {
   const { isReady, defaultSelectedInfo } = useAggregator();

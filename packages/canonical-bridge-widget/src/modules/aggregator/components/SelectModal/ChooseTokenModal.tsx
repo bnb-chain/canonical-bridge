@@ -1,12 +1,9 @@
 import { Flex, formatAddress, Text, useColorMode, useIntl, useTheme } from '@bnb-chain/space';
 import { useAccount } from 'wagmi';
 
-import { BaseModal } from '@/modules/transfer/components/SelectModal/components/BaseModal';
 import { useAppSelector } from '@/modules/store/StoreProvider';
 import { useTokens } from '@/modules/aggregator/hooks/useTokens';
-import { useSearch } from '@/modules/transfer/components/SelectModal/hooks/useSearch';
 import { VirtualList } from '@/core/components/VirtualList';
-import { ListItem } from '@/modules/transfer/components/SelectModal/components/ListItem';
 import { isChainOrTokenCompatible } from '@/modules/aggregator/shared/isChainOrTokenCompatible';
 import { useSelection } from '@/modules/aggregator/hooks/useSelection';
 import { isNativeToken, isSameAddress } from '@/core/utils/address';
@@ -14,8 +11,11 @@ import { ExLinkIcon } from '@/core/components/icons/ExLinkIcon';
 import { formatTokenUrl } from '@/core/utils/string';
 import { useResponsive } from '@/core/hooks/useResponsive';
 import { formatNumber } from '@/core/utils/number';
-import { useTokenList } from '@/modules/transfer/components/SelectModal/hooks/useTokenList';
 import { reportEvent } from '@/core/utils/gtm';
+import { BaseModal } from '@/modules/aggregator/components/SelectModal/components/BaseModal';
+import { useSearch } from '@/modules/aggregator/components/SelectModal/hooks/useSearch';
+import { useTokenList } from '@/modules/aggregator/components/SelectModal/hooks/useTokenList';
+import { ListItem } from '@/modules/aggregator/components/SelectModal/components/ListItem';
 
 interface ChooseTokenModalProps {
   isOpen: boolean;
