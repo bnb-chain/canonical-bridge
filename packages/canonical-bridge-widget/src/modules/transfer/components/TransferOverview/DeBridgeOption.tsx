@@ -25,6 +25,7 @@ export const DeBridgeOption = ({}: DeBridgeOptionProps) => {
 
   const transferActionInfo = useAppSelector((state) => state.transfer.transferActionInfo);
   const estimatedAmount = useAppSelector((state) => state.transfer.estimatedAmount);
+  const routeError = useAppSelector((state) => state.transfer.routeError);
   const theme = useTheme();
   const { feeDetails } = useGetDeBridgeFees();
 
@@ -46,8 +47,12 @@ export const DeBridgeOption = ({}: DeBridgeOptionProps) => {
   }, [estimatedAmount, toTokenInfo, getToDecimals]);
 
   const isError = useMemo(
-    () => estimatedAmount?.deBridge === 'error' || receiveAmt === '--' || false,
-    [estimatedAmount?.deBridge, receiveAmt],
+    () =>
+      estimatedAmount?.deBridge === 'error' ||
+      receiveAmt === '--' ||
+      (routeError && routeError?.['deBridge']) ||
+      false,
+    [estimatedAmount?.deBridge, receiveAmt, routeError],
   );
 
   const onSelectBridge = useCallback(() => {

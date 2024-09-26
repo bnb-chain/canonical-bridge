@@ -17,12 +17,13 @@ export const LayerZeroOption = () => {
   const dispatch = useAppDispatch();
   const { colorMode } = useColorMode();
   const { toTokenInfo, getToDecimals } = useToTokenInfo();
+  const theme = useTheme();
 
   const selectedToken = useAppSelector((state) => state.transfer.selectedToken);
   const sendValue = useAppSelector((state) => state.transfer.sendValue);
   const transferActionInfo = useAppSelector((state) => state.transfer.transferActionInfo);
-  const theme = useTheme();
   const estimatedAmount = useAppSelector((state) => state.transfer.estimatedAmount);
+  const routeError = useAppSelector((state) => state.transfer.routeError);
 
   const { feeDetails } = useGetLayerZeroFees();
 
@@ -40,8 +41,12 @@ export const LayerZeroOption = () => {
   }, [estimatedAmount, toTokenInfo, sendValue, getToDecimals]);
 
   const isError = useMemo(
-    () => estimatedAmount?.layerZero === 'error' || receiveAmt === '--' || false,
-    [estimatedAmount?.layerZero, receiveAmt],
+    () =>
+      estimatedAmount?.layerZero === 'error' ||
+      receiveAmt === '--' ||
+      (routeError && routeError['layerZero']) ||
+      false,
+    [estimatedAmount?.layerZero, receiveAmt, routeError],
   );
 
   const onSelectBridge = useCallback(() => {

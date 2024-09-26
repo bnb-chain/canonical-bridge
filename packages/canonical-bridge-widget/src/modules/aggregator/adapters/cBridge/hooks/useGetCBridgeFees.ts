@@ -3,7 +3,7 @@ import { formatUnits, parseUnits } from 'viem';
 import { usePublicClient } from 'wagmi';
 import { useIntl } from '@bnb-chain/space';
 
-import { useAppSelector } from '@/modules/store/StoreProvider';
+import { useAppDispatch, useAppSelector } from '@/modules/store/StoreProvider';
 import { useToTokenInfo } from '@/modules/transfer/hooks/useToTokenInfo';
 import { useDebounce } from '@/core/hooks/useDebounce';
 import { DEBOUNCE_DELAY } from '@/core/constants';
@@ -13,6 +13,7 @@ import { useCBridgeTransferParams } from '@/modules/aggregator/adapters/cBridge/
 import { useGetTokenBalance } from '@/core/contract/hooks/useGetTokenBalance';
 import { formatNumber } from '@/core/utils/number';
 import { useGetNativeToken } from '@/modules/transfer/hooks/useGetNativeToken';
+import { setRouteError } from '@/modules/transfer/action';
 
 export const useGetCBridgeFees = () => {
   const { toTokenInfo, getToDecimals } = useToTokenInfo();
@@ -20,6 +21,7 @@ export const useGetCBridgeFees = () => {
   const { minMaxSendAmt: cBridgeAllowedAmt } = useCBridgeSendMaxMin();
   const nativeToken = useGetNativeToken();
   const { formatMessage } = useIntl();
+  const dispatch = useAppDispatch();
 
   const estimatedAmount = useAppSelector((state) => state.transfer.estimatedAmount);
   const sendValue = useAppSelector((state) => state.transfer.sendValue);
@@ -72,11 +74,15 @@ export const useGetCBridgeFees = () => {
         if (!balance || Number(balance) < Number(amount)) {
           return;
         }
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const gas = await publicClient.estimateContractGas(debouncedArguments as any);
-        const gasPrice = await publicClient.getGasPrice();
-        if (gas && gasPrice) {
-          setGasInfo({ gas, gasPrice });
+        try {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          const gas = await publicClient.estimateContractGas(debouncedArguments as any);
+          const gasPrice = await publicClient.getGasPrice();
+          if (gas && gasPrice) {
+            setGasInfo({ gas, gasPrice });
+          }
+        } catch (error) {
+          dispatch(setRouteError({ cBridge: 'Failed to get gas fee' }));
         }
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (error: any) {
@@ -96,6 +102,7 @@ export const useGetCBridgeFees = () => {
     balance,
     sendValue,
     selectedToken?.cBridge?.raw?.token?.decimal,
+    dispatch,
   ]);
 
   const baseFee = useMemo(() => {

@@ -98,14 +98,18 @@ export const useGetLayerZeroFees = () => {
           dispatch(setRouteError({ layerZero: 'Insufficient funds to cover native fees' }));
           return;
         }
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const gas = await publicClient.estimateContractGas(cakeArgs as any);
-        const gasPrice = await publicClient.getGasPrice();
-        if (gas && gasPrice) {
-          setGasInfo({
-            gas,
-            gasPrice,
-          });
+        try {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          const gas = await publicClient.estimateContractGas(cakeArgs as any);
+          const gasPrice = await publicClient.getGasPrice();
+          if (gas && gasPrice) {
+            setGasInfo({
+              gas,
+              gasPrice,
+            });
+          }
+        } catch (error) {
+          dispatch(setRouteError({ layerZero: 'Failed to get gas fee' }));
         }
         // eslint-disable-next-line
       } catch (error: any) {

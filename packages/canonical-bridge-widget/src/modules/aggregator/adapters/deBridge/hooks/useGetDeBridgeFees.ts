@@ -97,18 +97,22 @@ export const useGetDeBridgeFees = () => {
             );
             return;
           }
-          const gasPrice = await publicClient.getGasPrice();
-          const gas = await publicClient.estimateGas({
-            account: address as `0x${string}`,
-            to: estimatedAmount['deBridge']?.tx.to,
-            value: BigInt(estimatedAmount['deBridge']?.tx.value),
-            data: estimatedAmount['deBridge']?.tx.data,
-          });
-          if (gas && gasPrice) {
-            setGasInfo({
-              gas: gas,
-              gasPrice: gasPrice,
+          try {
+            const gasPrice = await publicClient.getGasPrice();
+            const gas = await publicClient.estimateGas({
+              account: address as `0x${string}`,
+              to: estimatedAmount['deBridge']?.tx.to,
+              value: BigInt(estimatedAmount['deBridge']?.tx.value),
+              data: estimatedAmount['deBridge']?.tx.data,
             });
+            if (gas && gasPrice) {
+              setGasInfo({
+                gas: gas,
+                gasPrice: gasPrice,
+              });
+            }
+          } catch (error) {
+            dispatch(setRouteError({ deBridge: 'Failed to get gas fee' }));
           }
         }
         // eslint-disable-next-line

@@ -123,13 +123,17 @@ export const useGetStargateFees = () => {
           value: nativeFee,
           account: receiver,
         };
-        const gas = await publicClient.estimateContractGas(sendTokenArgs as any);
-        const gasPrice = await publicClient.getGasPrice();
-        if (gas && gasPrice) {
-          setGasInfo({
-            gas,
-            gasPrice,
-          });
+        try {
+          const gas = await publicClient.estimateContractGas(sendTokenArgs as any);
+          const gasPrice = await publicClient.getGasPrice();
+          if (gas && gasPrice) {
+            setGasInfo({
+              gas,
+              gasPrice,
+            });
+          }
+        } catch (error) {
+          dispatch(setRouteError({ stargate: 'Failed to get gas fee' }));
         }
         // eslint-disable-next-line
       } catch (error: any) {

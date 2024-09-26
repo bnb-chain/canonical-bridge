@@ -25,6 +25,7 @@ export const StarGateOption = () => {
   const sendValue = useAppSelector((state) => state.transfer.sendValue);
   const transferActionInfo = useAppSelector((state) => state.transfer.transferActionInfo);
   const estimatedAmount = useAppSelector((state) => state.transfer.estimatedAmount);
+  const routeError = useAppSelector((state) => state.transfer.routeError);
   const theme = useTheme();
 
   const { feeDetails, allowedSendAmount, isAllowSendError } = useGetStargateFees();
@@ -48,8 +49,13 @@ export const StarGateOption = () => {
   }, [estimatedAmount, toTokenInfo, sendValue, getToDecimals]);
 
   const isError = useMemo(
-    () => estimatedAmount?.stargate === 'error' || isAllowSendError || receiveAmt === '--' || false,
-    [estimatedAmount?.stargate, isAllowSendError, receiveAmt],
+    () =>
+      estimatedAmount?.stargate === 'error' ||
+      isAllowSendError ||
+      (routeError && routeError?.['stargate']) ||
+      receiveAmt === '--' ||
+      false,
+    [estimatedAmount?.stargate, isAllowSendError, receiveAmt, routeError],
   );
 
   const onSelectBridge = useCallback(() => {
