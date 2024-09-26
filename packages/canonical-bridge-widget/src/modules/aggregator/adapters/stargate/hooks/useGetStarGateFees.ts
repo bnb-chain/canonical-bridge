@@ -57,7 +57,7 @@ export const useGetStargateFees = () => {
   useEffect(() => {
     let mount = true;
     setIsAllowSendError(false);
-    if (!mount || !args || !publicClient || !args.dstEid) {
+    if (!mount || !args || !publicClient || !args.dstEid || !Number(sendValue)) {
       return;
     }
     (async () => {

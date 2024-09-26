@@ -57,7 +57,7 @@ export const useGetStargateFees = () => {
   useEffect(() => {
     let mount = true;
     setIsAllowSendError(false);
-    if (!mount || !args || !publicClient || !args.dstEid) {
+    if (!mount || !args || !publicClient || !args.dstEid || !Number(sendValue)) {
       return;
     }
     (async () => {
@@ -133,6 +133,8 @@ export const useGetStargateFees = () => {
             });
           }
         } catch (error) {
+          // eslint-disable-next-line no-console
+          console.log(error);
           dispatch(setRouteError({ stargate: 'Failed to get gas fee' }));
         }
         // eslint-disable-next-line

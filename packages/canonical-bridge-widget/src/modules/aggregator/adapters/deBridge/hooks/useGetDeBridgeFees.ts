@@ -61,8 +61,7 @@ export const useGetDeBridgeFees = () => {
           !selectedToken?.deBridge?.raw ||
           !fromChain ||
           !toChain ||
-          !debouncedSendValue ||
-          debouncedSendValue === '0' ||
+          !Number(debouncedSendValue) ||
           !toTokenInfo ||
           !mount ||
           !estimatedAmount ||
