@@ -48,7 +48,7 @@ export class TokenProcessor extends WorkerHost {
         const _symbol = symbol.toLowerCase();
 
         if (platform === 'ethereum') {
-          r[_symbol] = { price: c.price, decimals: c.decimals };
+          r[`ethereum:${_symbol}`] = { price: c.price, decimals: c.decimals };
         }
 
         const key = !address ? _symbol : `${_symbol}:${address.toLowerCase()}`;
@@ -71,7 +71,7 @@ export class TokenProcessor extends WorkerHost {
         const _symbol = symbol.toLowerCase();
 
         if (platformName === 'Ethereum') {
-          r[_symbol] = { price: c.price, id: c.id };
+          r[`ethereum:${_symbol}`] = { price: c.price, id: c.id };
         }
 
         const key = !address ? _symbol : `${_symbol}:${address.toLowerCase()}`;
