@@ -40,7 +40,7 @@ export const TokenInfoTooltip = ({
               marginBottom={isReceiveArea ? '-4px' : ''}
             >
               <PopoverArrow />
-              <PopoverBody px={'8px'} py={'7px'}>
+              <PopoverBody px={'8px'} py={'7px'} onClick={(e) => e.stopPropagation()}>
                 <Box>
                   <Box color={theme.colors.light.text.primary} fontSize={'12px'} fontWeight={400}>
                     Token address:
