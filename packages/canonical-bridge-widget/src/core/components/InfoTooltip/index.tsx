@@ -13,7 +13,6 @@ interface InfoTooltipProps extends Omit<TooltipProps, 'children'> {
 
 export const InfoTooltip = (props: InfoTooltipProps) => {
   const { iconProps, ...restProps } = props;
-
   // Make tooltip controlled on mobile devices, default tooltip doesn't work.
   const isBase = useBreakpointValue({ base: true, md: false }) ?? false;
   const { isOpen, onOpen, onToggle, onClose } = useDisclosure();
