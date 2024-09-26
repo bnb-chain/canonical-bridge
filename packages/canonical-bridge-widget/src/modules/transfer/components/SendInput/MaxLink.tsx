@@ -1,6 +1,5 @@
 import { Box, Flex, useColorMode, useIntl, useTheme } from '@bnb-chain/space';
 import { formatUnits } from 'viem';
-import { useAccount } from 'wagmi';
 import { useEffect, useState } from 'react';
 
 import { useAppDispatch, useAppSelector } from '@/modules/store/StoreProvider';
@@ -19,7 +18,6 @@ export const MaxLink: React.FC = () => {
   const { colorMode } = useColorMode();
   const { formatMessage } = useIntl();
   const { balance } = useLoadingTokenBalance();
-  const { chain } = useAccount();
   const { getTokenPrice } = useTokenPrice();
   const [tokenPrice, setTokenPrice] = useState<number | undefined>(undefined);
 
