@@ -12,7 +12,7 @@ interface ListItemProps extends FlexProps {
   incompatibleTooltip?: string;
 }
 
-export const ListItem = React.forwardRef((props: ListItemProps) => {
+export const ListItem = React.forwardRef((props: ListItemProps, ref: any) => {
   const {
     isActive = false,
     isDisabled = false,
@@ -31,7 +31,7 @@ export const ListItem = React.forwardRef((props: ListItemProps) => {
   const { formatMessage } = useIntl();
 
   return (
-    <Box p="0 20px 8px">
+    <Box ref={ref} p="0 20px 8px">
       <Flex
         borderRadius={'8px'}
         px={'12px'}

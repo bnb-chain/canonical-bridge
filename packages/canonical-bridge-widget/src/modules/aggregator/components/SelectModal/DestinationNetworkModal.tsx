@@ -49,9 +49,10 @@ export function DestinationNetworkModal(props: DestinationNetworkModalProps) {
       placeholder={formatMessage({ id: 'select-modal.destination.placeholder' })}
       isNoResult={isNoResult}
     >
-      <VirtualList data={result} itemHeight={64} itemKey="id">
+      <VirtualList data={result} itemHeight={64}>
         {(item) => (
           <ListItem
+            key={item.id}
             iconUrl={item.icon}
             isActive={toChain?.id === item.id}
             isDisabled={!isChainOrTokenCompatible(item)}

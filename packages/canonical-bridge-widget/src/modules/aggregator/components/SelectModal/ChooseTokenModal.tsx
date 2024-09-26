@@ -52,7 +52,6 @@ export function ChooseTokenModal(props: ChooseTokenModalProps) {
   });
 
   const { isLoading, data } = useTokenList(result);
-  const activeIndex = data.findIndex((item) => isSameAddress(selectedToken?.address, item.address));
   const showBalance = isConnected && !isLoading;
 
   return (
@@ -77,14 +76,15 @@ export function ChooseTokenModal(props: ChooseTokenModalProps) {
         {showBalance && <Text>{formatMessage({ id: 'select-modal.token.column.balance' })}</Text>}
       </Flex>
       <Flex flexDir="column" flex={1}>
-        <VirtualList data={data} itemHeight={64} itemKey="address">
-          {(item, index) => {
+        <VirtualList data={data} itemHeight={64}>
+          {(item) => {
             const isDisabled = !isChainOrTokenCompatible(item);
-            const isActive = index === activeIndex;
+            const isActive = isSameAddress(selectedToken?.address, item.address);
             const isNative = isNativeToken(item.address);
 
             return (
               <ListItem
+                key={item.address}
                 iconUrl={item.icon}
                 isActive={isActive}
                 isDisabled={isDisabled}
