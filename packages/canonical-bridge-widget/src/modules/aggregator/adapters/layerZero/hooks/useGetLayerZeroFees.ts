@@ -109,6 +109,8 @@ export const useGetLayerZeroFees = () => {
             });
           }
         } catch (error) {
+          // eslint-disable-next-line no-console
+          console.log(error);
           dispatch(setRouteError({ layerZero: 'Failed to get gas fee' }));
         }
         // eslint-disable-next-line
