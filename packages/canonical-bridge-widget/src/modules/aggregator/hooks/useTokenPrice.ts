@@ -16,12 +16,15 @@ export function useTokenPrice() {
 
         const key1 = tokenSymbol.toLowerCase();
         const key2 = `${tokenSymbol.toLowerCase()}:${tokenAddress.toLowerCase()}`;
+        const key3 = `ethereum:${key1}`;
 
         let price =
           cmcPrices?.[key2]?.price ??
           llamaPrices?.[key2]?.price ??
           cmcPrices?.[key1]?.price ??
-          llamaPrices?.[key1]?.price;
+          llamaPrices?.[key1]?.price ??
+          cmcPrices?.[key3]?.price ??
+          llamaPrices?.[key3]?.price;
 
         if (price !== undefined) {
           price = Number(price);
