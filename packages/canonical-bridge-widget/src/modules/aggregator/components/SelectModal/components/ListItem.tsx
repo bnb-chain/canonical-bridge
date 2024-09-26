@@ -72,9 +72,9 @@ export const ListItem = React.forwardRef((props: ListItemProps) => {
             color={theme.colors[colorMode].support.warning[3]}
           >
             <InfoTooltip
-              hasArrow
               label={incompatibleTooltip}
               placement={'top'}
+              minW={'280px'}
               maxW={'280px'}
               iconProps={{
                 mt: '1px',
