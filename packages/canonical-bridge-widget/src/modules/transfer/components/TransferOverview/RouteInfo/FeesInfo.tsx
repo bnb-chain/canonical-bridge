@@ -1,8 +1,8 @@
-import { Box, Tooltip, useColorMode, useIntl, useTheme } from '@bnb-chain/space';
-import { InfoCircleIcon } from '@bnb-chain/icons';
+import { Box, useColorMode, useIntl, useTheme } from '@bnb-chain/space';
 
 import { FeesIcon } from '@/core/components/icons/FeesIcon';
 import { FeeBreakdown } from '@/modules/transfer/components/TransferOverview/RouteInfo/FeeBreakdown';
+import { InfoTooltip } from '@/core/components/InfoTooltip';
 
 interface FeesInfoProps {
   summary?: string;
@@ -37,8 +37,7 @@ export const FeesInfo = ({ summary, breakdown, bridgeType }: FeesInfoProps) => {
       >
         {summary}
       </Box>
-      <Tooltip
-        hasArrow
+      <InfoTooltip
         label={
           breakdown && breakdown?.length > 0
             ? breakdown.map((fee, index) => {
@@ -52,10 +51,7 @@ export const FeesInfo = ({ summary, breakdown, bridgeType }: FeesInfoProps) => {
               })
             : null
         }
-        placement={'top'}
-      >
-        <InfoCircleIcon display={'inline'} w={'16px'} h={'16px'} />
-      </Tooltip>
+      />
     </Box>
   );
 };

@@ -36,13 +36,7 @@ export const useInputValidation = () => {
         if (!decimal || !value) {
           return null;
         }
-        if (
-          balance &&
-          value > Number(formatUnits(balance, decimal)) &&
-          fromChain?.id === chain?.id &&
-          chain &&
-          isConnected
-        ) {
+        if (balance && value < Number(formatUnits(balance, decimal))) {
           return { text: `You have insufficient balance`, isError: true };
         }
         if (estimatedAmount?.stargate && bridgeType === 'stargate' && value) {
@@ -89,7 +83,7 @@ export const useInputValidation = () => {
         console.log(e);
       }
     },
-    [],
+    [chain, fromChain?.id],
   );
 
   return {

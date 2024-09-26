@@ -25,11 +25,14 @@ export const RouteTitle = ({ receiveAmt, tokenAddress, toTokenInfo }: RouteTitle
   }, [toTokenInfo, toChain?.tokenUrlPattern]);
 
   return (
-    <Flex flexDir={'row'} gap={'8px'}>
+    <Flex flexDir={'row'} gap={'8px'} display={'inline'}>
       <Flex
         fontSize={'24px'}
         fontWeight={500}
         lineHeight={'32px'}
+        wordBreak={'break-all'}
+        display={'inline'}
+        mr={'8px'}
         color={theme.colors[colorMode].text.primary}
       >
         {receiveAmt}

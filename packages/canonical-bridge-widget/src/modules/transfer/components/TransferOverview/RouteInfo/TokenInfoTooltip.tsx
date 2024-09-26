@@ -16,7 +16,12 @@ export const TokenInfoTooltip = ({
   const theme = useTheme();
   const [isOpen, setIsOpen] = useState(false);
   return (
-    <Flex onMouseOver={() => setIsOpen(true)} onMouseLeave={() => setIsOpen(false)}>
+    <Flex
+      display={'inline-block'}
+      w={'auto'}
+      onMouseOver={() => setIsOpen(true)}
+      onMouseLeave={() => setIsOpen(false)}
+    >
       <Tooltip
         isOpen={isOpen}
         closeDelay={700}
@@ -51,8 +56,8 @@ export const TokenInfoTooltip = ({
         hasArrow
         placement="top-start"
         maxW={'280px'}
-        marginLeft={isReceiveArea ? '-42px' : ''}
-        marginBottom={isReceiveArea ? '-8px' : ''}
+        marginLeft={isReceiveArea ? '-36px' : ''}
+        marginBottom={isReceiveArea ? '-4px' : ''}
       >
         {children}
       </Tooltip>
