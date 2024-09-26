@@ -50,7 +50,7 @@ export const MaxLink: React.FC = () => {
 
   return (
     <Flex alignItems={'center'}>
-      {balance !== null && !!selectedToken && fromChain?.id === chain?.id ? (
+      {balance !== null && !!selectedToken ? (
         <Box
           onClick={setMaxAmount}
           color={theme.colors[colorMode].text.tertiary}
@@ -60,6 +60,7 @@ export const MaxLink: React.FC = () => {
           fontSize={'12px'}
           fontWeight={500}
           pb={`1px`}
+          transitionDuration="normal"
           _hover={{
             color: !!balance
               ? theme.colors[colorMode].text.primary
