@@ -133,6 +133,8 @@ export const useGetStargateFees = () => {
             });
           }
         } catch (error) {
+          // eslint-disable-next-line no-console
+          console.log(error);
           dispatch(setRouteError({ stargate: 'Failed to get gas fee' }));
         }
         // eslint-disable-next-line
