@@ -133,22 +133,22 @@ export const useLoadingBridgeFees = () => {
         // Do not show route on error
         if (cbridgeEst?.value.err) {
           dispatch(setEstimatedAmount({ cBridge: undefined }));
-          return;
-        }
-        if (!isAllowSendError && !cbridgeEst.value?.err?.msg) {
-          valueArr.push({
-            type: 'cBridge',
-            value: formatUnits(
-              BigInt(cbridgeEst.value?.estimated_receive_amt),
-              getToDecimals()['cBridge'],
-            ),
-          });
-        }
-        if (cbridgeEst.value?.err?.msg) {
-          dispatch(setRouteError({ cBridge: cbridgeEst.value?.err?.msg }));
-          dispatch(setEstimatedAmount({ cBridge: 'error' }));
         } else {
-          dispatch(setEstimatedAmount({ cBridge: cbridgeEst.value }));
+          if (!isAllowSendError && !cbridgeEst.value?.err?.msg) {
+            valueArr.push({
+              type: 'cBridge',
+              value: formatUnits(
+                BigInt(cbridgeEst.value?.estimated_receive_amt),
+                getToDecimals()['cBridge'],
+              ),
+            });
+          }
+          if (cbridgeEst.value?.err?.msg) {
+            dispatch(setRouteError({ cBridge: cbridgeEst.value?.err?.msg }));
+            dispatch(setEstimatedAmount({ cBridge: 'error' }));
+          } else {
+            dispatch(setEstimatedAmount({ cBridge: cbridgeEst.value }));
+          }
         }
       } else if (cbridgeEst.status === 'rejected') {
         dispatch(setRouteError({ cBridge: cbridgeEst.reason.message }));
@@ -189,17 +189,17 @@ export const useLoadingBridgeFees = () => {
         if (nativeBalance?.value && nativeBalance.value < Number(nativeFee)) {
           dispatch(setRouteError({ layerZero: 'Insufficient funds to cover native fees' }));
           dispatch(setEstimatedAmount({ layerZero: 'error' }));
-          return;
+        } else {
+          dispatch(
+            setEstimatedAmount({
+              layerZero: String(parseUnits(debouncedSendValue, getToDecimals()['layerZero'])),
+            }),
+          );
+          valueArr.push({
+            type: 'layerZero',
+            value: debouncedSendValue,
+          });
         }
-        dispatch(
-          setEstimatedAmount({
-            layerZero: String(parseUnits(debouncedSendValue, getToDecimals()['layerZero'])),
-          }),
-        );
-        valueArr.push({
-          type: 'layerZero',
-          value: debouncedSendValue,
-        });
       } else if (layerZeroEst.status === 'rejected') {
         dispatch(setRouteError({ layerZero: layerZeroEst.reason.message }));
         dispatch(setEstimatedAmount({ layerZero: 'error' }));
