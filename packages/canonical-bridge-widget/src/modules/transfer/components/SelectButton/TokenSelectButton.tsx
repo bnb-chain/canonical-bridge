@@ -64,7 +64,7 @@ export function TokenSelectButton(props: SelectButtonProps) {
           }}
         >
           <Text fontSize={'16px'} lineHeight={'24px'}>
-            {token?.symbol}
+            {token?.displaySymbol}
           </Text>
         </Flex>
       </Flex>

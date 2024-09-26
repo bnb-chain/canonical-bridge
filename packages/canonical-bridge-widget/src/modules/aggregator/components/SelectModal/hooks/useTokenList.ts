@@ -21,7 +21,7 @@ export function useTokenList(tokens: IBridgeToken[] = [], isEnabled = true) {
 
   const [sortedTokens, setSortedTokens] = useState<IBridgeTokenWithBalance[]>([]);
   useEffect(() => {
-    if (!isEnabled) {
+    if (!isEnabled || !fromChain) {
       return;
     }
 
@@ -44,7 +44,7 @@ export function useTokenList(tokens: IBridgeToken[] = [], isEnabled = true) {
 
       const sortedTokens = (
         await sortTokens({
-          fromChainId: fromChain!.id,
+          fromChainId: fromChain.id,
           tokens: tmpTokens,
         })
       ).sort((a) => {

@@ -47,9 +47,10 @@ export function SourceNetworkModal(props: SourceNetworkModalProps) {
       placeholder={formatMessage({ id: 'select-modal.source.placeholder' })}
       isNoResult={isNoResult}
     >
-      <VirtualList data={result} itemHeight={64} itemKey="id">
+      <VirtualList data={result} itemHeight={64}>
         {(item) => (
           <ListItem
+            key={item.id}
             iconUrl={item.icon}
             isActive={fromChain?.id === item.id}
             isDisabled={false}
