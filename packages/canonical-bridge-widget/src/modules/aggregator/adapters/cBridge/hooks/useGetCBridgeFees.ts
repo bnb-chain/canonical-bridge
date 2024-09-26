@@ -42,7 +42,7 @@ export const useGetCBridgeFees = () => {
 
   useEffect(() => {
     setIsAllowSendError(false);
-    if (!sendValue || !selectedToken || !toTokenInfo) {
+    if (!Number(sendValue) || !selectedToken || !toTokenInfo) {
       return;
     }
     if (!!Number(cBridgeAllowedAmt?.min) && !!Number(cBridgeAllowedAmt?.max)) {

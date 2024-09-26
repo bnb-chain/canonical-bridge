@@ -42,7 +42,7 @@ export const useGetLayerZeroFees = () => {
 
   useEffect(() => {
     let mount = true;
-    if (!mount || !publicClient || !toTokenInfo?.layerZero?.raw?.endpointID) {
+    if (!mount || !publicClient || !toTokenInfo?.layerZero?.raw?.endpointID || !Number(sendValue)) {
       return;
     }
     (async () => {
@@ -98,6 +98,21 @@ export const useGetLayerZeroFees = () => {
           dispatch(setRouteError({ layerZero: 'Insufficient funds to cover native fees' }));
           return;
         }
+        // non-OFT token
+        if (selectedToken?.address !== bridgeAddress) {
+          const allowance = await bridgeSDK.getTokenAllowance({
+            publicClient: publicClient,
+            tokenAddress: selectedToken?.address as `0x${string}`,
+            owner: address as `0x${string}`,
+            spender: bridgeAddress,
+          });
+          if (selectedToken && allowance < amount) {
+            // eslint-disable-next-line no-console
+            console.log(`Allowance is not enough: Allowance ${allowance}, send value: ${amount}`);
+            return;
+          }
+        }
+
         try {
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           const gas = await publicClient.estimateContractGas(cakeArgs as any);
@@ -134,6 +149,7 @@ export const useGetLayerZeroFees = () => {
     bridgeSDK.layerZero,
     dispatch,
     nativeBalance?.value,
+    bridgeSDK,
   ]);
 
   const feeDetails = useMemo(() => {
