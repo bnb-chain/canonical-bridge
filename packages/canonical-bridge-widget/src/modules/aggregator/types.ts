@@ -94,6 +94,11 @@ export interface IBridgeToken {
   };
 }
 
+export interface IBridgeTokenWithBalance extends IBridgeToken {
+  balance?: number;
+  value?: number;
+}
+
 export interface INativeCurrency {
   name: string;
   symbol: string;

@@ -1,68 +1,48 @@
-import { useEffect, useState } from 'react';
+import { useMemo } from 'react';
 
-import { IBridgeToken } from '@/modules/aggregator/types';
+import { IBridgeToken, IBridgeTokenWithBalance } from '@/modules/aggregator/types';
 import { useTokenPrice } from '@/modules/aggregator/hooks/useTokenPrice';
-import { useTokenBalances } from '@/modules/aggregator/hooks/useTokenBalances';
-import { useSortTokens } from '@/modules/aggregator/hooks/useSortTokens';
 import { useAppSelector } from '@/modules/store/StoreProvider';
 import { isSameAddress } from '@/core/utils/address';
+import { useTokenBalance } from '@/modules/aggregator/hooks/useTokenBalance';
+import { sortTokens } from '@/modules/aggregator/shared/sortTokens';
+import { useAggregator } from '@/modules/aggregator/components/AggregatorProvider';
 
-interface IBridgeTokenWithBalance extends IBridgeToken {
-  balance: number | undefined;
-  value: number | undefined;
-}
-
-export function useTokenList(tokens: IBridgeToken[] = [], isEnabled = true) {
-  const fromChain = useAppSelector((state) => state.transfer.fromChain);
-  const { isLoading, data: tokenBalances } = useTokenBalances(tokens);
-  const { getTokenPrice } = useTokenPrice();
-  const { sortTokens } = useSortTokens();
+export function useTokenList(tokens: IBridgeToken[] = []) {
   const selectedToken = useAppSelector((state) => state.transfer.selectedToken);
+  const isLoadingTokenBalances = useAppSelector((state) => state.aggregator.isLoadingTokenBalances);
+  const isLoadingTokenPrices = useAppSelector((state) => state.aggregator.isLoadingTokenPrices);
 
-  const [sortedTokens, setSortedTokens] = useState<IBridgeTokenWithBalance[]>([]);
-  useEffect(() => {
-    if (!isEnabled || !fromChain) {
-      return;
-    }
+  const { config } = useAggregator();
+  const { getTokenBalance } = useTokenBalance();
+  const { getTokenPrice } = useTokenPrice();
 
-    const updateTokens = async () => {
-      const tmpTokens = tokens.map((item) => {
-        const balance = tokenBalances?.[item.displaySymbol.toUpperCase()];
-        const price = getTokenPrice(item);
+  const sortedTokens = useMemo(() => {
+    const tmpTokens = tokens.map((item) => {
+      const balance = getTokenBalance(item);
+      const price = getTokenPrice(item);
 
-        let value: number | undefined;
-        if (balance !== undefined && price !== undefined) {
-          value = balance * price;
-        }
+      let value: number | undefined;
+      if (balance !== undefined && price !== undefined) {
+        value = balance * price;
+      }
 
-        return {
-          ...item,
-          balance,
-          value,
-        } as IBridgeTokenWithBalance;
-      });
+      return {
+        ...item,
+        balance,
+        value,
+      } as IBridgeTokenWithBalance;
+    });
 
-      const sortedTokens = (
-        await sortTokens({
-          fromChainId: fromChain.id,
-          tokens: tmpTokens,
-        })
-      ).sort((a) => {
-        if (isSameAddress(a.address, selectedToken?.address)) {
-          return -1;
-        }
-        return 0;
-      });
+    const sortedTokens = sortTokens({
+      tokens: tmpTokens,
+      orders: config.order.tokens,
+    }).sort((a) => {
+      return isSameAddress(a.address, selectedToken?.address) ? -1 : 0;
+    });
 
-      setSortedTokens(sortedTokens);
-    };
+    return sortedTokens;
+  }, [config.order.tokens, getTokenBalance, getTokenPrice, selectedToken?.address, tokens]);
 
-    updateTokens();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [fromChain, tokenBalances, tokens, isEnabled, selectedToken?.address]);
-
-  return {
-    data: sortedTokens,
-    isLoading,
-  };
+  return { data: sortedTokens, isLoading: isLoadingTokenBalances || isLoadingTokenPrices };
 }

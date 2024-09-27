@@ -34,7 +34,9 @@
     "react-dom": "^18",
     "viem": "^2",
     "wagmi": "^2",
-    "@tanstack/react-query": "^5"
+    "@tanstack/react-query": "^5",
+    "@emotion/react": "^11",
+    "@emotion/styled": "^11"
   },
   "devDependencies": {
     "@bnb-chain/canonical-bridge-sdk": "workspace:*",
@@ -42,8 +44,6 @@
     "@bnb-chain/icons": "workspace:*",
     "@bnb-chain/prettier-config": "workspace:*",
     "@bnb-chain/space": "workspace:*",
-    "@emotion/react": "^11",
-    "@emotion/styled": "^11",
     "@node-real/walletkit": "2.3.6-alpha.0",
     "@tanstack/react-query": "~5.50.1",
     "@types/lodash": "~4.17.7",

@@ -1,13 +1,11 @@
 import { Box, Flex, useColorMode, useIntl, useTheme } from '@bnb-chain/space';
-import { formatUnits } from 'viem';
-import { useEffect, useState } from 'react';
 
 import { useAppDispatch, useAppSelector } from '@/modules/store/StoreProvider';
 import { setSendValue } from '@/modules/transfer/action';
 import { formatNumber } from '@/core/utils/number';
-import { useLoadingTokenBalance } from '@/modules/transfer/hooks/useLoadingTokenBalance';
 import { reportEvent } from '@/core/utils/gtm';
 import { useTokenPrice } from '@/modules/aggregator/hooks/useTokenPrice';
+import { useTokenBalance } from '@/modules/aggregator/hooks/useTokenBalance';
 
 export const MaxLink: React.FC = () => {
   const theme = useTheme();
@@ -17,13 +15,16 @@ export const MaxLink: React.FC = () => {
   const dispatch = useAppDispatch();
   const { colorMode } = useColorMode();
   const { formatMessage } = useIntl();
-  const { balance } = useLoadingTokenBalance();
+
+  const { getTokenBalance } = useTokenBalance();
   const { getTokenPrice } = useTokenPrice();
-  const [tokenPrice, setTokenPrice] = useState<number | undefined>(undefined);
+
+  const balance = getTokenBalance(selectedToken);
+  const tokenPrice = getTokenPrice(selectedToken);
 
   const setMaxAmount = () => {
     if (!!balance && selectedToken) {
-      const value = formatUnits(balance, selectedToken?.decimals || 0);
+      const value = balance.toString();
       dispatch(setSendValue(value));
       reportEvent({
         id: 'click_bridge_max',
@@ -36,19 +37,9 @@ export const MaxLink: React.FC = () => {
     }
   };
 
-  useEffect(() => {
-    if (selectedToken) {
-      const price = getTokenPrice(selectedToken);
-      setTokenPrice(price);
-    }
-    return () => {
-      setTokenPrice(undefined);
-    };
-  }, [getTokenPrice, selectedToken]);
-
   return (
     <Flex alignItems={'center'}>
-      {balance !== null && !!selectedToken ? (
+      {balance !== undefined && !!selectedToken ? (
         <Box
           onClick={setMaxAmount}
           color={theme.colors[colorMode].text.tertiary}
@@ -69,14 +60,9 @@ export const MaxLink: React.FC = () => {
             },
           }}
         >
-          {formatMessage({ id: 'from.section.balance.button.max' })}{' '}
-          {formatNumber(Number(formatUnits(balance, selectedToken?.decimals || 0)), 8)}{' '}
-          {selectedToken?.symbol}
-          {tokenPrice &&
-            ` ($${formatNumber(
-              tokenPrice * Number(formatUnits(balance, selectedToken?.decimals || 0)),
-              2,
-            )})`}
+          {formatMessage({ id: 'from.section.balance.button.max' })} {formatNumber(balance || 0, 8)}{' '}
+          {selectedToken?.displaySymbol}
+          {tokenPrice && ` ($${formatNumber(tokenPrice * Number(balance || 0), 2)})`}
         </Box>
       ) : null}
     </Flex>

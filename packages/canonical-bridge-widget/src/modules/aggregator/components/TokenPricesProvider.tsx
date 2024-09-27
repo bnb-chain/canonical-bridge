@@ -5,31 +5,31 @@ import { useEffect } from 'react';
 import { useBridgeConfig } from '@/CanonicalBridgeProvider';
 import { TIME } from '@/core/constants';
 import { useAppDispatch } from '@/modules/store/StoreProvider';
-import { setTokenPrices } from '@/modules/aggregator/action';
+import { setIsLoadingTokenPrices, setTokenPrices } from '@/modules/aggregator/action';
 
-interface TokenPriceContextProps {
+interface TokenPricesContextProps {
   cmcPrices: Record<string, { price: number }>;
   llamaPrices: Record<string, { price: number }>;
 }
 
-interface ITokenPriceResponse {
+interface ITokenPricesResponse {
   code: number;
   data: Record<string, { price: number }>;
 }
 
-export function TokenPriceProvider() {
+export function TokenPricesProvider() {
   const { transferConfigEndpoint } = useBridgeConfig();
 
   const dispatch = useAppDispatch();
 
-  const { isLoading, data } = useQuery<TokenPriceContextProps>({
+  const { isLoading, data } = useQuery<TokenPricesContextProps>({
     staleTime: TIME.MINUTE * 5,
     refetchInterval: TIME.MINUTE * 5,
     queryKey: ['token-prices'],
     queryFn: async () => {
       const [cmcRes, llamaRes] = await Promise.allSettled([
-        axios.get<ITokenPriceResponse>(`${transferConfigEndpoint}/api/token/cmc`),
-        axios.get<ITokenPriceResponse>(`${transferConfigEndpoint}/api/token/llama`),
+        axios.get<ITokenPricesResponse>(`${transferConfigEndpoint}/api/token/cmc`),
+        axios.get<ITokenPricesResponse>(`${transferConfigEndpoint}/api/token/llama`),
       ]);
 
       const cmcPrices = cmcRes.status === 'fulfilled' ? cmcRes.value.data.data : {};
@@ -43,9 +43,8 @@ export function TokenPriceProvider() {
   });
 
   useEffect(() => {
-    if (!isLoading && data) {
-      dispatch(setTokenPrices(data));
-    }
+    dispatch(setTokenPrices(data));
+    dispatch(setIsLoadingTokenPrices(isLoading));
   }, [data, dispatch, isLoading]);
 
   return null;

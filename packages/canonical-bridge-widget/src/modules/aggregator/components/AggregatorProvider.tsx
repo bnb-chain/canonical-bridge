@@ -25,7 +25,6 @@ import { aggregateTokens, IGetTokensParams } from '@/modules/aggregator/shared/a
 import { aggregateToToken, IGetToTokenParams } from '@/modules/aggregator/shared/aggregateToToken';
 import { useBridgeConfig } from '@/CanonicalBridgeProvider';
 import { useIsMounted } from '@/core/hooks/useIsMounted';
-import { TokenPriceProvider } from '@/modules/aggregator/components/TokenPriceProvider';
 
 export interface AggregatorContextProps {
   isReady: boolean;
@@ -167,12 +166,7 @@ export function AggregatorProvider(props: AggregatorProviderProps) {
     return null;
   }
 
-  return (
-    <AggregatorContext.Provider value={value}>
-      <TokenPriceProvider />
-      {children}
-    </AggregatorContext.Provider>
-  );
+  return <AggregatorContext.Provider value={value}>{children}</AggregatorContext.Provider>;
 }
 
 export function useAggregator() {

@@ -1,18 +1,24 @@
+import { useAccount, useChains } from 'wagmi';
+import { useCallback } from 'react';
+
 import { useAggregator } from '@/modules/aggregator/components/AggregatorProvider';
-import { useSortTokens } from '@/modules/aggregator/hooks/useSortTokens';
 import { isChainOrTokenCompatible } from '@/modules/aggregator/shared/isChainOrTokenCompatible';
-import { IBridgeChain, IBridgeToken } from '@/modules/aggregator/types';
+import { IBridgeChain, IBridgeToken, IBridgeTokenWithBalance } from '@/modules/aggregator/types';
 import { useAppDispatch, useAppSelector } from '@/modules/store/StoreProvider';
 import { setFromChain, setSelectedToken, setToChain, setToToken } from '@/modules/transfer/action';
+import { useTokenPrice } from '@/modules/aggregator/hooks/useTokenPrice';
+import { getTokenBalances } from '@/modules/aggregator/shared/getTokenBalances';
+import { sortTokens } from '@/modules/aggregator/shared/sortTokens';
 
 export function useSelection() {
   const { getFromChains, getToChains, getTokens, getToToken, adapters } = useAggregator();
-  const { sortTokens } = useSortTokens();
 
   const fromChain = useAppSelector((state) => state.transfer.fromChain);
   const toChain = useAppSelector((state) => state.transfer.toChain);
   const selectedToken = useAppSelector((state) => state.transfer.selectedToken);
   const dispatch = useAppDispatch();
+
+  const { getSortedTokens } = useSortedTokens();
 
   const updateToToken = ({
     fromChainId = fromChain?.id,
@@ -123,16 +129,14 @@ export function useSelection() {
           fromChainId: fromChain.id,
         }).find((chain) => isChainOrTokenCompatible(chain) && chain.chainType !== 'link');
 
-        // dispatch(setFromChain(fromChain));
-        // dispatch(setToChain(toChain));
-
-        const newTokens = await sortTokens({
+        const newTokens = await getSortedTokens({
           fromChainId: fromChain.id,
           tokens: getTokens({
             fromChainId: fromChain.id,
             toChainId: toChain?.id,
           }),
         });
+
         const newToken =
           newTokens.find(
             (token) =>
@@ -173,5 +177,48 @@ export function useSelection() {
         nextToken: newToken,
       });
     },
+  };
+}
+
+function useSortedTokens() {
+  const { config } = useAggregator();
+  const chains = useChains();
+  const { address } = useAccount();
+  const { getTokenPrice } = useTokenPrice();
+
+  const getSortedTokens = useCallback(
+    async ({ fromChainId, tokens }: { fromChainId: number; tokens: IBridgeToken[] }) => {
+      const balances = await getTokenBalances({
+        account: address,
+        chain: chains.find((e) => e.id === fromChainId),
+        tokens,
+      });
+
+      const tmpTokens = tokens.map((item) => {
+        const balance = balances[item.displaySymbol];
+        const price = getTokenPrice(item);
+
+        let value: number | undefined;
+        if (balance !== undefined && price !== undefined) {
+          value = balance * price;
+        }
+
+        return {
+          ...item,
+          balance,
+          value,
+        } as IBridgeTokenWithBalance;
+      });
+
+      return sortTokens({
+        tokens: tmpTokens,
+        orders: config.order.tokens,
+      });
+    },
+    [address, chains, config.order.tokens, getTokenPrice],
+  );
+
+  return {
+    getSortedTokens,
   };
 }
