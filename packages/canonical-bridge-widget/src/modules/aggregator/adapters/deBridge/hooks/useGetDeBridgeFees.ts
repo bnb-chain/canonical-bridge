@@ -78,24 +78,24 @@ export const useGetDeBridgeFees = () => {
           gasPrice: 0n,
         });
         if (estimatedAmount['deBridge']?.tx && address && publicClient) {
-          // Check whether token allowance is enough before getting gas estimation
-          const allowance = await bridgeSDK.getTokenAllowance({
-            publicClient: publicClient,
-            tokenAddress: selectedToken?.address as `0x${string}`,
-            owner: address as `0x${string}`,
-            spender: estimatedAmount['deBridge'].tx.to,
-          });
-
-          if (allowance < parseUnits(debouncedSendValue, selectedToken.decimals)) {
-            // eslint-disable-next-line no-console
-            console.log(
-              `Allowance is not enough: Allowance ${allowance}, send value: ${parseUnits(
-                debouncedSendValue,
-                selectedToken.decimals,
-              )}`,
-            );
-            return;
-          }
+          // // Check whether token allowance is enough before getting gas estimation
+          // const allowance = await bridgeSDK.getTokenAllowance({
+          //   publicClient: publicClient,
+          //   tokenAddress: selectedToken?.address as `0x${string}`,
+          //   owner: address as `0x${string}`,
+          //   spender: estimatedAmount['deBridge'].tx.to,
+          // });
+          //
+          // if (allowance < parseUnits(debouncedSendValue, selectedToken.decimals)) {
+          //   // eslint-disable-next-line no-console
+          //   console.log(
+          //     `Allowance is not enough: Allowance ${allowance}, send value: ${parseUnits(
+          //       debouncedSendValue,
+          //       selectedToken.decimals,
+          //     )}`,
+          //   );
+          //   return;
+          // }
           try {
             const gasPrice = await publicClient.getGasPrice();
             const gas = await publicClient.estimateGas({

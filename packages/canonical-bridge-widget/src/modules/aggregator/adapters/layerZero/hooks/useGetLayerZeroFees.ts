@@ -99,19 +99,19 @@ export const useGetLayerZeroFees = () => {
           return;
         }
         // non-OFT token
-        if (selectedToken?.address !== bridgeAddress) {
-          const allowance = await bridgeSDK.getTokenAllowance({
-            publicClient: publicClient,
-            tokenAddress: selectedToken?.address as `0x${string}`,
-            owner: address as `0x${string}`,
-            spender: bridgeAddress,
-          });
-          if (selectedToken && allowance < amount) {
-            // eslint-disable-next-line no-console
-            console.log(`Allowance is not enough: Allowance ${allowance}, send value: ${amount}`);
-            return;
-          }
-        }
+        // if (selectedToken?.address !== bridgeAddress) {
+        //   const allowance = await bridgeSDK.getTokenAllowance({
+        //     publicClient: publicClient,
+        //     tokenAddress: selectedToken?.address as `0x${string}`,
+        //     owner: address as `0x${string}`,
+        //     spender: bridgeAddress,
+        //   });
+        //   if (selectedToken && allowance < amount) {
+        //     // eslint-disable-next-line no-console
+        //     console.log(`Allowance is not enough: Allowance ${allowance}, send value: ${amount}`);
+        //     return;
+        //   }
+        // }
 
         try {
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
