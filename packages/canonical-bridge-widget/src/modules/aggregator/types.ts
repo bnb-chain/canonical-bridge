@@ -62,22 +62,34 @@ export interface IBridgeToken {
   cBridge?: {
     isCompatible: boolean;
     symbol: string;
-    raw?: ICBridgeToken;
+    address: string;
+    decimals: number;
+    displaySymbol: string;
     peggedConfig?: ICBridgePeggedPairConfig;
+    raw?: ICBridgeToken;
   };
   deBridge?: {
     isCompatible: boolean;
     symbol: string;
+    address: string;
+    decimals: number;
+    displaySymbol: string;
     raw?: IDeBridgeToken;
   };
   stargate?: {
     isCompatible: boolean;
     symbol: string;
+    address: string;
+    decimals: number;
+    displaySymbol: string;
     raw?: IStargateToken;
   };
   layerZero?: {
     isCompatible: boolean;
     symbol: string;
+    address: string;
+    decimals: number;
+    displaySymbol: string;
     raw?: ILayerZeroToken;
   };
 }

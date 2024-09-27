@@ -45,7 +45,7 @@ export const ProfileMenu = () => {
             <Box display={{ base: 'none', md: 'block' }}>{formatAppAddress({ address })}</Box>
           </DropdownButton>
 
-          <DropdownList overflowY="visible" minW="240px">
+          <DropdownList overflowY="visible">
             <Flex alignItems="center" p="16px 16px 12px">
               <Flex gap="12px">
                 <Center
@@ -59,7 +59,7 @@ export const ProfileMenu = () => {
                 </Center>
 
                 <Flex flexDir="column">
-                  <Flex gap="4px" alignItems="center">
+                  <Flex gap="4px" alignItems="center" fontSize={'16px'} fontWeight={500}>
                     {formatAppAddress({ address })}
                     <CopyAddress boxSize={'20px'} content={address} />
                   </Flex>
@@ -123,7 +123,7 @@ function useWalletIcon() {
     }
 
     return null;
-  }, [colorMode, connector?.id, wallets]);
+  }, [colorMode, connector?.id, connector?.name, wallets]);
 
   return icon;
 }

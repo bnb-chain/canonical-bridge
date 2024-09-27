@@ -64,8 +64,9 @@ export function aggregateTokens({
       }
 
       const common = {
+        ...baseInfo,
         isCompatible,
-        symbol: baseInfo.symbol,
+        displaySymbol,
         raw: isCompatible ? fromToken : undefined,
       };
 
