@@ -54,6 +54,10 @@
     {
       "packageName": "@bnb-chain/canonical-bridge-widget",
       "projectFolder": "packages/canonical-bridge-widget"
+    },
+    {
+      "packageName": "bnb-chain-bridge",
+      "projectFolder": "apps/bnb-chain-bridge"
     }
   ]
 }

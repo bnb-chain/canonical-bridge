@@ -34,7 +34,7 @@
   },
   "devDependencies": {
     "@node-real/walletkit": "2.3.0-alpha.2",
-    "@tanstack/react-query": "~5.56.2",
+    "@tanstack/react-query": "~5.50.1",
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "@vitejs/plugin-react": "^4.2.0",
