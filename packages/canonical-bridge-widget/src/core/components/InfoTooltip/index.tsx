@@ -21,7 +21,6 @@ export const InfoTooltip = (props: InfoTooltipProps) => {
     <Tooltip
       hasArrow
       placement="top"
-      maxW={'265px'}
       {...(isBase && {
         isOpen,
       })}
