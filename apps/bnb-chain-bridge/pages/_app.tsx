@@ -3,7 +3,10 @@ import NextApp, { AppProps } from 'next/app';
 import { getMenus } from '@bnb-chain/space';
 import { NextPageContext } from 'next';
 import { pick } from 'accept-language-parser';
-import { CanonicalBridgeConfig, CanonicalBridgeProvider } from '@bnb-chain/canonical-bridge-widget';
+import {
+  CanonicalBridgeProvider,
+  ICanonicalBridgeConfig,
+} from '@bnb-chain/canonical-bridge-widget';
 import { useMemo } from 'react';
 import { Provider as StoreProvider } from 'react-redux';
 
@@ -15,11 +18,13 @@ import { ThemeProvider } from '@/core/theme/ThemeProvider';
 import { env } from '@/core/configs/env';
 import { setFooterMenus } from '@/modules/common/action';
 import { setupCmsData } from '@/modules/common/cms';
-import { APP_NAME } from '@/core/constants';
 import { ExternalBridgesPanel } from '@/core/components/ExternalBridgesPanel';
 import { dark } from '@/core/theme/dark';
 import { useFetchTransferConfig } from '@/modules/transfer/api/useFetchTransferConfig';
 import { IntlProvider } from '@/modules/i18n/IntlProvider';
+import { useAppSelector } from '@/core/store/hooks';
+import { chains } from '@/core/configs/chains';
+import { APP_NAME } from '@/core/constants';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -33,16 +38,14 @@ const queryClient = new QueryClient({
 
 export default function App(props: AppProps) {
   const { Component, pageProps } = props;
-
   const { store } = wrapper.useWrappedStore(props);
-  const { locale, messages } = store.getState().i18n;
 
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider>
         <StoreProvider store={store}>
-          <IntlProvider locale={locale} messages={messages}>
-            <BridgeWidget locale={locale} messages={messages}>
+          <IntlProvider>
+            <BridgeWidget>
               <Layout>
                 <Component {...pageProps} />
               </Layout>
@@ -54,38 +57,38 @@ export default function App(props: AppProps) {
   );
 }
 
-function BridgeWidget({
-  locale,
-  messages,
-  children,
-}: {
-  locale: string;
-  messages: Record<string, string>;
-  children: React.ReactNode;
-}) {
-  const config = useMemo(() => {
-    return {
+function BridgeWidget({ children }: React.PropsWithChildren) {
+  const locale = useAppSelector((state) => state.i18n.locale);
+  const messages = useAppSelector((state) => state.i18n.messages);
+
+  const config = useMemo<ICanonicalBridgeConfig>(
+    () => ({
+      appName: APP_NAME,
+
       appearance: {
-        locale,
-        messages,
+        bridgeTitle: 'BNB Chain Cross-Chain Bridge',
         mode: 'dark',
         theme: {
           dark: dark,
           light: {},
         },
+        locale,
+        messages,
       },
-      walletConfig: {
+      wallet: {
         walletConnectProjectId: env.WALLET_CONNECT_PROJECT_ID,
       },
-      refetchingInterval: 30000, // 30s
-      apiTimeOut: 60 * 1000, // 30s
-      deBridgeAccessToken: env.DEBRIDGE_ACCESS_TOKEN,
-      assetsPrefix: env.ASSET_PREFIX,
-      transferConfigEndpoint: env.TRANSFER_CONFIG_ENDPOINT,
-      appName: APP_NAME,
-      bridgeTitle: 'BNB Chain Cross-Chain Bridge',
-    } as CanonicalBridgeConfig;
-  }, [locale, messages]);
+      http: {
+        refetchingInterval: 30000, // 30s
+        apiTimeOut: 60 * 1000, // 30s
+        deBridgeAccessToken: env.DEBRIDGE_ACCESS_TOKEN,
+
+        assetsPrefix: env.ASSET_PREFIX,
+        serverEndpoint: env.WIDGET_SERVER_ENDPOINT,
+      },
+    }),
+    [locale, messages],
+  );
 
   const { data: transferConfig } = useFetchTransferConfig();
 
@@ -93,6 +96,7 @@ function BridgeWidget({
     <CanonicalBridgeProvider
       config={config}
       transferConfig={transferConfig}
+      chains={chains}
       routeContentBottom={<ExternalBridgesPanel />}
     >
       {children}

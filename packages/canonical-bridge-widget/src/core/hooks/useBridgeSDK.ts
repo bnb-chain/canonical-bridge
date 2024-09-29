@@ -10,36 +10,35 @@ import { useBridgeConfig } from '@/index';
  * @returns SDK Instance
  */
 export const useBridgeSDK = () => {
-  const { apiTimeOut: CLIENT_TIME_OUT } = useBridgeConfig();
+  const bridgeConfig = useBridgeConfig();
 
-  const bridgeSDK = useMemo(
-    () =>
-      new CanonicalBridgeSDK({
-        bridgeConfigs: [
-          {
-            bridgeType: 'cBridge',
-            endpoint: env.CBRIDGE_ENDPOINT,
-            timeout: CLIENT_TIME_OUT,
-          },
-          {
-            bridgeType: 'deBridge',
-            endpoint: env.DEBRIDGE_ENDPOINT,
-            statsEndpoint: env.DEBRIDGE_STATS_ENDPOINT,
-            timeout: CLIENT_TIME_OUT,
-          },
-          {
-            bridgeType: 'stargate',
-            endpoint: STARGATE_QUEUE_URL,
-            timeout: CLIENT_TIME_OUT,
-          },
-          {
-            bridgeType: 'layerZero',
-            endpoint: '',
-          },
-        ],
-      }),
-    [CLIENT_TIME_OUT],
-  );
+  const bridgeSDK = useMemo(() => {
+    const timeout = bridgeConfig.http.apiTimeOut;
+    return new CanonicalBridgeSDK({
+      bridgeConfigs: [
+        {
+          bridgeType: 'cBridge',
+          endpoint: env.CBRIDGE_ENDPOINT,
+          timeout,
+        },
+        {
+          bridgeType: 'deBridge',
+          endpoint: env.DEBRIDGE_ENDPOINT,
+          statsEndpoint: env.DEBRIDGE_STATS_ENDPOINT,
+          timeout,
+        },
+        {
+          bridgeType: 'stargate',
+          endpoint: STARGATE_QUEUE_URL,
+          timeout,
+        },
+        {
+          bridgeType: 'layerZero',
+          endpoint: '',
+        },
+      ],
+    });
+  }, [bridgeConfig.http.apiTimeOut]);
 
   return bridgeSDK;
 };

@@ -1,6 +1,4 @@
-import { chains } from '@/data/chains';
-
-import cBridgeConfig from './cbridge/config.json';
+import cBridgeConfig from './cBridge/config.json';
 import deBridgeConfig from './deBridge';
 import stargateConfig from './stargate/config.json';
 import layerZeroConfig from './layerZero/config.json';
@@ -83,17 +81,6 @@ export const transferConfig = {
       '0x49D5c2BdFfac6CE2BFdB6640F4F80f226bc10bAB': 'WETH.e',
     },
   },
-  chainConfigs: chains,
-  brandChains: [56, 204],
-  externalChains: [
-    {
-      chainId: 204,
-      bridgeUrl: 'https://opbnb-bridge.bnbchain.org/deposit',
-      tokens: {
-        56: ['BNB', 'BTCB', 'ETH', 'FDUSD', 'USDT', 'XCAD'],
-      },
-    },
-  ],
   cBridge: {
     config: cBridgeConfig,
     exclude: {

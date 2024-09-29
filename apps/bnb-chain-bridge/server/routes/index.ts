@@ -11,7 +11,7 @@ export function routes(app: NextServer) {
 
   // The url to access the server must start with `https://bnbchain.org/[lang]/bnb-chain-bridge`,
   // so we add `*` in the front.
-  router.get('*/api/getConfigs', (req: Request, res: Response) => {
+  router.get('*/api/getTransferConfig', (req: Request, res: Response) => {
     res.status(200).json(transferConfig);
   });
 

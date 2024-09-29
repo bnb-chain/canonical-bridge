@@ -278,12 +278,17 @@ export class CBridgeAdapter extends BaseAdapter<
     };
   }
 
-  public getTokenInfo(token: ICBridgeToken) {
+  public getTokenInfo({ chainId, token }: { chainId: number; token: ICBridgeToken }) {
     return {
       name: token.name,
       symbol: token.token.symbol,
       address: token.token.address,
       decimals: token.token.decimal,
+      ...this.getTokenDisplaySymbolAndIcon({
+        chainId,
+        tokenAddress: token.token.address,
+        defaultSymbol: token.token.symbol,
+      }),
     };
   }
 

@@ -18,8 +18,7 @@ interface ITokenPricesResponse {
 }
 
 export function TokenPricesProvider() {
-  const { transferConfigEndpoint } = useBridgeConfig();
-
+  const bridgeConfig = useBridgeConfig();
   const dispatch = useAppDispatch();
 
   const { isLoading, data } = useQuery<TokenPricesContextProps>({
@@ -27,9 +26,11 @@ export function TokenPricesProvider() {
     refetchInterval: TIME.MINUTE * 5,
     queryKey: ['token-prices'],
     queryFn: async () => {
+      const { serverEndpoint } = bridgeConfig.http;
+
       const [cmcRes, llamaRes] = await Promise.allSettled([
-        axios.get<ITokenPricesResponse>(`${transferConfigEndpoint}/api/token/cmc`),
-        axios.get<ITokenPricesResponse>(`${transferConfigEndpoint}/api/token/llama`),
+        axios.get<ITokenPricesResponse>(`${serverEndpoint}/api/token/cmc`),
+        axios.get<ITokenPricesResponse>(`${serverEndpoint}/api/token/llama`),
       ]);
 
       const cmcPrices = cmcRes.status === 'fulfilled' ? cmcRes.value.data.data : {};

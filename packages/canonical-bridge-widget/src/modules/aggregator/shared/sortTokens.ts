@@ -2,11 +2,11 @@ import { isChainOrTokenCompatible } from '@/modules/aggregator/shared/isChainOrT
 import { IBridgeTokenWithBalance } from '@/modules/aggregator/types';
 
 export function sortTokens({
-  tokens,
-  orders,
+  tokens = [],
+  orders = [],
 }: {
-  tokens: IBridgeTokenWithBalance[];
-  orders: string[];
+  tokens?: IBridgeTokenWithBalance[];
+  orders?: string[];
 }) {
   const tokenOrders = orders.map((item) => item.toUpperCase());
 

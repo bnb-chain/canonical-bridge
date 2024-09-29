@@ -23,12 +23,13 @@ import {
 } from '@/modules/aggregator/shared/aggregateChains';
 import { aggregateTokens, IGetTokensParams } from '@/modules/aggregator/shared/aggregateTokens';
 import { aggregateToToken, IGetToTokenParams } from '@/modules/aggregator/shared/aggregateToToken';
-import { useBridgeConfig } from '@/CanonicalBridgeProvider';
-import { useIsMounted } from '@/core/hooks/useIsMounted';
+import { TokenBalancesProvider } from '@/modules/aggregator/components/TokenBalancesProvider';
+import { TokenPricesProvider } from '@/modules/aggregator/components/TokenPricesProvider';
+import { useBridgeConfig } from '@/index';
 
 export interface AggregatorContextProps {
   isReady: boolean;
-  config: ITransferConfig;
+  transferConfig: ITransferConfig;
   defaultSelectedInfo: ITransferConfig['defaultSelectedInfo'];
   chainConfigs: IChainConfig[];
   nativeCurrencies: Record<number, INativeCurrency>;
@@ -41,7 +42,7 @@ export interface AggregatorContextProps {
 
 const DEFAULT_CONTEXT: AggregatorContextProps = {
   isReady: false,
-  config: {} as ITransferConfig,
+  transferConfig: {} as ITransferConfig,
   defaultSelectedInfo: {} as ITransferConfig['defaultSelectedInfo'],
   chainConfigs: [],
   nativeCurrencies: {},
@@ -55,17 +56,18 @@ const DEFAULT_CONTEXT: AggregatorContextProps = {
 export const AggregatorContext = React.createContext(DEFAULT_CONTEXT);
 
 export interface AggregatorProviderProps {
-  config: ITransferConfig;
+  transferConfig: ITransferConfig;
+  chainConfigs: IChainConfig[];
   children: React.ReactNode;
 }
 
 export function AggregatorProvider(props: AggregatorProviderProps) {
-  const { config, children } = props;
+  const { transferConfig, chainConfigs, children } = props;
 
-  const { assetsPrefix } = useBridgeConfig();
+  const bridgeConfig = useBridgeConfig();
 
   const value = useMemo(() => {
-    if (!config) {
+    if (!transferConfig) {
       return DEFAULT_CONTEXT;
     }
 
@@ -91,82 +93,80 @@ export function AggregatorProvider(props: AggregatorProviderProps) {
       },
     ];
 
-    const nativeCurrencies = getNativeCurrencies(config.chainConfigs);
-    const includedChains = config.chainConfigs.map((item) => item.id);
-    const brandChains = config.brandChains;
-    const externalChains = config.externalChains;
+    const nativeCurrencies = getNativeCurrencies(chainConfigs);
+    const includedChains = chainConfigs.map((item) => item.id);
+    const assetsPrefix = bridgeConfig.http.assetsPrefix;
 
     const adapters = bridges
-      .filter((item) => config[item.bridgeType])
+      .filter((item) => transferConfig[item.bridgeType])
       .map(({ bridgeType, Adapter }) => {
-        const bridgeConfig = config[bridgeType];
+        const adapterConfig = transferConfig[bridgeType]!;
 
-        const options: IBaseAdapterOptions<any> = {
-          config: bridgeConfig.config,
-          excludedChains: bridgeConfig.exclude.chains,
-          excludedTokens: bridgeConfig.exclude.tokens,
-          bridgedTokenGroups: bridgeConfig.bridgedTokenGroups,
+        return new Adapter({
+          config: adapterConfig.config,
+          excludedChains: adapterConfig.exclude?.chains,
+          excludedTokens: adapterConfig.exclude?.tokens,
+          bridgedTokenGroups: adapterConfig.bridgedTokenGroups,
           includedChains,
           nativeCurrencies,
-          brandChains,
-          externalChains,
-        };
-
-        return new Adapter(options);
+          brandChains: transferConfig.brandChains,
+          externalChains: transferConfig.externalChains,
+          displayTokenSymbols: transferConfig.displayTokenSymbols,
+          assetsPrefix,
+        } as IBaseAdapterOptions<any>);
       });
 
     return {
       isReady: true,
-      config,
+      transferConfig,
 
-      defaultSelectedInfo: config.defaultSelectedInfo,
-      chainConfigs: config.chainConfigs,
+      defaultSelectedInfo: transferConfig.defaultSelectedInfo,
       nativeCurrencies,
       adapters,
+      chainConfigs,
 
       getFromChains: (params: IGetFromChainsParams) => {
         return aggregateChains({
           direction: 'from',
+          transferConfig,
+          chainConfigs,
           assetsPrefix,
           adapters,
           params,
-          config,
         });
       },
       getToChains: (params: IGetToChainsParams) => {
         return aggregateChains({
           direction: 'to',
+          transferConfig,
+          chainConfigs,
           assetsPrefix,
           adapters,
           params,
-          config,
         });
       },
       getTokens: (params: IGetTokensParams) => {
         return aggregateTokens({
-          assetsPrefix,
           adapters,
           params,
-          config,
         });
       },
       getToToken: (params: IGetToTokenParams) => {
         return aggregateToToken({
-          assetsPrefix,
           adapters,
           params,
-          config,
         });
       },
     };
-  }, [assetsPrefix, config]);
+  }, [chainConfigs, transferConfig, bridgeConfig.http.assetsPrefix]);
 
-  const isMounted = useIsMounted();
-  if (!isMounted || !value.isReady) {
-    return null;
-  }
-
-  return <AggregatorContext.Provider value={value}>{children}</AggregatorContext.Provider>;
+  return (
+    <AggregatorContext.Provider value={value}>
+      <TokenBalancesProvider />
+      <TokenPricesProvider />
+      {children}
+    </AggregatorContext.Provider>
+  );
 }
 
 export function useAggregator() {

@@ -4,6 +4,7 @@ import {
   IBridgeChain,
   ITransferConfig,
   IBridgeToken,
+  IChainConfig,
 } from '@/modules/aggregator/types';
 import { isChainOrTokenCompatible } from '@/modules/aggregator/shared/isChainOrTokenCompatible';
 
@@ -19,9 +20,10 @@ export interface IGetToChainsParams {
 
 export interface IAggregateChainsParams {
   direction: 'from' | 'to';
+  transferConfig: ITransferConfig;
+  chainConfigs: IChainConfig[];
   adapters: AdapterType[];
   params: IGetFromChainsParams | IGetToChainsParams;
-  config: ITransferConfig;
   assetsPrefix?: string;
 }
 
@@ -29,12 +31,13 @@ export function aggregateChains({
   direction,
   adapters,
   params,
-  config,
+  transferConfig,
+  chainConfigs,
   assetsPrefix,
 }: IAggregateChainsParams) {
   const chainMap = new Map<number, IBridgeChain>();
 
-  const chainOrder = config.order.chains;
+  const chainOrder = transferConfig.order?.chains ?? [];
 
   adapters.forEach((adapter) => {
     const { bridgeType } = adapter;
@@ -65,7 +68,8 @@ export function aggregateChains({
           ...getChainInfo({
             assetsPrefix,
             chainId,
-            config,
+            transferConfig,
+            chainConfigs,
           }),
         };
       }
@@ -118,19 +122,21 @@ export function aggregateChains({
 function getChainInfo({
   assetsPrefix,
   chainId,
-  config,
+  transferConfig,
+  chainConfigs,
 }: {
   assetsPrefix?: string;
   chainId: number;
-  config: ITransferConfig;
+  transferConfig: ITransferConfig;
+  chainConfigs: IChainConfig[];
 }) {
-  const chainConfig = config.chainConfigs.find((item) => item.id === chainId);
+  const chainConfig = chainConfigs.find((item) => item.id === chainId);
 
   const explorerUrl = chainConfig?.explorer.url?.replace(/\/$/, '') ?? '';
   const tmpUrlPattern = explorerUrl ? `${explorerUrl}/token/{0}` : '';
   const tokenUrlPattern = chainConfig?.explorer?.tokenUrlPattern || tmpUrlPattern;
 
-  const externalConfig = config.externalChains?.find((item) => item.chainId === chainId);
+  const externalConfig = transferConfig.externalChains?.find((item) => item.chainId === chainId);
   const chainType: ChainType = externalConfig ? 'link' : 'evm';
   const externalBridgeUrl = externalConfig?.bridgeUrl;
 

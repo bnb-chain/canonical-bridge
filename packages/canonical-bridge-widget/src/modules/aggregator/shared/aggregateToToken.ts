@@ -1,6 +1,4 @@
-import { formatTokenIcon } from '@/core/utils/string';
-import { getDisplayTokenSymbol } from '@/modules/aggregator/shared/getDisplayTokenSymbol';
-import { AdapterType, ITransferConfig, IBridgeToken } from '@/modules/aggregator/types';
+import { AdapterType, IBridgeToken } from '@/modules/aggregator/types';
 
 export interface IGetToTokenParams {
   fromChainId: number;
@@ -11,50 +9,37 @@ export interface IGetToTokenParams {
 export interface IAggregateToTokenParams {
   adapters: AdapterType[];
   params: IGetToTokenParams;
-  config: ITransferConfig;
-  assetsPrefix?: string;
 }
 
-export function aggregateToToken({
-  adapters,
-  params,
-  config,
-  assetsPrefix,
-}: IAggregateToTokenParams) {
+export function aggregateToToken({ adapters, params }: IAggregateToTokenParams) {
   let bridgeToken: IBridgeToken | undefined;
 
   adapters.forEach((adapter) => {
     const { bridgeType } = adapter;
 
-    const tokenSymbol = params.token?.[bridgeType]?.symbol?.toUpperCase() as string;
     const { tokenPair } = adapter.getTokenPair({
       fromChainId: params.fromChainId,
       toChainId: params.toChainId,
-      tokenSymbol,
+      tokenSymbol: params.token?.[bridgeType]?.symbol?.toUpperCase() as string,
     }) as any;
 
     const toToken = tokenPair?.toToken;
 
     if (toToken) {
-      const baseInfo = adapter.getTokenInfo(toToken);
-      const displaySymbol = getDisplayTokenSymbol({
-        symbolMap: config.displayTokenSymbols?.[tokenPair.toChainId],
-        defaultSymbol: baseInfo.symbol,
-        tokenAddress: baseInfo.address,
+      const baseInfo = adapter.getTokenInfo({
+        chainId: tokenPair.toChainId,
+        token: toToken,
       });
 
       if (!bridgeToken) {
         bridgeToken = {
           ...baseInfo,
-          displaySymbol,
-          icon: formatTokenIcon(assetsPrefix, displaySymbol),
           isPegged: !!tokenPair?.isPegged,
         };
       }
 
       const common = {
         ...baseInfo,
-        displaySymbol,
         isCompatible: true,
         raw: toToken,
       };

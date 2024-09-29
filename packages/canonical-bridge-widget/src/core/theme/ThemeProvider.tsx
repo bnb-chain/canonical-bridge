@@ -5,7 +5,7 @@ import { merge } from 'lodash';
 import { light } from '@/core/theme/colors/light';
 import { dark } from '@/core/theme/colors/dark';
 import { walletStyles } from '@/core/theme/walletStyles';
-import { useBridgeConfig } from '@/index';
+import { useBridgeConfig } from '@/CanonicalBridgeProvider';
 
 export interface ThemeProviderProps {
   colorMode?: ColorMode;

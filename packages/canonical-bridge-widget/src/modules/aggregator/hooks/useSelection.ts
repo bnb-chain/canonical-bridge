@@ -181,7 +181,7 @@ export function useSelection() {
 }
 
 function useSortedTokens() {
-  const { config } = useAggregator();
+  const { transferConfig } = useAggregator();
   const chains = useChains();
   const { address } = useAccount();
   const { getTokenPrice } = useTokenPrice();
@@ -212,10 +212,10 @@ function useSortedTokens() {
 
       return sortTokens({
         tokens: tmpTokens,
-        orders: config.order.tokens,
+        orders: transferConfig.order?.tokens,
       });
     },
-    [address, chains, config.order.tokens, getTokenPrice],
+    [address, chains, transferConfig.order?.tokens, getTokenPrice],
   );
 
   return {

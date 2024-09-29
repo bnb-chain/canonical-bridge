@@ -100,11 +100,7 @@ export const StarGateOption = () => {
       {isError ? <RouteMask /> : null}
 
       <RouteName bridgeType="stargate" />
-      <RouteTitle
-        receiveAmt={receiveAmt}
-        tokenAddress={toTokenInfo?.address}
-        toTokenInfo={toTokenInfo}
-      />
+      <RouteTitle receiveAmt={receiveAmt} toTokenInfo={toTokenInfo?.['stargate']} />
       <EstimatedArrivalTime bridgeType={'stargate'} />
       <FeesInfo
         bridgeType="stargate"

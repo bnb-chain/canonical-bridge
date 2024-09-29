@@ -26,7 +26,7 @@
   "scripts": {
     "dev": "vite __dev__ --config vite.config.ts --port 3333 --host 0.0.0.0 --open",
     "build": "vite build",
-    "watch": "vite build --watch",
+    "watch": "vite build --watch --emptyOutDir=false",
     "lint-staged": "lint-staged"
   },
   "peerDependencies": {
@@ -44,6 +44,8 @@
     "@bnb-chain/icons": "workspace:*",
     "@bnb-chain/prettier-config": "workspace:*",
     "@bnb-chain/space": "workspace:*",
+    "@emotion/react": "~11.13.0",
+    "@emotion/styled": "~11.13.0",
     "@node-real/walletkit": "2.3.6-alpha.0",
     "@tanstack/react-query": "~5.50.1",
     "@types/lodash": "~4.17.7",

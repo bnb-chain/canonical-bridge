@@ -1,4 +1,6 @@
-export const chains = [
+import { IChainConfig } from '@bnb-chain/canonical-bridge-widget';
+
+export const chains: IChainConfig[] = [
   {
     id: 1,
     name: 'Ethereum',

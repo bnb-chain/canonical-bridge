@@ -1,7 +1,8 @@
 import { Address } from 'viem';
 import { BridgeType } from '@bnb-chain/canonical-bridge-sdk';
 
-import { IExternalChain, INativeCurrency } from '@/modules/aggregator/types';
+import { IBridgeTokenBaseInfo, IExternalChain, INativeCurrency } from '@/modules/aggregator/types';
+import { isSameAddress } from '@/core/utils/address';
 
 export interface ITransferTokenPair<T, P = unknown> {
   fromChainId: number;
@@ -16,13 +17,15 @@ export interface ITransferTokenPair<T, P = unknown> {
 
 export interface IBaseAdapterOptions<G> {
   config: G;
-  includedChains?: number[];
+  includedChains: number[];
   excludedChains?: number[];
   excludedTokens?: Record<number, Array<string | Address>>;
   nativeCurrencies?: Record<number, INativeCurrency>;
   bridgedTokenGroups?: string[][];
   brandChains?: number[];
   externalChains?: IExternalChain[];
+  displayTokenSymbols?: Record<number, Record<string, string>>;
+  assetsPrefix?: string;
 }
 
 export abstract class BaseAdapter<G extends object, C = unknown, T = unknown> {
@@ -37,6 +40,8 @@ export abstract class BaseAdapter<G extends object, C = unknown, T = unknown> {
   protected readonly bridgedTokenGroups: string[][] = [];
   protected readonly brandChains: number[] = [];
   protected readonly externalChains: IExternalChain[] = [];
+  protected readonly displayTokenSymbols: Record<number, Record<string, string>> = {};
+  protected readonly assetsPrefix: string;
 
   protected chains: C[] = [];
   protected chainMap = new Map<number, C>();
@@ -61,6 +66,8 @@ export abstract class BaseAdapter<G extends object, C = unknown, T = unknown> {
     this.bridgedTokenGroups = options.bridgedTokenGroups ?? [];
     this.brandChains = options.brandChains ?? [];
     this.externalChains = options.externalChains ?? [];
+    this.displayTokenSymbols = options.displayTokenSymbols ?? {};
+    this.assetsPrefix = options.assetsPrefix ?? '';
 
     this.init();
   }
@@ -82,12 +89,13 @@ export abstract class BaseAdapter<G extends object, C = unknown, T = unknown> {
   protected abstract getChainIdAsObject(chainId: number): unknown;
 
   public abstract getChainId(chain: C): number;
-  public abstract getTokenInfo(token: T): {
-    symbol: string;
-    name: string;
-    address: string;
-    decimals: number;
-  };
+  public abstract getTokenInfo({
+    chainId,
+    token,
+  }: {
+    chainId: number;
+    token: T;
+  }): IBridgeTokenBaseInfo;
 
   protected initFromChains() {
     this.fromChainIds = new Set(this.transferMap.keys());
@@ -227,6 +235,35 @@ export abstract class BaseAdapter<G extends object, C = unknown, T = unknown> {
     );
   }
 
+  protected getTokenDisplaySymbolAndIcon({
+    defaultSymbol,
+    chainId,
+    tokenAddress,
+  }: {
+    chainId: number;
+    defaultSymbol: string;
+    tokenAddress: string;
+  }) {
+    const symbolMap = this.displayTokenSymbols[chainId] ?? {};
+
+    const target = Object.entries(symbolMap).find(([address]) =>
+      isSameAddress(address, tokenAddress),
+    );
+
+    const displaySymbol = target?.[1] ?? defaultSymbol;
+    const icon = this.formatTokenIcon(displaySymbol);
+
+    return {
+      displaySymbol,
+      icon,
+    };
+  }
+
+  protected formatTokenIcon(tokenSymbol: string) {
+    const iconSymbol = tokenSymbol.replace(/[+]$/, '_ICON')?.toUpperCase();
+    return `${this.assetsPrefix}/images/tokens/${iconSymbol}.png`;
+  }
+
   // 1. Native currency is ETH -> Native currency is ETH, all transfer to ETH
   // 2. Native currency is ETH -> Native currency is NOT ETH, transfer to ETH first, if not, WETH
   // 3. Native currency is NOT ETH -> Native currency is ETH, all transfer to ETH
@@ -350,19 +387,14 @@ export abstract class BaseAdapter<G extends object, C = unknown, T = unknown> {
   public getTokens({ fromChainId, toChainId }: { fromChainId: number; toChainId: number }) {
     const allTokenPairMap = new Map<string, ITransferTokenPair<T>>();
 
-    this.transferMap.forEach((toMap) => {
-      toMap.forEach((tokenPairMap) => {
-        tokenPairMap.forEach((tokenPair, tokenSymbol) => {
-          allTokenPairMap.set(tokenSymbol, tokenPair);
-        });
+    const toMap = this.transferMap.get(fromChainId);
+    toMap?.forEach((tokenPairMap) => {
+      tokenPairMap.forEach((tokenPair, tokenSymbol) => {
+        allTokenPairMap.set(tokenSymbol, tokenPair);
       });
     });
 
     const tokenPairMap = this.transferMap.get(fromChainId)?.get(toChainId);
-    tokenPairMap?.forEach((tokenPair, tokenSymbol) => {
-      allTokenPairMap.set(tokenSymbol, tokenPair);
-    });
-
     const compatibleTokens = new Set<string>(tokenPairMap ? tokenPairMap.keys() : []);
 
     return {

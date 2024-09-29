@@ -27,8 +27,10 @@ export const useLoadingBridgeFees = () => {
   const { address } = useAccount();
   const { isAllowSendError } = useGetCBridgeFees();
   const bridgeSDK = useBridgeSDK();
-  const { deBridgeAccessToken } = useBridgeConfig();
   const { data: nativeBalance } = useBalance({ address });
+  const {
+    http: { deBridgeAccessToken },
+  } = useBridgeConfig();
 
   const toToken = useAppSelector((state) => state.transfer.toToken);
   const selectedToken = useAppSelector((state) => state.transfer.selectedToken);

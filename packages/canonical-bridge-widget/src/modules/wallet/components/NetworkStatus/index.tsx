@@ -4,7 +4,6 @@ import { TickIcon } from '@bnb-chain/icons';
 
 import { IconImage } from '@/core/components/IconImage';
 import { useAppSelector } from '@/modules/store/StoreProvider';
-import { useBridgeConfig } from '@/CanonicalBridgeProvider';
 import { useFromChains } from '@/modules/aggregator/hooks/useFromChains';
 import { useEvmSwitchChain } from '@/modules/wallet/hooks/useEvmSwitchChain';
 import { Dropdown } from '@/modules/wallet/components/Dropdown/Dropdown';
@@ -14,7 +13,6 @@ import { DropdownItem } from '@/modules/wallet/components/Dropdown/DropdownItem'
 
 export function NetworkStatus() {
   const fromChain = useAppSelector((state) => state.transfer.fromChain);
-  const { assetsPrefix } = useBridgeConfig();
 
   const theme = useTheme();
   const { colorMode } = useColorMode();
@@ -23,12 +21,14 @@ export function NetworkStatus() {
   const fromChains = useFromChains();
   const { switchChain } = useEvmSwitchChain();
 
+  const bridgeChains = useFromChains();
+
   if (!chain) {
     return null;
   }
 
   const isWrongNetwork = !!fromChain && fromChain.id !== chain.id;
-  const iconUrl = `${assetsPrefix}/images/chains/${chain.id}.png`;
+  const iconUrl = bridgeChains.find((e) => e.id === chain.id)?.icon;
 
   return (
     <Dropdown>

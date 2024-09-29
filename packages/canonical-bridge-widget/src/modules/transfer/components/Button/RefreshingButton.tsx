@@ -17,7 +17,7 @@ export const RefreshingButton = (props: BoxProps) => {
   const [isButtonPressed, setIsButtonPressed] = useState(false);
 
   const { loadingBridgeFees } = useLoadingBridgeFees();
-  const configs = useBridgeConfig();
+  const bridgeConfig = useBridgeConfig();
 
   // Load estimated bridge fees every 30 seconds when there is bridge route available
   useEffect(() => {
@@ -27,7 +27,7 @@ export const RefreshingButton = (props: BoxProps) => {
       let interval = setInterval(() => {
         dispatch(setIsGlobalFeeLoading(true));
         loadingBridgeFees();
-      }, configs?.refetchingInterval ?? 30000);
+      }, bridgeConfig.http.refetchingInterval ?? 30000);
 
       // Stop and restart fee loading
       if (isButtonPressed === true) {
@@ -40,7 +40,7 @@ export const RefreshingButton = (props: BoxProps) => {
           interval = setInterval(() => {
             dispatch(setIsGlobalFeeLoading(true));
             loadingBridgeFees();
-          }, configs?.refetchingInterval ?? 30000);
+          }, bridgeConfig.http?.refetchingInterval ?? 30000);
         }
         setIsButtonPressed(false);
       }
@@ -61,7 +61,7 @@ export const RefreshingButton = (props: BoxProps) => {
     loadingBridgeFees,
     dispatch,
     isButtonPressed,
-    configs?.refetchingInterval,
+    bridgeConfig.http.refetchingInterval,
   ]);
 
   return transferActionInfo ? (

@@ -105,11 +105,7 @@ export const CBridgeOption = () => {
     >
       {isError ? <RouteMask /> : null}
       <RouteName bridgeType="cBridge" />
-      <RouteTitle
-        receiveAmt={receiveAmt}
-        tokenAddress={toTokenInfo?.address}
-        toTokenInfo={toTokenInfo}
-      />
+      <RouteTitle receiveAmt={receiveAmt} toTokenInfo={toTokenInfo?.['cBridge']} />
       <EstimatedArrivalTime bridgeType={'cBridge'} />
       <FeesInfo
         bridgeType="cBridge"

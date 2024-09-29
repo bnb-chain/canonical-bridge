@@ -1,28 +1,22 @@
 import { Flex, useColorMode, useTheme } from '@bnb-chain/space';
-import { useMemo } from 'react';
 
 import { TokenInfoTooltip } from '@/modules/transfer/components/TransferOverview/RouteInfo/TokenInfoTooltip';
 import { IconImage } from '@/core/components/IconImage';
 import { useAppSelector } from '@/modules/store/StoreProvider';
 import { formatTokenUrl } from '@/core/utils/string';
-import { IBridgeToken } from '@/modules/aggregator/types';
+import { IBridgeTokenBaseInfo } from '@/modules/aggregator/types';
 
 interface RouteTitleProps {
   receiveAmt?: string;
-  decimals?: number;
-  tokenAddress?: string;
-  toTokenInfo?: IBridgeToken;
+  toTokenInfo?: IBridgeTokenBaseInfo;
 }
 
-export const RouteTitle = ({ receiveAmt, tokenAddress, toTokenInfo }: RouteTitleProps) => {
+export const RouteTitle = ({ receiveAmt, toTokenInfo }: RouteTitleProps) => {
   const theme = useTheme();
   const { colorMode } = useColorMode();
 
   const toChain = useAppSelector((state) => state.transfer.toChain);
-
-  const tokenUrl = useMemo(() => {
-    return toTokenInfo ? formatTokenUrl(toChain?.tokenUrlPattern, toTokenInfo.address) : '';
-  }, [toTokenInfo, toChain?.tokenUrlPattern]);
+  const tokenUrl = formatTokenUrl(toChain?.tokenUrlPattern, toTokenInfo?.address);
 
   return (
     <Flex flexDir={'row'} gap={'8px'} display={'inline'}>
@@ -37,8 +31,12 @@ export const RouteTitle = ({ receiveAmt, tokenAddress, toTokenInfo }: RouteTitle
       >
         {receiveAmt}
       </Flex>
-      {toTokenInfo && tokenAddress && (
-        <TokenInfoTooltip tokenAddress={tokenAddress} tokenLinkUrl={tokenUrl} isReceiveArea={true}>
+      {toTokenInfo && (
+        <TokenInfoTooltip
+          tokenAddress={toTokenInfo.address}
+          tokenLinkUrl={tokenUrl}
+          isReceiveArea={true}
+        >
           <Flex
             flexDir={'row'}
             gap={'4px'}
@@ -48,12 +46,12 @@ export const RouteTitle = ({ receiveAmt, tokenAddress, toTokenInfo }: RouteTitle
             lineHeight={'20px'}
           >
             <IconImage
-              src={toTokenInfo?.icon}
+              src={toTokenInfo.icon}
               w={'16px'}
               h={'16px'}
               fallbackBgColor={theme.colors[colorMode].support.primary[4]}
             />
-            <Flex>{toTokenInfo?.symbol}</Flex>
+            <Flex>{toTokenInfo.displaySymbol}</Flex>
           </Flex>
         </TokenInfoTooltip>
       )}

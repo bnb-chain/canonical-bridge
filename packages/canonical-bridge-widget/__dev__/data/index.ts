@@ -1,5 +1,3 @@
-import { chains } from '@/dev/data/chains';
-
 import cBridgeConfig from './cbridge/config.json';
 import deBridgeConfig from './deBridge';
 import stargateConfig from './stargate/config.json';
@@ -83,7 +81,6 @@ export const transferConfig = {
       '0x49D5c2BdFfac6CE2BFdB6640F4F80f226bc10bAB': 'WETH.e',
     },
   },
-  chainConfigs: chains,
   brandChains: [56, 204],
   externalChains: [
     {

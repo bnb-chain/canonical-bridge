@@ -88,11 +88,7 @@ export const LayerZeroOption = () => {
     >
       {isError ? <RouteMask /> : null}
       <RouteName bridgeType="layerZero" />
-      <RouteTitle
-        receiveAmt={receiveAmt}
-        tokenAddress={toTokenInfo?.address}
-        toTokenInfo={toTokenInfo}
-      />
+      <RouteTitle receiveAmt={receiveAmt} toTokenInfo={toTokenInfo?.['layerZero']} />
       <FeesInfo
         bridgeType="layerZero"
         summary={feeDetails.summary}

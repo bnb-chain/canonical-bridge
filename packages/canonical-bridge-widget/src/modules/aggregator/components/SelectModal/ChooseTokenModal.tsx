@@ -79,7 +79,8 @@ export function ChooseTokenModal(props: ChooseTokenModalProps) {
         <VirtualList data={data} itemHeight={64}>
           {(item) => {
             const isDisabled = !isChainOrTokenCompatible(item);
-            const isActive = isSameAddress(item.address, selectedToken?.address);
+            const isActive =
+              isSameAddress(item.address, selectedToken?.address) && isChainOrTokenCompatible(item);
             const isNative = isNativeToken(item.address);
 
             return (

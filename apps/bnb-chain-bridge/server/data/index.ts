@@ -1,11 +1,11 @@
-import { chains } from '@/server/data/chains';
+import { ITransferConfig } from '@bnb-chain/canonical-bridge-widget';
 
 import cBridgeConfig from './cBridge/config.json';
 import deBridgeConfig from './deBridge';
 import stargateConfig from './stargate/config.json';
 import layerZeroConfig from './layerZero/config.json';
 
-export const transferConfig = {
+export const transferConfig: ITransferConfig = {
   defaultSelectedInfo: {
     fromChainId: 1,
     toChainId: 56,
@@ -83,7 +83,6 @@ export const transferConfig = {
       '0x49D5c2BdFfac6CE2BFdB6640F4F80f226bc10bAB': 'WETH.e',
     },
   },
-  chainConfigs: chains,
   brandChains: [56, 204],
   externalChains: [
     {

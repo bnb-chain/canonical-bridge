@@ -24,10 +24,9 @@ export function TransferWidget() {
   const isBase = useBreakpointValue({ base: true, lg: false }) ?? false;
 
   useDefaultSelectedInfo();
-  const { routeContentBottom } = useBridgeConfig();
 
   const { isOpen, onClose, onOpen } = useDisclosure();
-  const { bridgeTitle } = useBridgeConfig();
+  const { appearance, routeContentBottom } = useBridgeConfig();
 
   return (
     <Flex
@@ -51,7 +50,7 @@ export function TransferWidget() {
         gap={'24px'}
         position="relative"
       >
-        {bridgeTitle && (
+        {appearance.bridgeTitle && (
           <Box
             as="h1"
             display={['none', 'none', 'block']}
@@ -61,7 +60,7 @@ export function TransferWidget() {
             borderBottom={`1px solid ${theme.colors[colorMode].border[2]}`}
             pb={'24px'}
           >
-            {bridgeTitle}
+            {appearance.bridgeTitle}
           </Box>
         )}
 

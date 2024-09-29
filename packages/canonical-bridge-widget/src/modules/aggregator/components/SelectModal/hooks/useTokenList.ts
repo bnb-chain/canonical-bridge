@@ -7,13 +7,14 @@ import { isSameAddress } from '@/core/utils/address';
 import { useTokenBalance } from '@/modules/aggregator/hooks/useTokenBalance';
 import { sortTokens } from '@/modules/aggregator/shared/sortTokens';
 import { useAggregator } from '@/modules/aggregator/components/AggregatorProvider';
+import { isChainOrTokenCompatible } from '@/modules/aggregator/shared/isChainOrTokenCompatible';
 
 export function useTokenList(tokens: IBridgeToken[] = []) {
   const selectedToken = useAppSelector((state) => state.transfer.selectedToken);
   const isLoadingTokenBalances = useAppSelector((state) => state.aggregator.isLoadingTokenBalances);
   const isLoadingTokenPrices = useAppSelector((state) => state.aggregator.isLoadingTokenPrices);
 
-  const { config } = useAggregator();
+  const { transferConfig } = useAggregator();
   const { getTokenBalance } = useTokenBalance();
   const { getTokenPrice } = useTokenPrice();
 
@@ -36,13 +37,21 @@ export function useTokenList(tokens: IBridgeToken[] = []) {
 
     const sortedTokens = sortTokens({
       tokens: tmpTokens,
-      orders: config.order.tokens,
+      orders: transferConfig.order?.tokens,
     }).sort((a) => {
-      return isSameAddress(a.address, selectedToken?.address) ? -1 : 0;
+      return isSameAddress(a.address, selectedToken?.address) && isChainOrTokenCompatible(a)
+        ? -1
+        : 0;
     });
 
     return sortedTokens;
-  }, [config.order.tokens, getTokenBalance, getTokenPrice, selectedToken?.address, tokens]);
+  }, [
+    transferConfig.order?.tokens,
+    getTokenBalance,
+    getTokenPrice,
+    selectedToken?.address,
+    tokens,
+  ]);
 
   return { data: sortedTokens, isLoading: isLoadingTokenBalances || isLoadingTokenPrices };
 }

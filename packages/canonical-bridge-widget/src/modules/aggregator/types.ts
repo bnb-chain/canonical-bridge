@@ -51,45 +51,32 @@ export interface IBridgeChain {
   };
 }
 
-export interface IBridgeToken {
+export interface IBridgeTokenBaseInfo {
   name: string;
-  icon?: string;
-  address: string;
   symbol: string;
+  address: string;
   decimals: number;
-  isPegged: boolean;
   displaySymbol: string;
-  cBridge?: {
+  icon: string;
+}
+
+export interface IBridgeToken extends IBridgeTokenBaseInfo {
+  isPegged: boolean;
+  cBridge?: IBridgeTokenBaseInfo & {
     isCompatible: boolean;
-    symbol: string;
-    address: string;
-    decimals: number;
-    displaySymbol: string;
     peggedConfig?: ICBridgePeggedPairConfig;
     raw?: ICBridgeToken;
   };
-  deBridge?: {
+  deBridge?: IBridgeTokenBaseInfo & {
     isCompatible: boolean;
-    symbol: string;
-    address: string;
-    decimals: number;
-    displaySymbol: string;
     raw?: IDeBridgeToken;
   };
-  stargate?: {
+  stargate?: IBridgeTokenBaseInfo & {
     isCompatible: boolean;
-    symbol: string;
-    address: string;
-    decimals: number;
-    displaySymbol: string;
     raw?: IStargateToken;
   };
-  layerZero?: {
+  layerZero?: IBridgeTokenBaseInfo & {
     isCompatible: boolean;
-    symbol: string;
-    address: string;
-    decimals: number;
-    displaySymbol: string;
     raw?: ILayerZeroToken;
   };
 }
@@ -118,45 +105,44 @@ export interface ITransferConfig {
     tokenSymbol: string;
     amount: string;
   };
-  order: {
-    chains: number[];
-    tokens: string[];
+  order?: {
+    chains?: number[];
+    tokens?: string[];
   };
   displayTokenSymbols: Record<number, Record<string, string>>;
-  chainConfigs: IChainConfig[];
   brandChains?: number[];
   externalChains?: IExternalChain[];
-  cBridge: {
+  cBridge?: {
     config: ICBridgeTransferConfig;
     exclude: {
-      chains: number[];
-      tokens: Record<number, string[]>;
+      chains?: number[];
+      tokens?: Record<number, string[]>;
     };
-    bridgedTokenGroups: string[][];
+    bridgedTokenGroups?: string[][];
   };
-  deBridge: {
+  deBridge?: {
     config: IDeBridgeTransferConfig;
     exclude: {
-      chains: number[];
-      tokens: Record<number, string[]>;
+      chains?: number[];
+      tokens?: Record<number, string[]>;
     };
-    bridgedTokenGroups: string[][];
+    bridgedTokenGroups?: string[][];
   };
-  stargate: {
+  stargate?: {
     config: IStargateTransferConfig;
-    exclude: {
-      chains: number[];
-      tokens: Record<number, string[]>;
+    exclude?: {
+      chains?: number[];
+      tokens?: Record<number, string[]>;
     };
-    bridgedTokenGroups: string[][];
+    bridgedTokenGroups?: string[][];
   };
-  layerZero: {
+  layerZero?: {
     config: ILayerZeroTransferConfig;
-    exclude: {
-      chains: number[];
-      tokens: Record<number, string[]>;
+    exclude?: {
+      chains?: number[];
+      tokens?: Record<number, string[]>;
     };
-    bridgedTokenGroups: string[][];
+    bridgedTokenGroups?: string[][];
   };
 }
 

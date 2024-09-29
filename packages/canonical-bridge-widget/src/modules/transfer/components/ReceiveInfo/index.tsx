@@ -143,11 +143,12 @@ export const ReceiveInfo = ({ onOpen }: ReceiveInfoProps) => {
             <>
               {isBase && <RouteName bridgeType={bridgeType} isReceiveSection={true} />}
               {isBase && <RefreshingButton position={'absolute'} right={'16px'} top={'16px'} />}
-              <RouteTitle
-                receiveAmt={receiveAmt ? formatNumber(Number(Number(receiveAmt)), 8) : undefined}
-                tokenAddress={toTokenInfo?.address}
-                toTokenInfo={toTokenInfo}
-              />
+              {bridgeType && (
+                <RouteTitle
+                  receiveAmt={receiveAmt ? formatNumber(Number(Number(receiveAmt)), 8) : undefined}
+                  toTokenInfo={toTokenInfo?.[bridgeType]}
+                />
+              )}
               <Flex flexDir={'column'} gap={'4px'}>
                 <EstimatedArrivalTime bridgeType={bridgeType} />
                 <FeesInfo

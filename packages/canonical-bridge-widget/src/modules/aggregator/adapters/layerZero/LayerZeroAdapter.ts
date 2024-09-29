@@ -123,12 +123,17 @@ export class LayerZeroAdapter extends BaseAdapter<
     };
   }
 
-  public getTokenInfo(token: ILayerZeroToken) {
+  public getTokenInfo({ chainId, token }: { chainId: number; token: ILayerZeroToken }) {
     return {
-      name: '',
+      name: (token as any).name, // TODO
       symbol: token.symbol,
       address: token.address,
       decimals: token.decimals,
+      ...this.getTokenDisplaySymbolAndIcon({
+        chainId,
+        tokenAddress: token.address,
+        defaultSymbol: token.symbol,
+      }),
     };
   }
 }

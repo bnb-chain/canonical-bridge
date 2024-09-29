@@ -1,9 +1,7 @@
 import { CBridgePeggedPairConfig } from '@bnb-chain/canonical-bridge-sdk';
 
-import { formatTokenIcon } from '@/core/utils/string';
 import { ITransferTokenPair } from '@/modules/aggregator/shared/BaseAdapter';
-import { getDisplayTokenSymbol } from '@/modules/aggregator/shared/getDisplayTokenSymbol';
-import { AdapterType, ITransferConfig, IBridgeToken } from '@/modules/aggregator/types';
+import { AdapterType, IBridgeToken } from '@/modules/aggregator/types';
 
 export interface IGetTokensParams {
   fromChainId?: number;
@@ -13,20 +11,14 @@ export interface IGetTokensParams {
 export interface IAggregateTokensParams {
   adapters: AdapterType[];
   params: IGetTokensParams;
-  config: ITransferConfig;
-  assetsPrefix?: string;
 }
 
-export function aggregateTokens({
-  adapters,
-  params,
-  config,
-  assetsPrefix,
-}: IAggregateTokensParams) {
+export function aggregateTokens({ adapters, params }: IAggregateTokensParams) {
   const tokenMap = new Map<string, IBridgeToken>();
 
   adapters.forEach((adapter) => {
     const { bridgeType } = adapter;
+
     const { compatibleTokens, tokenPairs } = adapter.getTokens({
       fromChainId: params.fromChainId!,
       toChainId: params.toChainId!,
@@ -35,21 +27,16 @@ export function aggregateTokens({
     tokenPairs.forEach((item: ITransferTokenPair<any>) => {
       const { fromToken, fromChainId, peggedConfig } = item;
 
-      const baseInfo = adapter.getTokenInfo(fromToken);
-      const displaySymbol = getDisplayTokenSymbol({
-        symbolMap: config.displayTokenSymbols?.[fromChainId],
-        defaultSymbol: baseInfo.symbol,
-        tokenAddress: baseInfo.address,
+      const baseInfo = adapter.getTokenInfo({
+        chainId: fromChainId,
+        token: fromToken,
       });
-
-      let bridgeToken = tokenMap.get(displaySymbol.toUpperCase());
+      let bridgeToken = tokenMap.get(baseInfo.displaySymbol.toUpperCase());
       const isCompatible = compatibleTokens.has(baseInfo.symbol.toUpperCase());
 
       if (!bridgeToken) {
         bridgeToken = {
           ...baseInfo,
-          icon: formatTokenIcon(assetsPrefix, displaySymbol),
-          displaySymbol,
           isPegged: !!item.isPegged,
         };
       }
@@ -66,7 +53,6 @@ export function aggregateTokens({
       const common = {
         ...baseInfo,
         isCompatible,
-        displaySymbol,
         raw: isCompatible ? fromToken : undefined,
       };
 
@@ -81,7 +67,7 @@ export function aggregateTokens({
         };
       }
 
-      tokenMap.set(displaySymbol.toUpperCase(), bridgeToken);
+      tokenMap.set(baseInfo.displaySymbol.toUpperCase(), bridgeToken);
     });
   });
 

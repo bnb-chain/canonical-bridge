@@ -124,12 +124,17 @@ export class DeBridgeAdapter extends BaseAdapter<
     };
   }
 
-  public getTokenInfo(token: IDeBridgeToken) {
+  public getTokenInfo({ chainId, token }: { chainId: number; token: IDeBridgeToken }) {
     return {
       name: token.name,
       symbol: token.symbol,
       address: token.address,
       decimals: token.decimals,
+      ...this.getTokenDisplaySymbolAndIcon({
+        chainId,
+        tokenAddress: token.address,
+        defaultSymbol: token.symbol,
+      }),
     };
   }
 

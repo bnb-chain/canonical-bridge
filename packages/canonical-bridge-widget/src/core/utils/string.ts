@@ -36,11 +36,6 @@ export function formatTokenUrl(pattern?: string, address?: string) {
   return pattern?.replace('{0}', address);
 }
 
-export function formatTokenIcon(assetsPrefix = '', tokenSymbol: string) {
-  const iconSymbol = tokenSymbol.replace(/[+]$/, '_ICON')?.toUpperCase();
-  return `${assetsPrefix}/images/tokens/${iconSymbol}.png`;
-}
-
 export function formatFeeAmount(amount: string | number) {
   if (Number(amount) < MIN_FEE) {
     return `< ${MIN_FEE}`;

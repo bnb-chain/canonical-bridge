@@ -2,34 +2,38 @@ import '@node-real/walletkit/styles.css';
 import React, { useContext, useMemo } from 'react';
 import { ColorMode, IntlProvider } from '@bnb-chain/space';
 
-import { ITransferConfig } from '@/modules/aggregator/types';
+import { IChainConfig, ITransferConfig } from '@/modules/aggregator/types';
 import { StoreProvider } from '@/modules/store/StoreProvider';
 import { WalletProvider } from '@/modules/wallet/WalletProvider';
 import { ThemeProvider, ThemeProviderProps } from '@/core/theme/ThemeProvider';
 import { AggregatorProvider } from '@/modules/aggregator/components/AggregatorProvider';
-import { TokenBalancesProvider } from '@/modules/aggregator/components/TokenBalancesProvider';
-import { TokenPricesProvider } from '@/modules/aggregator/components/TokenPricesProvider';
 
-export interface CanonicalBridgeConfig {
+export interface ICanonicalBridgeConfig {
+  appName: string;
+
   appearance: {
     mode?: ColorMode;
     theme?: ThemeProviderProps['themeConfig'];
-    locale: 'en';
+    locale: string;
     messages: Record<string, string>;
+    bridgeTitle?: string;
   };
-  walletConfig: {
+
+  wallet: {
     walletConnectProjectId: string;
   };
-  appName?: string;
-  refetchingInterval?: number;
-  apiTimeOut?: number;
-  deBridgeAccessToken?: string;
-  assetsPrefix?: string;
-  transferConfigEndpoint: string;
-  bridgeTitle?: string;
+
+  http: {
+    refetchingInterval?: number;
+    apiTimeOut?: number;
+    deBridgeAccessToken?: string;
+
+    assetsPrefix?: string;
+    serverEndpoint: string;
+  };
 }
 
-interface CanonicalBridgeContextProps extends CanonicalBridgeConfig {
+interface CanonicalBridgeContextProps extends ICanonicalBridgeConfig {
   routeContentBottom: React.ReactNode;
 }
 
@@ -40,23 +44,38 @@ export function useBridgeConfig() {
 }
 
 export interface CanonicalBridgeProviderProvider {
-  config: CanonicalBridgeConfig;
-  routeContentBottom?: React.ReactNode;
+  config: ICanonicalBridgeConfig;
   transferConfig: ITransferConfig;
+  chains: IChainConfig[];
+  routeContentBottom?: React.ReactNode;
   children: React.ReactNode;
 }
 
 export function CanonicalBridgeProvider(props: CanonicalBridgeProviderProvider) {
-  const { config, transferConfig, children, routeContentBottom } = props;
+  const { config, children, chains, transferConfig, routeContentBottom } = props;
 
-  const value = useMemo(() => {
+  const value = useMemo<CanonicalBridgeContextProps>(() => {
     return {
-      appName: 'canonical-bridge-widget',
-      refetchingInterval: 30000,
-      apiTimeOut: 60000,
-      deBridgeAccessToken: '',
-      routeContentBottom,
       ...config,
+
+      appearance: {
+        bridgeTitle: 'BNB Chain Cross-Chain Bridge',
+        mode: 'dark',
+        ...config.appearance,
+      },
+
+      wallet: {
+        ...config.wallet,
+      },
+
+      http: {
+        refetchingInterval: 30000,
+        apiTimeOut: 60000,
+        deBridgeAccessToken: '',
+        ...config.http,
+      },
+
+      routeContentBottom,
     };
   }, [config, routeContentBottom]);
 
@@ -65,13 +84,11 @@ export function CanonicalBridgeProvider(props: CanonicalBridgeProviderProvider) 
       <StoreProvider>
         <ThemeProvider themeConfig={value.appearance.theme} colorMode={value.appearance.mode}>
           <IntlProvider locale={value.appearance.locale} messages={value.appearance.messages}>
-            <AggregatorProvider config={transferConfig}>
-              <WalletProvider>
-                <TokenBalancesProvider />
-                <TokenPricesProvider />
+            <WalletProvider chainConfigs={chains}>
+              <AggregatorProvider transferConfig={transferConfig} chainConfigs={chains}>
                 {children}
-              </WalletProvider>
-            </AggregatorProvider>
+              </AggregatorProvider>
+            </WalletProvider>
           </IntlProvider>
         </ThemeProvider>
       </StoreProvider>

@@ -1,4 +1,6 @@
-export const testnetChains = [
+import { IChainConfig } from '@bnb-chain/canonical-bridge-widget';
+
+export const testnetChains: IChainConfig[] = [
   {
     id: 97,
     name: 'BSC Testnet',

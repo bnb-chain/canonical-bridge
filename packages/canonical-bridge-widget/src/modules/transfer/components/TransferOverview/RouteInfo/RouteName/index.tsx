@@ -18,7 +18,7 @@ interface RouteNameProps {
 export const RouteName = React.memo(({ bridgeType, isReceiveSection = false }: RouteNameProps) => {
   const { formatMessage } = useIntl();
   const { getSortedReceiveAmount } = useGetReceiveAmount();
-  const { assetsPrefix } = useBridgeConfig();
+  const bridgeConfig = useBridgeConfig();
 
   const receiveValue = getSortedReceiveAmount();
   const bestTimeRoute = useGetBestTime();
@@ -29,7 +29,7 @@ export const RouteName = React.memo(({ bridgeType, isReceiveSection = false }: R
         <CBridgeIcon w={['16px', '16px', '16px', '20px']} h={['16px', '16px', '16px', '20px']} />
       ) : bridgeType === 'deBridge' ? (
         <Image
-          src={`${assetsPrefix}/images/debridgeIcon.png`}
+          src={`${bridgeConfig.http.assetsPrefix}/images/debridgeIcon.png`}
           alt="deBridge"
           w={['16px', '16px', '16px', '20px']}
           h={['16px', '16px', '16px', '20px']}
@@ -40,7 +40,7 @@ export const RouteName = React.memo(({ bridgeType, isReceiveSection = false }: R
         <StarGateLogo w={['16px', '16px', '16px', '20px']} h={['16px', '16px', '16px', '20px']} />
       ) : bridgeType === 'layerZero' ? (
         <Image
-          src={`${assetsPrefix}/images/layerZeroIcon.png`}
+          src={`${bridgeConfig.http.assetsPrefix}/images/layerZeroIcon.png`}
           alt="layerZero"
           w={['16px', '16px', '16px', '20px']}
           h={['16px', '16px', '16px', '20px']}

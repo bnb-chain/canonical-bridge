@@ -4,9 +4,9 @@ import { feApiClient } from '@/core/utils/client';
 
 export function useFetchTransferConfig() {
   return useQuery<any>({
-    queryKey: ['api/getConfigs'],
+    queryKey: ['api/getTransferConfig'],
     queryFn: async () => {
-      return (await feApiClient.get('api/getConfigs')).data;
+      return (await feApiClient.get('api/getTransferConfig')).data;
     },
   });
 }

@@ -123,12 +123,17 @@ export class StargateAdapter extends BaseAdapter<
     };
   }
 
-  public getTokenInfo(token: IStargateToken) {
+  public getTokenInfo({ chainId, token }: { chainId: number; token: IStargateToken }) {
     return {
       name: token.name,
       symbol: token.symbol,
       address: token.address,
       decimals: token.decimals,
+      ...this.getTokenDisplaySymbolAndIcon({
+        chainId,
+        tokenAddress: token.address,
+        defaultSymbol: token.symbol,
+      }),
     };
   }
 }

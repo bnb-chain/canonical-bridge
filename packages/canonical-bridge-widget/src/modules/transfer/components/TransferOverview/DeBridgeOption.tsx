@@ -98,11 +98,7 @@ export const DeBridgeOption = ({}: DeBridgeOptionProps) => {
     >
       {isError ? <RouteMask /> : null}
       <RouteName bridgeType="deBridge" />
-      <RouteTitle
-        receiveAmt={receiveAmt}
-        tokenAddress={toTokenInfo?.address}
-        toTokenInfo={toTokenInfo}
-      />
+      <RouteTitle receiveAmt={receiveAmt} toTokenInfo={toTokenInfo?.['deBridge']} />
       <EstimatedArrivalTime bridgeType={'deBridge'} />
       <FeesInfo
         bridgeType="deBridge"

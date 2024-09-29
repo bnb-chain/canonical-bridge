@@ -1,4 +1,4 @@
-import { PropsWithChildren, useMemo } from 'react';
+import { useMemo } from 'react';
 import { WalletKitProvider, ConnectModal, WalletKitConfig } from '@node-real/walletkit';
 import {
   trustWallet,
@@ -12,16 +12,18 @@ import * as allChains from 'viem/chains';
 
 import { IChainConfig } from '@/modules/aggregator/types';
 import { useBridgeConfig } from '@/CanonicalBridgeProvider';
-import { useAggregator } from '@/modules/aggregator/components/AggregatorProvider';
 
-export function WalletProvider(props: PropsWithChildren) {
-  const { children } = props;
+interface WalletProviderProps {
+  chainConfigs: IChainConfig[];
+  children: React.ReactNode;
+}
 
-  const { chainConfigs } = useAggregator();
-  const { appName, walletConfig } = useBridgeConfig();
+export function WalletProvider(props: WalletProviderProps) {
+  const { chainConfigs, children } = props;
 
-  const config = useMemo(() => {
-    const config: WalletKitConfig = {
+  const bridgeConfig = useBridgeConfig();
+  const config = useMemo<WalletKitConfig>(
+    () => ({
       options: {
         useGridLayoutOnMobile: false,
         gridLayoutThreshold: 10,
@@ -29,16 +31,20 @@ export function WalletProvider(props: PropsWithChildren) {
       evmConfig: defaultEvmConfig({
         autoConnect: true,
         initialChainId: 1,
-        walletConnectProjectId: walletConfig.walletConnectProjectId,
+        walletConnectProjectId: bridgeConfig.wallet.walletConnectProjectId,
         metadata: {
-          name: appName || 'bnb-chain-bridge',
+          name: bridgeConfig.appName,
         },
         wallets: [metaMask(), trustWallet(), binanceWeb3Wallet(), okxWallet(), walletConnect()],
         chains: getEvmChains(chainConfigs),
       }),
-    };
-    return config;
-  }, [appName, chainConfigs, walletConfig.walletConnectProjectId]);
+    }),
+    [chainConfigs, bridgeConfig.appName, bridgeConfig.wallet.walletConnectProjectId],
+  );
+
+  if (!config.evmConfig?.chains?.length) {
+    return null;
+  }
 
   return (
     <WalletKitProvider config={config} mode="light">
