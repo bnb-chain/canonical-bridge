@@ -25,7 +25,7 @@ export interface IBaseAdapterOptions<G> {
   brandChains?: number[];
   externalChains?: IExternalChain[];
   displayTokenSymbols?: Record<number, Record<string, string>>;
-  assetsPrefix?: string;
+  assetPrefix?: string;
 }
 
 export abstract class BaseAdapter<G extends object, C = unknown, T = unknown> {
@@ -41,7 +41,7 @@ export abstract class BaseAdapter<G extends object, C = unknown, T = unknown> {
   protected readonly brandChains: number[] = [];
   protected readonly externalChains: IExternalChain[] = [];
   protected readonly displayTokenSymbols: Record<number, Record<string, string>> = {};
-  protected readonly assetsPrefix: string;
+  protected readonly assetPrefix: string;
 
   protected chains: C[] = [];
   protected chainMap = new Map<number, C>();
@@ -67,7 +67,7 @@ export abstract class BaseAdapter<G extends object, C = unknown, T = unknown> {
     this.brandChains = options.brandChains ?? [];
     this.externalChains = options.externalChains ?? [];
     this.displayTokenSymbols = options.displayTokenSymbols ?? {};
-    this.assetsPrefix = options.assetsPrefix ?? '';
+    this.assetPrefix = options.assetPrefix ?? '';
 
     this.init();
   }
@@ -261,7 +261,7 @@ export abstract class BaseAdapter<G extends object, C = unknown, T = unknown> {
 
   protected formatTokenIcon(tokenSymbol: string) {
     const iconSymbol = tokenSymbol.replace(/[+]$/, '_ICON')?.toUpperCase();
-    return `${this.assetsPrefix}/images/tokens/${iconSymbol}.png`;
+    return `${this.assetPrefix}/images/tokens/${iconSymbol}.png`;
   }
 
   // 1. Native currency is ETH -> Native currency is ETH, all transfer to ETH

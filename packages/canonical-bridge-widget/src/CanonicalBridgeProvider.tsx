@@ -28,7 +28,7 @@ export interface ICanonicalBridgeConfig {
     apiTimeOut?: number;
     deBridgeAccessToken?: string;
 
-    assetsPrefix?: string;
+    assetPrefix?: string;
     serverEndpoint: string;
   };
 }

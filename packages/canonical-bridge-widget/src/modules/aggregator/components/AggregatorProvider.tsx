@@ -95,7 +95,7 @@ export function AggregatorProvider(props: AggregatorProviderProps) {
 
     const nativeCurrencies = getNativeCurrencies(chainConfigs);
     const includedChains = chainConfigs.map((item) => item.id);
-    const assetsPrefix = bridgeConfig.http.assetsPrefix;
+    const assetPrefix = bridgeConfig.http.assetPrefix;
 
     const adapters = bridges
       .filter((item) => transferConfig[item.bridgeType])
@@ -112,7 +112,7 @@ export function AggregatorProvider(props: AggregatorProviderProps) {
           brandChains: transferConfig.brandChains,
           externalChains: transferConfig.externalChains,
           displayTokenSymbols: transferConfig.displayTokenSymbols,
-          assetsPrefix,
+          assetPrefix,
         } as IBaseAdapterOptions<any>);
       });
 
@@ -130,7 +130,7 @@ export function AggregatorProvider(props: AggregatorProviderProps) {
           direction: 'from',
           transferConfig,
           chainConfigs,
-          assetsPrefix,
+          assetPrefix,
           adapters,
           params,
         });
@@ -140,7 +140,7 @@ export function AggregatorProvider(props: AggregatorProviderProps) {
           direction: 'to',
           transferConfig,
           chainConfigs,
-          assetsPrefix,
+          assetPrefix,
           adapters,
           params,
         });
@@ -158,7 +158,7 @@ export function AggregatorProvider(props: AggregatorProviderProps) {
         });
       },
     };
-  }, [chainConfigs, transferConfig, bridgeConfig.http.assetsPrefix]);
+  }, [chainConfigs, transferConfig, bridgeConfig.http.assetPrefix]);
 
   return (
     <AggregatorContext.Provider value={value}>

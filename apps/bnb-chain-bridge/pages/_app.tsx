@@ -83,7 +83,7 @@ function BridgeWidget({ children }: React.PropsWithChildren) {
         apiTimeOut: 60 * 1000, // 30s
         deBridgeAccessToken: env.DEBRIDGE_ACCESS_TOKEN,
 
-        assetsPrefix: env.ASSET_PREFIX,
+        assetPrefix: env.ASSET_PREFIX,
         serverEndpoint: env.WIDGET_SERVER_ENDPOINT,
       },
     }),

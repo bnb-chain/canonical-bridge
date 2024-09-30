@@ -24,7 +24,7 @@ export interface IAggregateChainsParams {
   chainConfigs: IChainConfig[];
   adapters: AdapterType[];
   params: IGetFromChainsParams | IGetToChainsParams;
-  assetsPrefix?: string;
+  assetPrefix?: string;
 }
 
 export function aggregateChains({
@@ -33,7 +33,7 @@ export function aggregateChains({
   params,
   transferConfig,
   chainConfigs,
-  assetsPrefix,
+  assetPrefix,
 }: IAggregateChainsParams) {
   const chainMap = new Map<number, IBridgeChain>();
 
@@ -66,7 +66,7 @@ export function aggregateChains({
       if (!bridgeChain) {
         bridgeChain = {
           ...getChainInfo({
-            assetsPrefix,
+            assetPrefix,
             chainId,
             transferConfig,
             chainConfigs,
@@ -120,12 +120,12 @@ export function aggregateChains({
 }
 
 function getChainInfo({
-  assetsPrefix,
+  assetPrefix,
   chainId,
   transferConfig,
   chainConfigs,
 }: {
-  assetsPrefix?: string;
+  assetPrefix?: string;
   chainId: number;
   transferConfig: ITransferConfig;
   chainConfigs: IChainConfig[];
@@ -143,7 +143,7 @@ function getChainInfo({
   return {
     id: chainId,
     name: chainConfig?.name ?? '',
-    icon: `${assetsPrefix}/images/chains/${chainId}.png`,
+    icon: `${assetPrefix}/images/chains/${chainId}.png`,
     explorerUrl,
     rpcUrl: chainConfig?.rpcUrl ?? '',
     tokenUrlPattern,

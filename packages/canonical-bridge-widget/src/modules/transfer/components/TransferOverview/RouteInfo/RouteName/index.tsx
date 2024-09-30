@@ -29,7 +29,7 @@ export const RouteName = React.memo(({ bridgeType, isReceiveSection = false }: R
         <CBridgeIcon w={['16px', '16px', '16px', '20px']} h={['16px', '16px', '16px', '20px']} />
       ) : bridgeType === 'deBridge' ? (
         <Image
-          src={`${bridgeConfig.http.assetsPrefix}/images/debridgeIcon.png`}
+          src={`${bridgeConfig.http.assetPrefix}/images/debridgeIcon.png`}
           alt="deBridge"
           w={['16px', '16px', '16px', '20px']}
           h={['16px', '16px', '16px', '20px']}
@@ -40,7 +40,7 @@ export const RouteName = React.memo(({ bridgeType, isReceiveSection = false }: R
         <StarGateLogo w={['16px', '16px', '16px', '20px']} h={['16px', '16px', '16px', '20px']} />
       ) : bridgeType === 'layerZero' ? (
         <Image
-          src={`${bridgeConfig.http.assetsPrefix}/images/layerZeroIcon.png`}
+          src={`${bridgeConfig.http.assetPrefix}/images/layerZeroIcon.png`}
           alt="layerZero"
           w={['16px', '16px', '16px', '20px']}
           h={['16px', '16px', '16px', '20px']}

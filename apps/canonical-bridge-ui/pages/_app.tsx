@@ -45,7 +45,7 @@ const config: ICanonicalBridgeConfig = {
     apiTimeOut: 60 * 1000, // 30s
     deBridgeAccessToken: '',
 
-    assetsPrefix: ASSET_PREFIX,
+    assetPrefix: ASSET_PREFIX,
     serverEndpoint: TRANSFER_CONFIG_ENDPOINT,
   },
 };
