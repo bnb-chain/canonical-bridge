@@ -127,14 +127,17 @@ export function ChooseTokenModal(props: ChooseTokenModalProps) {
                           className={isNative || isActive ? undefined : 'token-info'}
                           transitionDuration="normal"
                           whiteSpace="nowrap"
-                          fontSize="12px"
-                          fontWeight={500}
-                          lineHeight="16px"
                           w="100%"
                           color={theme.colors[colorMode].text.secondary}
                         >
                           {(!isActive || isNative) && (
-                            <Text isTruncated flexShrink={0}>
+                            <Text
+                              isTruncated
+                              flexShrink={0}
+                              fontSize="12px"
+                              fontWeight={500}
+                              lineHeight="16px"
+                            >
                               {item.name}
                             </Text>
                           )}
@@ -191,28 +194,38 @@ function TokenAddress(props: TokenAddressProps) {
 
   const theme = useTheme();
   const { colorMode } = useColorMode();
+  const { isMobile } = useResponsive();
 
   return (
     <Flex>
       <Text
         as="a"
-        href={formatTokenUrl(tokenUrlPattern, address)}
+        href={!isMobile ? formatTokenUrl(tokenUrlPattern, address) : undefined}
         target="_blank"
         rel="noopener noreferrer"
         isTruncated
         flexShrink={0}
         display="inline-flex"
         alignItems="center"
-        onClick={(e) => e.stopPropagation()}
+        fontSize="12px"
+        fontWeight={500}
+        lineHeight="16px"
+        onClick={(e) => {
+          if (!isMobile) {
+            e.stopPropagation();
+          }
+        }}
       >
         {formatAddress({
           value: address,
         })}
-        <ExLinkIcon
-          ml="4px"
-          color={theme.colors[colorMode].text.secondary}
-          boxSize={theme.sizes['4']}
-        />
+        {!isMobile && (
+          <ExLinkIcon
+            ml="4px"
+            color={theme.colors[colorMode].text.secondary}
+            boxSize={theme.sizes['4']}
+          />
+        )}
       </Text>
     </Flex>
   );
