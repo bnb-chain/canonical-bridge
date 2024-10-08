@@ -22,7 +22,7 @@ export const en = {
   'route.title.select.routes': 'Select Bridge Routes',
   'route.fees.title': 'Fees:',
   'route.time.title': 'Time:',
-  'route.allowed-send-amount': 'Allowed send range:',
+  'route.allowed-send-amount': 'Your send amount should be between {min} to {max} {symbol}',
 
   'route.no-found.title': 'No Available Routes',
   'route.no-found.desc': `Low liquidity, small input, or incompatible network/token. Adjust and retry.`,

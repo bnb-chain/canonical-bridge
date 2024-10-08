@@ -47,7 +47,8 @@ export const useGetAllowance = ({
         !!chain &&
         !!tokenAddress &&
         !!Number(sendValue) &&
-        !!toTokenInfo,
+        !!toTokenInfo &&
+        !!sender,
     },
   });
   useEffect(() => {

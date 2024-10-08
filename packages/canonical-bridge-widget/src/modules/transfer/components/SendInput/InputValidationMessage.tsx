@@ -34,11 +34,9 @@ export const InputValidationMessage = () => {
     const balanceResult = validateInput({
       balance,
       decimal: selectedToken?.decimals || 0,
-      minMaxSendAmt,
       value: Number(debouncedSendValue),
-      isConnected: !!chain,
+      // isConnected: !!chain,
       bridgeType: transferActionInfo?.bridgeType,
-      isPegged: selectedToken?.isPegged,
       estimatedAmount: estimatedAmount,
       nativeBalance,
     });

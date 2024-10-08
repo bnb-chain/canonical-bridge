@@ -1,19 +1,20 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { formatUnits, parseUnits } from 'viem';
-import { usePublicClient } from 'wagmi';
+import { useAccount, usePublicClient } from 'wagmi';
 import { useIntl } from '@bnb-chain/space';
 
 import { useAppDispatch, useAppSelector } from '@/modules/store/StoreProvider';
 import { useToTokenInfo } from '@/modules/transfer/hooks/useToTokenInfo';
 import { useDebounce } from '@/core/hooks/useDebounce';
 import { DEBOUNCE_DELAY } from '@/core/constants';
-import { useGetAllowance } from '@/core/contract/hooks/useGetAllowance';
 import { useCBridgeSendMaxMin } from '@/modules/aggregator/adapters/cBridge/hooks/useCBridgeSendMaxMin';
 import { useCBridgeTransferParams } from '@/modules/aggregator/adapters/cBridge/hooks/useCBridgeTransferParams';
 import { useGetTokenBalance } from '@/core/contract/hooks/useGetTokenBalance';
 import { formatNumber } from '@/core/utils/number';
 import { useGetNativeToken } from '@/modules/transfer/hooks/useGetNativeToken';
-import { setRouteError } from '@/modules/transfer/action';
+import { setRouteError, setRouteFees } from '@/modules/transfer/action';
+import { formatFeeAmount } from '@/core/utils/string';
+import { ERC20_TOKEN } from '@/core/contract/abi';
 
 export const useGetCBridgeFees = () => {
   const { toTokenInfo, getToDecimals } = useToTokenInfo();
@@ -22,8 +23,8 @@ export const useGetCBridgeFees = () => {
   const nativeToken = useGetNativeToken();
   const { formatMessage } = useIntl();
   const dispatch = useAppDispatch();
+  const { address, chain } = useAccount();
 
-  const estimatedAmount = useAppSelector((state) => state.transfer.estimatedAmount);
   const sendValue = useAppSelector((state) => state.transfer.sendValue);
   const selectedToken = useAppSelector((state) => state.transfer.selectedToken);
   const fromChain = useAppSelector((state) => state.transfer.fromChain);
@@ -31,10 +32,6 @@ export const useGetCBridgeFees = () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const publicClient = usePublicClient({ chainId: fromChain?.id }) as any;
   const [isAllowSendError, setIsAllowSendError] = useState(false);
-  const [gasInfo, setGasInfo] = useState<{
-    gas: bigint;
-    gasPrice: bigint;
-  }>({ gas: 0n, gasPrice: 0n });
 
   const { balance } = useGetTokenBalance({
     tokenAddress: selectedToken?.address as `0x${string}`,
@@ -54,148 +51,129 @@ export const useGetCBridgeFees = () => {
     }
   }, [cBridgeAllowedAmt, sendValue, selectedToken, toTokenInfo]);
 
-  const { allowance } = useGetAllowance({
-    tokenAddress: selectedToken?.address as `0x${string}`,
-    sender: bridgeAddress as `0x${string}`,
-  });
   const debouncedArguments = useDebounce(args, DEBOUNCE_DELAY);
 
-  useEffect(() => {
-    let mount = true;
-    if (!mount || !debouncedArguments || allowance === 0n || !publicClient || isAllowSendError) {
-      return;
-    }
-    (async () => {
+  const cBridgeFeeSorting = useCallback(
+    async (fees: any) => {
+      let feeContent = '';
+      let totalFee = null;
+      const feeBreakdown = [];
+      let isFailedToGetGas = false;
+      const decimals = selectedToken?.cBridge?.raw?.token.decimal ?? (18 as number);
+      const amount = parseUnits(sendValue, decimals);
+
+      // base fee
+      if (!!fees?.base_fee) {
+        const baseFee = formatUnits(fees?.base_fee, getToDecimals().cBridge || 18);
+        totalFee = Number(baseFee);
+        feeBreakdown.push({
+          label: formatMessage({ id: 'route.option.info.base-fee' }),
+          value: `${formatNumber(Number(baseFee), 8)} ${toTokenInfo?.symbol}`,
+          name: 'baseFee',
+        });
+      }
+      // protocol fee
+      if (!!fees?.perc_fee) {
+        const protocolFee = formatUnits(fees?.perc_fee, getToDecimals().cBridge || 18);
+        totalFee = !!totalFee ? totalFee + Number(protocolFee) : Number(protocolFee);
+        feeBreakdown.push({
+          label: formatMessage({ id: 'route.option.info.protocol-fee' }),
+          value: `${formatNumber(Number(protocolFee), 8)} ${toTokenInfo?.symbol}`,
+          name: 'protocolFee',
+        });
+      }
       try {
-        const amount = parseUnits(
-          sendValue,
-          selectedToken?.cBridge?.raw?.token?.decimal ?? (18 as number),
-        );
-        if (!balance || Number(balance) < Number(amount)) {
-          return;
-        }
-        try {
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          const gas = await publicClient.estimateContractGas(debouncedArguments as any);
-          const gasPrice = await publicClient.getGasPrice();
-          if (gas && gasPrice) {
-            setGasInfo({ gas, gasPrice });
+        if (chain && fromChain?.id === chain?.id && address && selectedToken?.address) {
+          // gas fee
+          const allowance = await publicClient.readContract({
+            address: selectedToken?.address,
+            abi: ERC20_TOKEN,
+            functionName: 'allowance',
+            args: [address as `0x${string}`, bridgeAddress],
+            chainId: fromChain?.id,
+            enabled:
+              !!address &&
+              !!selectedToken?.address &&
+              fromChain &&
+              chain &&
+              fromChain?.id === chain?.id,
+          });
+          if (
+            !!debouncedArguments &&
+            !!publicClient &&
+            !isAllowSendError &&
+            !!balance &&
+            Number(balance) >= Number(amount) &&
+            !!allowance &&
+            allowance >= amount
+          ) {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const gas = await publicClient.estimateContractGas(debouncedArguments as any);
+            const gasPrice = await publicClient.getGasPrice();
+            if (gas && gasPrice) {
+              const gasFee = `${formatNumber(
+                Number(formatUnits(BigInt(gas) * gasPrice, 18)),
+                8,
+              )} ${nativeToken}`;
+              feeContent += gasFee;
+              feeBreakdown.push({
+                label: formatMessage({ id: 'route.option.info.gas-fee' }),
+                value: gasFee,
+                name: 'gasFee',
+              });
+            }
           }
-        } catch (error) {
-          dispatch(setRouteError({ cBridge: 'Failed to get gas fee' }));
         }
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (error: any) {
         // eslint-disable-next-line no-console
         console.log(error, error.message);
-        setGasInfo({ gas: 0n, gasPrice: 0n });
+        dispatch(setRouteError({ cBridge: 'Failed to get gas fee' }));
+        isFailedToGetGas = true;
       }
-    })();
-    return () => {
-      mount = false;
-    };
-  }, [
-    debouncedArguments,
-    allowance,
-    publicClient,
-    isAllowSendError,
-    balance,
-    sendValue,
-    selectedToken?.cBridge?.raw?.token?.decimal,
-    dispatch,
-  ]);
 
-  const baseFee = useMemo(() => {
-    try {
-      return estimatedAmount?.['cBridge'] &&
-        Number(sendValue) > 0 &&
-        !!estimatedAmount?.['cBridge']?.base_fee
-        ? {
-            shorten: `${formatUnits(
-              estimatedAmount?.['cBridge']?.base_fee,
-              getToDecimals().cBridge || 18,
-            )}`,
-            formatted: `${formatNumber(
-              Number(
-                formatUnits(estimatedAmount?.['cBridge']?.base_fee, getToDecimals().cBridge || 18),
-              ),
-              8,
-            )} ${toTokenInfo?.symbol}`,
-          }
-        : null;
-    } catch (error) {
-      // eslint-disable-next-line no-console
-      console.log(error);
-      return null;
-    }
-  }, [estimatedAmount, toTokenInfo, sendValue, getToDecimals]);
-
-  const protocolFee = useMemo(() => {
-    try {
-      return estimatedAmount?.['cBridge'] &&
-        Number(sendValue) > 0 &&
-        !!estimatedAmount?.['cBridge']?.perc_fee
-        ? {
-            shorten: `${formatUnits(
-              estimatedAmount?.['cBridge']?.perc_fee,
-              getToDecimals().cBridge || 18,
-            )}`,
-            formatted: `${formatNumber(
-              Number(
-                formatUnits(estimatedAmount?.['cBridge']?.perc_fee, getToDecimals().cBridge || 18),
-              ),
-              8,
-            )} ${toTokenInfo?.symbol}`,
-          }
-        : null;
-    } catch (error) {
-      // eslint-disable-next-line no-console
-      console.log(error);
-    }
-  }, [estimatedAmount, toTokenInfo, getToDecimals, sendValue]);
-
-  const feeDetails = useMemo(() => {
-    let feeContent = '';
-    let totalFee = null;
-    const feeBreakdown = [];
-    if (gasInfo?.gas && gasInfo?.gasPrice) {
-      const gasFee = `${formatNumber(
-        Number(formatUnits(gasInfo.gas * gasInfo.gasPrice, 18)),
-        8,
-      )} ${nativeToken}`;
-      feeContent += gasFee;
-      feeBreakdown.push({
-        label: formatMessage({ id: 'route.option.info.gas-fee' }),
-        value: gasFee,
-      });
-    }
-    if (baseFee) {
-      totalFee = Number(baseFee.shorten);
-      feeBreakdown.push({
-        label: formatMessage({ id: 'route.option.info.base-fee' }),
-        value: baseFee.formatted,
-      });
-    }
-    if (protocolFee) {
-      totalFee = totalFee ? totalFee + Number(protocolFee.shorten) : Number(protocolFee.shorten);
-      feeBreakdown.push({
-        label: formatMessage({ id: 'route.option.info.protocol-fee' }),
-        value: protocolFee.formatted,
-      });
-    }
-    if (totalFee !== null) {
-      feeContent += `${totalFee.toString()} ${toTokenInfo?.symbol}`;
-    }
-    return { summary: !!feeContent ? feeContent : '--', breakdown: feeBreakdown };
-  }, [gasInfo, nativeToken, protocolFee, baseFee, formatMessage, toTokenInfo?.symbol]);
+      if (totalFee !== null) {
+        feeContent += !!totalFee
+          ? `${String(formatFeeAmount(totalFee))} ${toTokenInfo?.symbol}`
+          : '';
+      }
+      dispatch(
+        setRouteFees({
+          cBridge: {
+            summary: !!feeContent ? feeContent : '--',
+            breakdown: feeBreakdown,
+          },
+        }),
+      );
+      return {
+        summary: !!feeContent ? feeContent : '--',
+        breakdown: feeBreakdown,
+        isFailedToGetGas,
+      };
+    },
+    [
+      getToDecimals,
+      toTokenInfo,
+      formatMessage,
+      dispatch,
+      nativeToken,
+      debouncedArguments,
+      publicClient,
+      isAllowSendError,
+      balance,
+      address,
+      selectedToken,
+      chain,
+      fromChain,
+      sendValue,
+      bridgeAddress,
+    ],
+  );
 
   return {
-    baseFee,
-    protocolFee,
-    gasInfo,
     isAllowSendError,
     bridgeAddress,
+    cBridgeFeeSorting,
     cBridgeAllowedAmt,
-    feeDetails,
   };
 };

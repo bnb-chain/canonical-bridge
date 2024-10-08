@@ -4,10 +4,14 @@ import { useCallback } from 'react';
 
 import { useToTokenInfo } from '@/modules/transfer/hooks/useToTokenInfo';
 import { useAppSelector } from '@/modules/store/StoreProvider';
+import { useGetCBridgeFees } from '@/modules/aggregator/adapters/cBridge/hooks/useGetCBridgeFees';
 
 export const useGetReceiveAmount = () => {
+  const { isAllowSendError } = useGetCBridgeFees();
+
   const estimatedAmount = useAppSelector((state) => state.transfer.estimatedAmount);
   const sendValue = useAppSelector((state) => state.transfer.sendValue);
+  const routeError = useAppSelector((state) => state.transfer.routeError);
   const { getToDecimals } = useToTokenInfo();
 
   const getReceiveAmount = useCallback(
@@ -51,16 +55,34 @@ export const useGetReceiveAmount = () => {
 
   const getSortedReceiveAmount = useCallback(() => {
     const receiveAmountObj = {
-      deBridge: Number(getReceiveAmount('deBridge')) || 0,
-      cBridge: Number(getReceiveAmount('cBridge')) || 0,
-      stargate: Number(getReceiveAmount('stargate')) || 0,
-      layerZero: Number(getReceiveAmount('layerZero')) || 0,
+      deBridge: {
+        value: Number(getReceiveAmount('deBridge')) ?? 0,
+        isSorting: !routeError?.['deBridge'],
+      },
+      cBridge: {
+        value: Number(getReceiveAmount('cBridge')) ?? 0,
+        isSorting: !routeError?.['cBridge'] && !isAllowSendError,
+      },
+      stargate: {
+        value: Number(getReceiveAmount('stargate')) ?? 0,
+        isSorting: !routeError?.['stargate'],
+      },
+      layerZero: {
+        value: Number(getReceiveAmount('layerZero')) ?? 0,
+        isSorting: !routeError?.['layerZero'],
+      },
     };
+
     const sortedReceivedAmt = Object.fromEntries(
-      Object.entries(receiveAmountObj).sort(([, a], [, b]) => b - a),
+      Object.entries(receiveAmountObj).sort(([, a], [, b]) => {
+        if (a.isSorting !== b.isSorting) {
+          return a.isSorting === true ? -1 : 1;
+        }
+        return b.value - a.value;
+      }),
     );
     return sortedReceivedAmt;
-  }, [getReceiveAmount]);
+  }, [getReceiveAmount, routeError, isAllowSendError]);
 
   return { getReceiveAmount, getSortedReceiveAmount };
 };

@@ -13,7 +13,6 @@ import {
   setEstimatedAmount,
   setIsGlobalFeeLoading,
   setIsRefreshing,
-  // setSortedRouteList,
   setTransferActionInfo,
 } from '@/modules/transfer/action';
 import { useAppDispatch, useAppSelector } from '@/modules/store/StoreProvider';
@@ -42,8 +41,7 @@ export function TransferOverview({ routeContentBottom }: { routeContentBottom?: 
   const sendValue = useAppSelector((state) => state.transfer.sendValue);
   const estimatedAmount = useAppSelector((state) => state.transfer.estimatedAmount);
   const toTokenInfo = useAppSelector((state) => state.transfer.toToken);
-  const bridgeType = useAppSelector((state) => state.transfer.transferActionInfo)?.bridgeType;
-  // const sortedRouteList = useAppSelector((state) => state.transfer.sortedRouteList);
+  // const bridgeType = useAppSelector((state) => state.transfer.transferActionInfo)?.bridgeType
 
   const debouncedSendValue = useDebounce(sendValue, DEBOUNCE_DELAY);
 
@@ -74,17 +72,19 @@ export function TransferOverview({ routeContentBottom }: { routeContentBottom?: 
       !Number(debouncedSendValue) ||
       !estimatedAmount ||
       !sortedReceivedAmt ||
-      Object.values(sortedReceivedAmt).every((value) => value === null || value === undefined)
+      Object.values(sortedReceivedAmt).every(
+        (routeAmt) => routeAmt.value === null || routeAmt.value === undefined,
+      )
     ) {
       return [];
     }
     const routes = [];
     for (const bridge in sortedReceivedAmt) {
       if (bridge === 'cBridge' && estimatedAmount?.['cBridge']) {
-        routes.push(<CBridgeOption key={'cbridge-option'} />);
+        routes.push(<CBridgeOption key={'cBridge-option'} />);
       }
       if (bridge === 'deBridge' && estimatedAmount?.['deBridge']) {
-        routes.push(<DeBridgeOption key={'debridge-option'} />);
+        routes.push(<DeBridgeOption key={'deBridge-option'} />);
       }
       if (bridge === 'stargate' && estimatedAmount['stargate']) {
         routes.push(<StarGateOption key={'stargate-option'} />);
@@ -96,20 +96,16 @@ export function TransferOverview({ routeContentBottom }: { routeContentBottom?: 
     return routes;
   }, [sortedReceivedAmt, debouncedSendValue, estimatedAmount]);
 
-  const showRoute = selectedToken && !!Number(sendValue) && toTokenInfo;
+  const showRoute =
+    selectedToken && !!Number(sendValue) && toTokenInfo && options && !!options?.length;
 
-  const sortedOptions = useMemo(() => {
-    if (!options?.length) return options;
-
-    return options.sort((a) => {
-      return a.key === `${bridgeType}-option` ? -1 : 0;
-    });
-  }, [options, bridgeType]);
-
-  // useEffect(() => {
-  //   if (!sortedOptions || sortedOptions.length === 0) return;
-  //   dispatch(setSortedRouteList(sortedOptions));
-  // }, [sortedOptions, dispatch]);
+  // const sortedOptions = useMemo(() => {
+  //   if (!options?.length) return options;
+  //   // Need to to match key value to sort correctly
+  //   return options.sort((a) => {
+  //     return a.key === `${bridgeType}-option` ? -1 : 0;
+  //   });
+  // }, [options, bridgeType]);
 
   return (
     <Flex flexDir="column" ml={['0', '0', '0', '24px']} gap={['12px', '12px', '12px', '24px']}>
@@ -141,7 +137,7 @@ export function TransferOverview({ routeContentBottom }: { routeContentBottom?: 
                   }}
                 >
                   {formatMessage({ id: 'route.title' })}
-                  {!sortedOptions.length || isGlobalFeeLoading ? (
+                  {!options.length || isGlobalFeeLoading ? (
                     <SkeletonCircle w={'32px'} h={'32px'} />
                   ) : !isBase ? (
                     <RefreshingButton />
@@ -156,7 +152,7 @@ export function TransferOverview({ routeContentBottom }: { routeContentBottom?: 
                 maxHeight={'698px'}
                 w={['auto', 'auto', 'auto', '384px']}
               >
-                {!sortedOptions || !sortedOptions?.length || isGlobalFeeLoading ? (
+                {!options || !options?.length || isGlobalFeeLoading ? (
                   <Flex flexDir={'column'} gap={'12px'}>
                     <RouteSkeleton />
                     <RouteSkeleton />
@@ -168,7 +164,7 @@ export function TransferOverview({ routeContentBottom }: { routeContentBottom?: 
                     gap={'12px'}
                     display={isGlobalFeeLoading ? 'none' : 'flex'}
                   >
-                    {sortedOptions?.map((bridge: ReactNode) => bridge)}
+                    {options?.map((bridge: ReactNode) => bridge)}
                   </Flex>
                 )}
               </Box>

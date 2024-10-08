@@ -10,7 +10,6 @@ import { RouteTitle } from '@/modules/transfer/components/TransferOverview/Route
 import { EstimatedArrivalTime } from '@/modules/transfer/components/TransferOverview/RouteInfo/EstimatedArrivalTime';
 import { FeesInfo } from '@/modules/transfer/components/TransferOverview/RouteInfo/FeesInfo';
 import { AllowedSendAmount } from '@/modules/transfer/components/TransferOverview/RouteInfo/AllowedSendAmount';
-import { RouteMask } from '@/modules/transfer/components/TransferOverview/RouteInfo/RouteMask';
 import { OtherRouteError } from '@/modules/transfer/components/TransferOverview/RouteInfo/OtherRouteError';
 import { RouteName } from '@/modules/transfer/components/TransferOverview/RouteInfo/RouteName';
 import { useGetCBridgeFees } from '@/modules/aggregator/adapters/cBridge/hooks/useGetCBridgeFees';
@@ -19,13 +18,14 @@ export const CBridgeOption = () => {
   const dispatch = useAppDispatch();
   const { colorMode } = useColorMode();
   const { toTokenInfo, getToDecimals } = useToTokenInfo();
-  const { feeDetails, isAllowSendError, bridgeAddress, cBridgeAllowedAmt } = useGetCBridgeFees();
+  const { isAllowSendError, bridgeAddress, cBridgeAllowedAmt } = useGetCBridgeFees();
 
   const selectedToken = useAppSelector((state) => state.transfer.selectedToken);
   const transferActionInfo = useAppSelector((state) => state.transfer.transferActionInfo);
   const estimatedAmount = useAppSelector((state) => state.transfer.estimatedAmount);
   const sendValue = useAppSelector((state) => state.transfer.sendValue);
   const routeError = useAppSelector((state) => state.transfer.routeError);
+  const routeFees = useAppSelector((state) => state.transfer.routeFees);
   const theme = useTheme();
 
   const receiveAmt = useMemo(() => {
@@ -51,7 +51,7 @@ export const CBridgeOption = () => {
     if (Number(estimatedAmount?.['cBridge']?.estimated_receive_amt) < 0) {
       dispatch(
         setRouteError({
-          cBridge: 'Given amount of input asset is too small to cover operational costs',
+          cBridge: 'Please increase your send amount',
         }),
       );
     }
@@ -103,14 +103,18 @@ export const CBridgeOption = () => {
       }}
       onClick={onSelectBridge}
     >
-      {isError ? <RouteMask /> : null}
-      <RouteName bridgeType="cBridge" />
-      <RouteTitle receiveAmt={receiveAmt} toTokenInfo={toTokenInfo?.['cBridge']} />
-      <EstimatedArrivalTime bridgeType={'cBridge'} />
+      <RouteName isError={isError} bridgeType="cBridge" />
+      <RouteTitle
+        isError={isError}
+        receiveAmt={receiveAmt}
+        toTokenInfo={toTokenInfo?.['cBridge']}
+      />
+      <EstimatedArrivalTime isError={isError} bridgeType={'cBridge'} />
       <FeesInfo
+        isError={isError}
         bridgeType="cBridge"
-        summary={feeDetails.summary}
-        breakdown={feeDetails.breakdown}
+        summary={routeFees?.['cBridge']?.summary ?? '--'}
+        breakdown={routeFees?.['cBridge']?.breakdown}
       />
       <AllowedSendAmount
         position={'static'}

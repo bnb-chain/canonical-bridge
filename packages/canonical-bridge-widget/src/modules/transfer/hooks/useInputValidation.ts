@@ -4,7 +4,6 @@ import { useCallback } from 'react';
 import { useAccount } from 'wagmi';
 
 import { formatNumber } from '@/core/utils/number';
-import { ICBridgeMaxMinSendAmt } from '@/modules/aggregator/adapters/cBridge/types';
 import { useAppSelector } from '@/modules/store/StoreProvider';
 
 export const useInputValidation = () => {
@@ -14,19 +13,14 @@ export const useInputValidation = () => {
     ({
       balance,
       decimal,
-      minMaxSendAmt,
       value,
-      isConnected,
       bridgeType,
-      isPegged = false,
       estimatedAmount,
       nativeBalance,
     }: {
       balance: null | bigint;
       decimal: number;
-      minMaxSendAmt: ICBridgeMaxMinSendAmt;
       value: number;
-      isConnected: boolean;
       bridgeType?: BridgeType;
       isPegged?: boolean;
       estimatedAmount?: any;
@@ -54,24 +48,8 @@ export const useInputValidation = () => {
             return { text: `Your balance can not cover protocol fee.`, isError: true };
           }
         }
-        const maxAmt = Number(BigInt(minMaxSendAmt.max));
-        const minAmt = Number(BigInt(minMaxSendAmt.min));
 
-        if (!isConnected && maxAmt > 0 && minAmt > 0) {
-          if (bridgeType === 'cBridge' && !isPegged) {
-            if (value <= minAmt) {
-              return { text: `The amount should be greater than ${minAmt}.`, isError: true };
-            } else if (value >= maxAmt) {
-              return { text: `The amount should be less than ${maxAmt}.`, isError: true };
-            }
-          }
-          return { text: '', isError: false };
-        } else if (balance) {
-          if (value <= minAmt && bridgeType === 'cBridge' && !isPegged) {
-            return { text: `The amount should be greater than ${minAmt}.`, isError: true };
-          } else if (value >= maxAmt && bridgeType === 'cBridge' && !isPegged) {
-            return { text: `The amount should be less than ${maxAmt}.`, isError: true };
-          }
+        if (!!balance) {
           return { text: `${formatNumber(Number(formatUnits(balance, decimal)))}`, isError: false };
         } else {
           if (fromChain?.id === chain?.id && chain) {

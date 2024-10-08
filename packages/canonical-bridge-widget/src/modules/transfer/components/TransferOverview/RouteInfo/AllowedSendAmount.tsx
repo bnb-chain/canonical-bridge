@@ -1,7 +1,6 @@
 import { Box, BoxProps, Flex, useColorMode, useIntl, useTheme } from '@bnb-chain/space';
-import { useMemo } from 'react';
+import { InfoCircleIcon } from '@bnb-chain/icons';
 
-import { FinanceChip } from '@/core/components/icons/FinanceChip';
 import { useAppSelector } from '@/modules/store/StoreProvider';
 
 interface AllowedSendAmountProps {
@@ -20,13 +19,7 @@ export const AllowedSendAmount = ({
 
   const selectedToken = useAppSelector((state) => state.transfer.selectedToken);
 
-  const allowedSendAmt = useMemo(() => {
-    return allowedSendAmount
-      ? `${allowedSendAmount.min} - ${allowedSendAmount.max} ${selectedToken?.symbol}`
-      : null;
-  }, [selectedToken, allowedSendAmount]);
-
-  return allowedSendAmt && isError ? (
+  return allowedSendAmount && isError ? (
     <Flex
       flexDir={'row'}
       alignItems={'center'}
@@ -37,12 +30,12 @@ export const AllowedSendAmount = ({
       display={'inline-block'}
       {...otherProps}
     >
-      <FinanceChip w={'16px'} h={'16px'} />
+      <InfoCircleIcon display={'inline'} w={'16px'} h={'16px'} />
       <Box ml={'4px'} display={'inline'} fontSize={'14px'} fontWeight={400}>
-        {formatMessage({ id: 'route.allowed-send-amount' })}
-      </Box>
-      <Box ml={'4px'} display={'inline'} fontSize={'14px'} fontWeight={500}>
-        {allowedSendAmt}
+        {formatMessage(
+          { id: 'route.allowed-send-amount' },
+          { symbol: selectedToken?.symbol, min: allowedSendAmount.min, max: allowedSendAmount.max },
+        )}
       </Box>
     </Flex>
   ) : null;

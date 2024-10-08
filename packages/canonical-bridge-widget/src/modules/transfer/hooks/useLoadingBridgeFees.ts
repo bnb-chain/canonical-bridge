@@ -9,28 +9,35 @@ import {
   setEstimatedAmount,
   setIsGlobalFeeLoading,
   setRouteError,
-  setTransferActionInfo,
 } from '@/modules/transfer/action';
 import { useToTokenInfo } from '@/modules/transfer/hooks/useToTokenInfo';
 import { useDebounce } from '@/core/hooks/useDebounce';
 import { DEBOUNCE_DELAY, DEFAULT_ADDRESS } from '@/core/constants';
 import { toObject } from '@/core/utils/string';
-import { useCBridgeTransferParams } from '@/modules/aggregator/adapters/cBridge/hooks/useCBridgeTransferParams';
 import { useGetCBridgeFees } from '@/modules/aggregator/adapters/cBridge/hooks/useGetCBridgeFees';
+import { useGetDeBridgeFees } from '@/modules/aggregator/adapters/deBridge/hooks/useGetDeBridgeFees';
+import { useGetStargateFees } from '@/modules/aggregator/adapters/stargate/hooks/useGetStarGateFees';
 import { useBridgeSDK } from '@/core/hooks/useBridgeSDK';
 import { useBridgeConfig } from '@/index';
+import { useGetLayerZeroFees } from '@/modules/aggregator/adapters/layerZero/hooks/useGetLayerZeroFees';
+import { usePreSelectRoute } from '@/modules/transfer/hooks/usePreSelectRoute';
+import { useGetNativeToken } from '@/modules/transfer/hooks/useGetNativeToken';
 
 export const useLoadingBridgeFees = () => {
   const dispatch = useAppDispatch();
-  const { bridgeAddress: cBridgeAddress } = useCBridgeTransferParams();
+  const { preSelectRoute } = usePreSelectRoute();
   const { getToDecimals } = useToTokenInfo();
   const { address } = useAccount();
-  const { isAllowSendError } = useGetCBridgeFees();
   const bridgeSDK = useBridgeSDK();
   const { data: nativeBalance } = useBalance({ address });
   const {
     http: { deBridgeAccessToken },
   } = useBridgeConfig();
+  const nativeToken = useGetNativeToken();
+  const { deBridgeFeeSorting } = useGetDeBridgeFees();
+  const { cBridgeFeeSorting, isAllowSendError } = useGetCBridgeFees();
+  const { stargateFeeSorting } = useGetStargateFees();
+  const { layerZeroFeeSorting } = useGetLayerZeroFees();
 
   const toToken = useAppSelector((state) => state.transfer.toToken);
   const selectedToken = useAppSelector((state) => state.transfer.selectedToken);
@@ -108,6 +115,9 @@ export const useLoadingBridgeFees = () => {
         dispatch(
           setEstimatedAmount({ deBridge: debridgeEst.value as DeBridgeCreateQuoteResponse }),
         );
+        const feeSortingRes = await deBridgeFeeSorting(
+          debridgeEst.value as DeBridgeCreateQuoteResponse,
+        );
         valueArr.push({
           type: 'deBridge',
           value: formatUnits(
@@ -117,6 +127,7 @@ export const useLoadingBridgeFees = () => {
             ),
             getToDecimals()['deBridge'],
           ),
+          isIgnoreSorted: feeSortingRes?.isFailedToGetGas,
         });
       } else if (debridgeEst.status === 'rejected') {
         // Only show route on low amount error
@@ -136,20 +147,22 @@ export const useLoadingBridgeFees = () => {
         if (cbridgeEst?.value.err) {
           dispatch(setEstimatedAmount({ cBridge: undefined }));
         } else {
-          if (!isAllowSendError && !cbridgeEst.value?.err?.msg) {
-            valueArr.push({
-              type: 'cBridge',
-              value: formatUnits(
-                BigInt(cbridgeEst.value?.estimated_receive_amt),
-                getToDecimals()['cBridge'],
-              ),
-            });
-          }
           if (cbridgeEst.value?.err?.msg) {
             dispatch(setRouteError({ cBridge: cbridgeEst.value?.err?.msg }));
             dispatch(setEstimatedAmount({ cBridge: 'error' }));
           } else {
             dispatch(setEstimatedAmount({ cBridge: cbridgeEst.value }));
+            const feeSortingRes = await cBridgeFeeSorting(cbridgeEst.value);
+            if (!isAllowSendError) {
+              valueArr.push({
+                type: 'cBridge',
+                value: formatUnits(
+                  BigInt(cbridgeEst.value?.estimated_receive_amt),
+                  getToDecimals()['cBridge'],
+                ),
+                isIgnoreSorted: feeSortingRes?.isFailedToGetGas,
+              });
+            }
           }
         }
       } else if (cbridgeEst.status === 'rejected') {
@@ -162,25 +175,16 @@ export const useLoadingBridgeFees = () => {
       // stargate
       if (stargateEst.status === 'fulfilled' && stargateEst?.value) {
         dispatch(setEstimatedAmount({ stargate: toObject(stargateEst.value) }));
-
-        const allowedMin = Number(
-          formatUnits(stargateEst.value[0].minAmountLD, selectedToken.decimals),
-        );
-        const allowedMax = Number(
-          formatUnits(stargateEst.value[0].maxAmountLD, selectedToken.decimals),
-        );
-        if (Number(debouncedSendValue) >= allowedMin && Number(debouncedSendValue) <= allowedMax) {
-          valueArr.push({
-            type: 'stargate',
-            value: formatUnits(
-              stargateEst.value?.[2].amountReceivedLD,
-              getToDecimals()['stargate'],
-            ),
-          });
-        }
+        // TODO: may need to hide route based on error message from getting estimated gas.
+        const feeSortingRes = await stargateFeeSorting(stargateEst.value);
+        valueArr.push({
+          type: 'stargate',
+          value: formatUnits(stargateEst.value?.[2].amountReceivedLD, getToDecimals()['stargate']),
+          isIgnoreSorted: feeSortingRes?.isFailedToGetGas,
+        });
       } else if (stargateEst.status === 'rejected') {
         dispatch(setRouteError({ stargate: stargateEst.reason.message }));
-        dispatch(setEstimatedAmount({ stargate: 'error' }));
+        dispatch(setEstimatedAmount({ stargate: undefined }));
       } else {
         dispatch(setEstimatedAmount({ stargate: undefined }));
       }
@@ -189,7 +193,7 @@ export const useLoadingBridgeFees = () => {
       if (layerZeroEst.status === 'fulfilled' && layerZeroEst?.value) {
         const nativeFee = layerZeroEst?.value[0];
         if (nativeBalance?.value && nativeBalance.value < Number(nativeFee)) {
-          dispatch(setRouteError({ layerZero: 'Insufficient funds to cover native fees' }));
+          dispatch(setRouteError({ layerZero: `Insufficient ${nativeToken} to cover native fee` }));
           dispatch(setEstimatedAmount({ layerZero: 'error' }));
         } else {
           dispatch(
@@ -197,14 +201,16 @@ export const useLoadingBridgeFees = () => {
               layerZero: String(parseUnits(debouncedSendValue, getToDecimals()['layerZero'])),
             }),
           );
+          const feeSortingRes = await layerZeroFeeSorting(layerZeroEst.value);
           valueArr.push({
             type: 'layerZero',
             value: debouncedSendValue,
+            isIgnoreSorted: feeSortingRes?.isFailedToGetGas,
           });
         }
       } else if (layerZeroEst.status === 'rejected') {
         dispatch(setRouteError({ layerZero: layerZeroEst.reason.message }));
-        dispatch(setEstimatedAmount({ layerZero: 'error' }));
+        dispatch(setEstimatedAmount({ layerZero: undefined }));
       } else {
         dispatch(setEstimatedAmount({ layerZero: undefined }));
       }
@@ -212,45 +218,12 @@ export const useLoadingBridgeFees = () => {
       // pre-select best route
       if (valueArr.length > 0) {
         const highestValue = valueArr.reduce((max, entry) =>
-          Number(entry['value']) > Number(max['value']) ? entry : max,
+          Number(entry['value']) > Number(max['value']) && entry.isIgnoreSorted === false
+            ? entry
+            : max,
         );
-
         if (Number(highestValue.value) > 0) {
-          if (highestValue.type === 'deBridge' && debridgeEst.status === 'fulfilled') {
-            dispatch(
-              setTransferActionInfo({
-                bridgeType: 'deBridge',
-                bridgeAddress: debridgeEst.value.tx?.to as `0x${string}`,
-                data: debridgeEst.value.tx?.data,
-                value: debridgeEst.value.tx?.value,
-                orderId: debridgeEst.value.orderId,
-              }),
-            );
-          } else if (highestValue.type === 'cBridge' && cBridgeAddress) {
-            dispatch(
-              setTransferActionInfo({
-                bridgeType: 'cBridge',
-                bridgeAddress: cBridgeAddress as `0x${string}`,
-              }),
-            );
-          } else if (
-            highestValue.type === 'stargate' &&
-            selectedToken?.stargate?.raw?.bridgeAddress
-          ) {
-            dispatch(
-              setTransferActionInfo({
-                bridgeType: 'stargate',
-                bridgeAddress: selectedToken?.stargate?.raw?.bridgeAddress as `0x${string}`,
-              }),
-            );
-          } else if (highestValue.type === 'layerZero') {
-            dispatch(
-              setTransferActionInfo({
-                bridgeType: 'layerZero',
-                bridgeAddress: selectedToken?.layerZero?.raw?.bridgeAddress as `0x${string}`,
-              }),
-            );
-          }
+          preSelectRoute(response, highestValue.type as BridgeType);
         }
       }
       // eslint-disable-next-line
@@ -261,7 +234,6 @@ export const useLoadingBridgeFees = () => {
       dispatch(setIsGlobalFeeLoading(false));
     }
   }, [
-    cBridgeAddress,
     dispatch,
     getToDecimals,
     toToken,
@@ -272,10 +244,16 @@ export const useLoadingBridgeFees = () => {
     toChain,
     selectedToken,
     max_slippage,
-    isAllowSendError,
     bridgeSDK,
     deBridgeAccessToken,
     nativeBalance?.value,
+    deBridgeFeeSorting,
+    cBridgeFeeSorting,
+    stargateFeeSorting,
+    layerZeroFeeSorting,
+    preSelectRoute,
+    isAllowSendError,
+    nativeToken,
   ]);
 
   return {

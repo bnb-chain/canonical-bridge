@@ -10,7 +10,6 @@ import { RouteTitle } from '@/modules/transfer/components/TransferOverview/Route
 import { EstimatedArrivalTime } from '@/modules/transfer/components/TransferOverview/RouteInfo/EstimatedArrivalTime';
 import { FeesInfo } from '@/modules/transfer/components/TransferOverview/RouteInfo/FeesInfo';
 import { AllowedSendAmount } from '@/modules/transfer/components/TransferOverview/RouteInfo/AllowedSendAmount';
-import { RouteMask } from '@/modules/transfer/components/TransferOverview/RouteInfo/RouteMask';
 import { OtherRouteError } from '@/modules/transfer/components/TransferOverview/RouteInfo/OtherRouteError';
 import { RouteName } from '@/modules/transfer/components/TransferOverview/RouteInfo/RouteName';
 import { useGetStargateFees } from '@/modules/aggregator/adapters/stargate/hooks/useGetStarGateFees';
@@ -18,17 +17,16 @@ import { useGetStargateFees } from '@/modules/aggregator/adapters/stargate/hooks
 export const StarGateOption = () => {
   const dispatch = useAppDispatch();
   const { colorMode } = useColorMode();
-
+  const theme = useTheme();
   const { toTokenInfo, getToDecimals } = useToTokenInfo();
+  const { allowedSendAmount, isAllowSendError } = useGetStargateFees();
 
   const selectedToken = useAppSelector((state) => state.transfer.selectedToken);
   const sendValue = useAppSelector((state) => state.transfer.sendValue);
   const transferActionInfo = useAppSelector((state) => state.transfer.transferActionInfo);
   const estimatedAmount = useAppSelector((state) => state.transfer.estimatedAmount);
   const routeError = useAppSelector((state) => state.transfer.routeError);
-  const theme = useTheme();
-
-  const { feeDetails, allowedSendAmount, isAllowSendError } = useGetStargateFees();
+  const routeFees = useAppSelector((state) => state.transfer.routeFees);
 
   const receiveAmt = useMemo(() => {
     return estimatedAmount &&
@@ -97,15 +95,18 @@ export const StarGateOption = () => {
       onClick={onSelectBridge}
       position={'relative'}
     >
-      {isError ? <RouteMask /> : null}
-
-      <RouteName bridgeType="stargate" />
-      <RouteTitle receiveAmt={receiveAmt} toTokenInfo={toTokenInfo?.['stargate']} />
-      <EstimatedArrivalTime bridgeType={'stargate'} />
+      <RouteName isError={isError} bridgeType="stargate" />
+      <RouteTitle
+        isError={isError}
+        receiveAmt={receiveAmt}
+        toTokenInfo={toTokenInfo?.['stargate']}
+      />
+      <EstimatedArrivalTime isError={isError} bridgeType={'stargate'} />
       <FeesInfo
+        isError={isError}
         bridgeType="stargate"
-        summary={feeDetails.summary}
-        breakdown={feeDetails.breakdown}
+        summary={routeFees?.stargate?.summary ?? '--'}
+        breakdown={routeFees?.stargate?.breakdown}
       />
       <AllowedSendAmount
         position={'static'}

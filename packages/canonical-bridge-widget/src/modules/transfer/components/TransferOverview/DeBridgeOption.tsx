@@ -9,10 +9,8 @@ import { formatNumber } from '@/core/utils/number';
 import { RouteTitle } from '@/modules/transfer/components/TransferOverview/RouteInfo/RouteTitle';
 import { EstimatedArrivalTime } from '@/modules/transfer/components/TransferOverview/RouteInfo/EstimatedArrivalTime';
 import { FeesInfo } from '@/modules/transfer/components/TransferOverview/RouteInfo/FeesInfo';
-import { RouteMask } from '@/modules/transfer/components/TransferOverview/RouteInfo/RouteMask';
 import { OtherRouteError } from '@/modules/transfer/components/TransferOverview/RouteInfo/OtherRouteError';
 import { RouteName } from '@/modules/transfer/components/TransferOverview/RouteInfo/RouteName';
-import { useGetDeBridgeFees } from '@/modules/aggregator/adapters/deBridge/hooks/useGetDeBridgeFees';
 
 interface DeBridgeOptionProps {
   isReceiveTab?: boolean;
@@ -26,8 +24,8 @@ export const DeBridgeOption = ({}: DeBridgeOptionProps) => {
   const transferActionInfo = useAppSelector((state) => state.transfer.transferActionInfo);
   const estimatedAmount = useAppSelector((state) => state.transfer.estimatedAmount);
   const routeError = useAppSelector((state) => state.transfer.routeError);
+  const routeFees = useAppSelector((state) => state.transfer.routeFees);
   const theme = useTheme();
-  const { feeDetails } = useGetDeBridgeFees();
 
   const receiveAmt = useMemo(() => {
     return estimatedAmount?.['deBridge'] &&
@@ -96,14 +94,18 @@ export const DeBridgeOption = ({}: DeBridgeOptionProps) => {
       }}
       onClick={onSelectBridge}
     >
-      {isError ? <RouteMask /> : null}
-      <RouteName bridgeType="deBridge" />
-      <RouteTitle receiveAmt={receiveAmt} toTokenInfo={toTokenInfo?.['deBridge']} />
-      <EstimatedArrivalTime bridgeType={'deBridge'} />
+      <RouteName isError={isError} bridgeType="deBridge" />
+      <RouteTitle
+        isError={isError}
+        receiveAmt={receiveAmt}
+        toTokenInfo={toTokenInfo?.['deBridge']}
+      />
+      <EstimatedArrivalTime isError={isError} bridgeType={'deBridge'} />
       <FeesInfo
+        isError={isError}
         bridgeType="deBridge"
-        summary={feeDetails.summary}
-        breakdown={feeDetails.breakdown}
+        summary={routeFees?.['deBridge']?.summary ?? '--'}
+        breakdown={routeFees?.['deBridge']?.breakdown}
       />
       <OtherRouteError bridgeType={'deBridge'} />
     </Flex>

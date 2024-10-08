@@ -63,9 +63,11 @@ export const ProfileMenu = () => {
                     {formatAppAddress({ address })}
                     <CopyAddress boxSize={'20px'} content={address} />
                   </Flex>
-                  <Flex color={theme.colors[colorMode].text.secondary}>
-                    {formatNumber(Number(balance?.formatted), 4)} {balance?.symbol}
-                  </Flex>
+                  {!!balance?.formatted && (
+                    <Flex color={theme.colors[colorMode].text.secondary}>
+                      {formatNumber(Number(balance?.formatted), 4)} {balance?.symbol}
+                    </Flex>
+                  )}
                 </Flex>
               </Flex>
             </Flex>

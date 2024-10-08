@@ -9,9 +9,10 @@ import { IBridgeTokenBaseInfo } from '@/modules/aggregator/types';
 interface RouteTitleProps {
   receiveAmt?: string;
   toTokenInfo?: IBridgeTokenBaseInfo;
+  isError?: boolean;
 }
 
-export const RouteTitle = ({ receiveAmt, toTokenInfo }: RouteTitleProps) => {
+export const RouteTitle = ({ receiveAmt, toTokenInfo, isError }: RouteTitleProps) => {
   const theme = useTheme();
   const { colorMode } = useColorMode();
 
@@ -19,7 +20,7 @@ export const RouteTitle = ({ receiveAmt, toTokenInfo }: RouteTitleProps) => {
   const tokenUrl = formatTokenUrl(toChain?.tokenUrlPattern, toTokenInfo?.address);
 
   return (
-    <Flex flexDir={'row'} gap={'8px'} display={'inline'}>
+    <Flex flexDir={'row'} gap={'8px'} display={'inline'} opacity={isError ? 0.5 : 1}>
       <Flex
         fontSize={'24px'}
         fontWeight={500}

@@ -8,23 +8,27 @@ export interface ITransferActionInfo {
   orderId?: string; // deBridge order id. May be used for tracking history
 }
 
-export interface IReceiveValue {
-  deBridge?: string;
-  cBridge?: string;
-  stargate?: string;
-  layerZero?: string;
+export type IReceiveValue = {
+  [key in BridgeType]?: string;
+};
+
+export type IEstimatedAmount = {
+  [key in BridgeType]?: any; // TODO: response from quoteOFT
+};
+
+export type IBridgeError = {
+  [key in BridgeType]?: any;
+};
+
+export type IFeeBreakDown = {
+  label: string;
+  value: string;
+}[];
+export interface IRouteFeeDetails {
+  breakdown: IFeeBreakDown;
+  summary: string;
 }
 
-export interface IEstimatedAmount {
-  cBridge?: any;
-  deBridge?: any;
-  stargate?: any; // TODO: response from quoteOFT
-  layerZero?: any;
-}
-
-export interface IBridgeError {
-  cBridge?: any;
-  deBridge?: any;
-  stargate?: any;
-  layerZero?: any;
-}
+export type IRouteFees = {
+  [key in BridgeType]?: IRouteFeeDetails;
+};

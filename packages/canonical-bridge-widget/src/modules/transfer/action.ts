@@ -38,6 +38,4 @@ export const setRouteError = createAction<ITransferState['routeError']>('transfe
 
 export const setToAccount = createAction<ITransferState['toAccount']>('transfer/setToAccount');
 
-export const setSortedRouteList = createAction<ITransferState['sortedRouteList']>(
-  'transfer/setSortedRouteList',
-);
+export const setRouteFees = createAction<ITransferState['routeFees']>('transfer/setRouteFees');

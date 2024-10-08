@@ -6,10 +6,8 @@ import { useAppDispatch, useAppSelector } from '@/modules/store/StoreProvider';
 import { useToTokenInfo } from '@/modules/transfer/hooks/useToTokenInfo';
 import { setTransferActionInfo } from '@/modules/transfer/action';
 import { formatNumber } from '@/core/utils/number';
-import { useGetLayerZeroFees } from '@/modules/aggregator/adapters/layerZero/hooks/useGetLayerZeroFees';
 import { RouteTitle } from '@/modules/transfer/components/TransferOverview/RouteInfo/RouteTitle';
 import { FeesInfo } from '@/modules/transfer/components/TransferOverview/RouteInfo/FeesInfo';
-import { RouteMask } from '@/modules/transfer/components/TransferOverview/RouteInfo/RouteMask';
 import { OtherRouteError } from '@/modules/transfer/components/TransferOverview/RouteInfo/OtherRouteError';
 import { RouteName } from '@/modules/transfer/components/TransferOverview/RouteInfo/RouteName';
 
@@ -24,8 +22,7 @@ export const LayerZeroOption = () => {
   const transferActionInfo = useAppSelector((state) => state.transfer.transferActionInfo);
   const estimatedAmount = useAppSelector((state) => state.transfer.estimatedAmount);
   const routeError = useAppSelector((state) => state.transfer.routeError);
-
-  const { feeDetails } = useGetLayerZeroFees();
+  const routeFees = useAppSelector((state) => state.transfer.routeFees);
 
   const receiveAmt = useMemo(() => {
     return estimatedAmount &&
@@ -86,13 +83,17 @@ export const LayerZeroOption = () => {
       onClick={onSelectBridge}
       position={'relative'}
     >
-      {isError ? <RouteMask /> : null}
-      <RouteName bridgeType="layerZero" />
-      <RouteTitle receiveAmt={receiveAmt} toTokenInfo={toTokenInfo?.['layerZero']} />
+      <RouteName isError={isError} bridgeType="layerZero" />
+      <RouteTitle
+        isError={isError}
+        receiveAmt={receiveAmt}
+        toTokenInfo={toTokenInfo?.['layerZero']}
+      />
       <FeesInfo
+        isError={isError}
         bridgeType="layerZero"
-        summary={feeDetails.summary}
-        breakdown={feeDetails.breakdown}
+        summary={routeFees?.['layerZero']?.summary ?? '--'}
+        breakdown={routeFees?.['layerZero']?.breakdown}
       />
       <OtherRouteError bridgeType={'layerZero'} />
     </Flex>

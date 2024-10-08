@@ -10,9 +10,11 @@ import { useCBridgeTransferWaitingTime } from '@/modules/aggregator/adapters/cBr
 
 interface EstimatedArrivalTimeProps {
   bridgeType?: BridgeType;
+  isError?: boolean;
 }
 export const EstimatedArrivalTime = ({
   bridgeType,
+  isError,
   ...otherProps
 }: FlexProps & EstimatedArrivalTimeProps) => {
   const theme = useTheme();
@@ -40,11 +42,12 @@ export const EstimatedArrivalTime = ({
       : null;
   }, [bridgeType, time, estimatedAmount, estimatedTime]);
 
-  return waitingTime ? (
+  return (
     <Flex
       gap={'4px'}
       flexDir={'row'}
       alignItems={'center'}
+      opacity={isError ? 0.5 : 1}
       color={theme.colors[colorMode].text.tertiary}
       lineHeight={'16px'}
       {...otherProps}
@@ -61,5 +64,5 @@ export const EstimatedArrivalTime = ({
         '--'
       )}
     </Flex>
-  ) : null;
+  );
 };

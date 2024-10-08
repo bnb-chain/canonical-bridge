@@ -5,14 +5,12 @@ import { useAppDispatch, useAppSelector } from '@/modules/store/StoreProvider';
 import { useGetReceiveAmount } from '@/modules/transfer/hooks/useGetReceiveAmount';
 import { useToTokenInfo } from '@/modules/transfer/hooks/useToTokenInfo';
 import { formatNumber } from '@/core/utils/number';
-import { useGetLayerZeroFees } from '@/modules/aggregator/adapters/layerZero/hooks/useGetLayerZeroFees';
 import { RouteTitle } from '@/modules/transfer/components/TransferOverview/RouteInfo/RouteTitle';
 import { EstimatedArrivalTime } from '@/modules/transfer/components/TransferOverview/RouteInfo/EstimatedArrivalTime';
 import { FeesInfo } from '@/modules/transfer/components/TransferOverview/RouteInfo/FeesInfo';
 import { AllowedSendAmount } from '@/modules/transfer/components/TransferOverview/RouteInfo/AllowedSendAmount';
 import { RouteName } from '@/modules/transfer/components/TransferOverview/RouteInfo/RouteName';
 import { useGetCBridgeFees } from '@/modules/aggregator/adapters/cBridge/hooks/useGetCBridgeFees';
-import { useGetDeBridgeFees } from '@/modules/aggregator/adapters/deBridge/hooks/useGetDeBridgeFees';
 import { useGetStargateFees } from '@/modules/aggregator/adapters/stargate/hooks/useGetStarGateFees';
 import { ReceiveLoading } from '@/modules/transfer/components/ReceiveInfo/ReceiveLoading';
 import { NoRouteFound } from '@/modules/transfer/components/TransferOverview/NoRouteFound';
@@ -46,50 +44,43 @@ export const ReceiveInfo = ({ onOpen }: ReceiveInfoProps) => {
   const isGlobalFeeLoading = useAppSelector((state) => state.transfer.isGlobalFeeLoading);
   const sendValue = useAppSelector((state) => state.transfer.sendValue);
   const selectedToken = useAppSelector((state) => state.transfer.selectedToken);
+  const routeFees = useAppSelector((state) => state.transfer.routeFees);
 
   const receiveAmt = useMemo(() => {
     if (!Number(sendValue)) return null;
     if (transferActionInfo && transferActionInfo.bridgeType) {
       const bridgeType = transferActionInfo.bridgeType;
       const receiveValue = getSortedReceiveAmount();
-      return Number(receiveValue[bridgeType]);
+      return Number(receiveValue[bridgeType].value);
     }
     return null;
   }, [getSortedReceiveAmount, transferActionInfo, sendValue]);
 
   const bridgeType = useMemo(() => transferActionInfo?.bridgeType, [transferActionInfo]);
 
-  const {
-    isAllowSendError,
-    cBridgeAllowedAmt,
-    feeDetails: cBridgeFeeDetails,
-  } = useGetCBridgeFees();
-  const { feeDetails: debridgeFeeDetails } = useGetDeBridgeFees();
-  const {
-    allowedSendAmount: STAllowedSendAmount,
-    isAllowSendError: STIsAllowSendError,
-    feeDetails: STFeeDetails,
-  } = useGetStargateFees();
-  const { feeDetails: LZFeeDetails } = useGetLayerZeroFees();
+  const { isAllowSendError, cBridgeAllowedAmt } = useGetCBridgeFees();
+
+  const { allowedSendAmount: STAllowedSendAmount, isAllowSendError: STIsAllowSendError } =
+    useGetStargateFees();
 
   const feeDetails = useMemo(() => {
     let feeContent = '';
     const feeBreakdown = [];
-    if (bridgeType === 'cBridge' && cBridgeFeeDetails) {
-      feeContent = cBridgeFeeDetails.summary;
-      feeBreakdown.push(...cBridgeFeeDetails.breakdown);
-    } else if (bridgeType === 'deBridge' && debridgeFeeDetails) {
-      feeContent = debridgeFeeDetails.summary;
-      feeBreakdown.push(...debridgeFeeDetails.breakdown);
-    } else if (bridgeType === 'stargate' && STFeeDetails) {
-      feeContent = STFeeDetails.summary;
-      feeBreakdown.push(...STFeeDetails.breakdown);
-    } else if (bridgeType === 'layerZero' && LZFeeDetails) {
-      feeContent = LZFeeDetails.summary;
-      feeBreakdown.push(...LZFeeDetails.breakdown);
+    if (bridgeType === 'cBridge' && routeFees?.['cBridge']) {
+      feeContent = routeFees?.['cBridge'].summary;
+      feeBreakdown.push(...routeFees?.['cBridge'].breakdown);
+    } else if (bridgeType === 'deBridge' && routeFees?.['deBridge']) {
+      feeContent = routeFees?.['deBridge'].summary;
+      feeBreakdown.push(...routeFees?.['deBridge'].breakdown);
+    } else if (bridgeType === 'stargate' && routeFees?.['stargate']) {
+      feeContent = routeFees?.['stargate'].summary;
+      feeBreakdown.push(...routeFees?.['stargate'].breakdown);
+    } else if (bridgeType === 'layerZero' && routeFees?.['layerZero']) {
+      feeContent = routeFees?.['layerZero'].summary;
+      feeBreakdown.push(...routeFees?.['layerZero'].breakdown);
     }
     return { summary: feeContent ? feeContent : '--', breakdown: feeBreakdown };
-  }, [bridgeType, debridgeFeeDetails, cBridgeFeeDetails, STFeeDetails, LZFeeDetails]);
+  }, [bridgeType, routeFees]);
 
   const allowedAmtContent = useMemo(() => {
     if (cBridgeAllowedAmt && transferActionInfo?.bridgeType === 'cBridge') {
