@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import { formatUnits, parseUnits } from 'viem';
 import { DeBridgeCreateQuoteResponse } from '@bnb-chain/canonical-bridge-sdk';
-import { useAccount, usePublicClient } from 'wagmi';
+import { useAccount, useBalance, usePublicClient } from 'wagmi';
 import { useIntl } from '@bnb-chain/space';
 
 import { formatNumber } from '@/core/utils/number';
@@ -32,6 +32,8 @@ export const useGetDeBridgeFees = () => {
   const sendValue = useAppSelector((state) => state.transfer.sendValue);
   const toChain = useAppSelector((state) => state.transfer.toChain);
 
+  const { data: nativeTokenBalance } = useBalance({ address: address as `0x${string}` });
+
   const { toTokenInfo } = useToTokenInfo();
   const { balance } = useGetTokenBalance({
     tokenAddress: selectedToken?.address as `0x${string}`,
@@ -56,6 +58,19 @@ export const useGetDeBridgeFees = () => {
           label: formatMessage({ id: 'route.option.info.protocol-fee' }),
           value: `${formatNumber(Number(protocolFee), 8)} ${nativeToken}`,
         });
+        // Make sure native token can cover the protocol fee
+        const totalNativeAmount =
+          selectedToken?.deBridge?.raw?.address === '0x0000000000000000000000000000000000000000'
+            ? BigInt(fees?.fixFee) + parseUnits(sendValue, 18)
+            : BigInt(fees?.fixFee);
+        if (nativeTokenBalance && nativeTokenBalance?.value < totalNativeAmount) {
+          isFailedToGetGas = true;
+          dispatch(
+            setRouteError({
+              deBridge: 'Could not cover deBridge Protocol Fee. Insufficient balance',
+            }),
+          );
+        }
       }
       if (fees?.estimation) {
         // deBridge fee
@@ -122,19 +137,22 @@ export const useGetDeBridgeFees = () => {
       const amount = parseUnits(sendValue, decimals);
       try {
         if (chain && fromChain?.id === chain?.id && address && selectedToken?.address) {
-          const allowance = await publicClient.readContract({
-            address: selectedToken?.address,
-            abi: ERC20_TOKEN,
-            functionName: 'allowance',
-            args: [address as `0x${string}`, fees?.tx.to],
-            chainId: fromChain?.id,
-            enabled:
-              !!address &&
-              !!selectedToken?.address &&
-              fromChain &&
-              chain &&
-              fromChain?.id === chain?.id,
-          });
+          let allowance = null;
+          if (selectedToken?.address !== '0x0000000000000000000000000000000000000000') {
+            allowance = await publicClient.readContract({
+              address: selectedToken?.address,
+              abi: ERC20_TOKEN,
+              functionName: 'allowance',
+              args: [address as `0x${string}`, fees?.tx.to],
+              chainId: fromChain?.id,
+              enabled:
+                !!address &&
+                !!selectedToken?.address &&
+                fromChain &&
+                chain &&
+                fromChain?.id === chain?.id,
+            });
+          }
 
           if (
             fromChain &&
@@ -210,6 +228,7 @@ export const useGetDeBridgeFees = () => {
       address,
       publicClient,
       balance,
+      nativeTokenBalance,
       chain,
       sendValue,
       fromChain,

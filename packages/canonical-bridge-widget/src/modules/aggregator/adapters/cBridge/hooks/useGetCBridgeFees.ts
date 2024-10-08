@@ -5,8 +5,6 @@ import { useIntl } from '@bnb-chain/space';
 
 import { useAppDispatch, useAppSelector } from '@/modules/store/StoreProvider';
 import { useToTokenInfo } from '@/modules/transfer/hooks/useToTokenInfo';
-import { useDebounce } from '@/core/hooks/useDebounce';
-import { DEBOUNCE_DELAY } from '@/core/constants';
 import { useCBridgeSendMaxMin } from '@/modules/aggregator/adapters/cBridge/hooks/useCBridgeSendMaxMin';
 import { useCBridgeTransferParams } from '@/modules/aggregator/adapters/cBridge/hooks/useCBridgeTransferParams';
 import { useGetTokenBalance } from '@/core/contract/hooks/useGetTokenBalance';
@@ -17,7 +15,7 @@ import { formatFeeAmount } from '@/core/utils/string';
 import { ERC20_TOKEN } from '@/core/contract/abi';
 
 export const useGetCBridgeFees = () => {
-  const { toTokenInfo, getToDecimals } = useToTokenInfo();
+  const { toTokenInfo } = useToTokenInfo();
   const { args, bridgeAddress } = useCBridgeTransferParams();
   const { minMaxSendAmt: cBridgeAllowedAmt } = useCBridgeSendMaxMin();
   const nativeToken = useGetNativeToken();
@@ -51,8 +49,6 @@ export const useGetCBridgeFees = () => {
     }
   }, [cBridgeAllowedAmt, sendValue, selectedToken, toTokenInfo]);
 
-  const debouncedArguments = useDebounce(args, DEBOUNCE_DELAY);
-
   const cBridgeFeeSorting = useCallback(
     async (fees: any) => {
       let feeContent = '';
@@ -64,7 +60,7 @@ export const useGetCBridgeFees = () => {
 
       // base fee
       if (!!fees?.base_fee) {
-        const baseFee = formatUnits(fees?.base_fee, getToDecimals().cBridge || 18);
+        const baseFee = formatUnits(fees?.base_fee, decimals || 18);
         totalFee = Number(baseFee);
         feeBreakdown.push({
           label: formatMessage({ id: 'route.option.info.base-fee' }),
@@ -74,7 +70,7 @@ export const useGetCBridgeFees = () => {
       }
       // protocol fee
       if (!!fees?.perc_fee) {
-        const protocolFee = formatUnits(fees?.perc_fee, getToDecimals().cBridge || 18);
+        const protocolFee = formatUnits(fees?.perc_fee, decimals || 18);
         totalFee = !!totalFee ? totalFee + Number(protocolFee) : Number(protocolFee);
         feeBreakdown.push({
           label: formatMessage({ id: 'route.option.info.protocol-fee' }),
@@ -99,7 +95,7 @@ export const useGetCBridgeFees = () => {
               fromChain?.id === chain?.id,
           });
           if (
-            !!debouncedArguments &&
+            !!args &&
             !!publicClient &&
             !isAllowSendError &&
             !!balance &&
@@ -108,7 +104,7 @@ export const useGetCBridgeFees = () => {
             allowance >= amount
           ) {
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            const gas = await publicClient.estimateContractGas(debouncedArguments as any);
+            const gas = await publicClient.estimateContractGas(args as any);
             const gasPrice = await publicClient.getGasPrice();
             if (gas && gasPrice) {
               const gasFee = `${formatNumber(
@@ -133,7 +129,7 @@ export const useGetCBridgeFees = () => {
       }
 
       if (totalFee !== null) {
-        feeContent += !!totalFee
+        feeContent += !isNaN(totalFee)
           ? `${String(formatFeeAmount(totalFee))} ${toTokenInfo?.symbol}`
           : '';
       }
@@ -152,12 +148,11 @@ export const useGetCBridgeFees = () => {
       };
     },
     [
-      getToDecimals,
       toTokenInfo,
       formatMessage,
       dispatch,
       nativeToken,
-      debouncedArguments,
+      args,
       publicClient,
       isAllowSendError,
       balance,

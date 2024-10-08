@@ -85,28 +85,25 @@ export const useGetStargateFees = () => {
             args.minAmountLD = BigInt(fees[2].amountReceivedLD);
           }
           // protocol fee
-          const protocolFee = formatUnits(
-            BigInt(
-              Math.abs(
-                Number(
-                  fees?.[1].filter(
-                    (fee: { feeAmountLD: string; description: string }) =>
-                      fee.description === 'protocol fee',
-                  )[0]?.feeAmountLD,
-                ),
-              ),
-            ),
-            getToDecimals().stargate || 18,
-          );
-          if (!!protocolFee) {
-            feeContent +=
-              (!!feeContent ? ` + ` : '') +
-              `${`${formatFeeAmount(protocolFee)} ${toTokenInfo?.symbol}`}`;
-            feeBreakdown.push({
-              label: formatMessage({ id: 'route.option.info.protocol-fee' }),
-              value: `${formatNumber(Number(protocolFee), 8)} ${toTokenInfo?.symbol}` ?? '',
-              name: 'protocolFee',
-            });
+          const proFee = fees?.[1].filter(
+            (fee: { feeAmountLD: string; description: string }) =>
+              fee.description === 'protocol fee',
+          )[0]?.feeAmountLD;
+          if (!!proFee) {
+            const protocolFee = formatUnits(
+              BigInt(Math.abs(Number(proFee))),
+              getToDecimals().stargate || 18,
+            );
+            if (!!protocolFee) {
+              feeContent +=
+                (!!feeContent ? ` + ` : '') +
+                `${`${formatFeeAmount(protocolFee)} ${toTokenInfo?.symbol}`}`;
+              feeBreakdown.push({
+                label: formatMessage({ id: 'route.option.info.protocol-fee' }),
+                value: `${formatNumber(Number(protocolFee), 8)} ${toTokenInfo?.symbol}` ?? '',
+                name: 'protocolFee',
+              });
+            }
           }
           // native fee
           const quoteSendResponse = await bridgeSDK.stargate.getQuoteSend({
@@ -142,21 +139,27 @@ export const useGetStargateFees = () => {
           try {
             if (chain && fromChain?.id === chain?.id && address && selectedToken?.address) {
               // gas fee
-              const allowance = await publicClient.readContract({
-                address: selectedToken?.stargate?.raw?.address
-                  ? (selectedToken?.address as `0x${string}`)
-                  : ('' as `0x${string}`),
-                abi: ERC20_TOKEN,
-                functionName: 'allowance',
-                args: [address as `0x${string}`, selectedToken?.stargate?.raw?.bridgeAddress],
-                chainId: fromChain?.id,
-                enabled:
-                  !!address &&
-                  !!selectedToken?.address &&
-                  fromChain &&
-                  chain &&
-                  fromChain?.id === chain?.id,
-              });
+              let allowance = null;
+              if (
+                selectedToken?.stargate?.raw?.address !==
+                '0x0000000000000000000000000000000000000000'
+              ) {
+                allowance = await publicClient.readContract({
+                  address: selectedToken?.stargate?.raw?.address
+                    ? (selectedToken?.address as `0x${string}`)
+                    : ('' as `0x${string}`),
+                  abi: ERC20_TOKEN,
+                  functionName: 'allowance',
+                  args: [address as `0x${string}`, selectedToken?.stargate?.raw?.bridgeAddress],
+                  chainId: fromChain?.id,
+                  enabled:
+                    !!address &&
+                    !!selectedToken?.address &&
+                    fromChain &&
+                    chain &&
+                    fromChain?.id === chain?.id,
+                });
+              }
               if (
                 !!args &&
                 !!publicClient &&

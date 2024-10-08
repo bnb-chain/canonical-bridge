@@ -42,12 +42,6 @@ export const useInputValidation = () => {
             };
           }
         }
-        if (estimatedAmount?.deBridge && bridgeType === 'deBridge' && nativeBalance && value) {
-          const deBridgeProtocolFee = estimatedAmount.deBridge?.fixFee;
-          if (BigInt(deBridgeProtocolFee) > nativeBalance.value) {
-            return { text: `Your balance can not cover protocol fee.`, isError: true };
-          }
-        }
 
         if (!!balance) {
           return { text: `${formatNumber(Number(formatUnits(balance, decimal)))}`, isError: false };

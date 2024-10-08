@@ -10,8 +10,9 @@ import { useGetTokenBalance } from '@/core/contract/hooks/useGetTokenBalance';
 import { CAKE_PROXY_OFT_ABI } from '@/modules/aggregator/adapters/layerZero/abi/cakeProxyOFT';
 import { setRouteError, setRouteFees } from '@/modules/transfer/action';
 import { useGetNativeToken } from '@/modules/transfer/hooks/useGetNativeToken';
-import { formatNumber } from '@/core/utils/number';
+import { formatNumber, removeAfterDecimals } from '@/core/utils/number';
 import { formatFeeAmount } from '@/core/utils/string';
+import { useGetAllowance } from '@/core/contract/hooks/useGetAllowance';
 
 export const useGetLayerZeroFees = () => {
   const { address, chain } = useAccount();
@@ -30,6 +31,11 @@ export const useGetLayerZeroFees = () => {
 
   const { balance } = useGetTokenBalance({
     tokenAddress: selectedToken?.address as `0x${string}`,
+  });
+
+  const { allowance } = useGetAllowance({
+    tokenAddress: selectedToken?.address as `0x${string}`,
+    sender: selectedToken?.layerZero?.raw?.bridgeAddress as `0x${string}`,
   });
 
   const layerZeroFeeSorting = useCallback(
@@ -52,6 +58,10 @@ export const useGetLayerZeroFees = () => {
         adapterParams,
       ];
       const nativeFee = fees[0];
+      const minAmount = parseUnits(
+        String(removeAfterDecimals(sendValue)),
+        selectedToken?.layerZero?.raw?.decimals ?? (18 as number),
+      );
       const cakeArgs = {
         address: bridgeAddress,
         abi: CAKE_PROXY_OFT_ABI,
@@ -61,14 +71,17 @@ export const useGetLayerZeroFees = () => {
           toTokenInfo?.layerZero?.raw?.endpointID,
           address32Bytes,
           amount,
-          amount,
+          minAmount,
           callParams,
         ],
         value: nativeFee,
         account: address,
       };
 
-      if (nativeBalance?.value && nativeBalance?.value >= Number(nativeFee)) {
+      if (
+        (nativeBalance?.value && nativeBalance?.value >= Number(nativeFee)) ||
+        (!!allowance && selectedToken?.address !== bridgeAddress && allowance >= amount)
+      ) {
         if (
           chain &&
           fromChain?.id === chain?.id &&
@@ -132,6 +145,7 @@ export const useGetLayerZeroFees = () => {
       balance,
       chain,
       fromChain?.id,
+      allowance,
     ],
   );
 

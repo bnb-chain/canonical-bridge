@@ -1,5 +1,4 @@
 import {
-  Box,
   Flex,
   Typography,
   useBreakpointValue,
@@ -10,11 +9,7 @@ import {
 
 import { RouteNotFoundIcon } from '@/core/components/icons/RouteNotFoundIcon';
 
-interface NoRouteFoundProps {
-  onOpen: () => void;
-}
-
-export const NoRouteFound = ({ onOpen }: NoRouteFoundProps) => {
+export const NoRouteFound = () => {
   const { colorMode } = useColorMode();
   const { formatMessage } = useIntl();
   const theme = useTheme();
@@ -47,20 +42,6 @@ export const NoRouteFound = ({ onOpen }: NoRouteFoundProps) => {
           ? formatMessage({ id: 'route.no-found.desc' })
           : formatMessage({ id: 'route.no-found.mobile-desc' })}
       </Typography>
-      {isBase && (
-        <Box
-          margin={'0 auto'}
-          fontSize={'14px'}
-          fontWeight={500}
-          textDecoration={'underline'}
-          color={theme.colors[colorMode].text.brand}
-          cursor={'pointer'}
-          _hover={{ color: theme.colors[colorMode].button.brand.hover }}
-          onClick={onOpen}
-        >
-          {formatMessage({ id: 'route.no-found.mobile.view.routes.link' })}
-        </Box>
-      )}
     </Flex>
   );
 };

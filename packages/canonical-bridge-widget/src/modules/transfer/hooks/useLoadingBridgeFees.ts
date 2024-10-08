@@ -118,17 +118,19 @@ export const useLoadingBridgeFees = () => {
         const feeSortingRes = await deBridgeFeeSorting(
           debridgeEst.value as DeBridgeCreateQuoteResponse,
         );
-        valueArr.push({
-          type: 'deBridge',
-          value: formatUnits(
-            BigInt(
-              (debridgeEst.value as DeBridgeCreateQuoteResponse)?.estimation.dstChainTokenOut
-                .amount,
+        if (!feeSortingRes?.isFailedToGetGas) {
+          valueArr.push({
+            type: 'deBridge',
+            value: formatUnits(
+              BigInt(
+                (debridgeEst.value as DeBridgeCreateQuoteResponse)?.estimation.dstChainTokenOut
+                  .amount,
+              ),
+              getToDecimals()['deBridge'],
             ),
-            getToDecimals()['deBridge'],
-          ),
-          isIgnoreSorted: feeSortingRes?.isFailedToGetGas,
-        });
+            isIgnoreSorted: feeSortingRes?.isFailedToGetGas,
+          });
+        }
       } else if (debridgeEst.status === 'rejected') {
         // Only show route on low amount error
         if (debridgeEst.reason.message === 'ERROR_LOW_GIVE_AMOUNT') {
@@ -153,7 +155,7 @@ export const useLoadingBridgeFees = () => {
           } else {
             dispatch(setEstimatedAmount({ cBridge: cbridgeEst.value }));
             const feeSortingRes = await cBridgeFeeSorting(cbridgeEst.value);
-            if (!isAllowSendError) {
+            if (!isAllowSendError || !feeSortingRes?.isFailedToGetGas) {
               valueArr.push({
                 type: 'cBridge',
                 value: formatUnits(
@@ -177,11 +179,16 @@ export const useLoadingBridgeFees = () => {
         dispatch(setEstimatedAmount({ stargate: toObject(stargateEst.value) }));
         // TODO: may need to hide route based on error message from getting estimated gas.
         const feeSortingRes = await stargateFeeSorting(stargateEst.value);
-        valueArr.push({
-          type: 'stargate',
-          value: formatUnits(stargateEst.value?.[2].amountReceivedLD, getToDecimals()['stargate']),
-          isIgnoreSorted: feeSortingRes?.isFailedToGetGas,
-        });
+        if (!feeSortingRes?.isFailedToGetGas) {
+          valueArr.push({
+            type: 'stargate',
+            value: formatUnits(
+              stargateEst.value?.[2].amountReceivedLD,
+              getToDecimals()['stargate'],
+            ),
+            isIgnoreSorted: feeSortingRes?.isFailedToGetGas,
+          });
+        }
       } else if (stargateEst.status === 'rejected') {
         dispatch(setRouteError({ stargate: stargateEst.reason.message }));
         dispatch(setEstimatedAmount({ stargate: undefined }));
@@ -202,11 +209,13 @@ export const useLoadingBridgeFees = () => {
             }),
           );
           const feeSortingRes = await layerZeroFeeSorting(layerZeroEst.value);
-          valueArr.push({
-            type: 'layerZero',
-            value: debouncedSendValue,
-            isIgnoreSorted: feeSortingRes?.isFailedToGetGas,
-          });
+          if (!feeSortingRes?.isFailedToGetGas) {
+            valueArr.push({
+              type: 'layerZero',
+              value: debouncedSendValue,
+              isIgnoreSorted: feeSortingRes?.isFailedToGetGas,
+            });
+          }
         }
       } else if (layerZeroEst.status === 'rejected') {
         dispatch(setRouteError({ layerZero: layerZeroEst.reason.message }));

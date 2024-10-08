@@ -1,4 +1,5 @@
 import { CreateAdapterParameters } from '@/core';
+import { removeAfterDecimals } from '@/core/utils/number';
 import { CAKE_PROXY_OFT_ABI } from '@/layerZero/abi/cakeProxyOFT';
 import {
   IGetEstimateFeeInput,
@@ -6,7 +7,7 @@ import {
   LayerZeroTransferConfigs,
 } from '@/layerZero/types';
 import { createAdapter } from '@/layerZero/utils/createAdapter';
-import { encodePacked, Hash, pad } from 'viem';
+import { encodePacked, formatUnits, Hash, pad, parseUnits } from 'viem';
 
 export * from './types';
 export class LayerZero {
@@ -57,6 +58,10 @@ export class LayerZero {
         adapterParams,
       ];
       const nativeFee = fees[0];
+      const minAmount = parseUnits(
+        String(removeAfterDecimals(Number(formatUnits(amount, 18)))),
+        18
+      );
       const cakeArgs = {
         address: bridgeAddress,
         abi: CAKE_PROXY_OFT_ABI,
@@ -66,7 +71,7 @@ export class LayerZero {
           dstEndpoint,
           address32Bytes,
           amount,
-          amount,
+          minAmount,
           callParams,
         ],
         value: nativeFee,

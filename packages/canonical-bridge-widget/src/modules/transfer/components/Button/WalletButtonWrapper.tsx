@@ -12,7 +12,7 @@ export function WalletButtonWrapper(props: PropsWithChildren) {
   const { isConnected, chain } = useAccount();
 
   if (isConnected) {
-    if (chain && fromChain && chain.id !== fromChain.id) {
+    if (fromChain && chain?.id !== fromChain.id) {
       return <SwitchNetworkButton />;
     }
     return <>{children}</>;

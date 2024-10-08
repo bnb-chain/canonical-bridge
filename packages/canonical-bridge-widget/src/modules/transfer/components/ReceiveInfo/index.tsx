@@ -119,7 +119,9 @@ export const ReceiveInfo = ({ onOpen }: ReceiveInfoProps) => {
         <Box color={theme.colors[colorMode].input.title} fontSize={'14px'} fontWeight={400}>
           {formatMessage({ id: 'you.receive.title' })}
         </Box>
-        {isBase ? <RouteChangeButton onOpen={onOpen} /> : null}
+        {isBase && !!receiveAmt && !isGlobalFeeLoading ? (
+          <RouteChangeButton onOpen={onOpen} />
+        ) : null}
       </Flex>
       <Flex
         borderRadius={'8px'}
@@ -160,7 +162,7 @@ export const ReceiveInfo = ({ onOpen }: ReceiveInfoProps) => {
               </Flex>
             </>
           ) : !receiveAmt && !isGlobalFeeLoading ? (
-            <NoRouteFound onOpen={onOpen} />
+            <NoRouteFound />
           ) : (
             <ReceiveLoading />
           )

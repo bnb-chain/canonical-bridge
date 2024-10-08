@@ -1,4 +1,4 @@
-import { Button, ButtonProps, Flex, useColorMode, useIntl, useTheme } from '@bnb-chain/space';
+import { Button, Flex, useColorMode, useIntl, useTheme } from '@bnb-chain/space';
 import { useCallback, useState } from 'react';
 import { useAccount, useBalance, usePublicClient, useWalletClient } from 'wagmi';
 import { formatUnits, parseUnits } from 'viem';
@@ -29,6 +29,9 @@ export function TransferButton({
   const { data: walletClient } = useWalletClient();
   const { args: cBridgeArgs } = useCBridgeTransferParams();
   const bridgeSDK = useBridgeSDK();
+  const { formatMessage } = useIntl();
+  const theme = useTheme();
+  const { colorMode } = useColorMode();
 
   const { address } = useAccount();
 
@@ -52,6 +55,13 @@ export function TransferButton({
     sender: transferActionInfo?.bridgeAddress as `0x${string}`,
   });
 
+  const isApproveNeeded =
+    allowance !== null &&
+    selectedToken?.decimals &&
+    Number(sendValue) > Number(formatUnits(allowance, selectedToken?.decimals || 18)) &&
+    transferActionInfo?.bridgeAddress !== selectedToken?.address &&
+    selectedToken?.address !== '0x0000000000000000000000000000000000000000';
+
   const sendTx = useCallback(async () => {
     if (
       !walletClient ||
@@ -61,7 +71,8 @@ export function TransferButton({
       !transferActionInfo ||
       !transferActionInfo.bridgeType ||
       !transferActionInfo.bridgeAddress ||
-      allowance === null
+      (allowance === null &&
+        selectedToken?.address !== '0x0000000000000000000000000000000000000000')
     ) {
       return;
     }
@@ -70,8 +81,10 @@ export function TransferButton({
       setChosenBridge('');
       setIsLoading(true);
       if (
+        allowance !== null &&
         Number(sendValue) > Number(formatUnits(allowance, selectedToken?.decimals)) &&
-        transferActionInfo.bridgeAddress !== selectedToken?.address // doesn't need approve for OFT
+        transferActionInfo.bridgeAddress !== selectedToken?.address &&
+        selectedToken?.address !== '0x0000000000000000000000000000000000000000' // doesn't need approve for OFT
       ) {
         // eslint-disable-next-line no-console
         console.log(
@@ -276,27 +289,6 @@ export function TransferButton({
   ]);
 
   return (
-    <StyledTransferButton
-      onClick={sendTx}
-      isDisabled={
-        isLoading ||
-        isGlobalFeeLoading ||
-        !sendValue ||
-        !Number(sendValue) ||
-        !transferActionInfo ||
-        !isTransferable
-      }
-    />
-  );
-}
-
-export function StyledTransferButton(props: ButtonProps) {
-  const { ...restProps } = props;
-  const { formatMessage } = useIntl();
-  const theme = useTheme();
-  const { colorMode } = useColorMode();
-
-  return (
     <Flex flexDir="column" w={'100%'}>
       <Button
         bg={theme.colors[colorMode].button.brand.default}
@@ -308,9 +300,19 @@ export function StyledTransferButton(props: ButtonProps) {
           bg: theme.colors[colorMode].button.brand.hover,
           _disabled: { bg: theme.colors[colorMode].button.disabled },
         }}
-        {...restProps}
+        onClick={sendTx}
+        isDisabled={
+          isLoading ||
+          isGlobalFeeLoading ||
+          !sendValue ||
+          !Number(sendValue) ||
+          !transferActionInfo ||
+          !isTransferable
+        }
       >
-        {formatMessage({ id: 'transfer.button.confirm' })}
+        {isApproveNeeded
+          ? formatMessage({ id: 'transfer.button.approve' })
+          : formatMessage({ id: 'transfer.button.confirm' })}
       </Button>
     </Flex>
   );
