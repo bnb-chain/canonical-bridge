@@ -1,5 +1,12 @@
 # @bnb-chain/canonical-bridge-sdk
 
+## 0.0.17
+
+### Patch Changes
+
+- d8db6e4: New ui & new features
+- d8db6e4: RC version
+
 ## 0.0.16
 
 ### Patch Changes

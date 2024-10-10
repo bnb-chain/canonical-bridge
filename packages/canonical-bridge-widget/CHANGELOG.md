@@ -1,5 +1,12 @@
 # @bnb-chain/canonical-bridge-widget
 
+## 0.0.5
+
+### Patch Changes
+
+- d8db6e4: New ui & new features
+- d8db6e4: RC version
+
 ## 0.0.4
 
 ### Patch Changes
