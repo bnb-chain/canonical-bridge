@@ -60,8 +60,8 @@ export const useGetCBridgeFees = () => {
 
       // base fee
       if (!!fees?.base_fee) {
-        const baseFee = formatUnits(fees?.base_fee, decimals || 18);
-        totalFee = Number(baseFee);
+        const baseFee = formatUnits(fees?.base_fee, toTokenInfo?.decimals || 18);
+        totalFee = baseFee;
         feeBreakdown.push({
           label: formatMessage({ id: 'route.option.info.base-fee' }),
           value: `${formatNumber(Number(baseFee), 8)} ${toTokenInfo?.symbol}`,
@@ -70,8 +70,8 @@ export const useGetCBridgeFees = () => {
       }
       // protocol fee
       if (!!fees?.perc_fee) {
-        const protocolFee = formatUnits(fees?.perc_fee, decimals || 18);
-        totalFee = !!totalFee ? totalFee + Number(protocolFee) : Number(protocolFee);
+        const protocolFee = formatUnits(fees?.perc_fee, toTokenInfo?.decimals || 18);
+        totalFee = !!totalFee ? Number(totalFee) + Number(protocolFee) : Number(protocolFee);
         feeBreakdown.push({
           label: formatMessage({ id: 'route.option.info.protocol-fee' }),
           value: `${formatNumber(Number(protocolFee), 8)} ${toTokenInfo?.symbol}`,
@@ -129,9 +129,9 @@ export const useGetCBridgeFees = () => {
       }
 
       if (totalFee !== null) {
-        feeContent += !isNaN(totalFee)
-          ? `${String(formatFeeAmount(totalFee))} ${toTokenInfo?.symbol}`
-          : '';
+        feeContent = feeContent
+          ? feeContent + ` + ${String(formatFeeAmount(totalFee))} ${toTokenInfo?.symbol}`
+          : `${String(formatFeeAmount(totalFee))} ${toTokenInfo?.symbol}`;
       }
       dispatch(
         setRouteFees({

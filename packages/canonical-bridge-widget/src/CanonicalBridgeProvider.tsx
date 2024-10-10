@@ -10,6 +10,7 @@ import { AggregatorProvider } from '@/modules/aggregator/components/AggregatorPr
 
 export interface ICanonicalBridgeConfig {
   appName: string;
+  assetPrefix?: string;
 
   appearance: {
     mode?: ColorMode;
@@ -27,8 +28,6 @@ export interface ICanonicalBridgeConfig {
     refetchingInterval?: number;
     apiTimeOut?: number;
     deBridgeAccessToken?: string;
-
-    assetPrefix?: string;
     serverEndpoint: string;
   };
 }
@@ -45,7 +44,7 @@ export function useBridgeConfig() {
 
 export interface CanonicalBridgeProviderProvider {
   config: ICanonicalBridgeConfig;
-  transferConfig: ITransferConfig;
+  transferConfig?: ITransferConfig;
   chains: IChainConfig[];
   routeContentBottom?: React.ReactNode;
   children: React.ReactNode;

@@ -4,6 +4,7 @@ import compression from 'compression';
 
 import { metrics } from '@/server/middlewares/metrics';
 import { routes } from '@/server/routes';
+import { startConfigTask } from '@/server/data/cache';
 
 const dev = process.env.NODE_ENV !== 'production';
 const hostname = 'localhost';
@@ -15,6 +16,8 @@ async function main() {
   await app.prepare();
 
   const server = express();
+
+  startConfigTask();
 
   server.use(metrics());
   server.use(compression());

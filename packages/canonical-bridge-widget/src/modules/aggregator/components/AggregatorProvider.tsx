@@ -56,7 +56,7 @@ const DEFAULT_CONTEXT: AggregatorContextProps = {
 export const AggregatorContext = React.createContext(DEFAULT_CONTEXT);
 
 export interface AggregatorProviderProps {
-  transferConfig: ITransferConfig;
+  transferConfig?: ITransferConfig;
   chainConfigs: IChainConfig[];
   children: React.ReactNode;
 }
@@ -95,7 +95,7 @@ export function AggregatorProvider(props: AggregatorProviderProps) {
 
     const nativeCurrencies = getNativeCurrencies(chainConfigs);
     const includedChains = chainConfigs.map((item) => item.id);
-    const assetPrefix = bridgeConfig.http.assetPrefix;
+    const assetPrefix = bridgeConfig.assetPrefix;
 
     const adapters = bridges
       .filter((item) => transferConfig[item.bridgeType])
@@ -158,7 +158,7 @@ export function AggregatorProvider(props: AggregatorProviderProps) {
         });
       },
     };
-  }, [chainConfigs, transferConfig, bridgeConfig.http.assetPrefix]);
+  }, [chainConfigs, transferConfig, bridgeConfig.assetPrefix]);
 
   return (
     <AggregatorContext.Provider value={value}>

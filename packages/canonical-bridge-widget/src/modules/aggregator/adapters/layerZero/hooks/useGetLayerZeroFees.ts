@@ -10,7 +10,7 @@ import { useGetTokenBalance } from '@/core/contract/hooks/useGetTokenBalance';
 import { CAKE_PROXY_OFT_ABI } from '@/modules/aggregator/adapters/layerZero/abi/cakeProxyOFT';
 import { setRouteError, setRouteFees } from '@/modules/transfer/action';
 import { useGetNativeToken } from '@/modules/transfer/hooks/useGetNativeToken';
-import { formatNumber, removeAfterDecimals } from '@/core/utils/number';
+import { formatNumber } from '@/core/utils/number';
 import { formatFeeAmount } from '@/core/utils/string';
 import { useGetAllowance } from '@/core/contract/hooks/useGetAllowance';
 
@@ -18,7 +18,6 @@ export const useGetLayerZeroFees = () => {
   const { address, chain } = useAccount();
   const { toTokenInfo } = useToTokenInfo();
   const dispatch = useAppDispatch();
-  const { data: nativeBalance } = useBalance({ address });
   const nativeToken = useGetNativeToken();
   const { formatMessage } = useIntl();
 
@@ -26,6 +25,7 @@ export const useGetLayerZeroFees = () => {
   const sendValue = useAppSelector((state) => state.transfer.sendValue);
   const fromChain = useAppSelector((state) => state.transfer.fromChain);
 
+  const { data: nativeBalance } = useBalance({ address, chainId: fromChain?.id });
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const publicClient = usePublicClient({ chainId: fromChain?.id }) as any;
 
@@ -43,6 +43,7 @@ export const useGetLayerZeroFees = () => {
       let feeContent = '';
       let totalFee = null;
       let isFailedToGetGas = false;
+      let isDisplayError = false;
       const feeBreakdown = [];
       const bridgeAddress = selectedToken?.layerZero?.raw?.bridgeAddress as `0x${string}`;
       const amount = parseUnits(
@@ -59,7 +60,7 @@ export const useGetLayerZeroFees = () => {
       ];
       const nativeFee = fees[0];
       const minAmount = parseUnits(
-        String(removeAfterDecimals(sendValue)),
+        String(formatNumber(Number(sendValue), 8)),
         selectedToken?.layerZero?.raw?.decimals ?? (18 as number),
       );
       const cakeArgs = {
@@ -78,20 +79,19 @@ export const useGetLayerZeroFees = () => {
         account: address,
       };
 
-      if (
-        (nativeBalance?.value && nativeBalance?.value >= Number(nativeFee)) ||
-        (!!allowance && selectedToken?.address !== bridgeAddress && allowance >= amount)
-      ) {
+      if (nativeBalance?.value && nativeBalance?.value >= Number(nativeFee)) {
         if (
           chain &&
           fromChain?.id === chain?.id &&
           address &&
-          selectedToken?.address &&
           publicClient &&
           toTokenInfo?.layerZero?.raw?.endpointID &&
           Number(sendValue) &&
           !!balance &&
-          balance >= amount
+          balance >= amount &&
+          !!allowance &&
+          allowance >= amount &&
+          selectedToken?.address !== bridgeAddress
         ) {
           try {
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -114,6 +114,7 @@ export const useGetLayerZeroFees = () => {
         }
       } else {
         dispatch(setRouteError({ layerZero: `Insufficient ${nativeToken} to cover native fee` }));
+        isDisplayError = true;
       }
 
       if (!!nativeFee) {
@@ -130,7 +131,12 @@ export const useGetLayerZeroFees = () => {
           layerZero: { summary: feeContent ? feeContent : '--', breakdown: feeBreakdown },
         }),
       );
-      return { summary: feeContent ? feeContent : '--', breakdown: feeBreakdown, isFailedToGetGas };
+      return {
+        summary: feeContent ? feeContent : '--',
+        breakdown: feeBreakdown,
+        isFailedToGetGas,
+        isDisplayError,
+      };
     },
     [
       dispatch,

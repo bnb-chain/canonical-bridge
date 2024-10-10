@@ -24,7 +24,6 @@
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "scripts": {
-    "dev": "vite __dev__ --config vite.config.ts --port 3333 --host 0.0.0.0 --open",
     "build": "vite build",
     "watch": "vite build --watch --emptyOutDir=false",
     "lint-staged": "lint-staged"

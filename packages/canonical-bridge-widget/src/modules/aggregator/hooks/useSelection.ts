@@ -38,28 +38,28 @@ export function useSelection() {
   };
 
   const updateSelectedInfo = ({
-    nextFromChain = fromChain,
-    nextToChain = toChain,
-    nextToken = selectedToken,
+    tmpFromChain = fromChain,
+    tmpToChain = toChain,
+    tmpToken = selectedToken,
   }: {
-    nextFromChain?: IBridgeChain;
-    nextToChain?: IBridgeChain;
-    nextToken?: IBridgeToken;
+    tmpFromChain?: IBridgeChain;
+    tmpToChain?: IBridgeChain;
+    tmpToken?: IBridgeToken;
   }) => {
     const newToken = getTokens({
-      fromChainId: nextFromChain?.id,
-      toChainId: nextToChain?.id,
-    }).find((t) => t.displaySymbol === nextToken?.displaySymbol);
+      fromChainId: tmpFromChain?.id,
+      toChainId: tmpToChain?.id,
+    }).find((t) => t.displaySymbol?.toUpperCase() === tmpToken?.displaySymbol?.toUpperCase());
 
     const newFromChain = getFromChains({
-      toChainId: nextToChain?.id,
+      toChainId: tmpToChain?.id,
       token: newToken,
-    }).find((c) => c.id === nextFromChain?.id);
+    }).find((c) => c.id === tmpFromChain?.id);
 
     const newToChain = getToChains({
-      fromChainId: nextFromChain?.id,
+      fromChainId: tmpFromChain?.id,
       token: newToken,
-    }).find((c) => c.id === nextToChain?.id);
+    }).find((c) => c.id === tmpToChain?.id);
 
     dispatch(setFromChain(newFromChain));
     dispatch(setToChain(newToChain));
@@ -117,64 +117,65 @@ export function useSelection() {
       });
     },
 
-    async selectFromChain(fromChain: IBridgeChain) {
-      const isCompatible = isChainOrTokenCompatible(fromChain);
+    async selectFromChain(tmpFromChain: IBridgeChain) {
+      // After selecting fromChain, if toChain becomes incompatible, reselect the first compatible network in toChain list.
+      const toChains = getToChains({
+        fromChainId: tmpFromChain.id,
+      });
+      const tmpToChain =
+        toChains.find((c) => isChainOrTokenCompatible(c) && c.id === toChain?.id) ??
+        toChains.find((c) => isChainOrTokenCompatible(c) && c.chainType !== 'link');
 
-      if (isCompatible) {
-        updateSelectedInfo({
-          nextFromChain: fromChain,
-        });
-      } else {
-        const toChain = getToChains({
-          fromChainId: fromChain.id,
-        }).find((chain) => isChainOrTokenCompatible(chain) && chain.chainType !== 'link');
+      const tmpTokens = await getSortedTokens({
+        fromChainId: tmpFromChain.id,
+        tokens: getTokens({
+          fromChainId: tmpFromChain.id,
+          toChainId: tmpToChain?.id,
+        }),
+      });
 
-        const newTokens = await getSortedTokens({
-          fromChainId: fromChain.id,
-          tokens: getTokens({
-            fromChainId: fromChain.id,
-            toChainId: toChain?.id,
-          }),
-        });
+      const newToken =
+        tmpTokens.find(
+          (t) =>
+            isChainOrTokenCompatible(t) &&
+            t.displaySymbol.toUpperCase() === selectedToken?.displaySymbol.toUpperCase(),
+        ) ?? tmpTokens.find((t) => isChainOrTokenCompatible(t));
 
-        const newToken =
-          newTokens.find(
-            (token) =>
-              isChainOrTokenCompatible(token) &&
-              token.displaySymbol.toUpperCase() === selectedToken?.displaySymbol.toUpperCase(),
-          ) || newTokens.find((token) => isChainOrTokenCompatible(token));
-
-        const newFromChain = getFromChains({
-          toChainId: toChain?.id,
-          token: newToken,
-        }).find((chain) => chain.id === fromChain.id);
-
-        const newToChain = getToChains({
-          fromChainId: fromChain?.id,
-          token: newToken,
-        }).find((chain) => chain.id === toChain?.id);
-
-        dispatch(setFromChain(newFromChain));
-        dispatch(setToChain(newToChain));
-        dispatch(setSelectedToken(newToken));
-
-        updateToToken({
-          fromChainId: newFromChain?.id,
-          toChainId: newToChain?.id,
-          token: newToken,
-        });
-      }
+      updateSelectedInfo({
+        tmpToken: newToken,
+        tmpFromChain,
+        tmpToChain,
+      });
     },
 
-    async selectToChain(toChain: IBridgeChain) {
+    async selectToChain(tmpToChain: IBridgeChain) {
+      const fromChainId = fromChain!.id;
+
+      const tmpTokens = await getSortedTokens({
+        fromChainId,
+        tokens: getTokens({
+          fromChainId,
+          toChainId: tmpToChain?.id,
+        }),
+      });
+
+      const newToken =
+        tmpTokens.find(
+          (t) =>
+            isChainOrTokenCompatible(t) &&
+            t.displaySymbol.toUpperCase() === selectedToken?.displaySymbol.toUpperCase(),
+        ) ?? tmpTokens.find((t) => isChainOrTokenCompatible(t));
+
       updateSelectedInfo({
-        nextToChain: toChain,
+        tmpToken: newToken,
+        tmpFromChain: fromChain,
+        tmpToChain,
       });
     },
 
     async selectToken(newToken: IBridgeToken) {
       updateSelectedInfo({
-        nextToken: newToken,
+        tmpToken: newToken,
       });
     },
   };

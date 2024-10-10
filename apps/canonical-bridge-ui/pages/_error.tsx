@@ -2,7 +2,7 @@ import { Center, Image } from '@bnb-chain/space';
 import { useMemo } from 'react';
 import { NextPageContext } from 'next';
 
-import { ASSET_PREFIX } from '@/core/constants';
+import { env } from '@/core/env';
 
 interface ErrorPageProps {
   err?: Error;
@@ -25,7 +25,7 @@ export default function ErrorPage({ statusCode }: ErrorPageProps) {
 
   return (
     <Center flex={1}>
-      <Image src={`${ASSET_PREFIX}/images/${src}`} alt="_error" width={350} height={350} />
+      <Image src={`${env.ASSET_PREFIX}/images/${src}`} alt="_error" width={350} height={350} />
     </Center>
   );
 }

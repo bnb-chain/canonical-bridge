@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev -p 3001",
+    "start": "next start",
     "build": "next build",
     "lint-staged": "lint-staged"
   },
@@ -15,8 +16,10 @@
     "@emotion/react": "~11.13.3",
     "@emotion/styled": "~11.13.0",
     "@tanstack/react-query": "~5.50.1",
+    "axios": "~1.6.8",
     "next": "~14.1.1",
     "pino-pretty": "~11.2.1",
+    "polished": "~4.3.1",
     "react": "~18.3.1",
     "react-dom": "~18.3.1",
     "supports-color": "~9.4.0",

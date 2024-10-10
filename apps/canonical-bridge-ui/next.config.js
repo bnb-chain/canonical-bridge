@@ -1,29 +1,24 @@
 /** @type {import('next').NextConfig} */
 
-const STATIC_HOST = process.env.NEXT_PUBLIC_STATIC_HOST || '';
-
 const getEnv = (type = 'public') => {
   const regexp = type === 'public' ? /^NEXT_PUBLIC_/ : /^(?!NEXT_PUBLIC_)/;
-  const envs = process.env;
 
   const res = {};
-  Object.keys(envs).forEach((key) => {
+  Object.keys(process.env).forEach((key) => {
     if (regexp.test(key)) {
-      res[key] = envs[key];
+      res[key] = process.env[key];
     }
   });
+
   return res;
 };
 
 module.exports = {
-  assetPrefix: STATIC_HOST,
+  assetPrefix: process.env.NEXT_PUBLIC_ASSET_PREFIX,
   publicRuntimeConfig: {
     ...getEnv('public'),
   },
   serverRuntimeConfig: {
     ...getEnv('server'),
-  },
-  experimental: {
-    esmExternals: 'loose',
   },
 };

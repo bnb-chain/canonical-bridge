@@ -16,8 +16,7 @@ export function useSearch<T>(props: UseSearchProps<T>) {
 
   const result = useMemo(() => {
     return data.filter((item) => filter(item, keyword.toLowerCase())).sort(sorter);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data, keyword]);
+  }, [data, filter, keyword, sorter]);
 
   const isNoResult = keyword.length > 0 && !result.length;
 

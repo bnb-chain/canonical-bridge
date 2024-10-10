@@ -10,9 +10,7 @@ export const env = {
   FE_ENDPOINT: `/en${BASE_PATH}`,
 
   ASSET_PREFIX: publicRuntimeConfig.NEXT_PUBLIC_STATIC_HOST ?? '',
-  WIDGET_SERVER_ENDPOINT:
-    publicRuntimeConfig.NEXT_PUBLIC_WIDGET_SERVER_ENDPOINT ??
-    'https://canonical-bridge-api.fe.kfkshore.org',
+  WIDGET_SERVER_ENDPOINT: publicRuntimeConfig.NEXT_PUBLIC_WIDGET_SERVER_ENDPOINT ?? '',
   DEBRIDGE_ACCESS_TOKEN:
     publicRuntimeConfig.NEXT_PUBLIC_DEBRIDGE_ACCESS_TOKEN ?? 'bnb-48deda482665',
   WALLET_CONNECT_PROJECT_ID:

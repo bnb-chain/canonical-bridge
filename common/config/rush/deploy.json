@@ -17,19 +17,7 @@
    * If the main project should include other unrelated Rush projects, add it to the "projectSettings" section,
    * and then specify those projects in the "additionalProjectsToInclude" list.
    */
-  "deploymentProjectNames": [
-    "blog-ui",
-    "chain-labs",
-    "faucet-ui",
-    "greenfield-ui",
-    "hashdit-ui",
-    "home-ui",
-    "opbnb-ui",
-    "staking-ui",
-    "bnb-chain-bridge",
-    "staking-ui",
-    "portal-ui"
-  ],
+  "deploymentProjectNames": ["bnb-chain-bridge", "canonical-bridge-ui"],
 
   /**
    * When deploying a local Rush project, the package.json "devDependencies" are normally excluded.
@@ -79,15 +67,15 @@
    * Customize how Rush projects are processed during deployment.
    */
   "projectSettings": [
-//    {
-      //   /**
-      //    * The full package name of the project, which must be declared in rush.json.
-      //    */
-//      "projectName": "opbnb-ui",
-      // # Fix Python 3 symlink error.
-      // # https://github.com/microsoft/rushstack/issues/4421
-//      "dependenciesToExclude": ["wagmi", "connectkit"]
-//    },
+    //    {
+    //   /**
+    //    * The full package name of the project, which must be declared in rush.json.
+    //    */
+    //      "projectName": "opbnb-ui",
+    // # Fix Python 3 symlink error.
+    // # https://github.com/microsoft/rushstack/issues/4421
+    //      "dependenciesToExclude": ["wagmi", "connectkit"]
+    //    },
   ]
   // "dependencySettings": [
   //   {

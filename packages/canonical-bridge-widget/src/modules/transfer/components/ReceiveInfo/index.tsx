@@ -45,6 +45,7 @@ export const ReceiveInfo = ({ onOpen }: ReceiveInfoProps) => {
   const sendValue = useAppSelector((state) => state.transfer.sendValue);
   const selectedToken = useAppSelector((state) => state.transfer.selectedToken);
   const routeFees = useAppSelector((state) => state.transfer.routeFees);
+  const estimatedAmount = useAppSelector((state) => state.transfer.estimatedAmount);
 
   const receiveAmt = useMemo(() => {
     if (!Number(sendValue)) return null;
@@ -113,15 +114,31 @@ export const ReceiveInfo = ({ onOpen }: ReceiveInfoProps) => {
     }
   }, [selectedToken, debouncedSendValue, dispatch, sendValue, loadingBridgeFees, isBase]);
 
-  return !!Number(sendValue) ? (
+  const isHideSection = useMemo(() => {
+    // no receive amount and some routes are displayed
+    if (isGlobalFeeLoading) return false;
+    return (
+      !Number(sendValue) ||
+      (!isBase &&
+        estimatedAmount &&
+        !Object.values(estimatedAmount).every((element) => element === undefined) &&
+        !receiveAmt)
+    );
+  }, [sendValue, estimatedAmount, isBase, receiveAmt, isGlobalFeeLoading]);
+
+  const isHideRouteButton = useMemo(() => {
+    return (
+      estimatedAmount && Object.values(estimatedAmount).every((element) => element === undefined)
+    );
+  }, [estimatedAmount]);
+
+  return !isHideSection ? (
     <Flex flexDir={'column'} gap={'12px'}>
       <Flex flexDir={'row'} alignItems={'center'} justifyContent={'space-between'}>
         <Box color={theme.colors[colorMode].input.title} fontSize={'14px'} fontWeight={400}>
           {formatMessage({ id: 'you.receive.title' })}
         </Box>
-        {isBase && !!receiveAmt && !isGlobalFeeLoading ? (
-          <RouteChangeButton onOpen={onOpen} />
-        ) : null}
+        {isBase && !isHideRouteButton ? <RouteChangeButton onOpen={onOpen} /> : null}
       </Flex>
       <Flex
         borderRadius={'8px'}
@@ -162,7 +179,7 @@ export const ReceiveInfo = ({ onOpen }: ReceiveInfoProps) => {
               </Flex>
             </>
           ) : !receiveAmt && !isGlobalFeeLoading ? (
-            <NoRouteFound />
+            <NoRouteFound onOpen={onOpen} />
           ) : (
             <ReceiveLoading />
           )

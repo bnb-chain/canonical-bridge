@@ -24,9 +24,9 @@ export const useGetStargateFees = () => {
   const bridgeSDK = useBridgeSDK();
   const { formatMessage } = useIntl();
   const nativeToken = useGetNativeToken();
-  const { data: nativeBalance } = useBalance({ address });
 
   const fromChain = useAppSelector((state) => state.transfer.fromChain);
+  const { data: nativeBalance } = useBalance({ address, chainId: fromChain?.id });
   const selectedToken = useAppSelector((state) => state.transfer.selectedToken);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const publicClient = usePublicClient({ chainId: fromChain?.id }) as any;
@@ -70,6 +70,7 @@ export const useGetStargateFees = () => {
       let nativeTokenFee = null;
       const feeBreakdown = [];
       let isFailedToGetGas = false;
+      let isDisplayError = false;
 
       const receiver = address || DEFAULT_ADDRESS;
       const bridgeAddress = selectedToken?.stargate?.raw?.bridgeAddress as `0x${string}`;
@@ -100,7 +101,7 @@ export const useGetStargateFees = () => {
                 `${`${formatFeeAmount(protocolFee)} ${toTokenInfo?.symbol}`}`;
               feeBreakdown.push({
                 label: formatMessage({ id: 'route.option.info.protocol-fee' }),
-                value: `${formatNumber(Number(protocolFee), 8)} ${toTokenInfo?.symbol}` ?? '',
+                value: `${formatNumber(Number(protocolFee), 8)} ${toTokenInfo?.symbol}` || '',
                 name: 'protocolFee',
               });
             }
@@ -121,10 +122,8 @@ export const useGetStargateFees = () => {
             nativeFee += args.amountLD;
           }
           if (nativeFee) {
-            const fee = formatUnits(nativeFee, 18);
-            nativeTokenFee = !!nativeTokenFee
-              ? nativeTokenFee + Number(formatUnits(nativeFee, 18))
-              : Number(formatUnits(nativeFee, 18));
+            const fee = formatUnits(quoteSendResponse!.nativeFee, 18);
+            nativeTokenFee = !!nativeTokenFee ? nativeTokenFee + Number(fee) : Number(fee);
             feeBreakdown.push({
               label: formatMessage({ id: 'route.option.info.native-fee' }),
               value: `${formatNumber(Number(fee), 8)} ${nativeToken}`,
@@ -134,6 +133,7 @@ export const useGetStargateFees = () => {
               dispatch(
                 setRouteError({ stargate: `Insufficient ${nativeToken} to cover native fee` }),
               );
+              isDisplayError = true;
             }
           }
           try {
@@ -210,10 +210,12 @@ export const useGetStargateFees = () => {
               },
             }),
           );
+          nativeTokenFee = null;
           return {
             summary: feeContent ? feeContent : '--',
             breakdown: feeBreakdown,
             isFailedToGetGas,
+            isDisplayError,
           };
         } else {
           dispatch(
@@ -221,6 +223,7 @@ export const useGetStargateFees = () => {
               stargate: 'Please increase your send amount',
             }),
           );
+          return { isDisplayError: true };
         }
       }
     },

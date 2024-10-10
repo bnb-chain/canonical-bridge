@@ -25,6 +25,7 @@ import { IntlProvider } from '@/modules/i18n/IntlProvider';
 import { useAppSelector } from '@/core/store/hooks';
 import { chains } from '@/core/configs/chains';
 import { APP_NAME } from '@/core/constants';
+import { SEO } from '@/core/components/SEO';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -46,6 +47,7 @@ export default function App(props: AppProps) {
         <StoreProvider store={store}>
           <IntlProvider>
             <BridgeWidget>
+              <SEO />
               <Layout>
                 <Component {...pageProps} />
               </Layout>
@@ -64,6 +66,7 @@ function BridgeWidget({ children }: React.PropsWithChildren) {
   const config = useMemo<ICanonicalBridgeConfig>(
     () => ({
       appName: APP_NAME,
+      assetPrefix: env.ASSET_PREFIX,
 
       appearance: {
         bridgeTitle: 'BNB Chain Cross-Chain Bridge',
@@ -82,8 +85,6 @@ function BridgeWidget({ children }: React.PropsWithChildren) {
         refetchingInterval: 30000, // 30s
         apiTimeOut: 60 * 1000, // 30s
         deBridgeAccessToken: env.DEBRIDGE_ACCESS_TOKEN,
-
-        assetPrefix: env.ASSET_PREFIX,
         serverEndpoint: env.WIDGET_SERVER_ENDPOINT,
       },
     }),

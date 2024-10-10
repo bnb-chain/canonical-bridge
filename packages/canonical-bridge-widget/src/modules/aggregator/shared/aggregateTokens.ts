@@ -19,7 +19,7 @@ export function aggregateTokens({ adapters, params }: IAggregateTokensParams) {
   adapters.forEach((adapter) => {
     const { bridgeType } = adapter;
 
-    const { compatibleTokens, tokenPairs } = adapter.getTokens({
+    const { matchedTokens, compatibleTokens, tokenPairs } = adapter.getTokens({
       fromChainId: params.fromChainId!,
       toChainId: params.toChainId!,
     });
@@ -32,6 +32,8 @@ export function aggregateTokens({ adapters, params }: IAggregateTokensParams) {
         token: fromToken,
       });
       let bridgeToken = tokenMap.get(baseInfo.displaySymbol.toUpperCase());
+
+      const isMatched = matchedTokens.has(baseInfo.symbol.toUpperCase());
       const isCompatible = compatibleTokens.has(baseInfo.symbol.toUpperCase());
 
       if (!bridgeToken) {
@@ -42,7 +44,7 @@ export function aggregateTokens({ adapters, params }: IAggregateTokensParams) {
       }
 
       // update base info
-      if (isCompatible) {
+      if (isMatched) {
         bridgeToken = {
           ...bridgeToken,
           address: baseInfo.address,
@@ -53,13 +55,14 @@ export function aggregateTokens({ adapters, params }: IAggregateTokensParams) {
       const common = {
         ...baseInfo,
         isCompatible,
-        raw: isCompatible ? fromToken : undefined,
+        isMatched,
+        raw: isMatched ? fromToken : undefined,
       };
 
       if (bridgeType === 'cBridge') {
         bridgeToken[bridgeType] = {
           ...common,
-          peggedConfig: isCompatible ? (peggedConfig as CBridgePeggedPairConfig) : undefined,
+          peggedConfig: !!item.isPegged ? (peggedConfig as CBridgePeggedPairConfig) : undefined,
         };
       } else {
         bridgeToken[bridgeType] = {

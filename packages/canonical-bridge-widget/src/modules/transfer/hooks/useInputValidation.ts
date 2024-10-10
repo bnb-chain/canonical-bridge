@@ -16,7 +16,6 @@ export const useInputValidation = () => {
       value,
       bridgeType,
       estimatedAmount,
-      nativeBalance,
     }: {
       balance: null | bigint;
       decimal: number;
@@ -24,13 +23,23 @@ export const useInputValidation = () => {
       bridgeType?: BridgeType;
       isPegged?: boolean;
       estimatedAmount?: any;
-      nativeBalance: any;
     }) => {
       try {
         if (!decimal || !value) {
           return null;
         }
-        if (!!balance && value > Number(formatUnits(balance, decimal))) {
+        if (Number(value) < Math.pow(10, -decimal)) {
+          return {
+            text: `The amount is too small. Please enter a valid amount to transfer.`,
+            isError: true,
+          };
+        }
+        if (
+          !!balance &&
+          value > Number(formatUnits(balance, decimal)) &&
+          fromChain?.id === chain?.id &&
+          chain
+        ) {
           return { text: `You have insufficient balance`, isError: true };
         }
         if (estimatedAmount?.stargate && bridgeType === 'stargate' && value) {

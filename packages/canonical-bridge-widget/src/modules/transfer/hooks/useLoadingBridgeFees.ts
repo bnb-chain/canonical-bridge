@@ -5,10 +5,10 @@ import { BridgeType, DeBridgeCreateQuoteResponse } from '@bnb-chain/canonical-br
 
 import { useAppDispatch, useAppSelector } from '@/modules/store/StoreProvider';
 import {
-  setError,
   setEstimatedAmount,
   setIsGlobalFeeLoading,
   setRouteError,
+  setRouteFees,
 } from '@/modules/transfer/action';
 import { useToTokenInfo } from '@/modules/transfer/hooks/useToTokenInfo';
 import { useDebounce } from '@/core/hooks/useDebounce';
@@ -29,7 +29,6 @@ export const useLoadingBridgeFees = () => {
   const { getToDecimals } = useToTokenInfo();
   const { address } = useAccount();
   const bridgeSDK = useBridgeSDK();
-  const { data: nativeBalance } = useBalance({ address });
   const {
     http: { deBridgeAccessToken },
   } = useBridgeConfig();
@@ -46,10 +45,13 @@ export const useLoadingBridgeFees = () => {
   const toChain = useAppSelector((state) => state.transfer.toChain);
   const max_slippage = useAppSelector((state) => state.transfer.slippage);
 
+  const { data: nativeBalance } = useBalance({ address, chainId: fromChain?.id });
+
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const publicClient = usePublicClient({ chainId: fromChain?.id }) as any;
   const debouncedSendValue = useDebounce(sendValue, DEBOUNCE_DELAY);
   const loadingBridgeFees = useCallback(async () => {
+    dispatch(setRouteFees(undefined));
     if (!selectedToken || !publicClient || !fromChain || !toChain || !debouncedSendValue) {
       dispatch(setIsGlobalFeeLoading(false));
       return;
@@ -68,20 +70,11 @@ export const useLoadingBridgeFees = () => {
 
     const availableBridgeTypes = bridgeSDK.getSupportedBridges();
     availableBridgeTypes.forEach((bridge) => {
-      if (selectedToken[bridge]?.isCompatible) {
+      if (selectedToken[bridge]?.isMatched) {
         bridgeTypeList.push(bridge);
       }
     });
     try {
-      if (Number(parseUnits(debouncedSendValue, selectedToken.decimals)) <= 0) {
-        dispatch(
-          setError({ text: 'The amount is too small. Please enter a valid amount to transfer.' }),
-        );
-        dispatch(setIsGlobalFeeLoading(false));
-        return;
-      } else {
-        dispatch(setError(undefined));
-      }
       const response = await bridgeSDK.loadBridgeFees({
         bridgeType: bridgeTypeList,
         fromChainId: fromChain.id,
@@ -112,13 +105,13 @@ export const useLoadingBridgeFees = () => {
       const [debridgeEst, cbridgeEst, stargateEst, layerZeroEst] = response as any;
       // deBridge
       if (debridgeEst.status === 'fulfilled' && debridgeEst?.value) {
-        dispatch(
-          setEstimatedAmount({ deBridge: debridgeEst.value as DeBridgeCreateQuoteResponse }),
-        );
         const feeSortingRes = await deBridgeFeeSorting(
           debridgeEst.value as DeBridgeCreateQuoteResponse,
         );
         if (!feeSortingRes?.isFailedToGetGas) {
+          dispatch(
+            setEstimatedAmount({ deBridge: debridgeEst.value as DeBridgeCreateQuoteResponse }),
+          );
           valueArr.push({
             type: 'deBridge',
             value: formatUnits(
@@ -129,13 +122,17 @@ export const useLoadingBridgeFees = () => {
               getToDecimals()['deBridge'],
             ),
             isIgnoreSorted: feeSortingRes?.isFailedToGetGas,
+            isDisplayError: feeSortingRes?.isDisplayError,
           });
+        } else {
+          dispatch(setEstimatedAmount({ deBridge: undefined }));
         }
       } else if (debridgeEst.status === 'rejected') {
         // Only show route on low amount error
         if (debridgeEst.reason.message === 'ERROR_LOW_GIVE_AMOUNT') {
           dispatch(setRouteError({ deBridge: 'Please increase your send amount' }));
           dispatch(setEstimatedAmount({ deBridge: 'error' }));
+          dispatch(setRouteFees({ deBridge: undefined }));
         } else {
           dispatch(setEstimatedAmount({ deBridge: undefined }));
         }
@@ -154,8 +151,13 @@ export const useLoadingBridgeFees = () => {
             dispatch(setEstimatedAmount({ cBridge: 'error' }));
           } else {
             dispatch(setEstimatedAmount({ cBridge: cbridgeEst.value }));
+
             const feeSortingRes = await cBridgeFeeSorting(cbridgeEst.value);
-            if (!isAllowSendError || !feeSortingRes?.isFailedToGetGas) {
+            // Hide route on gas error
+            if (feeSortingRes?.isFailedToGetGas) {
+              dispatch(setEstimatedAmount({ cBridge: undefined }));
+            }
+            if (!isAllowSendError && !feeSortingRes?.isFailedToGetGas) {
               valueArr.push({
                 type: 'cBridge',
                 value: formatUnits(
@@ -163,6 +165,7 @@ export const useLoadingBridgeFees = () => {
                   getToDecimals()['cBridge'],
                 ),
                 isIgnoreSorted: feeSortingRes?.isFailedToGetGas,
+                isDisplayError: false,
               });
             }
           }
@@ -170,28 +173,35 @@ export const useLoadingBridgeFees = () => {
       } else if (cbridgeEst.status === 'rejected') {
         dispatch(setRouteError({ cBridge: cbridgeEst.reason.message }));
         dispatch(setEstimatedAmount({ cBridge: 'error' }));
+        dispatch(setRouteFees({ cBridge: undefined }));
       } else {
         dispatch(setEstimatedAmount({ cBridge: undefined }));
       }
 
       // stargate
       if (stargateEst.status === 'fulfilled' && stargateEst?.value) {
-        dispatch(setEstimatedAmount({ stargate: toObject(stargateEst.value) }));
-        // TODO: may need to hide route based on error message from getting estimated gas.
         const feeSortingRes = await stargateFeeSorting(stargateEst.value);
+        // Hide route if we can not get gas fee.
         if (!feeSortingRes?.isFailedToGetGas) {
-          valueArr.push({
-            type: 'stargate',
-            value: formatUnits(
-              stargateEst.value?.[2].amountReceivedLD,
-              getToDecimals()['stargate'],
-            ),
-            isIgnoreSorted: feeSortingRes?.isFailedToGetGas,
-          });
+          dispatch(setEstimatedAmount({ stargate: toObject(stargateEst.value) }));
+          if (!feeSortingRes?.isDisplayError) {
+            valueArr.push({
+              type: 'stargate',
+              value: formatUnits(
+                stargateEst.value?.[2].amountReceivedLD,
+                getToDecimals()['stargate'],
+              ),
+              isIgnoreSorted: feeSortingRes?.isFailedToGetGas,
+              isDisplayError: feeSortingRes?.isDisplayError,
+            });
+          }
+        } else {
+          dispatch(setEstimatedAmount({ stargate: undefined }));
         }
       } else if (stargateEst.status === 'rejected') {
         dispatch(setRouteError({ stargate: stargateEst.reason.message }));
         dispatch(setEstimatedAmount({ stargate: undefined }));
+        dispatch(setRouteFees({ stargate: undefined }));
       } else {
         dispatch(setEstimatedAmount({ stargate: undefined }));
       }
@@ -203,35 +213,43 @@ export const useLoadingBridgeFees = () => {
           dispatch(setRouteError({ layerZero: `Insufficient ${nativeToken} to cover native fee` }));
           dispatch(setEstimatedAmount({ layerZero: 'error' }));
         } else {
-          dispatch(
-            setEstimatedAmount({
-              layerZero: String(parseUnits(debouncedSendValue, getToDecimals()['layerZero'])),
-            }),
-          );
           const feeSortingRes = await layerZeroFeeSorting(layerZeroEst.value);
           if (!feeSortingRes?.isFailedToGetGas) {
+            dispatch(
+              setEstimatedAmount({
+                layerZero: String(parseUnits(debouncedSendValue, getToDecimals()['layerZero'])),
+              }),
+            );
             valueArr.push({
               type: 'layerZero',
               value: debouncedSendValue,
               isIgnoreSorted: feeSortingRes?.isFailedToGetGas,
+              isDisplayError: feeSortingRes?.isDisplayError,
             });
+          } else {
+            dispatch(setEstimatedAmount({ layerZero: undefined }));
           }
         }
       } else if (layerZeroEst.status === 'rejected') {
         dispatch(setRouteError({ layerZero: layerZeroEst.reason.message }));
         dispatch(setEstimatedAmount({ layerZero: undefined }));
+        dispatch(setRouteFees({ layerZero: undefined }));
       } else {
         dispatch(setEstimatedAmount({ layerZero: undefined }));
       }
 
       // pre-select best route
       if (valueArr.length > 0) {
-        const highestValue = valueArr.reduce((max, entry) =>
-          Number(entry['value']) > Number(max['value']) && entry.isIgnoreSorted === false
-            ? entry
-            : max,
+        const highestValue = valueArr.reduce(
+          (max, entry) =>
+            Number(entry['value']) > Number(max['value']) &&
+            entry.isIgnoreSorted === false &&
+            entry.isDisplayError === false
+              ? entry
+              : max,
+          { value: '0', type: '' },
         );
-        if (Number(highestValue.value) > 0) {
+        if (Number(highestValue?.value) > 0) {
           preSelectRoute(response, highestValue.type as BridgeType);
         }
       }

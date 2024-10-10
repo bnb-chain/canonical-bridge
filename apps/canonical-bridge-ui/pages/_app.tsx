@@ -6,13 +6,13 @@ import {
 } from '@bnb-chain/canonical-bridge-widget';
 
 import { en as messages } from '@/core/locales/en';
-import { ASSET_PREFIX, TRANSFER_CONFIG_ENDPOINT } from '@/core/constants';
+import { env } from '@/core/env';
 import { dark } from '@/core/theme/dark';
-import { ExternalBridgesPanel } from '@/core/components/ExternalBridgesPanel';
 import { Layout } from '@/core/components/Layout';
-import { transferConfig } from '@/data';
+import { useTransferConfig } from '@/data';
 import { ThemeProvider } from '@/core/components/ThemeProvider';
 import { chains } from '@/data/chains';
+import { light } from '@/core/theme/light';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -25,41 +25,37 @@ const queryClient = new QueryClient({
 });
 
 const config: ICanonicalBridgeConfig = {
-  appName: 'bnb-chain-bridge',
+  appName: env.APP_NAME,
+  assetPrefix: env.ASSET_PREFIX,
 
   appearance: {
     bridgeTitle: 'BNB Chain Cross-Chain Bridge',
     mode: 'dark',
     theme: {
       dark: dark,
-      light: {},
+      light: light,
     },
     locale: 'en',
     messages,
   },
   wallet: {
-    walletConnectProjectId: 'e68a1816d39726c2afabf05661a32767',
+    walletConnectProjectId: env.WALLET_CONNECT_PROJECT_ID,
   },
   http: {
-    refetchingInterval: 30000, // 30s
-    apiTimeOut: 60 * 1000, // 30s
+    refetchingInterval: 30 * 1000, // 30s
+    apiTimeOut: 60 * 1000, // 60s
     deBridgeAccessToken: '',
-
-    assetPrefix: ASSET_PREFIX,
-    serverEndpoint: TRANSFER_CONFIG_ENDPOINT,
+    serverEndpoint: env.SERVER_ENDPOINT,
   },
 };
 
 export default function App() {
+  const transferConfig = useTransferConfig();
+
   return (
     <ThemeProvider>
       <QueryClientProvider client={queryClient}>
-        <CanonicalBridgeProvider
-          config={config}
-          transferConfig={transferConfig}
-          chains={chains}
-          routeContentBottom={<ExternalBridgesPanel />}
-        >
+        <CanonicalBridgeProvider config={config} transferConfig={transferConfig} chains={chains}>
           <Layout>
             <TransferWidget />
           </Layout>
@@ -68,3 +64,7 @@ export default function App() {
     </ThemeProvider>
   );
 }
+
+App.getInitialProps = async () => {
+  return {};
+};

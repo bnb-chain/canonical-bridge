@@ -142,15 +142,18 @@ export abstract class BaseAdapter<G extends object, C = unknown, T = unknown> {
 
   protected filterToChains({
     fromChainId,
+    matchedChainIds,
     compatibleChainIds,
     chains,
     tokenSymbol,
   }: {
     fromChainId?: number;
+    matchedChainIds: Set<number>;
     compatibleChainIds: Set<number>;
     chains: C[];
     tokenSymbol?: string;
   }) {
+    let finalMatchedChainIds = new Set(matchedChainIds);
     let finalCompatibleChainIds = new Set(compatibleChainIds);
     let finalChains = [...chains];
 
@@ -169,6 +172,7 @@ export abstract class BaseAdapter<G extends object, C = unknown, T = unknown> {
         );
 
         if (item.tokens[fromChainId]?.includes(tokenSymbol)) {
+          finalMatchedChainIds = new Set([...finalMatchedChainIds, item.chainId]);
           finalCompatibleChainIds = new Set([...finalCompatibleChainIds, item.chainId]);
 
           if (targetIndex === -1) {
@@ -176,6 +180,7 @@ export abstract class BaseAdapter<G extends object, C = unknown, T = unknown> {
             finalChains.push(chain);
           }
         } else {
+          finalMatchedChainIds.delete(item.chainId);
           finalCompatibleChainIds.delete(item.chainId);
 
           if (targetIndex > -1) {
@@ -186,38 +191,11 @@ export abstract class BaseAdapter<G extends object, C = unknown, T = unknown> {
     }
 
     return {
+      matchedChainIds: finalMatchedChainIds,
       compatibleChainIds: finalCompatibleChainIds,
       chains: finalChains,
     };
   }
-
-  // protected filterTokens({
-  //   fromChainId,
-  //   compatibleTokens,
-  //   tokenPairs,
-  // }: {
-  //   fromChainId: number;
-  //   toChainId: number;
-  //   compatibleTokens: Set<string>;
-  //   tokenPairs: ITransferTokenPair<T>[];
-  // }) {
-  //   let finalCompatibleTokens = new Set(compatibleTokens);
-  //   let finalTokenPairs = [...tokenPairs];
-
-  //   if (this.externalChains.length && fromChainId) {
-  //     this.externalChains.forEach((item) => {
-  //       const tokenSymbols = item.tokens[fromChainId];
-  //       if (tokenSymbols) {
-  //         finalCompatibleTokens = new Set([...finalCompatibleTokens, ...tokenSymbols]);
-  //       }
-  //     });
-  //   }
-
-  //   return {
-  //     compatibleTokens: finalCompatibleTokens,
-  //     tokenPairs: finalTokenPairs,
-  //   };
-  // }
 
   protected checkIsExcludedToken({
     excludedList,
@@ -307,16 +285,16 @@ export abstract class BaseAdapter<G extends object, C = unknown, T = unknown> {
   }
 
   public getFromChains({ toChainId, tokenSymbol }: { toChainId?: number; tokenSymbol?: string }) {
-    let compatibleChainIds = new Set<number>();
+    let matchedChainIds = new Set<number>();
 
     if (!toChainId && !tokenSymbol) {
-      compatibleChainIds = this.fromChainIds;
+      matchedChainIds = this.fromChainIds;
     }
 
     if (toChainId && !tokenSymbol) {
       this.transferMap.forEach((toMap, fromChainId) => {
         if (toMap.get(toChainId)) {
-          compatibleChainIds.add(fromChainId);
+          matchedChainIds.add(fromChainId);
         }
       });
     }
@@ -325,7 +303,7 @@ export abstract class BaseAdapter<G extends object, C = unknown, T = unknown> {
       this.transferMap.forEach((toMap, fromChainId) => {
         toMap.forEach((tokenPairMap) => {
           if (tokenPairMap.get(tokenSymbol)) {
-            compatibleChainIds.add(fromChainId);
+            matchedChainIds.add(fromChainId);
           }
         });
       });
@@ -334,34 +312,35 @@ export abstract class BaseAdapter<G extends object, C = unknown, T = unknown> {
     if (toChainId && tokenSymbol) {
       this.transferMap.forEach((toMap, fromChainId) => {
         if (toMap.get(toChainId)?.get(tokenSymbol)) {
-          compatibleChainIds.add(fromChainId);
+          matchedChainIds.add(fromChainId);
         }
       });
     }
 
     return {
-      compatibleChainIds,
+      matchedChainIds,
+      compatibleChainIds: this.fromChainIds,
       chains: this.fromChains,
     };
   }
 
   public getToChains({ fromChainId, tokenSymbol }: { fromChainId?: number; tokenSymbol?: string }) {
-    let compatibleChainIds = new Set<number>();
+    let matchedChainIds = new Set<number>();
 
     if (!fromChainId && !tokenSymbol) {
-      compatibleChainIds = this.toChainIds;
+      matchedChainIds = this.toChainIds;
     }
 
     if (fromChainId && !tokenSymbol) {
       const toMap = this.transferMap.get(fromChainId);
-      compatibleChainIds = new Set(toMap?.keys());
+      matchedChainIds = new Set(toMap?.keys());
     }
 
     if (!fromChainId && tokenSymbol) {
       this.transferMap.forEach((toMap) => {
         toMap.forEach((tokenPairMap, toChainId) => {
           if (tokenPairMap.get(tokenSymbol)) {
-            compatibleChainIds.add(toChainId);
+            matchedChainIds.add(toChainId);
           }
         });
       });
@@ -371,15 +350,27 @@ export abstract class BaseAdapter<G extends object, C = unknown, T = unknown> {
       const toMap = this.transferMap.get(fromChainId);
       toMap?.forEach((tokenPairMap, toChainId) => {
         if (tokenPairMap.get(tokenSymbol)) {
-          compatibleChainIds.add(toChainId);
+          matchedChainIds.add(toChainId);
         }
       });
     }
 
+    let compatibleChainIds = this.toChainIds;
+    let toChains = this.fromChains;
+
+    if (fromChainId) {
+      const toMap = this.transferMap.get(fromChainId);
+      compatibleChainIds = new Set(toMap?.keys());
+
+      const toChainIds = new Set(toMap?.keys());
+      toChains = this.chains.filter((c) => toChainIds.has(this.getChainId(c)));
+    }
+
     return this.filterToChains({
       fromChainId,
+      matchedChainIds,
       compatibleChainIds,
-      chains: this.fromChains, // Should use `fromChains`
+      chains: toChains,
       tokenSymbol,
     });
   }
@@ -394,20 +385,19 @@ export abstract class BaseAdapter<G extends object, C = unknown, T = unknown> {
       });
     });
 
+    // update info
     const tokenPairMap = this.transferMap.get(fromChainId)?.get(toChainId);
-    const compatibleTokens = new Set<string>(tokenPairMap ? tokenPairMap.keys() : []);
+    tokenPairMap?.forEach((tokenPair, tokenSymbol) => {
+      allTokenPairMap.set(tokenSymbol, tokenPair);
+    });
+
+    const matchedTokens = new Set<string>(tokenPairMap ? tokenPairMap.keys() : []);
 
     return {
-      compatibleTokens: compatibleTokens,
+      matchedTokens,
+      compatibleTokens: matchedTokens,
       tokenPairs: [...allTokenPairMap.values()],
     };
-
-    // return this.filterTokens({
-    //   fromChainId,
-    //   toChainId,
-    //   compatibleTokens,
-    //   tokenPairs: [...allTokenPairMap.values()],
-    // });
   }
 
   public getTokenPair({

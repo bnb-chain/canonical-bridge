@@ -46,7 +46,7 @@ export function aggregateChains({
     const isNotSelf = params.token && !tmpSymbol;
     const tokenSymbol = isNotSelf ? '???????' : tmpSymbol; // TODO
 
-    const { chains, compatibleChainIds } =
+    const { chains, matchedChainIds, compatibleChainIds } =
       direction === 'from'
         ? adapter.getFromChains({
             toChainId: (params as IGetFromChainsParams).toChainId,
@@ -61,6 +61,7 @@ export function aggregateChains({
       const chainId = adapter.getChainId(item);
 
       let bridgeChain = chainMap.get(chainId);
+      const isMatched = matchedChainIds.has(chainId);
       const isCompatible = compatibleChainIds.has(chainId);
 
       if (!bridgeChain) {
@@ -78,7 +79,8 @@ export function aggregateChains({
         ...bridgeChain,
         [bridgeType]: {
           isCompatible,
-          raw: isCompatible ? item : undefined,
+          isMatched,
+          raw: isMatched ? item : undefined,
         },
       };
 
@@ -87,6 +89,7 @@ export function aggregateChains({
   });
 
   const chains = [...chainMap.values()];
+
   chains.sort((a, b) => {
     if (direction === 'to') {
       const isA = isChainOrTokenCompatible(a);

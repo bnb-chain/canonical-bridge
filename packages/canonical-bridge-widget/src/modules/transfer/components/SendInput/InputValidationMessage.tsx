@@ -1,20 +1,19 @@
-import { Box, useColorMode, useTheme } from '@bnb-chain/space';
+import { Box, useBreakpointValue, useColorMode, useTheme } from '@bnb-chain/space';
 import { useEffect, useState } from 'react';
-import { useAccount, useBalance } from 'wagmi';
+import { useAccount } from 'wagmi';
 
 import { useAppDispatch, useAppSelector } from '@/modules/store/StoreProvider';
 import { useInputValidation } from '@/modules/transfer/hooks/useInputValidation';
-import { useDebounce } from '@/core/hooks/useDebounce';
-import { DEBOUNCE_DELAY } from '@/core/constants';
 import { useLoadingTokenBalance } from '@/modules/transfer/hooks/useLoadingTokenBalance';
-import { setIsTransferable } from '@/modules/transfer/action';
+import { setError, setIsTransferable } from '@/modules/transfer/action';
 import { useCBridgeSendMaxMin } from '@/modules/aggregator/adapters/cBridge/hooks/useCBridgeSendMaxMin';
 
 export const InputValidationMessage = () => {
   const { colorMode } = useColorMode();
   const { validateInput } = useInputValidation();
-  const { chain, address } = useAccount();
+  const { chain } = useAccount();
   const dispatch = useAppDispatch();
+  const isBase = useBreakpointValue({ base: true, lg: false }) ?? false;
 
   const transferActionInfo = useAppSelector((state) => state.transfer.transferActionInfo);
   const theme = useTheme();
@@ -23,9 +22,8 @@ export const InputValidationMessage = () => {
   const sendValue = useAppSelector((state) => state.transfer.sendValue);
   const estimatedAmount = useAppSelector((state) => state.transfer.estimatedAmount);
 
-  const debouncedSendValue = useDebounce(sendValue, DEBOUNCE_DELAY);
   const { balance } = useLoadingTokenBalance();
-  const { data: nativeBalance } = useBalance({ address: address as `0x${string}` });
+
   const { minMaxSendAmt } = useCBridgeSendMaxMin();
 
   const [balanceInputError, setBalanceInputError] = useState<string>('');
@@ -34,27 +32,27 @@ export const InputValidationMessage = () => {
     const balanceResult = validateInput({
       balance,
       decimal: selectedToken?.decimals || 0,
-      value: Number(debouncedSendValue),
+      value: Number(sendValue),
       // isConnected: !!chain,
       bridgeType: transferActionInfo?.bridgeType,
       estimatedAmount: estimatedAmount,
-      nativeBalance,
     });
     if (balanceResult?.isError === true) {
       dispatch(setIsTransferable(false));
+      dispatch(setError({ text: balanceResult.text }));
       setBalanceInputError(balanceResult.text);
     } else {
       setBalanceInputError('');
+      dispatch(setError({ text: '' }));
       dispatch(setIsTransferable(true));
     }
   }, [
     balance,
     chain,
-    debouncedSendValue,
+    sendValue,
     dispatch,
     estimatedAmount,
     minMaxSendAmt,
-    nativeBalance,
     selectedToken?.decimals,
     selectedToken?.isPegged,
     transferActionInfo,
@@ -67,10 +65,10 @@ export const InputValidationMessage = () => {
       fontSize={'12px'}
       fontWeight={400}
       lineHeight={'16px'}
-      position={'absolute'}
+      position={isBase ? 'static' : 'absolute'}
       top={`calc(100% + ${'8px'})`}
     >
-      {error?.text ?? balanceInputError}
+      {balanceInputError ?? error?.text}
     </Box>
   ) : null;
 };

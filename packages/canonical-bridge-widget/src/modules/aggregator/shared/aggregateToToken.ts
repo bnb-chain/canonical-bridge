@@ -41,6 +41,7 @@ export function aggregateToToken({ adapters, params }: IAggregateToTokenParams) 
       const common = {
         ...baseInfo,
         isCompatible: true,
+        isMatched: true,
         raw: toToken,
       };
 

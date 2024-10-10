@@ -1,5 +1,5 @@
 import { CreateAdapterParameters } from '@/core';
-import { removeAfterDecimals } from '@/core/utils/number';
+import { formatNumber } from '@/core/utils/number';
 import { CAKE_PROXY_OFT_ABI } from '@/layerZero/abi/cakeProxyOFT';
 import {
   IGetEstimateFeeInput,
@@ -59,7 +59,7 @@ export class LayerZero {
       ];
       const nativeFee = fees[0];
       const minAmount = parseUnits(
-        String(removeAfterDecimals(Number(formatUnits(amount, 18)))),
+        String(formatNumber(Number(formatUnits(amount, 18)), 8)),
         18
       );
       const cakeArgs = {

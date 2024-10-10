@@ -515,7 +515,7 @@ export const chains: IChainConfig[] = [
       symbol: 'KLAY',
       decimals: 18,
     },
-    rpcUrl: 'https://public-en-cypress.klaytn.net',
+    rpcUrl: 'https://klaytn.blockpi.network/v1/rpc/public',
     explorer: {
       name: 'Klaytnscope',
       url: 'https://scope.klaytn.com',
@@ -719,20 +719,20 @@ export const chains: IChainConfig[] = [
       url: 'https://blastscan.io',
     },
   },
-  {
-    id: 112358,
-    name: 'Metachain One',
-    nativeCurrency: {
-      name: 'Metao',
-      symbol: 'METAO',
-      decimals: 18,
-    },
-    rpcUrl: 'https://rpc.metachain.one',
-    explorer: {
-      name: 'blockscout',
-      url: 'https://explorer.metachain.one',
-    },
-  },
+  // {
+  //   id: 112358,
+  //   name: 'Metachain One',
+  //   nativeCurrency: {
+  //     name: 'Metao',
+  //     symbol: 'METAO',
+  //     decimals: 18,
+  //   },
+  //   rpcUrl: 'https://rpc.metachain.one',
+  //   explorer: {
+  //     name: 'blockscout',
+  //     url: 'https://explorer.metachain.one',
+  //   },
+  // },
   {
     id: 167000,
     name: 'Taiko',

@@ -36,7 +36,8 @@ export function TransactionSubmittedModal(
             (chosenBridge === 'stargate' || chosenBridge === 'layerZero') &&
             chain?.blockExplorers
           ) {
-            window.open(`${chain?.blockExplorers.default.url}//tx/${hash}`);
+            const explorerUrl = chain?.blockExplorers.default.url?.replace(/\/$/, '') ?? '';
+            window.open(`${explorerUrl}/tx/${hash}`);
           }
         }
       }}

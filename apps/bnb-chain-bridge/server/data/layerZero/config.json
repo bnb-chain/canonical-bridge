@@ -6,6 +6,7 @@
         "bridgeAddress": "0x152649eA73beAb28c5b49B26eb48f7EAD6d4c898",
         "decimals": 18,
         "symbol": "CAKE",
+        "name": "Cake",
         "endpointID": 101,
         "version": 1
       }
@@ -16,6 +17,7 @@
         "bridgeAddress": "0xb274202daBA6AE180c665B4fbE59857b7c3a8091",
         "decimals": 18,
         "symbol": "CAKE",
+        "name": "Cake",
         "endpointID": 102,
         "version": 1
       }
@@ -26,6 +28,7 @@
         "bridgeAddress": "0x2779106e4F4A8A28d77A24c18283651a2AE22D1C",
         "decimals": 18,
         "symbol": "CAKE",
+        "name": "Cake",
         "endpointID": 202,
         "version": 1
       }
@@ -36,6 +39,7 @@
         "bridgeAddress": "0x3a287a06c66f9e95a56327185ca2bdf5f031cecd",
         "decimals": 18,
         "symbol": "CAKE",
+        "name": "Cake",
         "endpointID": 165,
         "version": 1
       }
@@ -46,6 +50,7 @@
         "bridgeAddress": "0x0D1E753a25eBda689453309112904807625bEFBe",
         "decimals": 18,
         "symbol": "CAKE",
+        "name": "Cake",
         "endpointID": 158,
         "version": 1
       }
@@ -56,6 +61,7 @@
         "bridgeAddress": "0x3055913c90Fcc1A6CE9a358911721eEb942013A1",
         "decimals": 18,
         "symbol": "CAKE",
+        "name": "Cake",
         "endpointID": 184,
         "version": 1
       }
@@ -66,6 +72,7 @@
         "bridgeAddress": "0x1b896893dfc86bb67Cf57767298b9073D2c1bA2c",
         "decimals": 18,
         "symbol": "CAKE",
+        "name": "Cake",
         "endpointID": 110,
         "version": 1
       }
@@ -76,6 +83,7 @@
         "bridgeAddress": "0x0D1E753a25eBda689453309112904807625bEFBe",
         "decimals": 18,
         "symbol": "CAKE",
+        "name": "Cake",
         "endpointID": 183,
         "version": 1
       }

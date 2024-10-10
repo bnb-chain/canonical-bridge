@@ -16,6 +16,7 @@ import { BaseModal } from '@/modules/aggregator/components/SelectModal/component
 import { useSearch } from '@/modules/aggregator/components/SelectModal/hooks/useSearch';
 import { useTokenList } from '@/modules/aggregator/components/SelectModal/hooks/useTokenList';
 import { ListItem } from '@/modules/aggregator/components/SelectModal/components/ListItem';
+import { openLink } from '@/core/utils/common';
 
 interface ChooseTokenModalProps {
   isOpen: boolean;
@@ -45,8 +46,8 @@ export function ChooseTokenModal(props: ChooseTokenModalProps) {
     data: tokens,
     filter: (item, keyword) => {
       return (
-        item.displaySymbol.toLowerCase().includes(keyword) ||
-        item.name.toLowerCase().includes(keyword)
+        item.displaySymbol?.toLowerCase().includes(keyword) ||
+        item.name?.toLowerCase().includes(keyword)
       );
     },
   });
@@ -199,10 +200,6 @@ function TokenAddress(props: TokenAddressProps) {
   return (
     <Flex>
       <Text
-        as="a"
-        href={!isMobile ? formatTokenUrl(tokenUrlPattern, address) : undefined}
-        target="_blank"
-        rel="noopener noreferrer"
         isTruncated
         flexShrink={0}
         display="inline-flex"
@@ -210,11 +207,6 @@ function TokenAddress(props: TokenAddressProps) {
         fontSize="12px"
         fontWeight={500}
         lineHeight="16px"
-        onClick={(e) => {
-          if (!isMobile) {
-            e.stopPropagation();
-          }
-        }}
       >
         {formatAddress({
           value: address,
@@ -224,6 +216,18 @@ function TokenAddress(props: TokenAddressProps) {
             ml="4px"
             color={theme.colors[colorMode].text.secondary}
             boxSize={theme.sizes['4']}
+            transitionDuration="normal"
+            _hover={{
+              color: theme.colors[colorMode].text.primary,
+            }}
+            onClick={(e) => {
+              if (!isMobile) {
+                e.stopPropagation();
+
+                const url = formatTokenUrl(tokenUrlPattern, address);
+                openLink(url);
+              }
+            }}
           />
         )}
       </Text>

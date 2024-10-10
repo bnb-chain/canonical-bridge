@@ -47,6 +47,7 @@ export const useGetDeBridgeFees = () => {
       const feeList: IFeeDetails[] = [];
       const feeBreakdown = [];
       let isFailedToGetGas = false;
+      let isDisplayError = false;
       // protocol fee
       if (fees?.fixFee && nativeToken) {
         const protocolFee = formatUnits(BigInt(fees?.fixFee), 18);
@@ -64,12 +65,12 @@ export const useGetDeBridgeFees = () => {
             ? BigInt(fees?.fixFee) + parseUnits(sendValue, 18)
             : BigInt(fees?.fixFee);
         if (nativeTokenBalance && nativeTokenBalance?.value < totalNativeAmount) {
-          isFailedToGetGas = true;
           dispatch(
             setRouteError({
-              deBridge: 'Could not cover deBridge Protocol Fee. Insufficient balance',
+              deBridge: 'Could not cover deBridge Protocol Fee',
             }),
           );
+          isDisplayError = true;
         }
       }
       if (fees?.estimation) {
@@ -218,6 +219,7 @@ export const useGetDeBridgeFees = () => {
         summary: resultString ? resultString : '--',
         breakdown: feeBreakdown,
         isFailedToGetGas,
+        isDisplayError,
       };
     },
     [

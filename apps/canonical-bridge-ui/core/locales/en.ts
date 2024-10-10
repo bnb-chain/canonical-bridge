@@ -22,12 +22,15 @@ export const en = {
   'route.title.select.routes': 'Select Bridge Routes',
   'route.fees.title': 'Fees:',
   'route.time.title': 'Time:',
-  'route.allowed-send-amount': 'Allowed send range:',
+  'route.allowed-send-amount': 'Your send amount should be between {min} to {max} {symbol}',
 
   'route.no-found.title': 'No Available Routes',
   'route.no-found.desc': `Low liquidity, small input, or incompatible network/token. Adjust and retry.`,
-  'route.no-found.mobile-desc': `Why we couldn't find a route: low liquidity on token, very low input amount or no routes available for the selected input/output token combination.`,
-  'route.no-found.mobile.view.routes.link': 'View Routes List',
+
+  'route.adjust.title': 'Adjust Send Amount',
+  'route.adjust.desc':
+    'The current bridge routes have limitations on the send amount. Please adjust and try again.',
+  'route.adjust.link': 'See Route Limitations',
 
   'route.option.cBridge.title': 'cBridge',
   'route.option.deBridge.title': 'deBridge',
@@ -85,8 +88,7 @@ export const en = {
     'The token you’ve selected is incompatible with this network. Please select another token.',
 
   'wallet.network.wrong-network': 'Wrong network',
-
   'wallet.error.switch-network':
     'An error occurred when attempting to switch the network. Please select another network or try again.',
-  'wallet.button.disconnect': 'Disconnect Wallet',
+  'wallet.popover.disconnect': 'Disconnect',
 };

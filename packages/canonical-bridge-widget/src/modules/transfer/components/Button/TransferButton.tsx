@@ -1,6 +1,6 @@
 import { Button, Flex, useColorMode, useIntl, useTheme } from '@bnb-chain/space';
 import { useCallback, useState } from 'react';
-import { useAccount, useBalance, usePublicClient, useWalletClient } from 'wagmi';
+import { useAccount, usePublicClient, useWalletClient } from 'wagmi';
 import { formatUnits, parseUnits } from 'viem';
 
 import { useAppSelector } from '@/modules/store/StoreProvider';
@@ -34,8 +34,6 @@ export function TransferButton({
   const { colorMode } = useColorMode();
 
   const { address } = useAccount();
-
-  const { data: balance } = useBalance({ address: address as `0x${string}` });
 
   const sendValue = useAppSelector((state) => state.transfer.sendValue);
   const transferActionInfo = useAppSelector((state) => state.transfer.transferActionInfo);
@@ -156,9 +154,6 @@ export function TransferButton({
         }
       } else if (transferActionInfo.bridgeType === 'deBridge' && transferActionInfo.value) {
         try {
-          if (balance && balance?.value < BigInt(transferActionInfo.value)) {
-            throw new Error('Could not cover deBridge Protocol Fee. Insufficient balance.');
-          }
           const deBridgeHash = await bridgeSDK.deBridge.sendToken({
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             walletClient: walletClient as any,
@@ -282,7 +277,7 @@ export function TransferButton({
     onCloseConfirmingModal,
     onOpenSubmittedModal,
     onOpenFailedModal,
-    balance,
+
     toToken,
     fromChain,
     toChain,

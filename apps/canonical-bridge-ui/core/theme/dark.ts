@@ -110,5 +110,6 @@ export const dark = {
     background: '#373943',
     selected: '#5C5F6A',
     shadow: ' 0px 4px 8px 0px rgba(0, 0, 0, 0.48)',
+    separator: '#5C5F6A',
   },
 };

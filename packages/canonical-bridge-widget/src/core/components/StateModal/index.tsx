@@ -97,6 +97,8 @@ export function StateModal(props: StateModalProps) {
               fontWeight={700}
               lineHeight="32px"
               color={theme.colors.light.text.primary}
+              textAlign={'center'}
+              whiteSpace="nowrap"
             >
               {title}
             </Flex>

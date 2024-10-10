@@ -9,7 +9,6 @@ export default class Document extends NextDocument {
     return (
       <Html lang="en">
         <Head>
-          <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
           <link rel="stylesheet" href={`${env.ASSET_PREFIX}/fonts/index.css`} />
           {/* eslint-disable-next-line @next/next/next-script-for-ga */}
           {/* <script async src="https://www.googletagmanager.com/gtag/js?id=G-T2114CV11Z"></script>

@@ -1,12 +1,12 @@
 import { ChakraProvider, ColorMode, createLocalStorageManager, theme } from '@bnb-chain/space';
 
-import { APP_NAME } from '@/core/constants';
+import { env } from '@/core/env';
 
 interface ThemeProviderProps {
   children: React.ReactNode;
 }
 
-const colorModeManager = createLocalStorageManager(`${APP_NAME}-color-mode`);
+const colorModeManager = createLocalStorageManager(`${env.APP_NAME}-color-mode`);
 
 export const ThemeProvider = ({ children }: ThemeProviderProps) => {
   const customTheme = {

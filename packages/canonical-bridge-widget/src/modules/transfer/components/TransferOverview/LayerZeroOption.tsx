@@ -10,6 +10,7 @@ import { RouteTitle } from '@/modules/transfer/components/TransferOverview/Route
 import { FeesInfo } from '@/modules/transfer/components/TransferOverview/RouteInfo/FeesInfo';
 import { OtherRouteError } from '@/modules/transfer/components/TransferOverview/RouteInfo/OtherRouteError';
 import { RouteName } from '@/modules/transfer/components/TransferOverview/RouteInfo/RouteName';
+import { EstimatedArrivalTime } from '@/modules/transfer/components/TransferOverview/RouteInfo/EstimatedArrivalTime';
 
 export const LayerZeroOption = () => {
   const dispatch = useAppDispatch();
@@ -89,6 +90,7 @@ export const LayerZeroOption = () => {
         receiveAmt={receiveAmt}
         toTokenInfo={toTokenInfo?.['layerZero']}
       />
+      <EstimatedArrivalTime bridgeType={'layerZero'} />
       <FeesInfo
         isError={isError}
         bridgeType="layerZero"

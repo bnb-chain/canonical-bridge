@@ -53,16 +53,11 @@ export const SendInput: React.FC = () => {
 
   const onChangeSendValue = (event: React.ChangeEvent<HTMLInputElement>) => {
     let value = event.target.value.trim() ?? 0;
-    const min = 0.00000001;
+    // const min = 0.00000001;
     value = value.replace('。', '.').replace(',', '.');
     const decimalLength = value.split('.')[1]?.length || 0;
     // Equal to zero, less than 0.00000001
-    if (
-      (Number(value) !== 0 && Number(value) < min) ||
-      value.split('.').length > 2 ||
-      decimalLength > 18
-    )
-      return;
+    if (value.split('.').length > 2 || decimalLength > 18) return;
     if (value === '.') value = '0.';
 
     const decimalStart = /(?:^\.(\d+))|(?:^0(\d+))/g;

@@ -35,18 +35,22 @@ export interface IBridgeChain {
   externalBridgeUrl?: string;
   cBridge?: {
     isCompatible: boolean;
+    isMatched: boolean;
     raw?: ICBridgeChain;
   };
   deBridge?: {
     isCompatible: boolean;
+    isMatched: boolean;
     raw?: IDeBridgeChain;
   };
   stargate?: {
     isCompatible: boolean;
+    isMatched: boolean;
     raw?: IStargateChain;
   };
   layerZero?: {
     isCompatible: boolean;
+    isMatched: boolean;
     raw?: ILayerZeroChain;
   };
 }
@@ -64,19 +68,23 @@ export interface IBridgeToken extends IBridgeTokenBaseInfo {
   isPegged: boolean;
   cBridge?: IBridgeTokenBaseInfo & {
     isCompatible: boolean;
+    isMatched: boolean;
     peggedConfig?: ICBridgePeggedPairConfig;
     raw?: ICBridgeToken;
   };
   deBridge?: IBridgeTokenBaseInfo & {
     isCompatible: boolean;
+    isMatched: boolean;
     raw?: IDeBridgeToken;
   };
   stargate?: IBridgeTokenBaseInfo & {
     isCompatible: boolean;
+    isMatched: boolean;
     raw?: IStargateToken;
   };
   layerZero?: IBridgeTokenBaseInfo & {
     isCompatible: boolean;
+    isMatched: boolean;
     raw?: ILayerZeroToken;
   };
 }

@@ -3,7 +3,7 @@ import { parse } from 'url';
 import express, { Request, Response } from 'express';
 import { NextServer } from 'next/dist/server/next';
 
-import { transferConfig } from '@/server/data';
+import { getTransferConfig } from '@/server/data';
 
 export function routes(app: NextServer) {
   const router = express.Router();
@@ -11,7 +11,8 @@ export function routes(app: NextServer) {
 
   // The url to access the server must start with `https://bnbchain.org/[lang]/bnb-chain-bridge`,
   // so we add `*` in the front.
-  router.get('*/api/getTransferConfig', (req: Request, res: Response) => {
+  router.get('*/api/getTransferConfig', async (req: Request, res: Response) => {
+    const transferConfig = getTransferConfig();
     res.status(200).json(transferConfig);
   });
 

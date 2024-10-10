@@ -37,7 +37,7 @@ export function formatTokenUrl(pattern?: string, address?: string) {
 }
 
 export function formatFeeAmount(amount: string | number) {
-  if (Number(amount) < MIN_FEE) {
+  if (Number(amount) < MIN_FEE && Number(amount) !== 0) {
     return `< ${MIN_FEE}`;
   } else {
     return formatNumber(Number(amount), 4);
