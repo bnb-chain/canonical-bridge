@@ -24,18 +24,20 @@ export function useEvmSwitchChain(props?: UseEvmSwitchChainProps) {
     ...props,
     mutation: {
       ...props?.mutation,
-      onError: (err, ...params) => {
+      onError: (err: any, ...params) => {
         const switchErrorMsg = formatMessage({ id: 'wallet.error.switch-network' });
 
         let message = '';
-        if (connector?.id === 'walletConnect') {
-          if (err?.message?.includes('The JSON sent is not a valid Request object')) {
-            message = switchErrorMsg;
-          }
-        }
-
-        if (connector?.id === 'trust') {
-          if (err?.message?.includes('Error Calling Method: switchEthereumChain')) {
+        if (
+          connector?.id === 'walletConnect' ||
+          connector?.id === 'trust' ||
+          connector?.id === 'binanceWeb3Wallet'
+        ) {
+          if (
+            err?.message?.includes('The JSON sent is not a valid Request object') ||
+            err?.message?.includes('Error Calling Method: switchEthereumChain') ||
+            err?.details?.includes('not support')
+          ) {
             message = switchErrorMsg;
           }
         }
