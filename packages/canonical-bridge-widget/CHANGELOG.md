@@ -1,5 +1,11 @@
 # @bnb-chain/canonical-bridge-widget
 
+## 0.0.6
+
+### Patch Changes
+
+- 1144373: Add switchNetwork error for binanceWeb3 wallet
+
 ## 0.0.5
 
 ### Patch Changes
