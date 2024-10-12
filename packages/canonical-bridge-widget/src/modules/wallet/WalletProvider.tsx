@@ -9,6 +9,7 @@ import {
   defaultEvmConfig,
 } from '@node-real/walletkit/evm';
 import * as allChains from 'viem/chains';
+import { defaultTronConfig, tronLink } from '@node-real/walletkit/tron';
 
 import { IChainConfig } from '@/modules/aggregator/types';
 import { useBridgeConfig } from '@/CanonicalBridgeProvider';
@@ -37,6 +38,10 @@ export function WalletProvider(props: WalletProviderProps) {
         },
         wallets: [metaMask(), trustWallet(), binanceWeb3Wallet(), okxWallet(), walletConnect()],
         chains: getEvmChains(chainConfigs),
+      }),
+      tronConfig: defaultTronConfig({
+        autoConnect: false,
+        wallets: [tronLink()],
       }),
     }),
     [chainConfigs, bridgeConfig.appName, bridgeConfig.wallet.walletConnectProjectId],
