@@ -5,6 +5,7 @@ import { useEffect } from 'react';
 import { useApprove } from '@/core/contract/hooks';
 import { useAppSelector } from '@/modules/store/StoreProvider';
 import { StateModal, StateModalProps } from '@/core/components/StateModal';
+import { reportEvent } from '@/core/utils/gtm';
 
 export function TransactionApproveModal(
   props: Omit<StateModalProps, 'title'> & {
@@ -21,6 +22,8 @@ export function TransactionApproveModal(
   const selectedToken = useAppSelector((state) => state.transfer.selectedToken);
   const transferActionInfo = useAppSelector((state) => state.transfer.transferActionInfo);
   const sendValue = useAppSelector((state) => state.transfer.sendValue);
+  const fromChain = useAppSelector((state) => state.transfer.fromChain);
+  const toChain = useAppSelector((state) => state.transfer.toChain);
 
   useEffect(() => {
     if (isLoadingApprove) {
@@ -29,6 +32,20 @@ export function TransactionApproveModal(
       onCloseConfirmingModal();
     }
   }, [isLoadingApprove, onOpenConfirmingModal, onCloseConfirmingModal]);
+
+  const reportApproval = (variant: 'Approve' | 'Deny') => {
+    reportEvent({
+      id: 'click_bridge_approvalModal',
+      params: {
+        item_category: fromChain?.name,
+        item_category2: toChain?.name,
+        token: selectedToken!.displaySymbol,
+        value: sendValue,
+        item_variant: variant,
+      },
+    });
+  };
+
   return (
     <StateModal
       type="approve"
@@ -54,6 +71,8 @@ export function TransactionApproveModal(
       onMainButtonClick={async () => {
         if (selectedToken && transferActionInfo?.bridgeAddress) {
           try {
+            reportApproval('Approve');
+
             const hash = await approveErc20Token(
               selectedToken.address as `0x${string}`,
               transferActionInfo?.bridgeAddress as `0x${string}`,
@@ -76,7 +95,10 @@ export function TransactionApproveModal(
           w={'100%'}
           fontSize={'16px'}
           lineHeight={1.5}
-          onClick={restProps.onClose}
+          onClick={() => {
+            reportApproval('Deny');
+            restProps.onClose();
+          }}
         >
           {formatMessage({ id: 'modal.approve.button.close' })}
         </Button>

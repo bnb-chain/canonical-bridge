@@ -74,6 +74,22 @@ export function TransferButton({
     ) {
       return;
     }
+    const handleFailure = (e: any) => {
+      reportEvent({
+        id: 'transaction_bridge_fail',
+        params: {
+          item_category: fromChain?.name,
+          item_category2: toChain?.name,
+          token: selectedToken.displaySymbol,
+          value: sendValue,
+          item_variant: transferActionInfo?.bridgeType,
+          message: JSON.stringify(e.message || e),
+          page_location: JSON.stringify(e.message || e),
+        },
+      });
+      onOpenFailedModal();
+    };
+
     try {
       setHash(null);
       setChosenBridge('');
@@ -135,7 +151,7 @@ export function TransferButton({
               params: {
                 item_category: fromChain?.name,
                 item_category2: toChain?.name,
-                token: selectedToken.symbol,
+                token: selectedToken.displaySymbol,
                 value: sendValue,
                 item_variant: 'cBridge',
               },
@@ -150,7 +166,7 @@ export function TransferButton({
         } catch (e) {
           // eslint-disable-next-line no-console
           console.log(e);
-          onOpenFailedModal();
+          handleFailure(e);
         }
       } else if (transferActionInfo.bridgeType === 'deBridge' && transferActionInfo.value) {
         try {
@@ -171,7 +187,7 @@ export function TransferButton({
               params: {
                 item_category: fromChain?.name,
                 item_category2: toChain?.name,
-                token: selectedToken.symbol,
+                token: selectedToken.displaySymbol,
                 value: sendValue,
                 item_variant: 'deBridge',
               },
@@ -184,7 +200,7 @@ export function TransferButton({
         } catch (e) {
           // eslint-disable-next-line no-console
           console.log(e);
-          onOpenFailedModal();
+          handleFailure(e);
         }
       } else if (transferActionInfo.bridgeType === 'stargate') {
         const stargateHash = await bridgeSDK.stargate.sendToken({
@@ -203,7 +219,7 @@ export function TransferButton({
             params: {
               item_category: fromChain?.name,
               item_category2: toChain?.name,
-              token: selectedToken.symbol,
+              token: selectedToken.displaySymbol,
               value: sendValue,
               item_variant: 'stargate',
             },
@@ -229,7 +245,7 @@ export function TransferButton({
             params: {
               item_category: fromChain?.name,
               item_category2: toChain?.name,
-              token: selectedToken.symbol,
+              token: selectedToken.displaySymbol,
               value: sendValue,
               item_variant: 'layerZero',
             },
@@ -243,18 +259,7 @@ export function TransferButton({
     } catch (e: any) {
       // eslint-disable-next-line no-console
       console.error(e, e.message);
-      reportEvent({
-        id: 'transaction_bridge_fail',
-        params: {
-          item_category: fromChain?.name,
-          item_category2: toChain?.name,
-          token: selectedToken.symbol,
-          value: sendValue,
-          item_variant: transferActionInfo?.bridgeType,
-          message: JSON.stringify(e),
-        },
-      });
-      onOpenFailedModal();
+      handleFailure(e);
     } finally {
       onCloseConfirmingModal();
       setIsLoading(false);

@@ -9,6 +9,7 @@ import { ExLinkIcon } from '@/core/components/icons/ExLinkIcon';
 import { BaseModal } from '@/modules/aggregator/components/SelectModal/components/BaseModal';
 import { useSearch } from '@/modules/aggregator/components/SelectModal/hooks/useSearch';
 import { ListItem } from '@/modules/aggregator/components/SelectModal/components/ListItem';
+import { reportEvent } from '@/core/utils/gtm';
 
 interface SourceNetworkModalProps {
   isOpen: boolean;
@@ -55,6 +56,13 @@ export function SourceNetworkModal(props: SourceNetworkModalProps) {
             isActive={fromChain?.id === item.id}
             isDisabled={false}
             onClick={() => {
+              reportEvent({
+                id: 'select_bridge_fromDropdown',
+                params: {
+                  item_name: item.name,
+                },
+              });
+
               if (item.chainType === 'link') {
                 openLink(item.externalBridgeUrl);
               } else {

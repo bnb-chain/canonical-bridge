@@ -36,17 +36,20 @@ export const useGetCBridgeFees = () => {
   });
 
   useEffect(() => {
-    setIsAllowSendError(false);
     if (!Number(sendValue) || !selectedToken || !toTokenInfo) {
+      setIsAllowSendError(false);
       return;
     }
     if (!!Number(cBridgeAllowedAmt?.min) && !!Number(cBridgeAllowedAmt?.max)) {
-      if (Number(sendValue) < Number(cBridgeAllowedAmt.min)) {
+      if (Number(sendValue) <= Number(cBridgeAllowedAmt.min)) {
         setIsAllowSendError(true);
-      } else if (Number(sendValue) > Number(cBridgeAllowedAmt.max)) {
+      } else if (Number(sendValue) >= Number(cBridgeAllowedAmt.max)) {
         setIsAllowSendError(true);
       }
     }
+    return () => {
+      setIsAllowSendError(false);
+    };
   }, [cBridgeAllowedAmt, sendValue, selectedToken, toTokenInfo]);
 
   const cBridgeFeeSorting = useCallback(
@@ -79,44 +82,46 @@ export const useGetCBridgeFees = () => {
         });
       }
       try {
-        if (chain && fromChain?.id === chain?.id && address && selectedToken?.address) {
-          // gas fee
-          const allowance = await publicClient.readContract({
-            address: selectedToken?.address,
-            abi: ERC20_TOKEN,
-            functionName: 'allowance',
-            args: [address as `0x${string}`, bridgeAddress],
-            chainId: fromChain?.id,
-            enabled:
-              !!address &&
-              !!selectedToken?.address &&
-              fromChain &&
-              chain &&
-              fromChain?.id === chain?.id,
-          });
-          if (
-            !!args &&
-            !!publicClient &&
-            !isAllowSendError &&
-            !!balance &&
-            Number(balance) >= Number(amount) &&
-            !!allowance &&
-            allowance >= amount
-          ) {
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            const gas = await publicClient.estimateContractGas(args as any);
-            const gasPrice = await publicClient.getGasPrice();
-            if (gas && gasPrice) {
-              const gasFee = `${formatNumber(
-                Number(formatUnits(BigInt(gas) * gasPrice, 18)),
-                8,
-              )} ${nativeToken}`;
-              feeContent += gasFee;
-              feeBreakdown.push({
-                label: formatMessage({ id: 'route.option.info.gas-fee' }),
-                value: gasFee,
-                name: 'gasFee',
-              });
+        if (
+          Number(cBridgeAllowedAmt.min) < Number(sendValue) &&
+          Number(cBridgeAllowedAmt.max) > Number(sendValue)
+        ) {
+          if (chain && fromChain?.id === chain?.id && address && selectedToken?.address) {
+            // gas fee
+            const allowance = await publicClient.readContract({
+              address: selectedToken?.address,
+              abi: ERC20_TOKEN,
+              functionName: 'allowance',
+              args: [address as `0x${string}`, bridgeAddress],
+              chainId: fromChain?.id,
+              enabled:
+                !!address &&
+                !!selectedToken?.address &&
+                fromChain &&
+                chain &&
+                fromChain?.id === chain?.id,
+            });
+
+            if (
+              !!args &&
+              !!publicClient &&
+              !!balance &&
+              Number(balance) >= Number(amount) &&
+              !!allowance &&
+              allowance >= amount
+            ) {
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              const gas = await publicClient.estimateContractGas(args as any);
+              const gasPrice = await publicClient.getGasPrice();
+              if (gas && gasPrice) {
+                const gasFee = Number(formatUnits(BigInt(gas) * gasPrice, 18));
+                feeContent += `${formatFeeAmount(gasFee)} ${nativeToken}`;
+                feeBreakdown.push({
+                  label: formatMessage({ id: 'route.option.info.gas-fee' }),
+                  value: `${formatNumber(gasFee, 8)} ${nativeToken}`,
+                  name: 'gasFee',
+                });
+              }
             }
           }
         }
@@ -154,7 +159,6 @@ export const useGetCBridgeFees = () => {
       nativeToken,
       args,
       publicClient,
-      isAllowSendError,
       balance,
       address,
       selectedToken,
@@ -162,6 +166,7 @@ export const useGetCBridgeFees = () => {
       fromChain,
       sendValue,
       bridgeAddress,
+      cBridgeAllowedAmt,
     ],
   );
 

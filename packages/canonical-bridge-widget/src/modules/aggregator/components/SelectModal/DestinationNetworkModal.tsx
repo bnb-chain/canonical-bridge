@@ -60,16 +60,17 @@ export function DestinationNetworkModal(props: DestinationNetworkModalProps) {
               id: 'select-modal.destination.incompatible.tooltip',
             })}
             onClick={() => {
+              reportEvent({
+                id: 'select_bridge_toDropdown',
+                params: {
+                  item_name: item.name,
+                },
+              });
+
               if (item.chainType === 'link') {
                 openLink(item.externalBridgeUrl);
               } else {
                 selectToChain(item);
-                reportEvent({
-                  id: 'select_bridge_toDropdown',
-                  params: {
-                    item_name: item.name,
-                  },
-                });
                 onClose();
               }
             }}

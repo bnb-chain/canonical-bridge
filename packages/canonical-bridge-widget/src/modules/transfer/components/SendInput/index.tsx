@@ -76,7 +76,7 @@ export const SendInput: React.FC = () => {
         id: 'input_bridge_amount',
         params: {
           item_name: fromChain?.name,
-          token: selectedToken?.symbol,
+          token: selectedToken?.displaySymbol,
           value: finalValue,
         },
       });
@@ -140,7 +140,15 @@ export const SendInput: React.FC = () => {
           step={'0.000000001'}
           onWheel={(e: any) => e.target.blur()}
         />
-        <TokenSelectButton token={selectedToken} onClick={onOpen} />
+        <TokenSelectButton
+          token={selectedToken}
+          onClick={() => {
+            reportEvent({
+              id: 'click_bridge_tokenDropdown',
+            });
+            onOpen();
+          }}
+        />
       </Flex>
       <InputValidationMessage />
 

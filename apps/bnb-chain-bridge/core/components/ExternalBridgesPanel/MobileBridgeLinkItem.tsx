@@ -5,7 +5,7 @@ import {
   TopRightArrowIcon,
 } from '@/core/components/ExternalBridgesPanel/BridgeLinkItem';
 
-export const MobileBridgeLinkItem = ({ item }: ExternalBridgesPanelProps) => {
+export const MobileBridgeLinkItem = ({ item, ...restProps }: ExternalBridgesPanelProps) => {
   const { colorMode } = useColorMode();
 
   return (
@@ -32,6 +32,7 @@ export const MobileBridgeLinkItem = ({ item }: ExternalBridgesPanelProps) => {
           color: theme.colors[colorMode].text.primary,
         },
       }}
+      {...restProps}
     >
       <Flex gap={'8px'}>
         <Flex justifyContent="space-between" alignItems="flex-start">

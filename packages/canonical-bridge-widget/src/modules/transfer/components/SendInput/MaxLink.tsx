@@ -30,7 +30,7 @@ export const MaxLink: React.FC = () => {
         id: 'click_bridge_max',
         params: {
           item_name: fromChain?.name,
-          token: selectedToken.symbol,
+          token: selectedToken.displaySymbol,
           value,
         },
       });

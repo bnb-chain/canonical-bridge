@@ -99,15 +99,15 @@ export function ChooseTokenModal(props: ChooseTokenModalProps) {
                   },
                 }}
                 onClick={() => {
-                  selectToken(item);
-                  onClose();
                   reportEvent({
-                    id: 'select_bridge_fromDropdown',
+                    id: 'select_bridge_tokenDropdown',
                     params: {
-                      item_name: fromChain?.name || '',
-                      token: item?.symbol,
+                      item_name: item?.displaySymbol ?? item?.symbol,
                     },
                   });
+
+                  selectToken(item);
+                  onClose();
                 }}
               >
                 <Flex alignItems="center" justifyContent="space-between" w="100%" gap={'12px'}>

@@ -1,4 +1,5 @@
 import { Flex, theme, useColorMode, Box } from '@bnb-chain/space';
+import { reportEvent } from '@bnb-chain/canonical-bridge-widget';
 
 import { env } from '@/core/configs/env';
 import { BridgeLinkItem } from '@/core/components/ExternalBridgesPanel/BridgeLinkItem';
@@ -51,10 +52,16 @@ export function ExternalBridgesPanel() {
         flexDir={['column', 'column', 'column', 'row']}
       >
         {options.map((item, index) => {
+          const onClick = () => {
+            reportEvent({
+              id: item.eventId,
+            });
+          };
+
           return (
             <>
-              <BridgeLinkItem key={index} item={item} />
-              <MobileBridgeLinkItem key={index} item={item} />
+              <BridgeLinkItem key={index} item={item} onClick={onClick} />
+              <MobileBridgeLinkItem key={index} item={item} onClick={onClick} />
             </>
           );
         })}
