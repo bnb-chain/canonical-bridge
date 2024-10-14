@@ -1,5 +1,11 @@
 # @bnb-chain/canonical-bridge-widget
 
+## 0.0.7
+
+### Patch Changes
+
+- 04113e9: Add new data tracking & fix cBridge min/max fee issue
+
 ## 0.0.6
 
 ### Patch Changes
