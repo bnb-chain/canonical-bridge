@@ -171,7 +171,7 @@ export interface IChainConfig {
   contracts?: any;
 }
 
-export type ChainType = 'link' | 'evm';
+export type ChainType = 'link' | 'evm' | 'tron';
 
 export type AdapterConstructorType =
   | typeof CBridgeAdapter

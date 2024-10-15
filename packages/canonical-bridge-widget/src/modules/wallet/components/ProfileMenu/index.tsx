@@ -1,24 +1,20 @@
 import { Box, Center, Flex, useColorMode, useIntl, useTheme } from '@bnb-chain/space';
 import { DisconnectIcon } from '@bnb-chain/icons';
-import { useAccount, useDisconnect } from 'wagmi';
 import { useWalletKit } from '@node-real/walletkit';
 import { useMemo } from 'react';
 
 import { CopyAddress } from '@/core/components/CopyAddress';
 import { formatNumber } from '@/core/utils/number';
 import { formatAppAddress } from '@/core/utils/address';
-import { useEvmBalance } from '@/modules/wallet/hooks/useEvmBalance';
 import { Dropdown } from '@/modules/wallet/components/Dropdown/Dropdown';
 import { DropdownButton } from '@/modules/wallet/components/Dropdown/DropdownButton';
 import { DropdownList } from '@/modules/wallet/components/Dropdown/DropdownList';
+import { useCurrentWallet } from '@/modules/wallet/hooks/useCurrentWallet';
 
 export const ProfileMenu = () => {
   const { formatMessage } = useIntl();
   const { colorMode } = useColorMode();
-  const { address } = useAccount();
-  const { data: balance } = useEvmBalance(address);
-  const { disconnect } = useDisconnect();
-
+  const { address, balance, disconnect } = useCurrentWallet();
   const walletIcon = useWalletIcon();
   const theme = useTheme();
 
@@ -109,14 +105,13 @@ export const ProfileMenu = () => {
 };
 
 function useWalletIcon() {
-  const { connector } = useAccount();
+  const { walletId } = useCurrentWallet();
+
   const { colorMode } = useColorMode();
   const { wallets } = useWalletKit();
 
   const icon = useMemo(() => {
-    const selectedWallet = wallets.find(
-      (item) => item.id === connector?.id || item.name === connector?.name,
-    );
+    const selectedWallet = wallets.find((item) => item.id === walletId);
 
     if (selectedWallet) {
       const { transparent: transparentLogos } = selectedWallet.logos ?? {};
@@ -125,7 +120,7 @@ function useWalletIcon() {
     }
 
     return null;
-  }, [colorMode, connector?.id, connector?.name, wallets]);
+  }, [colorMode, walletId, wallets]);
 
   return icon;
 }

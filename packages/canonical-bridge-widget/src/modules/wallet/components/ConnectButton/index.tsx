@@ -1,10 +1,10 @@
 import { useConnectModal } from '@node-real/walletkit';
-import { useAccount } from 'wagmi';
 import { Button, Flex, useTheme, useColorMode } from '@bnb-chain/space';
 
 import { useAppSelector } from '@/modules/store/StoreProvider';
 import { NetworkStatus } from '@/modules/wallet/components/NetworkStatus';
 import { ProfileMenu } from '@/modules/wallet/components/ProfileMenu';
+import { useCurrentWallet } from '@/modules/wallet/hooks/useCurrentWallet';
 
 interface ConnectButtonProps {}
 
@@ -14,7 +14,7 @@ export function ConnectButton(props: ConnectButtonProps) {
   const theme = useTheme();
   const { colorMode } = useColorMode();
 
-  const { isConnected } = useAccount();
+  const { isConnected } = useCurrentWallet();
   const { onOpen } = useConnectModal();
   const fromChain = useAppSelector((state) => state.transfer.fromChain);
 
