@@ -13,6 +13,7 @@ import { useTransferConfig } from '@/data';
 import { ThemeProvider } from '@/core/components/ThemeProvider';
 import { chains } from '@/data/chains';
 import { light } from '@/core/theme/light';
+import { testnetChains } from '@/data/chains-testnet';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -49,13 +50,15 @@ const config: ICanonicalBridgeConfig = {
   },
 };
 
+const appChains = chains.concat(testnetChains);
+
 export default function App() {
   const transferConfig = useTransferConfig();
 
   return (
     <ThemeProvider>
       <QueryClientProvider client={queryClient}>
-        <CanonicalBridgeProvider config={config} transferConfig={transferConfig} chains={chains}>
+        <CanonicalBridgeProvider config={config} transferConfig={transferConfig} chains={appChains}>
           <Layout>
             <TransferWidget />
           </Layout>

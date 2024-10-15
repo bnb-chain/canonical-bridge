@@ -1,6 +1,6 @@
 import { BaseWallet, useConnectModal, useWalletKit } from '@node-real/walletkit';
 import { Center, Flex, theme } from '@bnb-chain/space';
-import { useEffect, useRef } from 'react';
+import { useEffect, useMemo } from 'react';
 
 import { NetworkIcon } from '@/core/components/icons/NetworkIcon';
 import { useAppSelector } from '@/modules/store/StoreProvider';
@@ -24,16 +24,21 @@ export function useWalletModal() {
 
 export function useUpdateWallets() {
   const fromChain = useAppSelector((state) => state.transfer.fromChain);
-  const { wallets, setWallets } = useWalletKit();
+  const { evmConfig, tronConfig, setWallets } = useWalletKit();
 
-  const originalWalletsRef = useRef<BaseWallet[]>(wallets);
-  useEffect(() => {
-    if (!originalWalletsRef.current && wallets.length) {
-      originalWalletsRef.current = wallets;
+  const wallets = useMemo(() => {
+    const wallets: BaseWallet[] = [];
+    if (evmConfig?.wallets) {
+      wallets.push(...evmConfig.wallets);
     }
+    if (tronConfig?.wallets) {
+      wallets.push(...tronConfig?.wallets);
+    }
+    return wallets;
+  }, [evmConfig?.wallets, tronConfig?.wallets]);
 
+  useEffect(() => {
     const availableWalletIds: string[] = [];
-    const originalWalletIds = originalWalletsRef.current.map((item) => item.id);
     const chainType = fromChain?.chainType ?? 'evm';
 
     const nextWallets: BaseWallet[] = [];
@@ -77,8 +82,8 @@ export function useUpdateWallets() {
       const aId = a.id as any;
       const bId = b.id as any;
 
-      const aIndex = originalWalletIds.findIndex((id) => id === aId);
-      const bIndex = originalWalletIds.findIndex((id) => id === bId);
+      const aIndex = wallets.findIndex((id) => id === aId);
+      const bIndex = wallets.findIndex((id) => id === bId);
 
       const isA = availableWalletIds.includes(aId);
       const isB = availableWalletIds.includes(bId);
