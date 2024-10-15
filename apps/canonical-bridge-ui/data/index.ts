@@ -9,6 +9,7 @@ import axios from 'axios';
 import { env } from '@/core/env';
 import stargateConfig from '@/data/stargate/config.json';
 import layerZeroConfig from '@/data/layerZero/config.json';
+import mesonConfigTestnet from '@/data/meson/config_testnet.json';
 
 export function useTransferConfig() {
   const [transferConfig, setTransferConfig] = useState<ITransferConfig>();
@@ -159,6 +160,14 @@ export function useTransferConfig() {
         },
         layerZero: {
           config: layerZeroConfig,
+          exclude: {
+            chains: [],
+            tokens: {},
+          },
+          bridgedTokenGroups: [],
+        },
+        meson: {
+          config: mesonConfigTestnet.result,
           exclude: {
             chains: [],
             tokens: {},

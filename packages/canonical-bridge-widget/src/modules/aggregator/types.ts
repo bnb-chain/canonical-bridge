@@ -23,6 +23,8 @@ import {
   IStargateToken,
   IStargateTransferConfig,
 } from '@/modules/aggregator/adapters/stargate/types';
+import { IMesonChain, IMesonToken } from '@/modules/aggregator/adapters/meson/types';
+import { MesonAdapter } from '@/modules/aggregator/adapters/meson/MesonAdapter';
 
 export interface IBridgeChain {
   id: number;
@@ -52,6 +54,11 @@ export interface IBridgeChain {
     isCompatible: boolean;
     isMatched: boolean;
     raw?: ILayerZeroChain;
+  };
+  meson?: {
+    isCompatible: boolean;
+    isMatched: boolean;
+    raw?: IMesonChain;
   };
 }
 
@@ -86,6 +93,11 @@ export interface IBridgeToken extends IBridgeTokenBaseInfo {
     isCompatible: boolean;
     isMatched: boolean;
     raw?: ILayerZeroToken;
+  };
+  meson?: IBridgeTokenBaseInfo & {
+    isCompatible: boolean;
+    isMatched: boolean;
+    raw?: IMesonToken;
   };
 }
 
@@ -152,10 +164,18 @@ export interface ITransferConfig {
     };
     bridgedTokenGroups?: string[][];
   };
+  meson?: {
+    config: IMesonChain[];
+    exclude?: {
+      chains?: number[];
+      tokens?: Record<number, string[]>;
+    };
+    bridgedTokenGroups?: string[][];
+  };
 }
 
 export interface IChainConfig {
-  id: number;
+  id: number | string;
   name: string;
   nativeCurrency: {
     name: string;
@@ -169,6 +189,7 @@ export interface IChainConfig {
     tokenUrlPattern?: string;
   };
   contracts?: any;
+  chainType?: ChainType;
 }
 
 export type ChainType = 'link' | 'evm' | 'tron';
@@ -177,6 +198,12 @@ export type AdapterConstructorType =
   | typeof CBridgeAdapter
   | typeof DeBridgeAdapter
   | typeof StargateAdapter
-  | typeof LayerZeroAdapter;
+  | typeof LayerZeroAdapter
+  | typeof MesonAdapter;
 
-export type AdapterType = CBridgeAdapter | DeBridgeAdapter | StargateAdapter | LayerZeroAdapter;
+export type AdapterType =
+  | CBridgeAdapter
+  | DeBridgeAdapter
+  | StargateAdapter
+  | LayerZeroAdapter
+  | MesonAdapter;

@@ -15,6 +15,7 @@ import { CBridgeAdapter } from '@/modules/aggregator/adapters/cBridge/CBridgeAda
 import { DeBridgeAdapter } from '@/modules/aggregator/adapters/deBridge/DeBridgeAdapter';
 import { LayerZeroAdapter } from '@/modules/aggregator/adapters/layerZero/LayerZeroAdapter';
 import { StargateAdapter } from '@/modules/aggregator/adapters/stargate/StargateAdapter';
+import { MesonAdapter } from '@/modules/aggregator/adapters/meson/MesonAdapter';
 import { IBaseAdapterOptions } from '@/modules/aggregator/shared/BaseAdapter';
 import {
   aggregateChains,
@@ -91,6 +92,7 @@ export function AggregatorProvider(props: AggregatorProviderProps) {
         bridgeType: 'layerZero',
         Adapter: LayerZeroAdapter,
       },
+      { bridgeType: 'meson', Adapter: MesonAdapter },
     ];
 
     const nativeCurrencies = getNativeCurrencies(chainConfigs);

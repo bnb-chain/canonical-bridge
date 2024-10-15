@@ -71,4 +71,20 @@ export const testnetChains: IChainConfig[] = [
       url: 'https://sepolia-optimistic.etherscan.io',
     },
   },
+  {
+    id: 'tron',
+    name: 'Tron',
+    nativeCurrency: {
+      name: 'TRX',
+      symbol: 'TRX',
+      decimals: 6,
+    },
+    rpcUrl: '',
+    explorer: {
+      name: 'Solana explorer',
+      url: 'https://explorer.solana.com',
+      tokenUrlPattern: 'https://explorer.solana.com/address/{0}',
+    },
+    chainType: 'tron',
+  },
 ];
