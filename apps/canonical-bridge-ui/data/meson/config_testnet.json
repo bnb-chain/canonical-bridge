@@ -9,10 +9,15 @@
         {
           "id": "usdc",
           "addr": "0x75faf114eafb1BDbe2F0316DF893fd58CE46AA4d",
+          "min": "0.5",
+          "max": "20000",
           "decimals": 6
         },
         {
-          "id": "eth"
+          "id": "eth",
+          "decimals": 18,
+          "min": "0.001",
+          "max": "2"
         }
       ]
     },
@@ -25,15 +30,22 @@
         {
           "id": "usdc",
           "addr": "0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238",
-          "decimals": 6
+          "decimals": 6,
+          "min": "0.5",
+          "max": "20000"
         },
         {
           "id": "usdt",
           "addr": "0xd53e9530107a8d8856099d7d80126478d48e06dA",
-          "decimals": 6
+          "decimals": 6,
+          "min": "0.5",
+          "max": "20000"
         },
         {
-          "id": "eth"
+          "id": "eth",
+          "decimals": 18,
+          "min": "0.001",
+          "max": "2"
         }
       ]
     },
@@ -46,12 +58,16 @@
         {
           "id": "usdc",
           "addr": "0x64544969ed7EBf5f083679233325356EbE738930",
-          "decimals": 18
+          "decimals": 18,
+          "min": "0.5",
+          "max": "20000"
         },
         {
           "id": "usdt",
           "addr": "0x337610d27c682E347C9cD60BD4b3b107C9d34dDd",
-          "decimals": 18
+          "decimals": 18,
+          "min": "0.5",
+          "max": "20000"
         }
       ]
     },
@@ -64,10 +80,15 @@
         {
           "id": "usdc",
           "addr": "0x5fd84259d66Cd46123540766Be93DFE6D43130D7",
-          "decimals": 6
+          "decimals": 6,
+          "min": "0.5",
+          "max": "20000"
         },
         {
-          "id": "eth"
+          "id": "eth",
+          "decimals": 18,
+          "min": "0.001",
+          "max": "2"
         }
       ]
     },
@@ -80,12 +101,16 @@
         {
           "id": "usdc",
           "addr": "TNavP4dSwhGssWjX4gR8NvrMsgAQvBWoyY",
-          "decimals": 6
+          "decimals": 6,
+          "min": "0.5",
+          "max": "20000"
         },
         {
           "id": "usdt",
           "addr": "THkCEyw2uaJYPfxb2BNizGuiosCkyAsbWW",
-          "decimals": 6
+          "decimals": 6,
+          "min": "0.5",
+          "max": "20000"
         }
       ]
     }
