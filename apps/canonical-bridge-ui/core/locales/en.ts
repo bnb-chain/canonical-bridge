@@ -44,6 +44,8 @@ export const en = {
   'route.option.info.debridge-fee': 'deBridge Fee:',
   'route.option.info.market-maker-fee': 'Market Maker Gas Costs:',
   'route.option.info.base-fee': 'Base Fee:',
+  'route.option.info.lp-fee': 'Liquidity Providers:',
+  'route.option.info.service-fee': 'Service Fee:',
   'route.option.info.protocol-fee': 'Protocol Fee:',
 
   'transfer.button.confirm': 'Send',

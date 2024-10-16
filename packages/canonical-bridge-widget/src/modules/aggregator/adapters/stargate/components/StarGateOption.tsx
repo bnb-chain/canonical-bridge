@@ -1,4 +1,3 @@
-import { Flex, useColorMode, useTheme } from '@bnb-chain/space';
 import { useCallback, useMemo } from 'react';
 import { formatUnits } from 'viem';
 
@@ -13,11 +12,11 @@ import { AllowedSendAmount } from '@/modules/transfer/components/TransferOvervie
 import { OtherRouteError } from '@/modules/transfer/components/TransferOverview/RouteInfo/OtherRouteError';
 import { RouteName } from '@/modules/transfer/components/TransferOverview/RouteInfo/RouteName';
 import { useGetStargateFees } from '@/modules/aggregator/adapters/stargate/hooks/useGetStarGateFees';
+import { RouteWrapper } from '@/modules/transfer/components/TransferOverview/RouteInfo/RouteWrapper';
 
 export const StarGateOption = () => {
   const dispatch = useAppDispatch();
-  const { colorMode } = useColorMode();
-  const theme = useTheme();
+
   const { toTokenInfo, getToDecimals } = useToTokenInfo();
   const { allowedSendAmount, isAllowSendError } = useGetStargateFees();
 
@@ -68,32 +67,10 @@ export const StarGateOption = () => {
   }, [selectedToken, dispatch, isError]);
 
   return (
-    <Flex
-      flex={1}
-      flexDir={'column'}
-      gap={'4px'}
-      border={`1px solid`}
-      height={'fit-content'}
-      borderColor={
-        transferActionInfo?.bridgeType === 'stargate'
-          ? theme.colors[colorMode].border.brand
-          : theme.colors[colorMode].button.select.border
-      }
-      background={
-        transferActionInfo?.bridgeType === 'stargate'
-          ? theme.colors[colorMode].route.background.highlight
-          : 'none'
-      }
-      borderRadius={'8px'}
-      padding={'16px'}
-      cursor={isError ? 'default' : 'pointer'}
-      _hover={{
-        borderColor: isError
-          ? theme.colors[colorMode].button.select.border
-          : theme.colors[colorMode].border.brand,
-      }}
-      onClick={onSelectBridge}
-      position={'relative'}
+    <RouteWrapper
+      isError={isError}
+      onSelectBridge={onSelectBridge}
+      isSelected={transferActionInfo?.bridgeType === 'stargate'}
     >
       <RouteName isError={isError} bridgeType="stargate" />
       <RouteTitle
@@ -115,6 +92,6 @@ export const StarGateOption = () => {
         allowedSendAmount={allowedSendAmount}
       />
       {!isAllowSendError && <OtherRouteError bridgeType={'stargate'} />}
-    </Flex>
+    </RouteWrapper>
   );
 };

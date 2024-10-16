@@ -36,6 +36,7 @@ export const useBridgeSDK = () => {
           bridgeType: 'layerZero',
           endpoint: '',
         },
+        { bridgeType: 'meson', endpoint: 'https://testnet-relayer.meson.fi/api/v1' },
       ],
     });
   }, [bridgeConfig.http.apiTimeOut]);

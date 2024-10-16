@@ -2,6 +2,8 @@ export interface IMesonToken {
   id: string;
   addr: string;
   decimals: number;
+  min: string;
+  max: string;
 }
 
 export interface IMesonChain {
