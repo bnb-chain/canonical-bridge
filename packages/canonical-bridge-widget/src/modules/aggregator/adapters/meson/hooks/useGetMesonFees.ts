@@ -18,29 +18,31 @@ export const useGetMesonFees = () => {
       let feeContent = '';
       const feeBreakdown = [];
       const isDisplayError = false; // API error display
+      let totalFee = 0;
 
       // service fee
       if (!!fees?.serviceFee) {
-        const serviceFee = formatUnits(fees?.serviceFee, selectedToken?.meson?.raw?.decimals || 18);
+        const serviceFee = fees?.serviceFee;
+        totalFee += Number(serviceFee);
         feeBreakdown.push({
           label: formatMessage({ id: 'route.option.info.service-fee' }),
           value: `${formatNumber(Number(serviceFee), 8)} ${selectedToken?.symbol}`,
-          name: 'baseFee',
+          name: 'serviceFee',
         });
       }
 
       // liquidity providers fee
       if (!!fees?.lpFee) {
-        const lpFee = formatUnits(fees?.lpFee, selectedToken?.meson?.raw?.decimals || 18);
+        const lpFee = fees?.lpFee;
+        totalFee += Number(lpFee);
         feeBreakdown.push({
           label: formatMessage({ id: 'route.option.info.lp-fee' }),
           value: `${formatNumber(Number(lpFee), 8)} ${selectedToken?.symbol}`,
-          name: 'baseFee',
+          name: 'lpFee',
         });
       }
 
       if (!!fees?.totalFee) {
-        const totalFee = formatUnits(fees?.totalFee, selectedToken?.meson?.raw?.decimals || 18);
         feeContent = `${String(formatFeeAmount(totalFee))} ${selectedToken?.symbol}`;
       }
 

@@ -16,32 +16,17 @@ import { RouteWrapper } from '@/modules/transfer/components/TransferOverview/Rou
 export const MesonOption = () => {
   const dispatch = useAppDispatch();
 
-  const { toTokenInfo, getToDecimals } = useToTokenInfo();
+  const { toTokenInfo } = useToTokenInfo();
 
-  const selectedToken = useAppSelector((state) => state.transfer.selectedToken);
-  const sendValue = useAppSelector((state) => state.transfer.sendValue);
   const transferActionInfo = useAppSelector((state) => state.transfer.transferActionInfo);
   const estimatedAmount = useAppSelector((state) => state.transfer.estimatedAmount);
   const routeError = useAppSelector((state) => state.transfer.routeError);
   const routeFees = useAppSelector((state) => state.transfer.routeFees);
+  const fromChain = useAppSelector((state) => state.transfer.fromChain);
 
   const receiveAmt = useMemo(() => {
-    return estimatedAmount &&
-      toTokenInfo &&
-      Number(sendValue) > 0 &&
-      estimatedAmount?.['meson']?.[2].amountReceivedLD &&
-      Number(estimatedAmount['meson']?.[2]?.amountReceivedLD) > 0
-      ? `${formatNumber(
-          Number(
-            formatUnits(
-              BigInt(estimatedAmount?.['meson']?.[2].amountReceivedLD),
-              getToDecimals()['meson'] || 18,
-            ),
-          ),
-          8,
-        )}`
-      : '--';
-  }, [estimatedAmount, toTokenInfo, sendValue, getToDecimals]);
+    return estimatedAmount?.['meson'] ?? '--';
+  }, [estimatedAmount]);
 
   const isError = useMemo(
     () =>
@@ -53,15 +38,15 @@ export const MesonOption = () => {
   );
 
   const onSelectBridge = useCallback(() => {
-    // if (!selectedToken?.meson?.raw?.bridgeAddress || isError) return;
-    // const bridgeAddress = selectedToken.meson.raw?.bridgeAddress;
-    // dispatch(
-    //   setTransferActionInfo({
-    //     bridgeType: 'meson',
-    //     bridgeAddress: bridgeAddress as `0x${string}`,
-    //   }),
-    // );
-  }, [selectedToken, dispatch, isError]);
+    if (!fromChain?.meson?.raw?.address || isError) return;
+    const bridgeAddress = fromChain?.meson?.raw?.address;
+    dispatch(
+      setTransferActionInfo({
+        bridgeType: 'meson',
+        bridgeAddress: bridgeAddress as `0x${string}`,
+      }),
+    );
+  }, [fromChain, dispatch, isError]);
 
   return (
     <RouteWrapper
@@ -84,7 +69,7 @@ export const MesonOption = () => {
         zIndex={2}
         allowedSendAmount={allowedSendAmount}
       /> */}
-      {/* {!isAllowSendError && <OtherRouteError bridgeType={'meson'} />} */}
+      <OtherRouteError bridgeType={'meson'} />
     </RouteWrapper>
   );
 };

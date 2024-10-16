@@ -201,7 +201,6 @@ export class CanonicalBridgeSDK {
   }: {
     bridgeType: BridgeType[];
     fromChainId: number;
-    // fromTokenAddress: `0x${string}`;
     fromAccount: `0x${string}`;
     toChainId: number;
     sendValue: bigint;
@@ -209,11 +208,8 @@ export class CanonicalBridgeSDK {
     publicClient: PublicClient;
     endPointId?: BridgeEndpointId;
     bridgeAddress?: BridgeAddress;
-    // toTokenAddress?: `0x${string}`;
-    // toAccount?: `0x${string}`;
     isPegged?: boolean;
     slippage?: number;
-    // deBridgeAccessToken?: string;
     mesonOpts?: IGetMesonEstimateFeeInput;
     deBridgeOpts?: IDeBridgeEstimatedFeesInput;
   }) {

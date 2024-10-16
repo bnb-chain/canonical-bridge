@@ -1,4 +1,4 @@
-export interface IGetEstimateFeeInput {
+export interface IGetMesonEstimateFeeInput {
   fromToken: string;
   toToken: string;
   fromAddr: string;

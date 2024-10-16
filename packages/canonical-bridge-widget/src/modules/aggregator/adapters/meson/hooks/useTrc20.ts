@@ -1,0 +1,75 @@
+import { useTronWallet } from '@node-real/walletkit/tron';
+import { TronWeb } from 'tronweb';
+
+export const useTrc20 = () => {
+  const { address, signTransaction } = useTronWallet();
+
+  const approveTrc20 = async ({
+    tronBridgeAddress,
+    trc20Address,
+    amount,
+  }: {
+    tronBridgeAddress: string;
+    trc20Address: string;
+    amount: string;
+  }) => {
+    // Check whether from chain is tron
+    if (!address) return;
+    const tronWeb = new TronWeb({
+      fullHost: 'https://api.nileex.io/',
+    });
+    const parameter = [
+      { type: 'address', value: tronBridgeAddress },
+      { type: 'uint256', value: tronWeb.toSun(Number(amount)) },
+    ];
+
+    // triggerConstantContract readonly function
+    // triggerSmartContract return unsigned transaction
+    // create unsigned transaction
+    const txWrapper = await tronWeb.transactionBuilder.triggerSmartContract(
+      trc20Address,
+      'approve(address,uint256)',
+      {},
+      parameter,
+      address,
+    );
+    // sign transaction
+    const signedTransaction = await signTransaction(txWrapper.transaction as any);
+    // send tx
+    const res = await tronWeb.trx.sendRawTransaction(signedTransaction as any);
+    // eslint-disable-next-line no-console
+    console.log(txWrapper.transaction, signedTransaction, res);
+  };
+
+  const getTrc20Balance = async ({ trc20Address }: { trc20Address: string }) => {
+    if (!address) return;
+    const tronWeb = new TronWeb({
+      fullHost: 'https://api.nileex.io/',
+    });
+    // tronWeb.setAddress(address);
+    const contract = await tronWeb.contract().at(trc20Address);
+    const balance = await contract.methods.balanceOf(address).call();
+
+    return balance;
+  };
+
+  const getTrc20Allowance = async ({
+    trc20Address,
+    tronBridgeAddress,
+  }: {
+    trc20Address: string;
+    tronBridgeAddress: string;
+  }) => {
+    if (!address) return;
+    const tronWeb = new TronWeb({
+      fullHost: 'https://api.nileex.io/',
+    });
+    // tronWeb.setAddress(address);
+    const contract = await tronWeb.contract().at(trc20Address);
+    const balance = await contract.methods.allowance(address, tronBridgeAddress).call();
+
+    return balance;
+  };
+
+  return { approveTrc20, getTrc20Balance, getTrc20Allowance };
+};
