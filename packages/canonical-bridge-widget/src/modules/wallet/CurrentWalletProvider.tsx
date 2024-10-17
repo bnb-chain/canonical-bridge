@@ -41,7 +41,7 @@ export function CurrentWalletProvider(props: CurrentWalletProviderProps) {
   const evmDisconnect = useDisconnect();
   const tronDisconnect = useTronWallet();
 
-  const [walletType, setWalletType] = useState<ChainType>('tron');
+  const [walletType, setWalletType] = useState<ChainType>('evm');
 
   const tronWalletId = useTronWalletId();
   const { chainConfigs } = useAggregator();
