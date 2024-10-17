@@ -3,5 +3,4 @@ export interface IGetMesonEstimateFeeInput {
   toToken: string;
   fromAddr: string;
   amount: string;
-  toAddr: string;
 }

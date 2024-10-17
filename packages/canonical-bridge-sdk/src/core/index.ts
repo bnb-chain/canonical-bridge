@@ -177,13 +177,12 @@ export class CanonicalBridgeSDK {
   }
 
   /**
-   * To load all bridge fees at once and return the fee information in the specified order
-   * [deBridge, cBridge, stargate, layerZero]
+   * Load bridge fees and return fee information in the following order
+   * [deBridge, cBridge, stargate, layerZero, meson]
    */
   async loadBridgeFees({
     bridgeType,
     fromChainId,
-    // fromTokenAddress,
     fromAccount,
     toChainId,
     sendValue,
@@ -191,11 +190,8 @@ export class CanonicalBridgeSDK {
     publicClient,
     endPointId,
     bridgeAddress,
-    // toTokenAddress,
-    // toAccount,
     isPegged,
     slippage,
-    // deBridgeAccessToken,
     mesonOpts,
     deBridgeOpts,
   }: {
@@ -205,7 +201,7 @@ export class CanonicalBridgeSDK {
     toChainId: number;
     sendValue: bigint;
     fromTokenSymbol: string;
-    publicClient: PublicClient;
+    publicClient?: PublicClient;
     endPointId?: BridgeEndpointId;
     bridgeAddress?: BridgeAddress;
     isPegged?: boolean;
@@ -241,7 +237,8 @@ export class CanonicalBridgeSDK {
       this.stargate &&
       bridgeAddress?.stargate &&
       endPointId?.layerZeroV2 &&
-      bridgeType.includes('stargate')
+      bridgeType.includes('stargate') &&
+      !!publicClient
     ) {
       const stargateFeeAPICall = this.stargate.getQuoteOFT({
         publicClient: publicClient,
@@ -259,7 +256,8 @@ export class CanonicalBridgeSDK {
       this.layerZero &&
       bridgeAddress?.layerZero &&
       endPointId?.layerZeroV1 &&
-      bridgeType.includes('layerZero')
+      bridgeType.includes('layerZero') &&
+      !!publicClient
     ) {
       const layerZeroFeeAPICall = this.layerZero.getEstimateFee({
         bridgeAddress: bridgeAddress.layerZero,

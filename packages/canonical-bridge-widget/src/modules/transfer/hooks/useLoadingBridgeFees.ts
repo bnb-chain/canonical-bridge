@@ -13,7 +13,7 @@ import {
 } from '@/modules/transfer/action';
 import { useToTokenInfo } from '@/modules/transfer/hooks/useToTokenInfo';
 import { useDebounce } from '@/core/hooks/useDebounce';
-import { DEBOUNCE_DELAY, DEFAULT_ADDRESS } from '@/core/constants';
+import { DEBOUNCE_DELAY, DEFAULT_ADDRESS, DEFAULT_TRON_ADDRESS } from '@/core/constants';
 import { toObject } from '@/core/utils/string';
 import { useGetCBridgeFees } from '@/modules/aggregator/adapters/cBridge/hooks/useGetCBridgeFees';
 import { useGetDeBridgeFees } from '@/modules/aggregator/adapters/deBridge/hooks/useGetDeBridgeFees';
@@ -57,7 +57,7 @@ export const useLoadingBridgeFees = () => {
   const debouncedSendValue = useDebounce(sendValue, DEBOUNCE_DELAY);
   const loadingBridgeFees = useCallback(async () => {
     dispatch(setRouteFees(undefined));
-    if (!selectedToken || !publicClient || !fromChain || !toChain || !debouncedSendValue) {
+    if (!selectedToken || !fromChain || !toChain || !debouncedSendValue) {
       dispatch(setIsGlobalFeeLoading(false));
       return;
     }
@@ -104,7 +104,10 @@ export const useLoadingBridgeFees = () => {
           fromToken: `${fromChain?.meson?.raw?.id}:${selectedToken?.meson?.raw?.id}`,
           toToken: `${toChain?.meson?.raw?.id}:${toToken?.meson?.raw?.id}`,
           amount: debouncedSendValue,
-          fromAddr: '0xC5E00A90CdEc89529b96E82163F97aD10a968b85',
+          fromAddr:
+            fromChain?.chainType === 'tron'
+              ? tronAddress ?? DEFAULT_TRON_ADDRESS
+              : address ?? DEFAULT_ADDRESS,
         },
         deBridgeOpts: {
           fromChainId: fromChain.id,
@@ -328,7 +331,8 @@ export const useLoadingBridgeFees = () => {
     toToken,
     debouncedSendValue,
     address,
-    // tronAddress,
+    tronAddress,
+
     publicClient,
     fromChain,
     toChain,

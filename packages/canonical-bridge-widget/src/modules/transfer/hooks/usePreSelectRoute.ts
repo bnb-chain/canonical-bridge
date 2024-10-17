@@ -70,7 +70,7 @@ export const usePreSelectRoute = () => {
       selectedToken?.layerZero?.raw?.bridgeAddress,
       selectedToken?.stargate?.raw?.bridgeAddress,
       cBridgeAddress,
-      fromChain?.meson?.raw,
+      fromChain,
     ],
   );
 

@@ -2,12 +2,15 @@ import { Button, Flex, useColorMode, useIntl, useTheme } from '@bnb-chain/space'
 import { useCallback, useState } from 'react';
 import { useAccount, usePublicClient, useWalletClient } from 'wagmi';
 import { formatUnits, parseUnits } from 'viem';
+import { useTronWallet } from '@node-real/walletkit/tron';
 
 import { useAppSelector } from '@/modules/store/StoreProvider';
 import { useGetAllowance } from '@/core/contract/hooks/useGetAllowance';
 import { useCBridgeTransferParams } from '@/modules/aggregator/adapters/cBridge/hooks/useCBridgeTransferParams';
 import { useBridgeSDK } from '@/core/hooks/useBridgeSDK';
 import { reportEvent } from '@/core/utils/gtm';
+import { useGetTronAllowance } from '@/modules/aggregator/adapters/meson/hooks/useGetTronAllowance';
+import { useCurrentWallet } from '@/modules/wallet/CurrentWalletProvider';
 
 export function TransferButton({
   onOpenSubmittedModal,
@@ -34,6 +37,7 @@ export function TransferButton({
   const { colorMode } = useColorMode();
 
   const { address } = useAccount();
+  const { address: tronAddress } = useTronWallet();
 
   const sendValue = useAppSelector((state) => state.transfer.sendValue);
   const transferActionInfo = useAppSelector((state) => state.transfer.transferActionInfo);
@@ -53,24 +57,34 @@ export function TransferButton({
     sender: transferActionInfo?.bridgeAddress as `0x${string}`,
   });
 
+  const tronAllowance = useGetTronAllowance();
+  const { isTronConnected, isEvmConnected } = useCurrentWallet();
+
   const isApproveNeeded =
-    allowance !== null &&
-    selectedToken?.decimals &&
-    Number(sendValue) > Number(formatUnits(allowance, selectedToken?.decimals || 18)) &&
-    transferActionInfo?.bridgeAddress !== selectedToken?.address &&
-    selectedToken?.address !== '0x0000000000000000000000000000000000000000';
+    (fromChain?.chainType !== 'tron' &&
+      allowance !== null &&
+      selectedToken?.decimals &&
+      Number(sendValue) > Number(formatUnits(allowance, selectedToken?.decimals || 18)) &&
+      transferActionInfo?.bridgeAddress !== selectedToken?.address &&
+      selectedToken?.address !== '0x0000000000000000000000000000000000000000') ||
+    (fromChain?.chainType === 'tron' &&
+      tronAllowance !== null &&
+      Number(sendValue) >
+        Number(formatUnits(tronAllowance, selectedToken?.meson?.raw?.decimals || 6)));
 
   const sendTx = useCallback(async () => {
     if (
-      !walletClient ||
-      !publicClient ||
       !selectedToken ||
-      !address ||
-      !transferActionInfo ||
-      !transferActionInfo.bridgeType ||
-      !transferActionInfo.bridgeAddress ||
-      (allowance === null &&
-        selectedToken?.address !== '0x0000000000000000000000000000000000000000')
+      !transferActionInfo?.bridgeType ||
+      !transferActionInfo?.bridgeAddress ||
+      ((!walletClient ||
+        !publicClient ||
+        !address ||
+        (allowance === null &&
+          selectedToken?.address !== '0x0000000000000000000000000000000000000000') ||
+        !isEvmConnected) &&
+        fromChain?.chainType !== 'tron') ||
+      (!isTronConnected && fromChain?.chainType === 'tron' && !tronAddress)
     ) {
       return;
     }
@@ -95,8 +109,7 @@ export function TransferButton({
       setChosenBridge('');
       setIsLoading(true);
       if (
-        allowance !== null &&
-        Number(sendValue) > Number(formatUnits(allowance, selectedToken?.decimals)) &&
+        isApproveNeeded &&
         transferActionInfo.bridgeAddress !== selectedToken?.address &&
         selectedToken?.address !== '0x0000000000000000000000000000000000000000' // doesn't need approve for OFT
       ) {
@@ -129,23 +142,92 @@ export function TransferButton({
         },
       });
 
-      if (transferActionInfo.bridgeType === 'cBridge' && cBridgeArgs && fromChain) {
-        try {
-          const cBridgeHash = await bridgeSDK.cBridge.sendToken({
+      if (isEvmConnected && !!address) {
+        if (transferActionInfo.bridgeType === 'cBridge' && cBridgeArgs && fromChain) {
+          try {
+            const cBridgeHash = await bridgeSDK.cBridge.sendToken({
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              walletClient: walletClient as any,
+              publicClient,
+              bridgeAddress: transferActionInfo.bridgeAddress as string,
+              fromChainId: fromChain?.id,
+              isPegged: selectedToken.isPegged,
+              address,
+              peggedConfig: selectedToken?.cBridge?.peggedConfig,
+              args: cBridgeArgs.args,
+            });
+            await publicClient.waitForTransactionReceipt({
+              hash: cBridgeHash,
+            });
+            if (cBridgeHash) {
+              reportEvent({
+                id: 'transaction_bridge_success',
+                params: {
+                  item_category: fromChain?.name,
+                  item_category2: toChain?.name,
+                  token: selectedToken.displaySymbol,
+                  value: sendValue,
+                  item_variant: 'cBridge',
+                },
+              });
+              onCloseConfirmingModal();
+              setHash(cBridgeHash);
+              setChosenBridge('cBridge');
+              onOpenSubmittedModal();
+            }
+            // eslint-disable-next-line no-console
+            console.log('cBridge tx', cBridgeHash);
+          } catch (e) {
+            // eslint-disable-next-line no-console
+            console.log(e);
+            handleFailure(e);
+          }
+        } else if (transferActionInfo.bridgeType === 'deBridge' && transferActionInfo.value) {
+          try {
+            const deBridgeHash = await bridgeSDK.deBridge.sendToken({
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              walletClient: walletClient as any,
+              bridgeAddress: transferActionInfo.bridgeAddress as string,
+              data: transferActionInfo.data as `0x${string}`,
+              amount: BigInt(transferActionInfo.value),
+              address,
+            });
+            await publicClient.waitForTransactionReceipt({
+              hash: deBridgeHash,
+            });
+            if (deBridgeHash) {
+              reportEvent({
+                id: 'transaction_bridge_success',
+                params: {
+                  item_category: fromChain?.name,
+                  item_category2: toChain?.name,
+                  token: selectedToken.displaySymbol,
+                  value: sendValue,
+                  item_variant: 'deBridge',
+                },
+              });
+              onCloseConfirmingModal();
+              setChosenBridge('deBridge');
+              setHash(deBridgeHash);
+              onOpenSubmittedModal();
+            }
+          } catch (e) {
+            // eslint-disable-next-line no-console
+            console.log(e);
+            handleFailure(e);
+          }
+        } else if (transferActionInfo.bridgeType === 'stargate') {
+          const stargateHash = await bridgeSDK.stargate.sendToken({
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             walletClient: walletClient as any,
             publicClient,
-            bridgeAddress: transferActionInfo.bridgeAddress as string,
-            fromChainId: fromChain?.id,
-            isPegged: selectedToken.isPegged,
-            address,
-            peggedConfig: selectedToken?.cBridge?.peggedConfig,
-            args: cBridgeArgs.args,
+            bridgeAddress: transferActionInfo.bridgeAddress as `0x${string}`,
+            tokenAddress: selectedToken.address as `0x${string}`,
+            endPointId: toToken?.stargate?.raw?.endpointID as number,
+            receiver: address,
+            amount: parseUnits(sendValue, selectedToken.decimals),
           });
-          await publicClient.waitForTransactionReceipt({
-            hash: cBridgeHash,
-          });
-          if (cBridgeHash) {
+          if (stargateHash) {
             reportEvent({
               id: 'transaction_bridge_success',
               params: {
@@ -153,35 +235,25 @@ export function TransferButton({
                 item_category2: toChain?.name,
                 token: selectedToken.displaySymbol,
                 value: sendValue,
-                item_variant: 'cBridge',
+                item_variant: 'stargate',
               },
             });
             onCloseConfirmingModal();
-            setHash(cBridgeHash);
-            setChosenBridge('cBridge');
+            setChosenBridge('stargate');
+            setHash(stargateHash);
             onOpenSubmittedModal();
           }
-          // eslint-disable-next-line no-console
-          console.log('cBridge tx', cBridgeHash);
-        } catch (e) {
-          // eslint-disable-next-line no-console
-          console.log(e);
-          handleFailure(e);
-        }
-      } else if (transferActionInfo.bridgeType === 'deBridge' && transferActionInfo.value) {
-        try {
-          const deBridgeHash = await bridgeSDK.deBridge.sendToken({
+        } else if (transferActionInfo.bridgeType === 'layerZero') {
+          const layerZeroHash = await bridgeSDK.layerZero.sendToken({
+            bridgeAddress: transferActionInfo.bridgeAddress as `0x${string}`,
+            dstEndpoint: toToken?.layerZero?.raw?.endpointID as number,
+            userAddress: address,
+            amount: parseUnits(sendValue, selectedToken.decimals),
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             walletClient: walletClient as any,
-            bridgeAddress: transferActionInfo.bridgeAddress as string,
-            data: transferActionInfo.data as `0x${string}`,
-            amount: BigInt(transferActionInfo.value),
-            address,
+            publicClient,
           });
-          await publicClient.waitForTransactionReceipt({
-            hash: deBridgeHash,
-          });
-          if (deBridgeHash) {
+          if (layerZeroHash) {
             reportEvent({
               id: 'transaction_bridge_success',
               params: {
@@ -189,72 +261,17 @@ export function TransferButton({
                 item_category2: toChain?.name,
                 token: selectedToken.displaySymbol,
                 value: sendValue,
-                item_variant: 'deBridge',
+                item_variant: 'layerZero',
               },
             });
             onCloseConfirmingModal();
-            setChosenBridge('deBridge');
-            setHash(deBridgeHash);
+            setChosenBridge('layerZero');
+            setHash(layerZeroHash);
             onOpenSubmittedModal();
           }
-        } catch (e) {
-          // eslint-disable-next-line no-console
-          console.log(e);
-          handleFailure(e);
         }
-      } else if (transferActionInfo.bridgeType === 'stargate') {
-        const stargateHash = await bridgeSDK.stargate.sendToken({
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          walletClient: walletClient as any,
-          publicClient,
-          bridgeAddress: transferActionInfo.bridgeAddress as `0x${string}`,
-          tokenAddress: selectedToken.address as `0x${string}`,
-          endPointId: toToken?.stargate?.raw?.endpointID as number,
-          receiver: address,
-          amount: parseUnits(sendValue, selectedToken.decimals),
-        });
-        if (stargateHash) {
-          reportEvent({
-            id: 'transaction_bridge_success',
-            params: {
-              item_category: fromChain?.name,
-              item_category2: toChain?.name,
-              token: selectedToken.displaySymbol,
-              value: sendValue,
-              item_variant: 'stargate',
-            },
-          });
-          onCloseConfirmingModal();
-          setChosenBridge('stargate');
-          setHash(stargateHash);
-          onOpenSubmittedModal();
-        }
-      } else if (transferActionInfo.bridgeType === 'layerZero') {
-        const layerZeroHash = await bridgeSDK.layerZero.sendToken({
-          bridgeAddress: transferActionInfo.bridgeAddress as `0x${string}`,
-          dstEndpoint: toToken?.layerZero?.raw?.endpointID as number,
-          userAddress: address,
-          amount: parseUnits(sendValue, selectedToken.decimals),
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          walletClient: walletClient as any,
-          publicClient,
-        });
-        if (layerZeroHash) {
-          reportEvent({
-            id: 'transaction_bridge_success',
-            params: {
-              item_category: fromChain?.name,
-              item_category2: toChain?.name,
-              token: selectedToken.displaySymbol,
-              value: sendValue,
-              item_variant: 'layerZero',
-            },
-          });
-          onCloseConfirmingModal();
-          setChosenBridge('layerZero');
-          setHash(layerZeroHash);
-          onOpenSubmittedModal();
-        }
+      } else if (tronAddress && isTronConnected) {
+        // Send TRC20 token
       }
     } catch (e: any) {
       // eslint-disable-next-line no-console
@@ -286,6 +303,10 @@ export function TransferButton({
     toToken,
     fromChain,
     toChain,
+    isApproveNeeded,
+    isTronConnected,
+    isEvmConnected,
+    tronAddress,
   ]);
 
   return (

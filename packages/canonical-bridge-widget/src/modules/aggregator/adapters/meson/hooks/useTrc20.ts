@@ -1,8 +1,10 @@
 import { useTronWallet } from '@node-real/walletkit/tron';
-import { TronWeb } from 'tronweb';
+
+import { useTronWeb } from '@/core/hooks/useTronWeb';
 
 export const useTrc20 = () => {
   const { address, signTransaction } = useTronWallet();
+  const tronWeb = useTronWeb();
 
   const approveTrc20 = async ({
     tronBridgeAddress,
@@ -13,16 +15,12 @@ export const useTrc20 = () => {
     trc20Address: string;
     amount: string;
   }) => {
-    // Check whether from chain is tron
-    if (!address) return;
-    const tronWeb = new TronWeb({
-      fullHost: 'https://api.nileex.io/',
-    });
+    if (!address || !tronWeb) return;
+
     const parameter = [
       { type: 'address', value: tronBridgeAddress },
       { type: 'uint256', value: tronWeb.toSun(Number(amount)) },
     ];
-
     // triggerConstantContract readonly function
     // triggerSmartContract return unsigned transaction
     // create unsigned transaction
@@ -39,14 +37,12 @@ export const useTrc20 = () => {
     const res = await tronWeb.trx.sendRawTransaction(signedTransaction as any);
     // eslint-disable-next-line no-console
     console.log(txWrapper.transaction, signedTransaction, res);
+    return res;
   };
 
   const getTrc20Balance = async ({ trc20Address }: { trc20Address: string }) => {
-    if (!address) return;
-    const tronWeb = new TronWeb({
-      fullHost: 'https://api.nileex.io/',
-    });
-    // tronWeb.setAddress(address);
+    if (!address || !tronWeb) return;
+    tronWeb.setAddress(address);
     const contract = await tronWeb.contract().at(trc20Address);
     const balance = await contract.methods.balanceOf(address).call();
 
@@ -60,15 +56,11 @@ export const useTrc20 = () => {
     trc20Address: string;
     tronBridgeAddress: string;
   }) => {
-    if (!address) return;
-    const tronWeb = new TronWeb({
-      fullHost: 'https://api.nileex.io/',
-    });
-    // tronWeb.setAddress(address);
+    if (!address || !tronWeb) return;
+    tronWeb.setAddress(address);
     const contract = await tronWeb.contract().at(trc20Address);
-    const balance = await contract.methods.allowance(address, tronBridgeAddress).call();
-
-    return balance;
+    const allowance = await contract.methods.allowance(address, tronBridgeAddress).call();
+    return allowance;
   };
 
   return { approveTrc20, getTrc20Balance, getTrc20Allowance };

@@ -15,6 +15,8 @@ export interface CurrentWalletContextProps {
   disconnect: () => void;
   linkWallet: (params: { chainType?: ChainType; initialChainId?: number }) => void;
   walletType: ChainType;
+  isEvmConnected: boolean;
+  isTronConnected: boolean;
   walletId?: string;
   isConnected: boolean;
   address?: string;
