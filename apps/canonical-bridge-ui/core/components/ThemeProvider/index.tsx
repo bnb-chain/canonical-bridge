@@ -24,7 +24,6 @@ export const ThemeProvider = ({ children }: ThemeProviderProps) => {
       global: ({ colorMode }: { colorMode: ColorMode }) => ({
         body: {
           bg: theme.colors[colorMode].background[3],
-          minWidth: '998px',
         },
       }),
     },
