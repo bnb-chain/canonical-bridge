@@ -1,22 +1,28 @@
 import { Button, useColorMode, useIntl, useTheme } from '@bnb-chain/space';
 
 import { reportEvent } from '@/core/utils/gtm';
-import { useAppSelector } from '@/modules/store/StoreProvider';
 import { useCurrentWallet } from '@/modules/wallet/CurrentWalletProvider';
+import { useAppSelector } from '@/modules/store/StoreProvider';
 
-export const WalletConnectButton = () => {
+export const SwitchWalletButton = () => {
   const { formatMessage } = useIntl();
-  const { colorMode } = useColorMode();
-  const theme = useTheme();
+  const { linkWallet } = useCurrentWallet();
 
   const fromChain = useAppSelector((state) => state.transfer.fromChain);
-  const { linkWallet } = useCurrentWallet();
+
+  const theme = useTheme();
+  const { colorMode } = useColorMode();
 
   return (
     <Button
       size="lg"
       h={'56px'}
       w="100%"
+      color={theme.colors[colorMode].button.wallet.text}
+      background={theme.colors[colorMode].support.warning['3']}
+      _hover={{
+        background: theme.colors[colorMode].support.warning['2'],
+      }}
       onClick={() => {
         linkWallet({
           chainType: fromChain?.chainType,
@@ -26,17 +32,12 @@ export const WalletConnectButton = () => {
         reportEvent({
           id: 'click_bridge_goal',
           params: {
-            item_name: 'Connect Wallet',
+            item_name: 'Switch Wallet',
           },
         });
       }}
-      color={theme.colors[colorMode].button.wallet.text}
-      background={theme.colors[colorMode].button.wallet.background.default}
-      _hover={{
-        background: theme.colors[colorMode].button.wallet.background.hover,
-      }}
     >
-      <span>{formatMessage({ id: 'transfer.button.wallet-connect' })}</span>
+      {formatMessage({ id: 'transfer.button.switch-wallet' })}
     </Button>
   );
 };

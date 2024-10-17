@@ -7,6 +7,8 @@ import { StoreProvider } from '@/modules/store/StoreProvider';
 import { WalletProvider } from '@/modules/wallet/WalletProvider';
 import { ThemeProvider, ThemeProviderProps } from '@/core/theme/ThemeProvider';
 import { AggregatorProvider } from '@/modules/aggregator/components/AggregatorProvider';
+import { TokenBalancesProvider } from '@/modules/aggregator/components/TokenBalancesProvider';
+import { TokenPricesProvider } from '@/modules/aggregator/components/TokenPricesProvider';
 
 export interface ICanonicalBridgeConfig {
   appName: string;
@@ -81,15 +83,17 @@ export function CanonicalBridgeProvider(props: CanonicalBridgeProviderProvider) 
   return (
     <CanonicalBridgeContext.Provider value={value}>
       <StoreProvider>
-        <ThemeProvider themeConfig={value.appearance.theme} colorMode={value.appearance.mode}>
-          <IntlProvider locale={value.appearance.locale} messages={value.appearance.messages}>
-            <WalletProvider chainConfigs={chains}>
-              <AggregatorProvider transferConfig={transferConfig} chainConfigs={chains}>
+        <IntlProvider locale={value.appearance.locale} messages={value.appearance.messages}>
+          <AggregatorProvider transferConfig={transferConfig} chains={chains}>
+            <ThemeProvider themeConfig={value.appearance.theme} colorMode={value.appearance.mode}>
+              <WalletProvider>
+                <TokenBalancesProvider />
+                <TokenPricesProvider />
                 {children}
-              </AggregatorProvider>
-            </WalletProvider>
-          </IntlProvider>
-        </ThemeProvider>
+              </WalletProvider>
+            </ThemeProvider>
+          </AggregatorProvider>
+        </IntlProvider>
       </StoreProvider>
     </CanonicalBridgeContext.Provider>
   );

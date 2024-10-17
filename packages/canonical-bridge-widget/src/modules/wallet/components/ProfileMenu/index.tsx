@@ -9,7 +9,7 @@ import { formatAppAddress } from '@/core/utils/address';
 import { Dropdown } from '@/modules/wallet/components/Dropdown/Dropdown';
 import { DropdownButton } from '@/modules/wallet/components/Dropdown/DropdownButton';
 import { DropdownList } from '@/modules/wallet/components/Dropdown/DropdownList';
-import { useCurrentWallet } from '@/modules/wallet/hooks/useCurrentWallet';
+import { useCurrentWallet } from '@/modules/wallet/CurrentWalletProvider';
 
 export const ProfileMenu = () => {
   const { formatMessage } = useIntl();

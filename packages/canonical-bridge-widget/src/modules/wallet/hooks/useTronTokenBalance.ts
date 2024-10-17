@@ -1,7 +1,39 @@
-import { useTronAccount } from '@/modules/wallet/hooks/useTronAccount';
+import { useQuery } from '@tanstack/react-query';
 
-export function useTronTokenBalance(tokenAddress?: string) {
-  const { address } = useTronAccount();
+import { tronWeb } from '@/core/utils/tron';
 
-  return null;
-}
+const abi = [
+  {
+    constant: true,
+    inputs: [{ internalType: 'address', name: '', type: 'address' }],
+    name: 'balanceOf',
+    outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
+    payable: false,
+    stateMutability: 'view',
+    type: 'function',
+  },
+];
+
+export const useTronTokenBalance = ({
+  accountAddress,
+  tokenAddress,
+}: {
+  accountAddress: string | null;
+  tokenAddress: string | undefined | null;
+}) => {
+  return useQuery({
+    queryKey: ['useTronTokenBalance', { accountAddress, tokenAddress }],
+    enabled: !!accountAddress && !!tokenAddress && !!tronWeb,
+    queryFn: async () => {
+      if (!accountAddress || !tokenAddress) return '0';
+      if (tokenAddress === 'TRON') {
+        const balance = await tronWeb.trx.getUnconfirmedBalance(accountAddress);
+        return balance?.toString() as string;
+      }
+      tronWeb.setAddress(tokenAddress);
+      const contractInstance = await tronWeb.contract(abi, tokenAddress);
+      const balanceOf = await contractInstance.balanceOf(accountAddress).call();
+      return balanceOf?.toString() as string;
+    },
+  });
+};

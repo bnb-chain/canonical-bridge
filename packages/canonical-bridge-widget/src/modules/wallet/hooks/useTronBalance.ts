@@ -1,17 +1,20 @@
 import { useQuery } from '@tanstack/react-query';
 
 import { FormattedBalance } from '@/modules/wallet/hooks/useEvmBalance';
+import { tronWeb } from '@/core/utils/tron';
 
 export function useTronBalance(address?: string, enabled = true) {
   return useQuery<FormattedBalance>({
-    queryKey: ['tron', address],
+    queryKey: ['useTronBalance', address],
     refetchInterval: 1000 * 5,
     enabled: !!address && enabled,
     queryFn: async () => {
+      const balance = await tronWeb.trx.getBalance(address);
+
       return {
-        formatted: '0',
+        formatted: String(balance / 1e6),
         symbol: 'TRX',
-        value: BigInt(0),
+        value: BigInt(balance),
       };
     },
   });

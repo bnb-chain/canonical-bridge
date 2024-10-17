@@ -10,21 +10,25 @@ import {
 } from '@node-real/walletkit/evm';
 import * as allChains from 'viem/chains';
 import { defaultTronConfig, tronLink } from '@node-real/walletkit/tron';
+import React from 'react';
 
 import { IChainConfig } from '@/modules/aggregator/types';
 import { useBridgeConfig } from '@/CanonicalBridgeProvider';
+import { useAggregator } from '@/modules/aggregator/components/AggregatorProvider';
+import { CurrentWalletProvider } from '@/modules/wallet/CurrentWalletProvider';
 
 interface WalletProviderProps {
-  chainConfigs: IChainConfig[];
   children: React.ReactNode;
 }
 
 export function WalletProvider(props: WalletProviderProps) {
-  const { chainConfigs, children } = props;
+  const { children } = props;
 
   const bridgeConfig = useBridgeConfig();
-  const config = useMemo<WalletKitConfig>(
-    () => ({
+  const { chainConfigs } = useAggregator();
+
+  const config = useMemo<WalletKitConfig>(() => {
+    return {
       options: {
         useGridLayoutOnMobile: false,
         gridLayoutThreshold: 10,
@@ -43,9 +47,8 @@ export function WalletProvider(props: WalletProviderProps) {
         autoConnect: false,
         wallets: [tronLink()],
       }),
-    }),
-    [chainConfigs, bridgeConfig.appName, bridgeConfig.wallet.walletConnectProjectId],
-  );
+    };
+  }, [bridgeConfig.appName, bridgeConfig.wallet.walletConnectProjectId, chainConfigs]);
 
   if (!config.evmConfig?.chains?.length) {
     return null;
@@ -53,37 +56,39 @@ export function WalletProvider(props: WalletProviderProps) {
 
   return (
     <WalletKitProvider config={config} mode="light">
-      {children}
+      <CurrentWalletProvider>{children}</CurrentWalletProvider>
       <ConnectModal />
     </WalletKitProvider>
   );
 }
 
 function getEvmChains(chainConfigs: IChainConfig[]) {
-  return chainConfigs.map((item) => {
-    const evmChain = Object.values(allChains).find((e) => e.id === item.id);
-    return {
-      id: item.id,
-      name: item.name,
-      nativeCurrency: item.nativeCurrency,
-      rpcUrls: {
-        default: {
-          http: [item.rpcUrl],
+  return chainConfigs
+    .filter((e) => e.chainType === 'evm')
+    .map((item) => {
+      const evmChain = Object.values(allChains).find((e) => e.id === item.id);
+      return {
+        id: item.id as number,
+        name: item.name,
+        nativeCurrency: item.nativeCurrency,
+        rpcUrls: {
+          default: {
+            http: [item.rpcUrl],
+          },
+          public: {
+            http: [item.rpcUrl],
+          },
         },
-        public: {
-          http: [item.rpcUrl],
+        blockExplorers: {
+          default: {
+            name: item.explorer.name,
+            url: item.explorer.url,
+          },
         },
-      },
-      blockExplorers: {
-        default: {
-          name: item.explorer.name,
-          url: item.explorer.url,
+        contracts: {
+          ...evmChain?.contracts,
+          ...item.contracts,
         },
-      },
-      contracts: {
-        ...evmChain?.contracts,
-        ...item.contracts,
-      },
-    };
-  });
+      };
+    });
 }

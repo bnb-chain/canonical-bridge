@@ -1,9 +1,12 @@
+// import '@bnb-chain/canonical-bridge-widget/style.css';
+
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import {
   CanonicalBridgeProvider,
   ICanonicalBridgeConfig,
   TransferWidget,
 } from '@bnb-chain/canonical-bridge-widget';
+import Head from 'next/head';
 
 import { en as messages } from '@/core/locales/en';
 import { env } from '@/core/env';
@@ -56,15 +59,24 @@ export default function App() {
   const transferConfig = useTransferConfig();
 
   return (
-    <ThemeProvider>
-      <QueryClientProvider client={queryClient}>
-        <CanonicalBridgeProvider config={config} transferConfig={transferConfig} chains={appChains}>
-          <Layout>
-            <TransferWidget />
-          </Layout>
-        </CanonicalBridgeProvider>
-      </QueryClientProvider>
-    </ThemeProvider>
+    <>
+      <Head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+      </Head>
+      <ThemeProvider>
+        <QueryClientProvider client={queryClient}>
+          <CanonicalBridgeProvider
+            config={config}
+            transferConfig={transferConfig}
+            chains={appChains}
+          >
+            <Layout>
+              <TransferWidget />
+            </Layout>
+          </CanonicalBridgeProvider>
+        </QueryClientProvider>
+      </ThemeProvider>
+    </>
   );
 }
 

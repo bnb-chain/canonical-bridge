@@ -6,19 +6,13 @@ import { NetworkIcon } from '@/core/components/icons/NetworkIcon';
 import { useAppSelector } from '@/modules/store/StoreProvider';
 
 export function useWalletModal() {
-  const fromChain = useAppSelector((state) => state.transfer.fromChain);
-
   const { isOpen, onClose, onOpen } = useConnectModal();
   useUpdateWallets();
 
   return {
     isOpen,
     onClose,
-    onOpen() {
-      onOpen({
-        initialChainId: fromChain?.id,
-      });
-    },
+    onOpen,
   };
 }
 
@@ -26,7 +20,7 @@ export function useUpdateWallets() {
   const fromChain = useAppSelector((state) => state.transfer.fromChain);
   const { evmConfig, tronConfig, setWallets } = useWalletKit();
 
-  const wallets = useMemo(() => {
+  const { evmWalletIds, tronWalletIds, wallets } = useMemo(() => {
     const wallets: BaseWallet[] = [];
     if (evmConfig?.wallets) {
       wallets.push(...evmConfig.wallets);
@@ -34,18 +28,22 @@ export function useUpdateWallets() {
     if (tronConfig?.wallets) {
       wallets.push(...tronConfig?.wallets);
     }
-    return wallets;
+    return {
+      evmWalletIds: evmConfig?.wallets.map((e) => e.id) ?? [],
+      tronWalletIds: tronConfig?.wallets.map((e) => e.id) ?? [],
+      wallets,
+    };
   }, [evmConfig?.wallets, tronConfig?.wallets]);
 
   useEffect(() => {
-    const availableWalletIds: string[] = [];
     const chainType = fromChain?.chainType ?? 'evm';
+    const availableWalletIds = chainType === 'evm' ? evmWalletIds : tronWalletIds;
 
-    const nextWallets: BaseWallet[] = [];
+    const newWallets: BaseWallet[] = [];
     wallets.forEach((item) => {
       const count = wallets.filter((e) => e.name === item.name).length;
 
-      nextWallets.push({
+      newWallets.push({
         ...item,
         isVisible: count === 1 || (count > 1 && item.walletType === chainType),
         render: ({ wallet, onClick }) => {
@@ -58,13 +56,13 @@ export function useUpdateWallets() {
                 {!isAvailable && (
                   <Flex
                     color={theme.colors.light.support.warning[3]}
-                    fontSize={theme.sizes['3.5']}
-                    lineHeight={theme.sizes['4']}
-                    fontWeight={400}
-                    gap={theme.sizes['1']}
+                    fontSize={'12px'}
+                    lineHeight={'16px'}
+                    fontWeight={500}
+                    gap={'4px'}
                     textAlign="left"
                   >
-                    <NetworkIcon boxSize={theme.sizes['4']} />
+                    <NetworkIcon boxSize={'16px'} />
                     Incompatible with current network
                   </Flex>
                 )}
@@ -78,7 +76,7 @@ export function useUpdateWallets() {
       });
     });
 
-    nextWallets.sort((a, b) => {
+    newWallets.sort((a, b) => {
       const aId = a.id as any;
       const bId = b.id as any;
 
@@ -95,8 +93,6 @@ export function useUpdateWallets() {
       return 0;
     });
 
-    setWallets(nextWallets);
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [fromChain]);
+    setWallets(newWallets);
+  }, [evmWalletIds, fromChain, setWallets, tronWalletIds, wallets]);
 }

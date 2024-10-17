@@ -1,34 +1,31 @@
 import { Flex, useColorMode, useIntl, useTheme, Text } from '@bnb-chain/space';
-import { useAccount } from 'wagmi';
 import { TickIcon } from '@bnb-chain/icons';
 
 import { IconImage } from '@/core/components/IconImage';
 import { useAppSelector } from '@/modules/store/StoreProvider';
-import { useFromChains } from '@/modules/aggregator/hooks/useFromChains';
-import { useEvmSwitchChain } from '@/modules/wallet/hooks/useEvmSwitchChain';
 import { Dropdown } from '@/modules/wallet/components/Dropdown/Dropdown';
 import { DropdownButton } from '@/modules/wallet/components/Dropdown/DropdownButton';
 import { DropdownList } from '@/modules/wallet/components/Dropdown/DropdownList';
 import { DropdownItem } from '@/modules/wallet/components/Dropdown/DropdownItem';
+import { useCurrentWallet } from '@/modules/wallet/CurrentWalletProvider';
+import { useFromChains } from '@/modules/aggregator/hooks/useFromChains';
 
 export function NetworkStatus() {
   const fromChain = useAppSelector((state) => state.transfer.fromChain);
 
+  const { formatMessage } = useIntl();
   const theme = useTheme();
   const { colorMode } = useColorMode();
-  const { chain, chainId } = useAccount();
-  const { formatMessage } = useIntl();
-  const fromChains = useFromChains();
-  const { switchChain } = useEvmSwitchChain();
 
-  const bridgeChains = useFromChains();
+  const { chain, chainId, linkWallet } = useCurrentWallet();
+  const fromChains = useFromChains();
 
   if (!chain) {
     return null;
   }
 
   const isWrongNetwork = !!fromChain && fromChain.id !== chain.id;
-  const iconUrl = bridgeChains.find((e) => e.id === chain.id)?.icon;
+  const iconUrl = fromChains.find((e) => e.id === chain.id)?.icon;
 
   return (
     <Dropdown>
@@ -68,11 +65,10 @@ export function NetworkStatus() {
                     }
                     bg={isSelected ? theme.colors[colorMode].popover.selected : undefined}
                     onClick={() => {
-                      if (chainId !== item.id) {
-                        switchChain({
-                          chainId: item.id,
-                        });
-                      }
+                      linkWallet({
+                        chainType: item.chainType,
+                        initialChainId: item.id,
+                      });
                     }}
                   >
                     <IconImage src={item.icon} boxSize="16px" flexShrink={0} />
