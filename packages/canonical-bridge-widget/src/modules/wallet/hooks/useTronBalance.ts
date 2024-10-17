@@ -11,10 +11,11 @@ export function useTronBalance(address?: string, enabled = true) {
     refetchInterval: 1000 * 5,
     enabled: !!address && enabled && !!tronWeb,
     queryFn: async () => {
-      const balance = await tronWeb!.trx.getBalance(address);
+      const balance = await tronWeb!.trx.getUnconfirmedBalance(address);
+      const formattedBalance = tronWeb!.fromSun(balance);
 
       return {
-        formatted: String(balance / 1e6),
+        formatted: String(formattedBalance),
         symbol: 'TRX',
         value: BigInt(balance),
       };

@@ -74,7 +74,11 @@ export function CurrentWalletProvider(props: CurrentWalletProviderProps) {
       chainType?: ChainType;
       initialChainId?: number;
     }) => {
-      if (walletType !== chainType) {
+      if (
+        walletType !== chainType ||
+        (chainType === 'evm' && !evmAccount.isConnected) ||
+        (chainType === 'tron' && !tronAccount.isConnected)
+      ) {
         onOpen({
           initialChainId,
           onConnected({ wallet }) {
@@ -89,7 +93,14 @@ export function CurrentWalletProvider(props: CurrentWalletProviderProps) {
         }
       }
     },
-    [evmAccount.chainId, onOpen, switchChain, walletType],
+    [
+      evmAccount.chainId,
+      evmAccount.isConnected,
+      onOpen,
+      switchChain,
+      tronAccount.isConnected,
+      walletType,
+    ],
   );
 
   const commonProps = {
