@@ -28,3 +28,5 @@ export default function App({ Component, ...restProps }: AppProps) {
     </>
   );
 }
+
+App.getInitialProps = () => {};
