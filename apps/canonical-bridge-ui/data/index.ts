@@ -9,7 +9,7 @@ import axios from 'axios';
 import { env } from '@/core/env';
 import stargateConfig from '@/data/stargate/config.json';
 import layerZeroConfig from '@/data/layerZero/config.json';
-import mesonConfigTestnet from '@/data/meson/config_testnet.json';
+import mesonConfigTestnet from '@/data/meson/config.json';
 
 export function useTransferConfig() {
   const [transferConfig, setTransferConfig] = useState<ITransferConfig>();

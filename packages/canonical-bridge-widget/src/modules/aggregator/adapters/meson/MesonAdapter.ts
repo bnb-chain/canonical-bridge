@@ -3,6 +3,9 @@ import { BridgeType } from '@bnb-chain/canonical-bridge-sdk';
 import { BaseAdapter, ITransferTokenPair } from '@/modules/aggregator/shared/BaseAdapter';
 import { IMesonChain, IMesonToken } from '@/modules/aggregator/adapters/meson/types';
 
+const SUPPORTED_CHAIN_IDS = [56, 97, 728126427, 728126428];
+const SUPPORTED_TOKENS = ['USDT'];
+
 export class MesonAdapter extends BaseAdapter<IMesonChain[], IMesonChain, IMesonToken> {
   public bridgeType: BridgeType = 'meson';
 
@@ -13,7 +16,9 @@ export class MesonAdapter extends BaseAdapter<IMesonChain[], IMesonChain, IMeson
       const hasChainConfig = this.includedChains.includes(Number(chain.chainId));
       const isExcludedChain = this.excludedChains.includes(Number(chain.chainId));
       const hasToken = chain.tokens?.length > 0;
-      return hasChainConfig && !isExcludedChain && hasToken;
+
+      const isSupported = SUPPORTED_CHAIN_IDS.includes(Number(chain.chainId)); // TODO
+      return hasChainConfig && !isExcludedChain && hasToken && isSupported;
     });
 
     const chainMap = new Map<number, IMesonChain>();
@@ -40,7 +45,8 @@ export class MesonAdapter extends BaseAdapter<IMesonChain[], IMesonChain, IMeson
           tokenSymbol: token?.id?.toUpperCase(),
           tokenAddress: token.addr,
         });
-        return !isExcludedToken;
+        const isSupported = SUPPORTED_TOKENS.includes(token.id?.toUpperCase()); // TODO
+        return !isExcludedToken && isSupported;
       });
 
       if (filteredTokens.length > 0 && this.chainMap.has(chainId)) {

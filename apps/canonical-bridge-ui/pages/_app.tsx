@@ -1,22 +1,8 @@
-// import '@bnb-chain/canonical-bridge-widget/style.css';
-
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import {
-  CanonicalBridgeProvider,
-  ICanonicalBridgeConfig,
-  TransferWidget,
-} from '@bnb-chain/canonical-bridge-widget';
 import Head from 'next/head';
+import { AppProps } from 'next/app';
 
-import { en as messages } from '@/core/locales/en';
-import { env } from '@/core/env';
-import { dark } from '@/core/theme/dark';
-import { Layout } from '@/core/components/Layout';
-import { useTransferConfig } from '@/data';
 import { ThemeProvider } from '@/core/components/ThemeProvider';
-import { chains } from '@/data/chains';
-import { light } from '@/core/theme/light';
-import { testnetChains } from '@/data/chains-testnet';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -28,36 +14,7 @@ const queryClient = new QueryClient({
   },
 });
 
-const config: ICanonicalBridgeConfig = {
-  appName: env.APP_NAME,
-  assetPrefix: env.ASSET_PREFIX,
-
-  appearance: {
-    bridgeTitle: 'BNB Chain Cross-Chain Bridge',
-    mode: 'dark',
-    theme: {
-      dark: dark,
-      light: light,
-    },
-    locale: 'en',
-    messages,
-  },
-  wallet: {
-    walletConnectProjectId: env.WALLET_CONNECT_PROJECT_ID,
-  },
-  http: {
-    refetchingInterval: 30 * 1000, // 30s
-    apiTimeOut: 60 * 1000, // 60s
-    deBridgeAccessToken: '',
-    serverEndpoint: env.SERVER_ENDPOINT,
-  },
-};
-
-const appChains = chains.concat(testnetChains);
-
-export default function App() {
-  const transferConfig = useTransferConfig();
-
+export default function App({ Component, ...restProps }: AppProps) {
   return (
     <>
       <Head>
@@ -65,21 +22,9 @@ export default function App() {
       </Head>
       <ThemeProvider>
         <QueryClientProvider client={queryClient}>
-          <CanonicalBridgeProvider
-            config={config}
-            transferConfig={transferConfig}
-            chains={appChains}
-          >
-            <Layout>
-              <TransferWidget />
-            </Layout>
-          </CanonicalBridgeProvider>
+          <Component {...restProps.pageProps} />
         </QueryClientProvider>
       </ThemeProvider>
     </>
   );
 }
-
-App.getInitialProps = async () => {
-  return {};
-};

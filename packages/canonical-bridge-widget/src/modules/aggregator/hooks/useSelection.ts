@@ -205,7 +205,7 @@ function useSortedTokens() {
       tokens,
     }: {
       fromChainId: number;
-      chainType: ChainType;
+      chainType?: ChainType;
       tokens: IBridgeToken[];
     }) => {
       const balances = await getTokenBalances({

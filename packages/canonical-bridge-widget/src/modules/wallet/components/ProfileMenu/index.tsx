@@ -54,7 +54,7 @@ export const ProfileMenu = () => {
                   {walletIcon}
                 </Center>
 
-                <Flex flexDir="column">
+                <Flex flexDir="column" justifyContent="center">
                   <Flex gap="4px" alignItems="center" fontSize={'16px'} fontWeight={500}>
                     {formatAppAddress({ address })}
                     <CopyAddress boxSize={'20px'} content={address} />

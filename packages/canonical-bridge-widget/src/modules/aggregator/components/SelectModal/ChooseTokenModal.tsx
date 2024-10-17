@@ -28,7 +28,7 @@ export function ChooseTokenModal(props: ChooseTokenModalProps) {
   const { formatMessage } = useIntl();
   const theme = useTheme();
   const { colorMode } = useColorMode();
-  const { isConnected, walletType } = useCurrentWallet();
+  const { isConnected } = useCurrentWallet();
 
   const fromChain = useAppSelector((state) => state.transfer.fromChain);
   const toChain = useAppSelector((state) => state.transfer.toChain);
