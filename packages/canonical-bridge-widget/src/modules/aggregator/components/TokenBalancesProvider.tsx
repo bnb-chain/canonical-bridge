@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { useAccount, useChains } from 'wagmi';
+import { useChains } from 'wagmi';
 import { useEffect } from 'react';
 
 import { TIME } from '@/core/constants';
@@ -7,10 +7,13 @@ import { useTokens } from '@/modules/aggregator/hooks/useTokens';
 import { getTokenBalances } from '@/modules/aggregator/shared/getTokenBalances';
 import { useAppDispatch, useAppSelector } from '@/modules/store/StoreProvider';
 import { setIsLoadingTokenBalances, setTokenBalances } from '@/modules/aggregator/action';
+import { useTronWeb } from '@/core/hooks/useTronWeb';
+import { useCurrentWallet } from '@/modules/wallet/CurrentWalletProvider';
 
 export function TokenBalancesProvider() {
-  const { address } = useAccount();
+  const { address } = useCurrentWallet();
   const chains = useChains();
+  const tronWeb = useTronWeb();
 
   const fromChain = useAppSelector((state) => state.transfer.fromChain);
   const toChain = useAppSelector((state) => state.transfer.toChain);
@@ -26,11 +29,12 @@ export function TokenBalancesProvider() {
     refetchInterval: TIME.SECOND * 5,
     queryKey: ['tokenBalances', address, fromChain?.id, toChain?.id],
     queryFn: async () => {
-      const chain = chains?.find((item) => item.id === fromChain?.id);
       const balances = await getTokenBalances({
-        chain,
+        chainType: fromChain?.chainType,
         account: address,
         tokens,
+        chain: chains?.find((item) => item.id === fromChain?.id),
+        tronWeb,
       });
       return balances;
     },

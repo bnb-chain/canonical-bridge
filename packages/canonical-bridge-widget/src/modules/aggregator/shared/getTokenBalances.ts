@@ -1,15 +1,43 @@
 import { Address, Chain, createPublicClient, formatUnits, http } from 'viem';
+import { TronWeb } from 'tronweb';
 
-import { IBridgeToken } from '@/modules/aggregator/types';
+import { ChainType, IBridgeToken } from '@/modules/aggregator/types';
 import { ERC20_TOKEN } from '@/core/contract/abi';
 import { isChainOrTokenCompatible } from '@/modules/aggregator/shared/isChainOrTokenCompatible';
 
 export async function getTokenBalances({
+  chainType,
+  account,
+  tokens,
+  chain,
+  tronWeb,
+}: {
+  chainType?: ChainType;
+  account?: string;
+  tokens?: IBridgeToken[];
+  chain?: Chain;
+  tronWeb?: TronWeb;
+}) {
+  if (chainType === 'tron') {
+    return await getTronTokenBalances({
+      account,
+      tokens,
+      tronWeb,
+    });
+  }
+  return await getEvmTokenBalances({
+    account,
+    chain,
+    tokens,
+  });
+}
+
+async function getEvmTokenBalances({
   account,
   chain,
   tokens,
 }: {
-  account?: Address;
+  account?: string;
   chain?: Chain;
   tokens?: IBridgeToken[];
 }) {
@@ -37,7 +65,7 @@ export async function getTokenBalances({
         contracts,
       }),
       client.getBalance({
-        address: account,
+        address: account as Address,
       }),
     ]);
 
@@ -66,7 +94,55 @@ export async function getTokenBalances({
     return balances;
   } catch (err) {
     // eslint-disable-next-line no-console
-    console.log('[getTokenBalances] error:', err);
+    console.log('[getEvmTokenBalances] error:', err);
+    return {};
+  }
+}
+
+const tronBalanceABI = [
+  {
+    constant: true,
+    inputs: [{ internalType: 'address', name: '', type: 'address' }],
+    name: 'balanceOf',
+    outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
+    payable: false,
+    stateMutability: 'view',
+    type: 'function',
+  },
+];
+
+async function getTronTokenBalances({
+  account,
+  tokens,
+  tronWeb,
+}: {
+  account?: string;
+  tokens?: IBridgeToken[];
+  tronWeb?: TronWeb;
+}) {
+  try {
+    if (!account || !tokens?.length || !tronWeb) {
+      return {};
+    }
+
+    const balances: Record<string, number | undefined> = {};
+
+    const firstToken = tokens?.[0];
+    const tokenAddress = firstToken.address;
+
+    tronWeb.setAddress(firstToken.address);
+    const contractInstance = await tronWeb.contract(tronBalanceABI, tokenAddress);
+    const balanceOf = await contractInstance.balanceOf(account).call();
+    const balance = balanceOf?.toString() as string;
+
+    balances[firstToken.displaySymbol?.toUpperCase()] = Number(
+      formatUnits(BigInt(balance), firstToken.decimals),
+    );
+
+    return balances;
+  } catch (err) {
+    // eslint-disable-next-line no-console
+    console.log('[getTronTokenBalances] error:', err);
     return {};
   }
 }

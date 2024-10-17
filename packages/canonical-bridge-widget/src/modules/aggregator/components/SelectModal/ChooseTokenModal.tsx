@@ -53,7 +53,7 @@ export function ChooseTokenModal(props: ChooseTokenModalProps) {
   });
 
   const { isLoading, data } = useTokenList(result);
-  const showBalance = isConnected && walletType === 'evm' && !isLoading;
+  const showBalance = isConnected && !isLoading;
 
   return (
     <BaseModal
