@@ -13,7 +13,7 @@ export const en = {
   'to.section.title': 'To',
   'to.section.estimated-amount': 'Est. Amount Receive',
   'to.section.account.label': 'Destination Address',
-  'to.section.account.placeholder': 'Enter Destination Address',
+  'to.section.account.placeholder': 'Enter [Destination Network] Address',
   'to.section.account.invalid': 'Invalid address.',
 
   'you.send.title': 'You Send',

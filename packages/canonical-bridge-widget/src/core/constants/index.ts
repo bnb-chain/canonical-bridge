@@ -5,6 +5,8 @@ const BridgeList = ['cBridge', 'deBridge'];
 export const EXPLORER_URL: Record<typeof BridgeList[number], string> = {
   cBridge: 'https://celerscan.com/tx/',
   deBridge: 'https://app.debridge.finance/orders?s=',
+  // meson: 'https://testnet-explorer.meson.fi/swap/',
+  meson: 'https://explorer.meson.fi//swap/',
 };
 
 export const STARGATE_QUEUE_URL = 'https://mainnet.stargate-api.com/v1/buses/bus-drive-settings';
