@@ -31,6 +31,7 @@ export interface ICanonicalBridgeConfig {
     apiTimeOut?: number;
     deBridgeAccessToken?: string;
     serverEndpoint: string;
+    mesonEndpoint?: string;
   };
 }
 
@@ -73,6 +74,7 @@ export function CanonicalBridgeProvider(props: CanonicalBridgeProviderProvider) 
         refetchingInterval: 30000,
         apiTimeOut: 60000,
         deBridgeAccessToken: '',
+        mesonEndpoint: 'https://relayer.meson.fi/api/v1',
         ...config.http,
       },
 
