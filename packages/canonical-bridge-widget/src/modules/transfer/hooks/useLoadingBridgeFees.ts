@@ -132,14 +132,14 @@ export const useLoadingBridgeFees = () => {
             dispatch(setEstimatedAmount({ meson: 'error' }));
             dispatch(
               setRouteError({
-                meson: `Maximum amount is ${error.data.max}`,
+                meson: `Maximum amount is ${error.data.max} ${selectedToken.symbol}`,
               }),
             );
-          } else if (error.code === 21 && error.message === 'fee-over-amount') {
+          } else if (error.code === 66 && error.message === 'fee-over-amount') {
             dispatch(setEstimatedAmount({ meson: 'error' }));
             dispatch(
               setRouteError({
-                meson: `Minimum amount is ${error.data.fee}`,
+                meson: `Minimum amount is ${error.data.fee} ${selectedToken.symbol}`,
               }),
             );
           }

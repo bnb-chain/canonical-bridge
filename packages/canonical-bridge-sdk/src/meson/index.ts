@@ -30,7 +30,13 @@ export class Meson {
       });
       return swapResponse;
     } catch (error: any) {
-      throw new Error(`Failed to get Meson fees ${error}`);
+      // eslint-disable-next-line no-console
+      if (error?.response.data) {
+        console.log('Meson fee error', error?.response.data);
+        return error?.response?.data;
+      } else {
+        throw new Error(`Failed to get Meson fees ${error}`);
+      }
     }
   }
 }

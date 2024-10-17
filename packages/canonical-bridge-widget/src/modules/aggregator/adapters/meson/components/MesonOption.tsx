@@ -1,14 +1,12 @@
 import { useCallback, useMemo } from 'react';
-import { formatUnits } from 'viem';
 
 import { setTransferActionInfo } from '@/modules/transfer/action';
 import { useAppDispatch, useAppSelector } from '@/modules/store/StoreProvider';
 import { useToTokenInfo } from '@/modules/transfer/hooks/useToTokenInfo';
-import { formatNumber } from '@/core/utils/number';
 import { RouteTitle } from '@/modules/transfer/components/TransferOverview/RouteInfo/RouteTitle';
 import { EstimatedArrivalTime } from '@/modules/transfer/components/TransferOverview/RouteInfo/EstimatedArrivalTime';
 import { FeesInfo } from '@/modules/transfer/components/TransferOverview/RouteInfo/FeesInfo';
-import { AllowedSendAmount } from '@/modules/transfer/components/TransferOverview/RouteInfo/AllowedSendAmount';
+// import { AllowedSendAmount } from '@/modules/transfer/components/TransferOverview/RouteInfo/AllowedSendAmount';
 import { OtherRouteError } from '@/modules/transfer/components/TransferOverview/RouteInfo/OtherRouteError';
 import { RouteName } from '@/modules/transfer/components/TransferOverview/RouteInfo/RouteName';
 import { RouteWrapper } from '@/modules/transfer/components/TransferOverview/RouteInfo/RouteWrapper';
@@ -25,7 +23,7 @@ export const MesonOption = () => {
   const fromChain = useAppSelector((state) => state.transfer.fromChain);
 
   const receiveAmt = useMemo(() => {
-    return estimatedAmount?.['meson'] ?? '--';
+    return Number(estimatedAmount?.['meson']) ? estimatedAmount?.['meson'] : '--';
   }, [estimatedAmount]);
 
   const isError = useMemo(

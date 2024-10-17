@@ -1,5 +1,4 @@
 import { useCallback } from 'react';
-import { formatUnits } from 'viem';
 import { useIntl } from '@bnb-chain/space';
 
 import { useAppDispatch, useAppSelector } from '@/modules/store/StoreProvider';

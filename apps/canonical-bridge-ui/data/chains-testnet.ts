@@ -72,8 +72,8 @@ export const testnetChains: IChainConfig[] = [
     },
   },
   {
-    id: 'tron',
-    name: 'Tron',
+    id: 728126427,
+    name: 'Tron Nile Testnet',
     nativeCurrency: {
       name: 'TRX',
       symbol: 'TRX',
@@ -81,9 +81,9 @@ export const testnetChains: IChainConfig[] = [
     },
     rpcUrl: 'https://api.nileex.io',
     explorer: {
-      name: 'Solana explorer',
-      url: 'https://explorer.solana.com',
-      tokenUrlPattern: 'https://explorer.solana.com/address/{0}',
+      name: 'Tron Nile Scan',
+      url: 'https://nile.tronscan.org/',
+      tokenUrlPattern: 'https://nile.tronscan.org/#/token20/{0}',
     },
     chainType: 'tron',
   },
