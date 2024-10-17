@@ -19,7 +19,7 @@
     {
       "id": "tron",
       "name": "Tron",
-      "chainId": 728126428,
+      "chainId": "728126428",
       "address": "TKWqpzNucNNBMpfaE47F8CLhA8vzfNndH4",
       "tokens": [
         {
