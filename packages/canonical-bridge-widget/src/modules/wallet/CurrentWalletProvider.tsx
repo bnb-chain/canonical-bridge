@@ -94,6 +94,8 @@ export function CurrentWalletProvider(props: CurrentWalletProviderProps) {
     disconnect,
     linkWallet,
     walletType,
+    isEvmConnected: evmAccount.isConnected,
+    isTronConnected: tronAccount.isConnected,
   };
 
   const tronChain = chainConfigs.find((e) => e.chainType === 'tron');
