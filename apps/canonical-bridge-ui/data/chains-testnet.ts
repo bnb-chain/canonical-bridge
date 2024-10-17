@@ -79,7 +79,7 @@ export const testnetChains: IChainConfig[] = [
       symbol: 'TRX',
       decimals: 6,
     },
-    rpcUrl: '',
+    rpcUrl: 'https://api.nileex.io',
     explorer: {
       name: 'Solana explorer',
       url: 'https://explorer.solana.com',

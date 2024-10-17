@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 
-import { tronWeb } from '@/core/utils/tron';
+import { useTronWeb } from '@/core/hooks/useTronWeb';
 
 const abi = [
   {
@@ -21,11 +21,13 @@ export const useTronTokenBalance = ({
   accountAddress: string | null;
   tokenAddress: string | undefined | null;
 }) => {
+  const tronWeb = useTronWeb();
+
   return useQuery({
     queryKey: ['useTronTokenBalance', { accountAddress, tokenAddress }],
     enabled: !!accountAddress && !!tokenAddress && !!tronWeb,
     queryFn: async () => {
-      if (!accountAddress || !tokenAddress) return '0';
+      if (!accountAddress || !tokenAddress || !tronWeb) return '0';
       if (tokenAddress === 'TRON') {
         const balance = await tronWeb.trx.getUnconfirmedBalance(accountAddress);
         return balance?.toString() as string;
