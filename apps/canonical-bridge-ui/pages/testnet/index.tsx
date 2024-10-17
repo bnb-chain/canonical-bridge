@@ -5,7 +5,7 @@ import { useTestnetTransferConfig } from '@/data-testnet';
 import { testnetChains } from '@/data-testnet/testnetChains';
 import { Layout } from '@/core/components/Layout';
 
-export default function MainnetPage() {
+export default function TestnetPage() {
   const testnetTransferConfig = useTestnetTransferConfig();
 
   return (
