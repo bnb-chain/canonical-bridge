@@ -818,4 +818,20 @@ export const chains: IChainConfig[] = [
       url: 'https://explorer.harmony.one',
     },
   },
+  {
+    id: 728126428,
+    name: 'Tron',
+    nativeCurrency: {
+      name: 'TRX',
+      symbol: 'TRX',
+      decimals: 6,
+    },
+    rpcUrl: 'https://api.trongrid.io',
+    explorer: {
+      name: 'Tron Scan',
+      url: 'https://tronscan.io/',
+      tokenUrlPattern: 'https://tronscan.io/#/token20/{0}',
+    },
+    chainType: 'tron',
+  },
 ];

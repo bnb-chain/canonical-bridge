@@ -5,11 +5,14 @@ const BridgeList = ['cBridge', 'deBridge'];
 export const EXPLORER_URL: Record<typeof BridgeList[number], string> = {
   cBridge: 'https://celerscan.com/tx/',
   deBridge: 'https://app.debridge.finance/orders?s=',
+  // meson: 'https://testnet-explorer.meson.fi/swap/',
+  meson: 'https://explorer.meson.fi//swap/',
 };
 
 export const STARGATE_QUEUE_URL = 'https://mainnet.stargate-api.com/v1/buses/bus-drive-settings';
 
 export const DEFAULT_ADDRESS = '0x6836CbaCbBd1E798cC56802AC7d8BDf6Da0d0980';
+export const DEFAULT_TRON_ADDRESS = 'TTb3A6ASFejJuGcM1UVcRCJA23WGiJKSiY';
 
 export const nativeTokenMap = {
   1: 'ETH',

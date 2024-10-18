@@ -10,11 +10,12 @@ export const usePreSelectRoute = () => {
   const { bridgeAddress: cBridgeAddress } = useCBridgeTransferParams();
 
   const selectedToken = useAppSelector((state) => state.transfer.selectedToken);
+  const fromChain = useAppSelector((state) => state.transfer.fromChain);
 
   const preSelectRoute = useCallback(
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (response: any, bridgeType: BridgeType) => {
-      const [debridgeEst, cbridgeEst, stargateEst, layerZeroEst] = response;
+      const [debridgeEst, cbridgeEst, stargateEst, layerZeroEst, mesonEst] = response;
 
       if (bridgeType === 'deBridge' && debridgeEst.status === 'fulfilled') {
         dispatch(
@@ -51,6 +52,17 @@ export const usePreSelectRoute = () => {
             bridgeAddress: selectedToken?.layerZero?.raw?.bridgeAddress as `0x${string}`,
           }),
         );
+      } else if (
+        bridgeType === 'meson' &&
+        mesonEst.status === 'fulfilled' &&
+        fromChain?.meson?.raw?.address
+      ) {
+        dispatch(
+          setTransferActionInfo({
+            bridgeType: 'meson',
+            bridgeAddress: fromChain?.meson?.raw?.address as `0x${string}`,
+          }),
+        );
       }
     },
     [
@@ -58,6 +70,7 @@ export const usePreSelectRoute = () => {
       selectedToken?.layerZero?.raw?.bridgeAddress,
       selectedToken?.stargate?.raw?.bridgeAddress,
       cBridgeAddress,
+      fromChain,
     ],
   );
 

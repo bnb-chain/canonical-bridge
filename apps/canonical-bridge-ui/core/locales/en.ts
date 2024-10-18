@@ -13,7 +13,7 @@ export const en = {
   'to.section.title': 'To',
   'to.section.estimated-amount': 'Est. Amount Receive',
   'to.section.account.label': 'Destination Address',
-  'to.section.account.placeholder': 'Enter Destination Address',
+  'to.section.account.placeholder': 'Enter {network} Address',
   'to.section.account.invalid': 'Invalid address.',
 
   'you.send.title': 'You Send',
@@ -36,6 +36,7 @@ export const en = {
   'route.option.deBridge.title': 'deBridge',
   'route.option.stargate.title': 'Stargate',
   'route.option.layerZero.title': 'LayerZero',
+  'route.option.meson.title': 'Meson',
   'route.option.tag.best-time': 'Fastest',
   'route.option.tag.highest-amount': 'Best Return',
   'route.option.info.estimated-time': 'Est. Time:',
@@ -44,6 +45,8 @@ export const en = {
   'route.option.info.debridge-fee': 'deBridge Fee:',
   'route.option.info.market-maker-fee': 'Market Maker Gas Costs:',
   'route.option.info.base-fee': 'Base Fee:',
+  'route.option.info.lp-fee': 'Liquidity Providers:',
+  'route.option.info.service-fee': 'Service Fee:',
   'route.option.info.protocol-fee': 'Protocol Fee:',
 
   'transfer.button.confirm': 'Send',
@@ -87,6 +90,7 @@ export const en = {
   'select-modal.destination.incompatible.tooltip':
     'The token you’ve selected is incompatible with this network. Please select another token.',
 
+  'wallet.button.connect-wallet': 'Connect network',
   'wallet.network.wrong-network': 'Wrong network',
   'wallet.error.switch-network':
     'An error occurred when attempting to switch the network. Please select another network or try again.',

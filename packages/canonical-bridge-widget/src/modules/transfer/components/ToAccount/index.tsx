@@ -3,26 +3,31 @@ import {
   Box,
   Input,
   useColorMode,
+  theme,
   FlexProps,
   useIntl,
   InputGroup,
   InputRightElement,
-  useTheme,
 } from '@bnb-chain/space';
 import { ChangeEvent, useRef, useState } from 'react';
 
-import { useAppDispatch, useAppSelector } from '@/modules/store/StoreProvider';
 import { setToAccount } from '@/modules/transfer/action';
+import { useTronTransferInfo } from '@/modules/transfer/hooks/tron/useTronTransferInfo';
 import { ErrorIcon } from '@/core/components/icons/ErrorIcon';
-// import { CorrectIcon } from '@/core/components/icons/CorrectIcon';
+import { CorrectIcon } from '@/core/components/icons/CorrectIcon';
+import { useAppDispatch, useAppSelector } from '@/modules/store/StoreProvider';
 
 export function ToAccount(props: FlexProps) {
   const { colorMode } = useColorMode();
   const { formatMessage } = useIntl();
   const dispatch = useAppDispatch();
 
+  // const [isChecked, setIsChecked] = useState(false);
+
   const toAccount = useAppSelector((state) => state.transfer.toAccount);
-  const theme = useTheme();
+  const toChain = useAppSelector((state) => state.transfer.toChain);
+
+  const { isTronTransfer, isAvailableAccount } = useTronTransferInfo();
 
   const timerRef = useRef<any>();
   const [inputValue, setInputValue] = useState(toAccount.address);
@@ -40,7 +45,19 @@ export function ToAccount(props: FlexProps) {
     }, 500);
   };
 
-  const isInvalid = !!toAccount.address;
+  if (!isTronTransfer) {
+    return null;
+  }
+
+  const isInvalid = !isAvailableAccount && !!toAccount.address;
+
+  // const onCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   if (e.target.checked === true) {
+  //     setIsChecked(true);
+  //   } else {
+  //     setIsChecked(false);
+  //   }
+  // };
 
   return (
     <Flex
@@ -57,7 +74,10 @@ export function ToAccount(props: FlexProps) {
           isInvalid={isInvalid}
           size={'lg'}
           value={inputValue}
-          placeholder={formatMessage({ id: 'to.section.account.placeholder' })}
+          placeholder={formatMessage(
+            { id: 'to.section.account.placeholder' },
+            { network: toChain?.name ?? '' },
+          )}
           bg="transparent"
           onChange={onChange}
           _active={{}}
@@ -75,12 +95,21 @@ export function ToAccount(props: FlexProps) {
             borderColor: theme.colors[colorMode].text.danger,
           }}
         />
-        {isInvalid && (
+        {(isInvalid || isAvailableAccount) && (
           <InputRightElement h="100%" w="auto" pr={'16px'} pl={'8px'}>
-            <ErrorIcon boxSize={'16px'} />
+            {isInvalid && <ErrorIcon boxSize={'16px'} />}
+            {isAvailableAccount && <CorrectIcon boxSize={'16px'} />}
           </InputRightElement>
         )}
       </InputGroup>
+
+      {/* <Flex flexDir={'row'} alignItems={'flex-start'} gap={'8px'}>
+        <Checkbox onChange={onCheckboxChange} w={'24px'} h={'24px'} border={'1px solid red'} />
+        <Box>
+          I confirmed the address is correct and not an exchange or contract address. Any tokens
+          sent to an incorrect address will be unrecoverable.
+        </Box>
+      </Flex> */}
 
       {isInvalid && (
         <Flex mt={'8px'} color={theme.colors[colorMode].text.danger}>

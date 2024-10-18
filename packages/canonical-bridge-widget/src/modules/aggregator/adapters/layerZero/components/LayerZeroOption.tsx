@@ -1,4 +1,3 @@
-import { Flex, useColorMode, useTheme } from '@bnb-chain/space';
 import { useCallback, useMemo } from 'react';
 import { formatUnits } from 'viem';
 
@@ -11,12 +10,12 @@ import { FeesInfo } from '@/modules/transfer/components/TransferOverview/RouteIn
 import { OtherRouteError } from '@/modules/transfer/components/TransferOverview/RouteInfo/OtherRouteError';
 import { RouteName } from '@/modules/transfer/components/TransferOverview/RouteInfo/RouteName';
 import { EstimatedArrivalTime } from '@/modules/transfer/components/TransferOverview/RouteInfo/EstimatedArrivalTime';
+import { RouteWrapper } from '@/modules/transfer/components/TransferOverview/RouteInfo/RouteWrapper';
 
 export const LayerZeroOption = () => {
   const dispatch = useAppDispatch();
-  const { colorMode } = useColorMode();
+
   const { toTokenInfo, getToDecimals } = useToTokenInfo();
-  const theme = useTheme();
 
   const selectedToken = useAppSelector((state) => state.transfer.selectedToken);
   const sendValue = useAppSelector((state) => state.transfer.sendValue);
@@ -59,30 +58,10 @@ export const LayerZeroOption = () => {
   }, [selectedToken, dispatch, isError]);
 
   return (
-    <Flex
-      flex={1}
-      flexDir={'column'}
-      gap={'4px'}
-      border={`1px solid`}
-      height={'fit-content'}
-      borderColor={
-        transferActionInfo?.bridgeType === 'layerZero'
-          ? theme.colors[colorMode].border.brand
-          : theme.colors[colorMode].button.select.border
-      }
-      background={
-        transferActionInfo?.bridgeType === 'layerZero' ? 'rgba(255, 233, 0, 0.06);' : 'none'
-      }
-      borderRadius={'8px'}
-      padding={'16px'}
-      cursor={isError ? 'default' : 'pointer'}
-      _hover={{
-        borderColor: isError
-          ? theme.colors[colorMode].button.select.border
-          : theme.colors[colorMode].border.brand,
-      }}
-      onClick={onSelectBridge}
-      position={'relative'}
+    <RouteWrapper
+      isSelected={transferActionInfo?.bridgeType === 'stargate'}
+      isError={isError}
+      onSelectBridge={onSelectBridge}
     >
       <RouteName isError={isError} bridgeType="layerZero" />
       <RouteTitle
@@ -98,6 +77,6 @@ export const LayerZeroOption = () => {
         breakdown={routeFees?.['layerZero']?.breakdown}
       />
       <OtherRouteError bridgeType={'layerZero'} />
-    </Flex>
+    </RouteWrapper>
   );
 };
