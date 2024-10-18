@@ -25,6 +25,7 @@ export function ToAccount(props: FlexProps) {
   // const [isChecked, setIsChecked] = useState(false);
 
   const toAccount = useAppSelector((state) => state.transfer.toAccount);
+  const toChain = useAppSelector((state) => state.transfer.toChain);
 
   const { isTronTransfer, isAvailableAccount } = useTronTransferInfo();
 
@@ -50,7 +51,7 @@ export function ToAccount(props: FlexProps) {
 
   const isInvalid = !isAvailableAccount && !!toAccount.address;
 
-  // const onCheckboxChange = (e) => {
+  // const onCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
   //   if (e.target.checked === true) {
   //     setIsChecked(true);
   //   } else {
@@ -73,7 +74,10 @@ export function ToAccount(props: FlexProps) {
           isInvalid={isInvalid}
           size={'lg'}
           value={inputValue}
-          placeholder={formatMessage({ id: 'to.section.account.placeholder' })}
+          placeholder={formatMessage(
+            { id: 'to.section.account.placeholder' },
+            { network: toChain?.name ?? '' },
+          )}
           bg="transparent"
           onChange={onChange}
           _active={{}}
