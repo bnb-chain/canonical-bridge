@@ -32,8 +32,7 @@ export function useTransferConfig() {
           amount: '',
         },
         order: {
-          // [Ethereum, Arbitrum, Base, Tron, Solana, Polygon, Avalanche, Blast, Linea, Optimism]
-          chains: [56, 204, 1, 42161, 8453, 1000, 7565164, 137, 43114, 81457, 59144, 10],
+          chains: [56, 204, 1, 42161, 8453, 728126428, 7565164, 137, 43114, 81457, 59144, 10],
           tokens: [
             'USDC',
             'USDT',
