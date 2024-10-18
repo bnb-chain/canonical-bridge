@@ -28,7 +28,11 @@ export const useGetTronAllowance = () => {
         trc20Address: selectedToken?.address,
         tronBridgeAddress: transferActionInfo?.bridgeAddress,
       });
-      if (typeof allowance === 'bigint' && !!allowance) setAllowance(allowance);
+      if (typeof allowance === 'bigint' && allowance !== null) {
+        setAllowance(allowance);
+      } else if (typeof allowance?.[0] === 'bigint') {
+        setAllowance(allowance?.[0]);
+      }
       // eslint-disable-next-line no-console
       console.log('Tron token allowance', allowance);
       return { allowance };
