@@ -1,0 +1,120 @@
+{
+  "tokens": {
+    "1": [
+      {
+        "address": "0x152649eA73beAb28c5b49B26eb48f7EAD6d4c898",
+        "bridgeAddress": "0x152649eA73beAb28c5b49B26eb48f7EAD6d4c898",
+        "decimals": 18,
+        "symbol": "CAKE",
+        "name": "Cake",
+        "endpointID": 101,
+        "version": 1
+      }
+    ],
+    "56": [
+      {
+        "address": "0x0e09fabb73bd3ade0a17ecc321fd13a19e81ce82",
+        "bridgeAddress": "0xb274202daBA6AE180c665B4fbE59857b7c3a8091",
+        "decimals": 18,
+        "symbol": "CAKE",
+        "name": "Cake",
+        "endpointID": 102,
+        "version": 1
+      }
+    ],
+    "204": [
+      {
+        "address": "0x2779106e4F4A8A28d77A24c18283651a2AE22D1C",
+        "bridgeAddress": "0x2779106e4F4A8A28d77A24c18283651a2AE22D1C",
+        "decimals": 18,
+        "symbol": "CAKE",
+        "name": "Cake",
+        "endpointID": 202,
+        "version": 1
+      }
+    ],
+    "324": [
+      {
+        "address": "0x3a287a06c66f9e95a56327185ca2bdf5f031cecd",
+        "bridgeAddress": "0x3a287a06c66f9e95a56327185ca2bdf5f031cecd",
+        "decimals": 18,
+        "symbol": "CAKE",
+        "name": "Cake",
+        "endpointID": 165,
+        "version": 1
+      }
+    ],
+    "1101": [
+      {
+        "address": "0x0D1E753a25eBda689453309112904807625bEFBe",
+        "bridgeAddress": "0x0D1E753a25eBda689453309112904807625bEFBe",
+        "decimals": 18,
+        "symbol": "CAKE",
+        "name": "Cake",
+        "endpointID": 158,
+        "version": 1
+      }
+    ],
+    "8453": [
+      {
+        "address": "0x3055913c90Fcc1A6CE9a358911721eEb942013A1",
+        "bridgeAddress": "0x3055913c90Fcc1A6CE9a358911721eEb942013A1",
+        "decimals": 18,
+        "symbol": "CAKE",
+        "name": "Cake",
+        "endpointID": 184,
+        "version": 1
+      }
+    ],
+    "42161": [
+      {
+        "address": "0x1b896893dfc86bb67Cf57767298b9073D2c1bA2c",
+        "bridgeAddress": "0x1b896893dfc86bb67Cf57767298b9073D2c1bA2c",
+        "decimals": 18,
+        "symbol": "CAKE",
+        "name": "Cake",
+        "endpointID": 110,
+        "version": 1
+      }
+    ],
+    "59144": [
+      {
+        "address": "0x0D1E753a25eBda689453309112904807625bEFBe",
+        "bridgeAddress": "0x0D1E753a25eBda689453309112904807625bEFBe",
+        "decimals": 18,
+        "symbol": "CAKE",
+        "name": "Cake",
+        "endpointID": 183,
+        "version": 1
+      }
+    ]
+  },
+  "chains": [
+    {
+      "chainId": 1,
+      "chainName": "Ethereum"
+    },
+    {
+      "chainId": 56,
+      "chainName": "BSC"
+    },
+    {
+      "chainId": 204,
+      "chainName": "Opbnb Mainnet"
+    },
+    { "chainId": 324, "chainName": "Zksync Era" },
+    { "chainId": 1101, "chainName": "Polygon zkEvm" },
+    {
+      "chainId": 8453,
+      "chainName": "Base"
+    },
+    {
+      "chainId": 42161,
+      "chainName": "Arbitrum"
+    },
+    {
+      "chainId": 59144,
+      "chainName": "Linea"
+    }
+  ]
+}

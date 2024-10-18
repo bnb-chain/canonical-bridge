@@ -1,0 +1,11 @@
+name: qa-cicd-by-comment
+
+on:
+  issue_comment:
+    types: [created]
+
+jobs:
+  qa-cicd:
+    if: github.repository == 'bnb-chain/canonical-bridge'
+    uses: bnb-chain/github-workflow/.github/workflows/fe-qa-cicd-ap.yml@main
+    secrets: inherit

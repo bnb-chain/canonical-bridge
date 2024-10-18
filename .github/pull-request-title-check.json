@@ -1,0 +1,22 @@
+{
+  "LABEL": {
+    "name": ""
+  },
+  "CHECKS": {
+    "alwaysPassCI": false,
+    "prefixes": [
+      "chore",
+      "docs",
+      "feat",
+      "fix",
+      "perf",
+      "refactor",
+      "revert",
+      "style",
+      "test"
+    ]
+  },
+  "MESSAGES": {
+    "success": "Passed"
+  }
+}

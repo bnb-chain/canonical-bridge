@@ -1,0 +1,51 @@
+{
+  "name": "@bnb-chain/canonical-bridge-sdk",
+  "version": "0.1.1",
+  "description": "canonical bridge sdk",
+  "author": "bnb-chain",
+  "private": false,
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bnb-chain/canonical-bridge.git",
+    "directory": "packages/canonical-bridge-sdk"
+  },
+  "keywords": [
+    "bridge"
+  ],
+  "type": "module",
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "sideEffects": false,
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "dev": "vite __dev__ --config vite.config.ts --port 3333 --host 0.0.0.0 --open",
+    "watch": "vite build --watch --emptyOutDir=false",
+    "build": "vite build"
+  },
+  "peerDependencies": {
+    "axios": "^0",
+    "viem": "^2"
+  },
+  "devDependencies": {
+    "@node-real/walletkit": "2.3.0-alpha.2",
+    "@tanstack/react-query": "~5.50.1",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "@vitejs/plugin-react": "^4.2.0",
+    "axios": "~0.27.2",
+    "react": "~18.3.1",
+    "react-dom": "~18.3.1",
+    "rollup-plugin-peer-deps-external": "^2.2.4",
+    "typescript": "^5",
+    "viem": "~2.21.14",
+    "vite": "^4.5.0",
+    "vite-plugin-dts": "^3.6.3",
+    "wagmi": "^2"
+  }
+}

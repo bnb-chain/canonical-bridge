@@ -1,0 +1,3 @@
+packages:
+  - ../packages/canonical-bridge-sdk
+  - ../packages/canonical-bridge-widget

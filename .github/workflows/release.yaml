@@ -1,0 +1,35 @@
+name: Release
+
+on:
+  pull_request:
+    types:
+      - closed
+    branches:
+      - main
+jobs:
+  release:
+    name: release
+    if: github.repository == 'bnb-chain/canonical-bridge'
+    timeout-minutes: 10
+    runs-on: [ubuntu-latest]
+    steps:
+      - name: Checkout code repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - uses: ./.github/actions/setup
+        with:
+          npm_token: ${{ secrets.NPM_TOKEN }}
+
+      - name: Create and publish versions
+        uses: changesets/action@v1
+        with:
+          version: pnpm ci:stable-version
+          publish: pnpm ci:publish
+          commit: 'chore: Update versions'
+          title: 'chore: Update versions'
+          cwd: '.release'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
