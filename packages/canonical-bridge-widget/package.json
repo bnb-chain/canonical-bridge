@@ -1,6 +1,6 @@
 {
   "name": "@bnb-chain/canonical-bridge-widget",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "canonical bridge widget",
   "author": "bnb-chain",
   "private": false,
