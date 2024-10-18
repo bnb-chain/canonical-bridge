@@ -8,6 +8,7 @@ import {
   useIntl,
   InputGroup,
   InputRightElement,
+  Checkbox,
 } from '@bnb-chain/space';
 import { ChangeEvent, useRef, useState } from 'react';
 
@@ -22,7 +23,7 @@ export function ToAccount(props: FlexProps) {
   const { formatMessage } = useIntl();
   const dispatch = useAppDispatch();
 
-  // const [isChecked, setIsChecked] = useState(false);
+  const [isChecked, setIsChecked] = useState(false);
 
   const toAccount = useAppSelector((state) => state.transfer.toAccount);
   const toChain = useAppSelector((state) => state.transfer.toChain);
@@ -51,13 +52,13 @@ export function ToAccount(props: FlexProps) {
 
   const isInvalid = !isAvailableAccount && !!toAccount.address;
 
-  // const onCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  //   if (e.target.checked === true) {
-  //     setIsChecked(true);
-  //   } else {
-  //     setIsChecked(false);
-  //   }
-  // };
+  const onCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.checked === true) {
+      setIsChecked(true);
+    } else {
+      setIsChecked(false);
+    }
+  };
 
   return (
     <Flex

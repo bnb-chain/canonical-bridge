@@ -17,7 +17,7 @@ export const bridgeConfig: ICanonicalBridgeConfig = {
   assetPrefix: env.ASSET_PREFIX,
 
   appearance: {
-    bridgeTitle: 'BNB Chain Cross-Chain Bridge',
+    bridgeTitle: 'BNB Chain Cross-Chain Bridge Testnet',
     locale: 'en',
     messages,
     mode: 'dark',

@@ -4,7 +4,7 @@ import { BaseAdapter, ITransferTokenPair } from '@/modules/aggregator/shared/Bas
 import { IMesonChain, IMesonToken } from '@/modules/aggregator/adapters/meson/types';
 
 const SUPPORTED_CHAIN_IDS = [56, 97, 728126427, 728126428];
-const SUPPORTED_TOKENS = ['USDT'];
+const SUPPORTED_TOKENS = ['USDT', 'USDC'];
 
 export class MesonAdapter extends BaseAdapter<IMesonChain[], IMesonChain, IMesonToken> {
   public bridgeType: BridgeType = 'meson';
