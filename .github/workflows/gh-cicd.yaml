@@ -30,6 +30,7 @@ jobs:
             NEXT_PUBLIC_SERVER_ENDPOINT=$SERVER_ENDPOINT
             NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID=$WALLET_CONNECT_PROJECT_ID
           EOF
+          ls -a
           cat .env
         env:
           APP_NAME: canonical-bridge-ui
