@@ -67,7 +67,7 @@ export function TransferWidget() {
 
         <NetWorkSection />
         <SendInput />
-        <ToAccount mt={'24px'} />
+        <ToAccount />
         <ReceiveInfo onOpen={onOpen} />
         <Flex flexDir="column">
           <TransferButtonGroup />
