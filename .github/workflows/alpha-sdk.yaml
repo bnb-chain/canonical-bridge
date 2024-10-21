@@ -1,0 +1,12 @@
+name: sdk-cicd-by-comment
+
+on:
+  issue_comment:
+    types: [created]
+
+jobs:
+  alpha-release:
+    uses: ./.github/workflows/alpha.yaml
+    secrets: inherit
+    with:
+      package-name: canonical-bridge-sdk
