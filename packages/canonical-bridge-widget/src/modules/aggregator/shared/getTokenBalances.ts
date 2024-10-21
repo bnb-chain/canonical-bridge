@@ -127,17 +127,19 @@ async function getTronTokenBalances({
 
     const balances: Record<string, number | undefined> = {};
 
-    const firstToken = tokens?.[0];
-    const tokenAddress = firstToken.address;
+    for (let i = 0; i < Math.min(tokens.length, 2); i++) {
+      const token = tokens?.[i];
+      const tokenAddress = token.address;
 
-    tronWeb.setAddress(firstToken.address);
-    const contractInstance = await tronWeb.contract(tronBalanceABI, tokenAddress);
-    const balanceOf = await contractInstance.balanceOf(account).call();
-    const balance = balanceOf?.toString() as string;
+      tronWeb.setAddress(token.address);
+      const contractInstance = await tronWeb.contract(tronBalanceABI, tokenAddress);
+      const balanceOf = await contractInstance.balanceOf(account).call();
+      const balance = balanceOf?.toString() as string;
 
-    balances[firstToken.displaySymbol?.toUpperCase()] = Number(
-      formatUnits(BigInt(balance), firstToken.decimals),
-    );
+      balances[token.displaySymbol?.toUpperCase()] = Number(
+        formatUnits(BigInt(balance), token.decimals),
+      );
+    }
 
     return balances;
   } catch (err) {
