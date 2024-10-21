@@ -63,7 +63,7 @@ export function ToAccount(props: FlexProps) {
     return null;
   }
 
-  const isInvalid = (!isAvailableAccount && !!toAccount.address) || isTronContract === false;
+  const isInvalid = (!isAvailableAccount && !!toAccount.address) || isTronContract === true;
 
   const onCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.checked === true) {
