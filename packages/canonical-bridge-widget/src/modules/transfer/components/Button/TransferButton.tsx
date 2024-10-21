@@ -418,7 +418,7 @@ export function TransferButton({
           !Number(sendValue) ||
           !transferActionInfo ||
           !isTransferable ||
-          (isTronTransfer && !isToAddressChecked) ||
+          (isTronTransfer && (!isToAddressChecked || !toAccount?.address || !isAvailableAccount)) ||
           isTronContract === true
         }
       >
