@@ -1,11 +1,6 @@
 name: 'setup'
 description: Prepare the environment
 
-inputs:
-  npm-token:
-    description: 'npm token'
-    required: false
-
 runs:
   using: composite
   steps:
@@ -33,11 +28,10 @@ runs:
         key: ${{ runner.os }}-${{ hashFiles('**/pnpm-lock.yaml') }}
 
     - name: Creating .npmrc
-      if: inputs.npm-token != ''
       shell: bash
       run: |
         cat << EOF > "$HOME/.npmrc"
           //registry.npmjs.org/:_authToken=$NPM_TOKEN
         EOF
       env:
-        NPM_TOKEN: ${{ inputs.npm-token }}
+        NPM_TOKEN: ${{ secrets.NPM_TOKEN }}

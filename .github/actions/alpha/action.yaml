@@ -1,0 +1,31 @@
+name: alpha-cicd-trigger-by-comment
+
+inputs:
+  app-name:
+    description: 'app name'
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - name: Install & build
+      shell: bash
+      run: |
+        node .release/scripts/install.js
+
+        node common/scripts/install-run-rush.js install -t @bnb-chain/$APP_NAME
+        node common/scripts/install-run-rush.js build -t @bnb-chain/$APP_NAME
+      env:
+        APP_NAME: ${{inputs.app-name}}
+
+    - name: Create and publish versions
+      uses: changesets/action@v1
+      with:
+        version: pnpm ci:alpha-version
+        publish: pnpm ci:publish
+        commit: 'chore: Update versions'
+        title: 'chore: Update versions'
+        cwd: '.release'
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        NPM_TOKEN: ${{ secrets.NPM_TOKEN }}

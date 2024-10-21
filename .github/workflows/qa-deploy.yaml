@@ -1,18 +1,13 @@
-name: alpha-cicd-trigger-by-comment
+name: cicd-trigger-by-comment
 
 on:
-  workflow_call:
-    inputs:
-      package-name:
-        description: 'package name'
-        type: string
-        required: true
-        default: ''
+  issue_comment:
+    types: [created]
 
 jobs:
   pre-check:
     runs-on: ubuntu-latest
-    if: github.repository == 'bnb-chain/canonical-bridge' && contains(github.event.comment.body, '/qa-deploy:${{inputs.package-name}}')
+    if: github.repository == 'bnb-chain/canonical-bridge' && contains(github.event.comment.body, '/qa-deploy')
     outputs:
       codeowners: ${{ steps.codeowners.outputs.content }}
     steps:
@@ -54,6 +49,15 @@ jobs:
           BRANCH_NAME=${{ fromJSON(steps.get-pr.outputs.result).head.ref }}
           echo "BRANCH_NAME=${BRANCH_NAME}" >> $GITHUB_OUTPUT
 
+      - name: get comment
+        id: get-comment
+        run: |
+          #!/bin/bash
+          input_comment="${{ github.event.comment.body }}"
+          comment_format=${input_comment// /}
+          APP_NAME=${comment_format#*:}
+          echo "APP_NAME=${APP_NAME}" >> $GITHUB_OUTPUT
+
       - name: Checkout code repository
         uses: actions/checkout@v4
         with:
@@ -61,28 +65,19 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - uses: ./.github/actions/setup
+
+      - name: Deploy github pages
+        if: contains(steps.get-comment.outputs.APP_NAME, 'canonical-bridge-ui')
+        uses: ./.github/actions/gh-pages
+
+      - name: Deploy SDK
+        if: contains(steps.get-comment.outputs.APP_NAME, 'canonical-bridge-sdk')
+        uses: ./.github/actions/alpha
         with:
-          npm-token: ${{ secrets.NPM_TOKEN }}
+          app-name: ${{steps.get-comment.outputs.APP_NAME}}
 
-      - name: Install & build
-        shell: bash
-        run: |
-          node .release/scripts/install.js
-
-          node common/scripts/install-run-rush.js install -t @bnb-chain/${{inputs.package-name}}
-          node common/scripts/install-run-rush.js build -t @bnb-chain/${{inputs.package-name}}
-
-      - name: Enter pre mode
-        run: pnpm ci:enter
-
-      - name: Create and publish versions
-        uses: changesets/action@v1
+      - name: Deploy Widget
+        if: contains(steps.get-comment.outputs.APP_NAME, 'canonical-bridge-widget')
+        uses: ./.github/actions/alpha
         with:
-          version: pnpm ci:alpha-version
-          publish: pnpm ci:publish
-          commit: 'chore: Update versions'
-          title: 'chore: Update versions'
-          cwd: '.release'
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          app-name: ${{steps.get-comment.outputs.APP_NAME}}
