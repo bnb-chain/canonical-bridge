@@ -15,6 +15,8 @@ export const en = {
   'to.section.account.label': 'Destination Address',
   'to.section.account.placeholder': 'Enter {network} Address',
   'to.section.account.invalid': 'Invalid address.',
+  'to.section.confirm.text':
+    'I confirmed the address is correct and not an exchange or contract address. Any tokens sent to an incorrect address will be unrecoverable.',
 
   'you.send.title': 'You Send',
   'you.receive.title': 'You Receive',

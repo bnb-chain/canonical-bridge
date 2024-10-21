@@ -8,15 +8,15 @@ import {
   useIntl,
   InputGroup,
   InputRightElement,
-  Checkbox,
 } from '@bnb-chain/space';
 import { ChangeEvent, useRef, useState } from 'react';
 
-import { setToAccount } from '@/modules/transfer/action';
+import { setIsToAddressChecked, setToAccount } from '@/modules/transfer/action';
 import { useTronTransferInfo } from '@/modules/transfer/hooks/tron/useTronTransferInfo';
 import { ErrorIcon } from '@/core/components/icons/ErrorIcon';
 import { CorrectIcon } from '@/core/components/icons/CorrectIcon';
 import { useAppDispatch, useAppSelector } from '@/modules/store/StoreProvider';
+import { ConfirmCheckbox } from '@/core/components/ConfirmCheckbox';
 
 export function ToAccount(props: FlexProps) {
   const { colorMode } = useColorMode();
@@ -55,8 +55,10 @@ export function ToAccount(props: FlexProps) {
   const onCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.checked === true) {
       setIsChecked(true);
+      dispatch(setIsToAddressChecked(true));
     } else {
       setIsChecked(false);
+      dispatch(setIsToAddressChecked(false));
     }
   };
 
@@ -104,13 +106,16 @@ export function ToAccount(props: FlexProps) {
         )}
       </InputGroup>
 
-      {/* <Flex flexDir={'row'} alignItems={'flex-start'} gap={'8px'}>
-        <Checkbox onChange={onCheckboxChange} w={'24px'} h={'24px'} border={'1px solid red'} />
-        <Box>
-          I confirmed the address is correct and not an exchange or contract address. Any tokens
-          sent to an incorrect address will be unrecoverable.
-        </Box>
-      </Flex> */}
+      <ConfirmCheckbox
+        isChecked={isChecked}
+        onChange={onCheckboxChange}
+        borderRadius={'2px'}
+        mt={'12px'}
+        mb={'8px'}
+        justifyItems={'flex-start'}
+      >
+        {formatMessage({ id: 'to.section.confirm.text' })}
+      </ConfirmCheckbox>
 
       {isInvalid && (
         <Flex mt={'8px'} color={theme.colors[colorMode].text.danger}>

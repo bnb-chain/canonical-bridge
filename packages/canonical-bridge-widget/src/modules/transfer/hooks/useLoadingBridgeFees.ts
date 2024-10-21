@@ -156,14 +156,20 @@ export const useLoadingBridgeFees = () => {
           }
         } else {
           const feeSortingRes = await mesonFeeSorting(mesonEst.value.result);
+          const decimals = selectedToken?.meson?.raw?.decimals || 6;
           const receiveMesonAmt =
-            Number(debouncedSendValue) - Number(mesonEst.value.result.totalFee);
+            parseUnits(debouncedSendValue, decimals) -
+            parseUnits(mesonEst.value.result.totalFee, decimals);
           if (feeSortingRes) {
-            dispatch(setEstimatedAmount({ meson: formatNumber(receiveMesonAmt, 8) }));
+            dispatch(
+              setEstimatedAmount({
+                meson: formatNumber(Number(formatUnits(receiveMesonAmt, decimals)), 8),
+              }),
+            );
             // TODO check amount value
             valueArr.push({
               type: 'meson',
-              value: formatNumber(receiveMesonAmt, 8),
+              value: formatNumber(Number(formatUnits(receiveMesonAmt, decimals)), 8),
               isIgnoreSorted: false,
               isDisplayError: false,
             });
