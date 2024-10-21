@@ -10,6 +10,7 @@ import {
   InputRightElement,
 } from '@bnb-chain/space';
 import { ChangeEvent, useRef, useState } from 'react';
+import { useEffect } from 'react';
 
 import { setIsToAddressChecked, setToAccount } from '@/modules/transfer/action';
 import { useTronTransferInfo } from '@/modules/transfer/hooks/tron/useTronTransferInfo';
@@ -45,6 +46,11 @@ export function ToAccount(props: FlexProps) {
       );
     }, 500);
   };
+
+  useEffect(() => {
+    // Clear input value when toAccount is cleared
+    if (!toAccount.address) setInputValue('');
+  }, [toAccount.address]);
 
   if (!isTronTransfer) {
     return null;
@@ -106,6 +112,12 @@ export function ToAccount(props: FlexProps) {
         )}
       </InputGroup>
 
+      {isInvalid && (
+        <Flex mt={'8px'} color={theme.colors[colorMode].text.danger}>
+          {formatMessage({ id: 'to.section.account.invalid' })}
+        </Flex>
+      )}
+
       <ConfirmCheckbox
         isChecked={isChecked}
         onChange={onCheckboxChange}
@@ -116,12 +128,6 @@ export function ToAccount(props: FlexProps) {
       >
         {formatMessage({ id: 'to.section.confirm.text' })}
       </ConfirmCheckbox>
-
-      {isInvalid && (
-        <Flex mt={'8px'} color={theme.colors[colorMode].text.danger}>
-          {formatMessage({ id: 'to.section.account.invalid' })}
-        </Flex>
-      )}
     </Flex>
   );
 }
