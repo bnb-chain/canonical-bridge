@@ -27,6 +27,20 @@ export const ProfileMenu = () => {
             pl={{ base: '0', md: '12px' }}
             pr={{ base: '0', md: '16px' }}
           >
+            {/* Don't remove the below component, otherwise tron icon will be abnormal on mobile */}
+            <Center
+              boxSize={1}
+              opacity={0}
+              position="absolute"
+              left={0}
+              zIndex={-1}
+              sx={{
+                opacity: 0,
+                boxSize: 1,
+              }}
+            >
+              {walletIcon}
+            </Center>
             {walletIcon && (
               <Center
                 sx={{
