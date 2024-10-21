@@ -14,14 +14,20 @@ jobs:
     timeout-minutes: 10
     runs-on: ubuntu-latest
     steps:
+      - uses: ./.github/actions/get-pr-env
+        id: pr-env
+
       - name: Checkout code repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0
-          ref: ${{ github.event.pull_request.head.sha }}
+          ref: ${{ steps.pr-env.outputs.BRANCH_NAME }}
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - uses: ./.github/actions/setup
+
+      - name: Log
+        run: |
+          echo "${{steps.pr-env.outputs.BRANCH_NAME}}"
 
       - name: Creating .env
         shell: bash
