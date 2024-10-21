@@ -88,7 +88,6 @@ export const StarGateOption = () => {
       <AllowedSendAmount
         position={'static'}
         isError={isAllowSendError}
-        zIndex={2}
         allowedSendAmount={allowedSendAmount}
       />
       {!isAllowSendError && <OtherRouteError bridgeType={'stargate'} />}

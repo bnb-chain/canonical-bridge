@@ -64,7 +64,6 @@ export const MesonOption = () => {
       {/* <AllowedSendAmount
         position={'static'}
         isError={isAllowSendError}
-        zIndex={2}
         allowedSendAmount={allowedSendAmount}
       /> */}
       <OtherRouteError bridgeType={'meson'} />
