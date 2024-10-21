@@ -4,18 +4,60 @@ on:
   issue_comment:
     types: [created]
 
+env:
+  SERVER_ENDPOINT: ${{ vars.SERVER_ENDPOINT }}
+  WALLET_CONNECT_PROJECT_ID: ${{ vars.WALLET_CONNECT_PROJECT_ID }}
+
 jobs:
   cicd:
     if: github.repository == 'bnb-chain/canonical-bridge' && contains(github.event.comment.body, '/qa-deploy:canonical-bridge-ui')
     timeout-minutes: 10
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/github-script@v3
+        id: get-pr
+        with:
+          script: |
+            const request = {
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.issue.number
+            }
+            core.info(`Getting PR #${request.pull_number} from ${request.owner}/${request.repo}`)
+            try {
+              const result = await github.pulls.get(request)
+              return result.data
+            } catch (err) {
+              core.setFailed(`Request failed with error ${err}`)
+            }
+
+      - name: get pr env
+        id: pr-env
+        run: |
+          GIT_REPOSITORY=${{ fromJSON(steps.get-pr.outputs.result).head.repo.full_name }}
+          PR_NUMBER=${{ fromJSON(steps.get-pr.outputs.result).number }}
+          LATEST_COMMIT_SHA=${{ fromJSON(steps.get-pr.outputs.result).head.sha }}
+          BRANCH_NAME=${{ fromJSON(steps.get-pr.outputs.result).head.ref }}
+
+          echo "GIT_REPOSITORY=${GIT_REPOSITORY}" >> $GITHUB_OUTPUT
+          echo "PR_NUMBER=${PR_NUMBER}" >> $GITHUB_OUTPUT
+          echo "LATEST_COMMIT_SHA=${LATEST_COMMIT_SHA}" >> $GITHUB_OUTPUT
+          echo "BRANCH_NAME=${BRANCH_NAME}" >> $GITHUB_OUTPUT
+
       - name: Checkout code repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0
+          ref: ${{ steps.pr-env.outputs.BRANCH_NAME }}
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - uses: ./.github/actions/setup
+
+      - name: Log
+        run: |
+          echo "${{steps.pr-env.outputs.BRANCH_NAME}}"
+          echo "${{steps.pr-env.outputs.GIT_REPOSITORY}}"
+          echo "${{steps.pr-env.outputs.LATEST_COMMIT_SHA}}"
+          echo "${{steps.pr-env.outputs.PR_NUMBER}}"
 
       - name: Creating .env
         shell: bash
@@ -31,8 +73,8 @@ jobs:
           APP_NAME: canonical-bridge
           BASE_PATH: /canonical-bridge
           ASSET_PREFIX: /canonical-bridge
-          SERVER_ENDPOINT: ${{ vars.SERVER_ENDPOINT }}
-          WALLET_CONNECT_PROJECT_ID: ${{ vars.WALLET_CONNECT_PROJECT_ID }}
+          SERVER_ENDPOINT: ${{ env.SERVER_ENDPOINT }}
+          WALLET_CONNECT_PROJECT_ID: ${{ env.WALLET_CONNECT_PROJECT_ID }}
 
       - name: Install & build
         shell: bash
@@ -49,11 +91,12 @@ jobs:
       #     force: true
 
       - name: Pushes to another repository
-        uses: dmnemec/copy_file_to_another_repo_action@main
+        uses: cpina/github-action-push-to-another-repository@main
         env:
           API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
         with:
-          source_file: './apps/canonical-bridge-ui/dist'
-          destination_repo: 'wenty22/canonical-bridge'
-          user_name: 'wenty22'
-          user_email: 'github-actions[bot]@users.noreply.github.com'
+          source-directory: './apps/canonical-bridge-ui/dist'
+          destination-github-username: 'wenty22'
+          destination-repository-name: 'canonical-bridge'
+          user-email: github-actions[bot]@users.noreply.github.com
+          target-branch: main
