@@ -8,19 +8,36 @@ on:
       - main
 jobs:
   release:
-    name: release
     if: github.repository == 'bnb-chain/canonical-bridge'
     timeout-minutes: 10
-    runs-on: [ubuntu-latest]
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout code repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
       - uses: ./.github/actions/setup
-        with:
-          npm_token: ${{ secrets.NPM_TOKEN }}
+
+      - name: Creating .npmrc
+        shell: bash
+        run: |
+          cat << EOF > "$HOME/.npmrc"
+            //registry.npmjs.org/:_authToken=$NPM_TOKEN
+          EOF
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Install & build
+        shell: bash
+        run: |
+          node .release/scripts/install.js
+
+          node common/scripts/install-run-rush.js install -t @bnb-chain/canonical-bridge-sdk
+          node common/scripts/install-run-rush.js build -t @bnb-chain/canonical-bridge-sdk
+
+          node common/scripts/install-run-rush.js install -t @bnb-chain/canonical-bridge-widget
+          node common/scripts/install-run-rush.js build -t @bnb-chain/canonical-bridge-widget
 
       - name: Create and publish versions
         uses: changesets/action@v1
