@@ -5,7 +5,7 @@ on:
     types: [created]
 
 jobs:
-  build:
+  cicd:
     if: github.repository == 'bnb-chain/canonical-bridge' && contains(github.event.comment.body, '/qa-deploy')
     timeout-minutes: 10
     runs-on: ubuntu-latest
@@ -40,10 +40,6 @@ jobs:
           node common/scripts/install-run-rush.js install -t canonical-bridge-ui
           node common/scripts/install-run-rush.js build -t canonical-bridge-ui
 
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
       - name: Deploy docs
         uses: JamesIves/github-pages-deploy-action@v4
         with:
