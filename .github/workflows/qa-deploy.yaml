@@ -65,6 +65,8 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - uses: ./.github/actions/setup
+        with:
+          npm-token: ${{ secrets.NPM_TOKEN }}
 
       - name: Deploy github pages
         if: contains(steps.get-comment.outputs.APP_NAME, 'canonical-bridge-ui')
