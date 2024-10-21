@@ -54,6 +54,6 @@ jobs:
           API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
         with:
           source_file: './apps/canonical-bridge-ui/dist'
-          destination_repo: 'canonical-bridge'
+          destination_repo: 'wenty22/canonical-bridge'
           user_name: 'wenty22'
           user_email: 'github-actions[bot]@users.noreply.github.com'
