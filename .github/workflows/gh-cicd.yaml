@@ -28,9 +28,9 @@ jobs:
             NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID=$WALLET_CONNECT_PROJECT_ID
           EOF
         env:
-          APP_NAME: canonical-bridge-ui
-          BASE_PATH: /canonical-bridge-ui
-          ASSET_PREFIX: /canonical-bridge-ui
+          APP_NAME: canonical-bridge
+          BASE_PATH: /canonical-bridge
+          ASSET_PREFIX: /canonical-bridge
           SERVER_ENDPOINT: ${{ vars.SERVER_ENDPOINT }}
           WALLET_CONNECT_PROJECT_ID: ${{ vars.WALLET_CONNECT_PROJECT_ID }}
 
@@ -45,6 +45,6 @@ jobs:
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           folder: ./apps/canonical-bridge-ui/dist
-          branch: 'gh-pcages'
+          branch: 'gh-pages'
           clean: true
           force: true
