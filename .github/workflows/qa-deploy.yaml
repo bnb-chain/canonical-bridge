@@ -69,15 +69,23 @@ jobs:
       - name: Deploy github pages
         if: contains(steps.get-comment.outputs.APP_NAME, 'canonical-bridge-ui')
         uses: ./.github/actions/gh-pages
+        with:
+          server-endpoint: ${{ vars.SERVER_ENDPOINT }}
+          wallet-connect-project-id: ${{ vars.WALLET_CONNECT_PROJECT_ID }}
+          api-token-github: ${{ secrets.API_TOKEN_GITHUB }}
 
       - name: Deploy SDK
         if: contains(steps.get-comment.outputs.APP_NAME, 'canonical-bridge-sdk')
         uses: ./.github/actions/alpha
         with:
           app-name: ${{steps.get-comment.outputs.APP_NAME}}
+          npm-token: ${{ secrets.NPM_TOKEN }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Deploy Widget
         if: contains(steps.get-comment.outputs.APP_NAME, 'canonical-bridge-widget')
         uses: ./.github/actions/alpha
         with:
           app-name: ${{steps.get-comment.outputs.APP_NAME}}
+          npm-token: ${{ secrets.NPM_TOKEN }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}

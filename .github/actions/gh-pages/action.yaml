@@ -1,5 +1,16 @@
 name: github-pages-cicd
 
+inputs:
+  server-endpoint:
+    description: 'server endpoint'
+    required: true
+  wallet-connect-project-id:
+    description: 'wallet connect project id'
+    required: true
+  api-token-github:
+    description: 'api token github'
+    required: true
+
 runs:
   using: composite
   steps:
@@ -17,8 +28,8 @@ runs:
         APP_NAME: canonical-bridge
         BASE_PATH: /canonical-bridge
         ASSET_PREFIX: /canonical-bridge
-        SERVER_ENDPOINT: ${{ vars.SERVER_ENDPOINT }}
-        WALLET_CONNECT_PROJECT_ID: ${{ vars.WALLET_CONNECT_PROJECT_ID }}
+        SERVER_ENDPOINT: ${{ inputs.server-endpoint }}
+        WALLET_CONNECT_PROJECT_ID: ${{ inputs.wallet-connect-project-id }}
 
     - name: Install & build
       shell: bash
@@ -29,7 +40,7 @@ runs:
     - name: Pushes to another repository
       uses: cpina/github-action-push-to-another-repository@main
       env:
-        API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
+        API_TOKEN_GITHUB: ${{ inputs.api-token-github }}
       with:
         source-directory: './apps/canonical-bridge-ui/dist'
         destination-github-username: 'wenty22'
