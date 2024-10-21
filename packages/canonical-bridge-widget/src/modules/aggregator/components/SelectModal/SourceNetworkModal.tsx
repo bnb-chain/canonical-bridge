@@ -1,6 +1,6 @@
 import { Flex, useColorMode, useIntl, useTheme } from '@bnb-chain/space';
 
-import { useAppSelector } from '@/modules/store/StoreProvider';
+import { useAppDispatch, useAppSelector } from '@/modules/store/StoreProvider';
 import { useFromChains } from '@/modules/aggregator/hooks/useFromChains';
 import { VirtualList } from '@/core/components/VirtualList';
 import { useSelection } from '@/modules/aggregator/hooks/useSelection';
@@ -10,6 +10,7 @@ import { BaseModal } from '@/modules/aggregator/components/SelectModal/component
 import { useSearch } from '@/modules/aggregator/components/SelectModal/hooks/useSearch';
 import { ListItem } from '@/modules/aggregator/components/SelectModal/components/ListItem';
 import { reportEvent } from '@/core/utils/gtm';
+import { setToAccount } from '@/modules/transfer/action';
 
 interface SourceNetworkModalProps {
   isOpen: boolean;
@@ -19,6 +20,7 @@ interface SourceNetworkModalProps {
 export function SourceNetworkModal(props: SourceNetworkModalProps) {
   const { isOpen, onClose } = props;
   const { formatMessage } = useIntl();
+  const dispatch = useAppDispatch();
 
   const fromChain = useAppSelector((state) => state.transfer.fromChain);
   const toChain = useAppSelector((state) => state.transfer.toChain);
@@ -67,6 +69,7 @@ export function SourceNetworkModal(props: SourceNetworkModalProps) {
                 openLink(item.externalBridgeUrl);
               } else {
                 selectFromChain(item);
+                dispatch(setToAccount({ address: '' }));
                 onClose();
               }
             }}

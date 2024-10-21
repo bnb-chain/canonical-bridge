@@ -84,7 +84,7 @@ export const SendInput: React.FC = () => {
   };
 
   return (
-    <Flex flexDir={'column'} gap={'12px'} position={'relative'}>
+    <Flex flexDir={'column'} position={'relative'}>
       <Flex flexDir={'row'} justifyContent={'space-between'}>
         <Box color={theme.colors[colorMode].input.title} fontSize={'14px'} fontWeight={400}>
           {formatMessage({ id: 'you.send.title' })}
@@ -93,6 +93,7 @@ export const SendInput: React.FC = () => {
       </Flex>
       <Flex
         flex={1}
+        mt={'12px'}
         flexDir={'row'}
         justifyContent={'space-between'}
         alignItems={'center'}

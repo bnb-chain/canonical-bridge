@@ -254,8 +254,8 @@ export abstract class BaseAdapter<G extends object, C = unknown, T = unknown> {
     toChainId: number;
     fromTokenSymbol: string;
   }) {
-    const fromNativeSymbol = this.nativeCurrencies[fromChainId].symbol?.toUpperCase();
-    const toNativeSymbol = this.nativeCurrencies[toChainId].symbol?.toUpperCase();
+    const fromNativeSymbol = this.nativeCurrencies[fromChainId]?.symbol?.toUpperCase();
+    const toNativeSymbol = this.nativeCurrencies[toChainId]?.symbol?.toUpperCase();
     const tokenMap = this.symbolMap.get(toChainId);
 
     if (['ETH', 'WETH'].includes(fromTokenSymbol)) {

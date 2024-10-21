@@ -14,6 +14,7 @@ export const useBridgeSDK = () => {
 
   const bridgeSDK = useMemo(() => {
     const timeout = bridgeConfig.http.apiTimeOut;
+
     return new CanonicalBridgeSDK({
       bridgeConfigs: [
         {
@@ -36,9 +37,10 @@ export const useBridgeSDK = () => {
           bridgeType: 'layerZero',
           endpoint: '',
         },
+        { bridgeType: 'meson', endpoint: bridgeConfig.http.mesonEndpoint! },
       ],
     });
-  }, [bridgeConfig.http.apiTimeOut]);
+  }, [bridgeConfig.http.apiTimeOut, bridgeConfig.http.mesonEndpoint]);
 
   return bridgeSDK;
 };

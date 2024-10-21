@@ -34,8 +34,8 @@ runs:
     - name: Install & build
       shell: bash
       run: |
-        node common/scripts/install-run-rush.js install -t @bnb-chain/canonical-bridge-ui
-        node common/scripts/install-run-rush.js build -t @bnb-chain/canonical-bridge-ui
+        node common/scripts/install-run-rush.js install -t canonical-bridge-ui
+        node common/scripts/install-run-rush.js build -t canonical-bridge-ui
 
     - name: Pushes to another repository
       uses: cpina/github-action-push-to-another-repository@main

@@ -28,7 +28,7 @@ export function TransactionSubmittedModal(
       }}
       onMainButtonClick={() => {
         if (window && chosenBridge) {
-          if (chosenBridge === 'cBridge') {
+          if (chosenBridge === 'cBridge' || chosenBridge === 'meson') {
             window.open(`${EXPLORER_URL[chosenBridge]}${hash}`);
           } else if (chosenBridge === 'deBridge') {
             window.open(`${EXPLORER_URL[chosenBridge]}${address}`);

@@ -16,16 +16,17 @@ import {
   setTransferActionInfo,
 } from '@/modules/transfer/action';
 import { useAppDispatch, useAppSelector } from '@/modules/store/StoreProvider';
-import { CBridgeOption } from '@/modules/transfer/components/TransferOverview/CBridgeOption';
-import { DeBridgeOption } from '@/modules/transfer/components/TransferOverview/DeBridgeOption';
 import { DEBOUNCE_DELAY } from '@/core/constants';
 import { useDebounce } from '@/core/hooks/useDebounce';
 import { useLoadingBridgeFees } from '@/modules/transfer/hooks/useLoadingBridgeFees';
-import { StarGateOption } from '@/modules/transfer/components/TransferOverview/StarGateOption';
-import { LayerZeroOption } from '@/modules/transfer/components/TransferOverview/LayerZeroOption';
 import { useGetReceiveAmount } from '@/modules/transfer/hooks/useGetReceiveAmount';
 import { RefreshingButton } from '@/modules/transfer/components/Button/RefreshingButton';
 import { RouteSkeleton } from '@/modules/transfer/components/TransferOverview/RouteInfo/RouteSkeleton';
+import { CBridgeOption } from '@/modules/aggregator/adapters/cBridge/components/CBridgeOption';
+import { DeBridgeOption } from '@/modules/aggregator/adapters/deBridge/components/DeBridgeOption';
+import { StarGateOption } from '@/modules/aggregator/adapters/stargate/components/StarGateOption';
+import { LayerZeroOption } from '@/modules/aggregator/adapters/layerZero/components/LayerZeroOption';
+import { MesonOption } from '@/modules/aggregator/adapters/meson/components/MesonOption';
 
 export function TransferOverview({ routeContentBottom }: { routeContentBottom?: ReactNode }) {
   const dispatch = useAppDispatch();
@@ -41,7 +42,6 @@ export function TransferOverview({ routeContentBottom }: { routeContentBottom?: 
   const sendValue = useAppSelector((state) => state.transfer.sendValue);
   const estimatedAmount = useAppSelector((state) => state.transfer.estimatedAmount);
   const toTokenInfo = useAppSelector((state) => state.transfer.toToken);
-  // const bridgeType = useAppSelector((state) => state.transfer.transferActionInfo)?.bridgeType
 
   const debouncedSendValue = useDebounce(sendValue, DEBOUNCE_DELAY);
 
@@ -92,20 +92,15 @@ export function TransferOverview({ routeContentBottom }: { routeContentBottom?: 
       if (bridge === 'layerZero' && estimatedAmount['layerZero']) {
         routes.push(<LayerZeroOption key={'layerZero-option'} />);
       }
+      if (bridge === 'meson' && estimatedAmount['meson']) {
+        routes.push(<MesonOption key={'meson-option'} />);
+      }
     }
     return routes;
   }, [sortedReceivedAmt, debouncedSendValue, estimatedAmount]);
 
   const showRoute =
     selectedToken && !!Number(sendValue) && toTokenInfo && options && !!options?.length;
-
-  // const sortedOptions = useMemo(() => {
-  //   if (!options?.length) return options;
-  //   // Need to to match key value to sort correctly
-  //   return options.sort((a) => {
-  //     return a.key === `${bridgeType}-option` ? -1 : 0;
-  //   });
-  // }, [options, bridgeType]);
 
   return (
     <Flex flexDir="column" ml={['0', '0', '0', '24px']} gap={['12px', '12px', '12px', '24px']}>

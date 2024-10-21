@@ -140,7 +140,7 @@ function getChainInfo({
   const tokenUrlPattern = chainConfig?.explorer?.tokenUrlPattern || tmpUrlPattern;
 
   const externalConfig = transferConfig.externalChains?.find((item) => item.chainId === chainId);
-  const chainType: ChainType = externalConfig ? 'link' : 'evm';
+  const chainType: ChainType = externalConfig ? 'link' : chainConfig?.chainType ?? 'evm';
   const externalBridgeUrl = externalConfig?.bridgeUrl;
 
   return {

@@ -23,6 +23,7 @@ export interface ITransferState {
   isRefreshing?: boolean;
   estimatedAmount?: IEstimatedAmount;
   routeFees?: IRouteFees;
+  isToAddressChecked?: boolean;
   toAccount: {
     address?: string;
   };
@@ -45,6 +46,7 @@ const initStates: ITransferState = {
   isRefreshing: false,
   estimatedAmount: undefined,
   routeFees: undefined,
+  isToAddressChecked: false,
   toAccount: {
     address: '',
   },
@@ -99,6 +101,11 @@ export default createReducer(initStates, (builder) => {
   builder.addCase(actions.setIsRefreshing, (state, { payload }) => ({
     ...state,
     isRefreshing: payload,
+  }));
+
+  builder.addCase(actions.setIsToAddressChecked, (state, { payload }) => ({
+    ...state,
+    isToAddressChecked: payload,
   }));
 
   builder.addCase(actions.setEstimatedAmount, (state, { payload }) => ({

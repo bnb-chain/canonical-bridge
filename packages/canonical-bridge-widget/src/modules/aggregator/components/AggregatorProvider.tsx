@@ -15,6 +15,7 @@ import { CBridgeAdapter } from '@/modules/aggregator/adapters/cBridge/CBridgeAda
 import { DeBridgeAdapter } from '@/modules/aggregator/adapters/deBridge/DeBridgeAdapter';
 import { LayerZeroAdapter } from '@/modules/aggregator/adapters/layerZero/LayerZeroAdapter';
 import { StargateAdapter } from '@/modules/aggregator/adapters/stargate/StargateAdapter';
+import { MesonAdapter } from '@/modules/aggregator/adapters/meson/MesonAdapter';
 import { IBaseAdapterOptions } from '@/modules/aggregator/shared/BaseAdapter';
 import {
   aggregateChains,
@@ -23,8 +24,6 @@ import {
 } from '@/modules/aggregator/shared/aggregateChains';
 import { aggregateTokens, IGetTokensParams } from '@/modules/aggregator/shared/aggregateTokens';
 import { aggregateToToken, IGetToTokenParams } from '@/modules/aggregator/shared/aggregateToToken';
-import { TokenBalancesProvider } from '@/modules/aggregator/components/TokenBalancesProvider';
-import { TokenPricesProvider } from '@/modules/aggregator/components/TokenPricesProvider';
 import { useBridgeConfig } from '@/index';
 
 export interface AggregatorContextProps {
@@ -57,18 +56,27 @@ export const AggregatorContext = React.createContext(DEFAULT_CONTEXT);
 
 export interface AggregatorProviderProps {
   transferConfig?: ITransferConfig;
-  chainConfigs: IChainConfig[];
+  chains: IChainConfig[];
   children: React.ReactNode;
 }
 
 export function AggregatorProvider(props: AggregatorProviderProps) {
-  const { transferConfig, chainConfigs, children } = props;
+  const { transferConfig, chains, children } = props;
 
   const bridgeConfig = useBridgeConfig();
+  const chainConfigs = useMemo(() => {
+    return chains.map((item) => ({
+      ...item,
+      chainType: item.chainType ? item.chainType : 'evm',
+    }));
+  }, [chains]);
 
   const value = useMemo(() => {
     if (!transferConfig) {
-      return DEFAULT_CONTEXT;
+      return {
+        ...DEFAULT_CONTEXT,
+        chainConfigs,
+      };
     }
 
     const bridges: Array<{
@@ -91,6 +99,7 @@ export function AggregatorProvider(props: AggregatorProviderProps) {
         bridgeType: 'layerZero',
         Adapter: LayerZeroAdapter,
       },
+      { bridgeType: 'meson', Adapter: MesonAdapter },
     ];
 
     const nativeCurrencies = getNativeCurrencies(chainConfigs);
@@ -158,15 +167,9 @@ export function AggregatorProvider(props: AggregatorProviderProps) {
         });
       },
     };
-  }, [chainConfigs, transferConfig, bridgeConfig.assetPrefix]);
+  }, [transferConfig, chainConfigs, bridgeConfig.assetPrefix]);
 
-  return (
-    <AggregatorContext.Provider value={value}>
-      <TokenBalancesProvider />
-      <TokenPricesProvider />
-      {children}
-    </AggregatorContext.Provider>
-  );
+  return <AggregatorContext.Provider value={value}>{children}</AggregatorContext.Provider>;
 }
 
 export function useAggregator() {

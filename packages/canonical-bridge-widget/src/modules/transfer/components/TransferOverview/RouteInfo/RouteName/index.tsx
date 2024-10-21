@@ -48,6 +48,15 @@ export const RouteName = React.memo(
             h={['16px', '16px', '16px', '20px']}
             borderRadius={'100%'}
           />
+        ) : bridgeType === 'meson' ? (
+          <Image
+            src={`${bridgeConfig.assetPrefix}/images/mesonIcon.png`}
+            alt="meson"
+            w={['16px', '16px', '16px', '20px']}
+            h={['16px', '16px', '16px', '20px']}
+            borderRadius={'100%'}
+            mb={['4px', '4px', '4px', '0']}
+          />
         ) : null}
 
         <Flex
@@ -74,6 +83,8 @@ export const RouteName = React.memo(
               ? formatMessage({ id: 'route.option.stargate.title' })
               : bridgeType === 'layerZero'
               ? formatMessage({ id: 'route.option.layerZero.title' })
+              : bridgeType === 'meson'
+              ? formatMessage({ id: 'route.option.meson.title' })
               : null}
           </Box>
           <Flex gap={'4px'}>

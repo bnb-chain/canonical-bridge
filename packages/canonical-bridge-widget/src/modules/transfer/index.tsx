@@ -16,6 +16,7 @@ import { ReceiveInfo } from '@/modules/transfer/components/ReceiveInfo';
 import { useDefaultSelectedInfo } from '@/modules/aggregator/hooks/useDefaultSelectedInfo';
 import { RoutesModal } from '@/modules/transfer/components/TransferOverview/modal/RoutesModal';
 import { useBridgeConfig } from '@/CanonicalBridgeProvider';
+import { ToAccount } from '@/modules/transfer/components/ToAccount';
 
 export function TransferWidget() {
   const { colorMode } = useColorMode();
@@ -66,6 +67,7 @@ export function TransferWidget() {
 
         <NetWorkSection />
         <SendInput />
+        <ToAccount />
         <ReceiveInfo onOpen={onOpen} />
         <Flex flexDir="column">
           <TransferButtonGroup />

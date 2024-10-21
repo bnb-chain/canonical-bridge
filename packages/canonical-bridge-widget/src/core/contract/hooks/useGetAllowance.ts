@@ -48,7 +48,8 @@ export const useGetAllowance = ({
         !!tokenAddress &&
         !!Number(sendValue) &&
         !!toTokenInfo &&
-        !!sender,
+        !!sender &&
+        fromChain?.chainType !== 'tron',
     },
   });
   useEffect(() => {
@@ -66,7 +67,8 @@ export const useGetAllowance = ({
         chain?.id !== fromChain?.id ||
         initAllowance === null ||
         !sender ||
-        !balance
+        !balance ||
+        fromChain?.chainType === 'tron'
       ) {
         return;
       }

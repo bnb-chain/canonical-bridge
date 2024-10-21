@@ -1,26 +1,28 @@
 import { Button, useColorMode, useIntl, useTheme } from '@bnb-chain/space';
-import { useConnectModal } from '@node-real/walletkit';
 
-import { useAppSelector } from '@/modules/store/StoreProvider';
 import { reportEvent } from '@/core/utils/gtm';
+import { useAppSelector } from '@/modules/store/StoreProvider';
+import { useCurrentWallet } from '@/modules/wallet/CurrentWalletProvider';
 
 export const WalletConnectButton = () => {
-  const { onOpen } = useConnectModal();
   const { formatMessage } = useIntl();
   const { colorMode } = useColorMode();
+  const theme = useTheme();
 
   const fromChain = useAppSelector((state) => state.transfer.fromChain);
+  const { linkWallet } = useCurrentWallet();
 
-  const theme = useTheme();
   return (
     <Button
       size="lg"
       h={'56px'}
       w="100%"
       onClick={() => {
-        onOpen({
+        linkWallet({
+          chainType: fromChain?.chainType,
           initialChainId: fromChain?.id,
         });
+
         reportEvent({
           id: 'click_bridge_goal',
           params: {

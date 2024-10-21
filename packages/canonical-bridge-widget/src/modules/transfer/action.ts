@@ -39,3 +39,7 @@ export const setRouteError = createAction<ITransferState['routeError']>('transfe
 export const setToAccount = createAction<ITransferState['toAccount']>('transfer/setToAccount');
 
 export const setRouteFees = createAction<ITransferState['routeFees']>('transfer/setRouteFees');
+
+export const setIsToAddressChecked = createAction<ITransferState['isToAddressChecked']>(
+  'transfer/setIsToAddressChecked',
+);

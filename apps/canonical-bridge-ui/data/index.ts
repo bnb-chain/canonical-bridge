@@ -9,6 +9,7 @@ import axios from 'axios';
 import { env } from '@/core/env';
 import stargateConfig from '@/data/stargate/config.json';
 import layerZeroConfig from '@/data/layerZero/config.json';
+import mesonConfig from '@/data/meson/config.json';
 
 export function useTransferConfig() {
   const [transferConfig, setTransferConfig] = useState<ITransferConfig>();
@@ -31,8 +32,7 @@ export function useTransferConfig() {
           amount: '',
         },
         order: {
-          // [Ethereum, Arbitrum, Base, Tron, Solana, Polygon, Avalanche, Blast, Linea, Optimism]
-          chains: [56, 204, 1, 42161, 8453, 1000, 7565164, 137, 43114, 81457, 59144, 10],
+          chains: [56, 204, 1, 42161, 8453, 728126428, 7565164, 137, 43114, 81457, 59144, 10],
           tokens: [
             'USDC',
             'USDT',
@@ -159,6 +159,14 @@ export function useTransferConfig() {
         },
         layerZero: {
           config: layerZeroConfig,
+          exclude: {
+            chains: [],
+            tokens: {},
+          },
+          bridgedTokenGroups: [],
+        },
+        meson: {
+          config: mesonConfig.result as any,
           exclude: {
             chains: [],
             tokens: {},
