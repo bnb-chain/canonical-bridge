@@ -17,21 +17,16 @@ jobs:
 
       - uses: ./.github/actions/setup
 
-      - name: 'CD canonical-bridge-ui'
-        run: cd ./apps/canonical-bridge-ui
-
       - name: Creating .env
         shell: bash
         run: |
-          cat << EOF > ".env"
+          cat << EOF > "./apps/canonical-bridge-ui/.env"
             NEXT_PUBLIC_APP_NAME=$APP_NAME
             NEXT_PUBLIC_BASE_PATH=$BASE_PATH
             NEXT_PUBLIC_ASSET_PREFIX=$ASSET_PREFIX
             NEXT_PUBLIC_SERVER_ENDPOINT=$SERVER_ENDPOINT
             NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID=$WALLET_CONNECT_PROJECT_ID
           EOF
-          ls -a
-          cat .env
         env:
           APP_NAME: canonical-bridge-ui
           BASE_PATH: /canonical-bridge-ui
@@ -52,7 +47,7 @@ jobs:
       - name: Deploy docs
         uses: JamesIves/github-pages-deploy-action@v4
         with:
-          folder: ./dist
+          folder: ./apps/canonical-bridge-ui/dist
           branch: 'gh-pcages'
           clean: true
           force: true
