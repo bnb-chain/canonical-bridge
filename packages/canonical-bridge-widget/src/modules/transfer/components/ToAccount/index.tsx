@@ -10,6 +10,7 @@ import {
   InputRightElement,
 } from '@bnb-chain/space';
 import { ChangeEvent, useRef, useState } from 'react';
+import { useEffect } from 'react';
 
 import { setIsToAddressChecked, setToAccount } from '@/modules/transfer/action';
 import { useTronTransferInfo } from '@/modules/transfer/hooks/tron/useTronTransferInfo';
@@ -17,6 +18,7 @@ import { ErrorIcon } from '@/core/components/icons/ErrorIcon';
 import { CorrectIcon } from '@/core/components/icons/CorrectIcon';
 import { useAppDispatch, useAppSelector } from '@/modules/store/StoreProvider';
 import { ConfirmCheckbox } from '@/core/components/ConfirmCheckbox';
+import { useTronContract } from '@/modules/aggregator/adapters/meson/hooks/useTronContract';
 
 export function ToAccount(props: FlexProps) {
   const { colorMode } = useColorMode();
@@ -24,11 +26,13 @@ export function ToAccount(props: FlexProps) {
   const dispatch = useAppDispatch();
 
   const [isChecked, setIsChecked] = useState(false);
+  const [isTronContract, setIsTronContract] = useState<boolean | null>(null);
 
   const toAccount = useAppSelector((state) => state.transfer.toAccount);
   const toChain = useAppSelector((state) => state.transfer.toChain);
 
   const { isTronTransfer, isAvailableAccount } = useTronTransferInfo();
+  const { isTronContractInfo } = useTronContract();
 
   const timerRef = useRef<any>();
   const [inputValue, setInputValue] = useState(toAccount.address);
@@ -37,20 +41,29 @@ export function ToAccount(props: FlexProps) {
     setInputValue(value);
 
     clearTimeout(timerRef.current);
-    timerRef.current = setTimeout(() => {
+    timerRef.current = setTimeout(async () => {
       dispatch(
         setToAccount({
           address: value,
         }),
       );
+      if (toChain?.chainType === 'tron') {
+        const result = await isTronContractInfo(value);
+        setIsTronContract(result === true);
+      }
     }, 500);
   };
+
+  useEffect(() => {
+    // Clear input value when toAccount is cleared
+    if (!toAccount.address) setInputValue('');
+  }, [toAccount.address]);
 
   if (!isTronTransfer) {
     return null;
   }
 
-  const isInvalid = !isAvailableAccount && !!toAccount.address;
+  const isInvalid = (!isAvailableAccount && !!toAccount.address) || isTronContract === false;
 
   const onCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.checked === true) {
@@ -101,10 +114,16 @@ export function ToAccount(props: FlexProps) {
         {(isInvalid || isAvailableAccount) && (
           <InputRightElement h="100%" w="auto" pr={'16px'} pl={'8px'}>
             {isInvalid && <ErrorIcon boxSize={'16px'} />}
-            {isAvailableAccount && <CorrectIcon boxSize={'16px'} />}
+            {isAvailableAccount && !isInvalid && <CorrectIcon boxSize={'16px'} />}
           </InputRightElement>
         )}
       </InputGroup>
+
+      {isInvalid && (
+        <Flex mt={'8px'} color={theme.colors[colorMode].text.danger}>
+          {formatMessage({ id: 'to.section.account.invalid' })}
+        </Flex>
+      )}
 
       <ConfirmCheckbox
         isChecked={isChecked}
@@ -116,12 +135,6 @@ export function ToAccount(props: FlexProps) {
       >
         {formatMessage({ id: 'to.section.confirm.text' })}
       </ConfirmCheckbox>
-
-      {isInvalid && (
-        <Flex mt={'8px'} color={theme.colors[colorMode].text.danger}>
-          {formatMessage({ id: 'to.section.account.invalid' })}
-        </Flex>
-      )}
     </Flex>
   );
 }
