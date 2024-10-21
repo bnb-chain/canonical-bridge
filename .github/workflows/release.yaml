@@ -13,7 +13,7 @@ on:
 jobs:
   pre-check:
     runs-on: ubuntu-latest
-    if: github.repository == 'bnb-chain/canonical-bridge' && contains(github.event.comment.body, '/qa-deploy:${{inputs.package-name}}')
+    if: github.repository == 'bnb-chain/canonical-bridge'
     outputs:
       codeowners: ${{ steps.codeowners.outputs.content }}
     steps:
@@ -28,18 +28,14 @@ jobs:
 
   cicd:
     needs: [pre-check]
-    if: contains(needs.pre-check.outputs.codeowners, github.event.comment.user.login)
+    if: contains(needs.pre-check.outputs.codeowners, github.event.pull_request.user.login)
     timeout-minutes: 10
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code repository
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
       - uses: ./.github/actions/setup
-        with:
-          npm-token: ${{ secrets.NPM_TOKEN }}
 
       - name: Install & build
         shell: bash
