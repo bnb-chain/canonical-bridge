@@ -4,6 +4,12 @@ inputs:
   app-name:
     description: 'app name'
     required: true
+  npm-token:
+    description: 'npm token'
+    required: true
+  github-token:
+    description: 'github token'
+    required: true
 
 runs:
   using: composite
@@ -27,5 +33,5 @@ runs:
         title: 'chore: Update versions'
         cwd: '.release'
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+        GITHUB_TOKEN: ${{ inputs.github-token }}
+        NPM_TOKEN: ${{ inputs.npm-token }}
