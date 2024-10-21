@@ -57,4 +57,4 @@ jobs:
           destination-github-username: 'wenty22'
           destination-repository-name: 'canonical-bridge'
           user-email: github-actions[bot]@users.noreply.github.com
-          target-branch: gh-pages
+          target-branch: main
