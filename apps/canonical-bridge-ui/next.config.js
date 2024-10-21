@@ -15,6 +15,12 @@ const getEnv = (type = 'public') => {
 
 module.exports = {
   assetPrefix: process.env.NEXT_PUBLIC_ASSET_PREFIX,
+  output: 'export',
+  distDir: 'dist',
+  basePath: '/canonical-bridge',
+  images: {
+    unoptimized: true,
+  },
   publicRuntimeConfig: {
     ...getEnv('public'),
   },

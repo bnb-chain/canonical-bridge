@@ -64,7 +64,3 @@ export default function App() {
     </ThemeProvider>
   );
 }
-
-App.getInitialProps = async () => {
-  return {};
-};
