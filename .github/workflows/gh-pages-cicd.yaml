@@ -5,7 +5,6 @@ on:
     types: [created]
 
 env:
-  BRANCH_NAME: ${{ github.head_ref || github.ref_name }}
   SERVER_ENDPOINT: ${{ vars.SERVER_ENDPOINT }}
   WALLET_CONNECT_PROJECT_ID: ${{ vars.WALLET_CONNECT_PROJECT_ID }}
 
@@ -19,7 +18,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          ref: ${{ env.BRANCH_NAME}}
+          ref: ${{ github.event.pull_request.head.sha }}
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - uses: ./.github/actions/setup
