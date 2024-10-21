@@ -6,7 +6,7 @@ on:
 
 jobs:
   cicd:
-    if: github.repository == 'bnb-chain/canonical-bridge' && contains(github.event.comment.body, '/qa-deploy')
+    if: github.repository == 'bnb-chain/canonical-bridge' && contains(github.event.comment.body, '/qa-deploy:canonical-bridge-ui')
     timeout-minutes: 10
     runs-on: ubuntu-latest
     steps:
@@ -39,12 +39,22 @@ jobs:
         run: |
           node common/scripts/install-run-rush.js install -t canonical-bridge-ui
           node common/scripts/install-run-rush.js build -t canonical-bridge-ui
-          ls ./apps/canonical-bridge-ui -a
 
-      - name: Deploy docs
-        uses: JamesIves/github-pages-deploy-action@v4
+      # - name: Deploy docs
+      #   uses: JamesIves/github-pages-deploy-action@v4
+      #   with:
+      #     folder: ./apps/canonical-bridge-ui/dist
+      #     branch: 'gh-pages'
+      #     clean: true
+      #     force: true
+
+      - name: Pushes to another repository
+        uses: cpina/github-action-push-to-another-repository@main
+        env:
+          API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
         with:
-          folder: ./apps/canonical-bridge-ui/dist
-          branch: 'gh-pages'
-          clean: true
-          force: true
+          source-directory: './apps/canonical-bridge-ui/dist'
+          destination-github-username: 'wenty22'
+          destination-repository-name: 'canonical-bridge'
+          user-email: github-actions[bot]@users.noreply.github.com
+          target-branch: gh-pages
