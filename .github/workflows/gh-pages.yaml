@@ -4,13 +4,25 @@ on:
   issue_comment:
     types: [created]
 
-env:
-  SERVER_ENDPOINT: ${{ vars.SERVER_ENDPOINT }}
-  WALLET_CONNECT_PROJECT_ID: ${{ vars.WALLET_CONNECT_PROJECT_ID }}
-
 jobs:
-  cicd:
+  pre-check:
+    runs-on: ubuntu-latest
     if: github.repository == 'bnb-chain/canonical-bridge' && contains(github.event.comment.body, '/qa-deploy:canonical-bridge-ui')
+    outputs:
+      codeowners: ${{ steps.codeowners.outputs.content }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Read codeowners
+        id: codeowners
+        uses: juliangruber/read-file-action@v1
+        with:
+          path: .github/CODEOWNERS
+
+  cicd:
+    needs: [pre-check]
+    if: contains(needs.pre-check.outputs.codeowners, github.event.comment.user.login)
     timeout-minutes: 10
     runs-on: ubuntu-latest
     steps:
@@ -34,14 +46,7 @@ jobs:
       - name: get pr env
         id: pr-env
         run: |
-          GIT_REPOSITORY=${{ fromJSON(steps.get-pr.outputs.result).head.repo.full_name }}
-          PR_NUMBER=${{ fromJSON(steps.get-pr.outputs.result).number }}
-          LATEST_COMMIT_SHA=${{ fromJSON(steps.get-pr.outputs.result).head.sha }}
           BRANCH_NAME=${{ fromJSON(steps.get-pr.outputs.result).head.ref }}
-
-          echo "GIT_REPOSITORY=${GIT_REPOSITORY}" >> $GITHUB_OUTPUT
-          echo "PR_NUMBER=${PR_NUMBER}" >> $GITHUB_OUTPUT
-          echo "LATEST_COMMIT_SHA=${LATEST_COMMIT_SHA}" >> $GITHUB_OUTPUT
           echo "BRANCH_NAME=${BRANCH_NAME}" >> $GITHUB_OUTPUT
 
       - name: Checkout code repository
@@ -51,13 +56,6 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - uses: ./.github/actions/setup
-
-      - name: Log
-        run: |
-          echo "${{steps.pr-env.outputs.BRANCH_NAME}}"
-          echo "${{steps.pr-env.outputs.GIT_REPOSITORY}}"
-          echo "${{steps.pr-env.outputs.LATEST_COMMIT_SHA}}"
-          echo "${{steps.pr-env.outputs.PR_NUMBER}}"
 
       - name: Creating .env
         shell: bash
@@ -73,22 +71,14 @@ jobs:
           APP_NAME: canonical-bridge
           BASE_PATH: /canonical-bridge
           ASSET_PREFIX: /canonical-bridge
-          SERVER_ENDPOINT: ${{ env.SERVER_ENDPOINT }}
-          WALLET_CONNECT_PROJECT_ID: ${{ env.WALLET_CONNECT_PROJECT_ID }}
+          SERVER_ENDPOINT: ${{ vars.SERVER_ENDPOINT }}
+          WALLET_CONNECT_PROJECT_ID: ${{ vars.WALLET_CONNECT_PROJECT_ID }}
 
       - name: Install & build
         shell: bash
         run: |
           node common/scripts/install-run-rush.js install -t canonical-bridge-ui
           node common/scripts/install-run-rush.js build -t canonical-bridge-ui
-
-      # - name: Deploy docs
-      #   uses: JamesIves/github-pages-deploy-action@v4
-      #   with:
-      #     folder: ./apps/canonical-bridge-ui/dist
-      #     branch: 'gh-pages'
-      #     clean: true
-      #     force: true
 
       - name: Pushes to another repository
         uses: cpina/github-action-push-to-another-repository@main
@@ -100,3 +90,11 @@ jobs:
           destination-repository-name: 'canonical-bridge'
           user-email: github-actions[bot]@users.noreply.github.com
           target-branch: main
+
+      # - name: Deploy docs
+      #   uses: JamesIves/github-pages-deploy-action@v4
+      #   with:
+      #     folder: ./apps/canonical-bridge-ui/dist
+      #     branch: 'gh-pages'
+      #     clean: true
+      #     force: true

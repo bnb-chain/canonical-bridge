@@ -6,9 +6,29 @@ on:
       - closed
     branches:
       - main
+    paths:
+      - packages/canonical-bridge-sdk/**
+      - packages/canonical-bridge-widget/**
+
 jobs:
-  release:
-    if: github.repository == 'bnb-chain/canonical-bridge'
+  pre-check:
+    runs-on: ubuntu-latest
+    if: github.repository == 'bnb-chain/canonical-bridge' && contains(github.event.comment.body, '/qa-deploy:${{inputs.package-name}}')
+    outputs:
+      codeowners: ${{ steps.codeowners.outputs.content }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Read codeowners
+        id: codeowners
+        uses: juliangruber/read-file-action@v1
+        with:
+          path: .github/CODEOWNERS
+
+  cicd:
+    needs: [pre-check]
+    if: contains(needs.pre-check.outputs.codeowners, github.event.comment.user.login)
     timeout-minutes: 10
     runs-on: ubuntu-latest
     steps:
@@ -18,15 +38,8 @@ jobs:
           fetch-depth: 0
 
       - uses: ./.github/actions/setup
-
-      - name: Creating .npmrc
-        shell: bash
-        run: |
-          cat << EOF > "$HOME/.npmrc"
-            //registry.npmjs.org/:_authToken=$NPM_TOKEN
-          EOF
-        env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+        with:
+          npm-token: ${{ secrets.NPM_TOKEN }}
 
       - name: Install & build
         shell: bash
