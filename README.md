@@ -23,6 +23,19 @@ Key features include:
 1. Deploy [canonical-bridge-server](https://github.com/bnb-chain/canonical-bridge/tree/main/apps/canonical-bridge-server) as data service.
 2. Introduce widget to your project, please refer to our [example](https://github.com/bnb-chain/canonical-bridge/tree/main/apps/canonical-bridge-ui).
 
+## Contributing
+
+A complete development workflow is as follows:
+
+1. Create a new branch out of `main` branch
+2. Make some changes, fix bugs or add new features
+3. Run `rush changeset` to create a new changeset
+4. Commit the code, code review is required, after code review, we can merge the code to `main`
+   branch
+5. Then [github action](https://github.com//bnb-chain/canonical-bridge/actions) will automatically execute
+   and create a new [release PR](https://github.com//bnb-chain/canonical-bridge/pulls), merge this PR, a new
+   version will be released
+
 ## License
 
 The contents of this repo are made available under the
