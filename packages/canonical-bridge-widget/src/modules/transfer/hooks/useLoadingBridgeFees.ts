@@ -145,6 +145,14 @@ export const useLoadingBridgeFees = () => {
                 meson: `Minimum amount is ${error.data.fee} ${selectedToken.symbol}`,
               }),
             );
+          } else {
+            // other error
+            dispatch(setEstimatedAmount({ meson: 'error' }));
+            dispatch(
+              setRouteError({
+                meson: error.message,
+              }),
+            );
           }
         } else {
           const feeSortingRes = await mesonFeeSorting(mesonEst.value.result);
