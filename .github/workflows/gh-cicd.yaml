@@ -6,7 +6,7 @@ on:
 
 jobs:
   build:
-    if: github.repository == 'bnb-chain/canonical-bridge'
+    if: github.repository == 'bnb-chain/canonical-bridge' && contains(github.event.comment.body, '/qa-deploy')
     timeout-minutes: 10
     runs-on: ubuntu-latest
     steps:
@@ -19,9 +19,6 @@ jobs:
 
       - name: 'CD canonical-bridge-ui'
         run: cd ./apps/canonical-bridge-ui
-
-      - name: Setup Pages
-        uses: actions/configure-pages@v4
 
       - name: Creating .env
         shell: bash
@@ -47,18 +44,14 @@ jobs:
           node common/scripts/install-run-rush.js install -t canonical-bridge-ui
           node common/scripts/install-run-rush.js build -t canonical-bridge-ui
 
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: ./dist
-
   deploy:
     needs: build
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+      - name: Deploy docs
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: ./dist
+          branch: 'gh-pcages'
+          clean: true
+          force: true
