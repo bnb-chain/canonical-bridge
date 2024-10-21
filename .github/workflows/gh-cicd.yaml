@@ -39,7 +39,6 @@ jobs:
         run: |
           node common/scripts/install-run-rush.js install -t canonical-bridge-ui
           node common/scripts/install-run-rush.js build -t canonical-bridge-ui
-          ls ./apps/canonical-bridge-ui -a
 
   deploy:
     needs: build
