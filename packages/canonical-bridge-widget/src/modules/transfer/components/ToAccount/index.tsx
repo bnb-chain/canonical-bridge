@@ -26,13 +26,12 @@ export function ToAccount(props: FlexProps) {
   const dispatch = useAppDispatch();
 
   const [isChecked, setIsChecked] = useState(false);
-  const [isTronContract, setIsTronContract] = useState<boolean | null>(null);
 
   const toAccount = useAppSelector((state) => state.transfer.toAccount);
   const toChain = useAppSelector((state) => state.transfer.toChain);
 
   const { isTronTransfer, isAvailableAccount } = useTronTransferInfo();
-  const { isTronContractInfo } = useTronContract();
+  const { isTronContract } = useTronContract();
 
   const timerRef = useRef<any>();
   const [inputValue, setInputValue] = useState(toAccount.address);
@@ -47,10 +46,6 @@ export function ToAccount(props: FlexProps) {
           address: value,
         }),
       );
-      if (toChain?.chainType === 'tron') {
-        const result = await isTronContractInfo(value);
-        setIsTronContract(result === true);
-      }
     }, 500);
   };
 

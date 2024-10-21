@@ -13,6 +13,7 @@ import { useGetTronAllowance } from '@/modules/aggregator/adapters/meson/hooks/u
 import { useCurrentWallet } from '@/modules/wallet/CurrentWalletProvider';
 import { useTronTransferInfo } from '@/modules/transfer/hooks/tron/useTronTransferInfo';
 import { utf8ToHex } from '@/core/utils/string';
+import { useTronContract } from '@/modules/aggregator/adapters/meson/hooks/useTronContract';
 
 export function TransferButton({
   onOpenSubmittedModal,
@@ -62,6 +63,7 @@ export function TransferButton({
     tokenAddress: selectedToken?.address as `0x${string}`,
     sender: transferActionInfo?.bridgeAddress as `0x${string}`,
   });
+  const { isTronContract } = useTronContract();
 
   const tronAllowance = useGetTronAllowance();
   const { isTronConnected, isEvmConnected } = useCurrentWallet();
@@ -416,7 +418,8 @@ export function TransferButton({
           !Number(sendValue) ||
           !transferActionInfo ||
           !isTransferable ||
-          (isTronTransfer && !isToAddressChecked)
+          (isTronTransfer && !isToAddressChecked) ||
+          isTronContract === true
         }
       >
         {isApproveNeeded
