@@ -3,10 +3,10 @@ name: DockerImage build and push
 on:
   workflow_dispatch:
   push:
+    types:
+      - closed
     branches:
-      - develop
       - main
-    tags: '*'
     paths:
       - apps/canonical-bridge-server/**
 
