@@ -1,13 +1,14 @@
 import { formatUnits } from 'viem';
 import { BridgeType } from '@bnb-chain/canonical-bridge-sdk';
 import { useCallback } from 'react';
-import { useAccount } from 'wagmi';
 
 import { formatNumber } from '@/core/utils/number';
 import { useAppSelector } from '@/modules/store/StoreProvider';
+import { useCurrentWallet } from '@/modules/wallet/CurrentWalletProvider';
 
 export const useInputValidation = () => {
-  const { chain } = useAccount();
+  const { chain } = useCurrentWallet();
+
   const fromChain = useAppSelector((state) => state.transfer.fromChain);
   const validateInput = useCallback(
     ({
