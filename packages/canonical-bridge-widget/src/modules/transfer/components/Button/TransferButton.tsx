@@ -1,6 +1,6 @@
 import { Button, Flex, useColorMode, useIntl, useTheme } from '@bnb-chain/space';
 import { useCallback, useState } from 'react';
-import { useAccount, usePublicClient, useSignMessage, useWalletClient } from 'wagmi';
+import { useAccount, useBytecode, usePublicClient, useSignMessage, useWalletClient } from 'wagmi';
 import { formatUnits, parseUnits } from 'viem';
 import { useTronWallet } from '@node-real/walletkit/tron';
 
@@ -64,6 +64,10 @@ export function TransferButton({
     sender: transferActionInfo?.bridgeAddress as `0x${string}`,
   });
   const { isTronContract } = useTronContract();
+  const { data: evmBytecode } = useBytecode({
+    address: toAccount.address as `0x${string}`,
+    chainId: toChain?.id,
+  });
 
   const tronAllowance = useGetTronAllowance();
   const { isTronConnected, isEvmConnected } = useCurrentWallet();
@@ -419,7 +423,8 @@ export function TransferButton({
           !transferActionInfo ||
           !isTransferable ||
           (isTronTransfer && (!isToAddressChecked || !toAccount?.address || !isAvailableAccount)) ||
-          isTronContract === true
+          isTronContract === true ||
+          !!evmBytecode
         }
       >
         {isApproveNeeded
