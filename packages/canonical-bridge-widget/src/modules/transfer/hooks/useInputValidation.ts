@@ -18,7 +18,7 @@ export const useInputValidation = () => {
       bridgeType,
       estimatedAmount,
     }: {
-      balance: null | bigint;
+      balance?: number;
       decimal: number;
       value: number;
       bridgeType?: BridgeType;
@@ -35,12 +35,7 @@ export const useInputValidation = () => {
             isError: true,
           };
         }
-        if (
-          !!balance &&
-          value > Number(formatUnits(balance, decimal)) &&
-          fromChain?.id === chain?.id &&
-          chain
-        ) {
+        if (!!balance && value > balance && fromChain?.id === chain?.id && chain) {
           return { text: `You have insufficient balance`, isError: true };
         }
         if (estimatedAmount?.stargate && bridgeType === 'stargate' && value) {
@@ -54,7 +49,7 @@ export const useInputValidation = () => {
         }
 
         if (!!balance) {
-          return { text: `${formatNumber(Number(formatUnits(balance, decimal)))}`, isError: false };
+          return { text: `${formatNumber(balance)}`, isError: false };
         } else {
           if (fromChain?.id === chain?.id && chain) {
             return { isError: true, text: 'You have insufficient balance' };
