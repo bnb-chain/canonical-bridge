@@ -11,6 +11,7 @@ import {
 } from '@bnb-chain/space';
 import { ChangeEvent, useRef, useState } from 'react';
 import { useEffect } from 'react';
+import { useBytecode } from 'wagmi';
 
 import { setIsToAddressChecked, setToAccount } from '@/modules/transfer/action';
 import { useTronTransferInfo } from '@/modules/transfer/hooks/tron/useTronTransferInfo';
@@ -32,6 +33,10 @@ export function ToAccount(props: FlexProps) {
 
   const { isTronTransfer, isAvailableAccount } = useTronTransferInfo();
   const { isTronContract } = useTronContract();
+  const { data: evmBytecode } = useBytecode({
+    address: toAccount.address as `0x${string}`,
+    chainId: toChain?.id,
+  });
 
   const timerRef = useRef<any>();
   const [inputValue, setInputValue] = useState(toAccount.address);
@@ -58,7 +63,8 @@ export function ToAccount(props: FlexProps) {
     return null;
   }
 
-  const isInvalid = (!isAvailableAccount && !!toAccount.address) || isTronContract === true;
+  const isInvalid =
+    (!isAvailableAccount && !!toAccount.address) || isTronContract === true || !!evmBytecode;
 
   const onCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.checked === true) {
