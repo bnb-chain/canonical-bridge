@@ -10,6 +10,9 @@ inputs:
   github-token:
     description: 'github token'
     required: true
+  branch:
+    description: 'branch'
+    required: true
 
 runs:
   using: composite
@@ -32,6 +35,7 @@ runs:
         commit: 'chore: Update versions'
         title: 'chore: Update versions'
         cwd: '.release'
+        branch: ${{ inputs.branch }}
       env:
         GITHUB_TOKEN: ${{ inputs.github-token }}
         NPM_TOKEN: ${{ inputs.npm-token }}
