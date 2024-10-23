@@ -1,11 +1,4 @@
-import {
-  Flex,
-  Typography,
-  useBreakpointValue,
-  useColorMode,
-  useIntl,
-  useTheme,
-} from '@bnb-chain/space';
+import { Flex, Typography, useColorMode, useIntl, useTheme } from '@bnb-chain/space';
 
 import { TransferToIcon } from '@/core/components/icons/TransferToIcon';
 import { FromSection } from '@/modules/transfer/components/FromSection';
@@ -15,36 +8,37 @@ export const NetWorkSection = () => {
   const { formatMessage } = useIntl();
   const { colorMode } = useColorMode();
   const theme = useTheme();
-  const isBase = useBreakpointValue({ base: true, md: false }) ?? false;
 
   return (
     <Flex flexDir={'column'} gap={'12px'}>
-      {!isBase ? (
-        <>
-          <Flex flexDir={'row'}>
-            <Flex alignItems="center" justifyContent={'space-between'} flex={1}>
-              <Typography
-                variant="body"
-                size={'sm'}
-                lineHeight={'16px'}
-                color={theme.colors[colorMode].text.placeholder}
-              >
-                {formatMessage({ id: 'from.section.title' })}
-              </Typography>
-            </Flex>
-            <Flex alignItems="center" justifyContent={'space-between'} flex={1} ml="49px">
-              <Typography
-                variant="body"
-                lineHeight={'16px'}
-                size={'sm'}
-                color={theme.colors[colorMode].text.placeholder}
-              >
-                {formatMessage({ id: 'to.section.title' })}
-              </Typography>
-            </Flex>
-          </Flex>{' '}
-        </>
-      ) : null}
+      <Flex flexDir={'row'} display={{ base: 'none', md: 'flex' }}>
+        <Flex alignItems="center" justifyContent={'space-between'} flex={1}>
+          <Typography
+            variant="body"
+            size={'sm'}
+            lineHeight={'16px'}
+            color={theme.colors[colorMode].text.placeholder}
+          >
+            {formatMessage({ id: 'from.section.title' })}
+          </Typography>
+        </Flex>
+        <Flex
+          alignItems="center"
+          justifyContent={'space-between'}
+          flex={1}
+          ml="49px"
+          display={{ base: 'none', md: 'flex' }}
+        >
+          <Typography
+            variant="body"
+            lineHeight={'16px'}
+            size={'sm'}
+            color={theme.colors[colorMode].text.placeholder}
+          >
+            {formatMessage({ id: 'to.section.title' })}
+          </Typography>
+        </Flex>
+      </Flex>{' '}
       <Flex
         flexDir={['column', 'column', 'row']}
         justifyContent={'space-between'}
@@ -52,7 +46,7 @@ export const NetWorkSection = () => {
         gap={['16px', '16px', '16px', '12px']}
       >
         <FromSection />
-        <TransferToIcon w={'24px'} h={'24px'} transform={!isBase ? '' : 'rotate(90deg)'} />
+        <TransferToIcon w={'24px'} h={'24px'} transform={{ base: 'rotate(90deg)', md: 'none' }} />
         <ToSection />
       </Flex>
     </Flex>

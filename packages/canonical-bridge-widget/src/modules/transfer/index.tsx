@@ -53,12 +53,12 @@ export function TransferWidget() {
         {appearance.bridgeTitle && (
           <Box
             as="h1"
-            display={['none', 'none', 'block']}
-            fontSize={'24px'}
+            fontSize={{ base: '20px', md: '24px' }}
             fontWeight={500}
             textAlign={'center'}
-            borderBottom={`1px solid ${theme.colors[colorMode].border[2]}`}
-            pb={'24px'}
+            lineHeight={{ base: 1.4, md: 1.333 }}
+            borderBottom={{ base: 'none', md: `1px solid ${theme.colors[colorMode].border[2]}` }}
+            pb={{ base: 0, md: '24px' }}
           >
             {appearance.bridgeTitle}
           </Box>
@@ -70,11 +70,12 @@ export function TransferWidget() {
         <Flex flexDir="column">
           <TransferButtonGroup />
         </Flex>
-        {isBase ? routeContentBottom : null}
+        <Box display={{ base: 'block', lg: 'none' }}>{routeContentBottom}</Box>
       </Flex>
-      {!isBase ? (
+      <Box display={{ base: 'none', lg: 'flex' }}>
         <TransferOverview routeContentBottom={routeContentBottom} />
-      ) : (
+      </Box>
+      {isBase && (
         <RoutesModal
           title={formatMessage({ id: 'route.title.select.routes' })}
           isOpen={isOpen}

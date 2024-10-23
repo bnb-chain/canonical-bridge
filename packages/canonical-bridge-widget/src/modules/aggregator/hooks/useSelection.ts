@@ -11,7 +11,9 @@ import { getTokenBalances } from '@/modules/aggregator/shared/getTokenBalances';
 import { sortTokens } from '@/modules/aggregator/shared/sortTokens';
 
 export function useSelection() {
-  const { getFromChains, getToChains, getTokens, getToToken, adapters } = useAggregator();
+  const { chainId } = useAccount();
+  const { getFromChains, getToChains, getTokens, getToToken, adapters, defaultSelectedInfo } =
+    useAggregator();
 
   const fromChain = useAppSelector((state) => state.transfer.fromChain);
   const toChain = useAppSelector((state) => state.transfer.toChain);
@@ -72,6 +74,38 @@ export function useSelection() {
     });
   };
 
+  const selectFromChain = async (tmpFromChain: IBridgeChain) => {
+    // After selecting fromChain, if toChain becomes incompatible, reselect the first compatible network in toChain list.
+    const toChains = getToChains({
+      fromChainId: tmpFromChain.id,
+    });
+
+    const tmpToChain =
+      toChains.find((c) => isChainOrTokenCompatible(c) && c.id === toChain?.id) ??
+      toChains.find((c) => isChainOrTokenCompatible(c) && c.chainType !== 'link');
+
+    const tmpTokens = await getSortedTokens({
+      fromChainId: tmpFromChain.id,
+      tokens: getTokens({
+        fromChainId: tmpFromChain.id,
+        toChainId: tmpToChain?.id,
+      }),
+    });
+
+    const newToken =
+      tmpTokens.find(
+        (t) =>
+          isChainOrTokenCompatible(t) &&
+          t.displaySymbol.toUpperCase() === selectedToken?.displaySymbol.toUpperCase(),
+      ) ?? tmpTokens.find((t) => isChainOrTokenCompatible(t));
+
+    updateSelectedInfo({
+      tmpToken: newToken,
+      tmpFromChain,
+      tmpToChain,
+    });
+  };
+
   return {
     async selectDefault({
       fromChainId,
@@ -86,6 +120,15 @@ export function useSelection() {
       const token = Object.fromEntries(
         bridgeTypes.map((item) => [item, { symbol: tokenSymbol }]),
       ) as any as IBridgeToken;
+
+      if (chainId && chainId !== defaultSelectedInfo.fromChainId) {
+        const fromChains = getFromChains({});
+        const chain = fromChains.find((chain) => chain.id === chainId);
+        if (chain) {
+          selectFromChain(chain);
+          return;
+        }
+      }
 
       const fromChains = getFromChains({
         toChainId,
@@ -116,38 +159,7 @@ export function useSelection() {
         token: newToken,
       });
     },
-
-    async selectFromChain(tmpFromChain: IBridgeChain) {
-      // After selecting fromChain, if toChain becomes incompatible, reselect the first compatible network in toChain list.
-      const toChains = getToChains({
-        fromChainId: tmpFromChain.id,
-      });
-      const tmpToChain =
-        toChains.find((c) => isChainOrTokenCompatible(c) && c.id === toChain?.id) ??
-        toChains.find((c) => isChainOrTokenCompatible(c) && c.chainType !== 'link');
-
-      const tmpTokens = await getSortedTokens({
-        fromChainId: tmpFromChain.id,
-        tokens: getTokens({
-          fromChainId: tmpFromChain.id,
-          toChainId: tmpToChain?.id,
-        }),
-      });
-
-      const newToken =
-        tmpTokens.find(
-          (t) =>
-            isChainOrTokenCompatible(t) &&
-            t.displaySymbol.toUpperCase() === selectedToken?.displaySymbol.toUpperCase(),
-        ) ?? tmpTokens.find((t) => isChainOrTokenCompatible(t));
-
-      updateSelectedInfo({
-        tmpToken: newToken,
-        tmpFromChain,
-        tmpToChain,
-      });
-    },
-
+    selectFromChain,
     async selectToChain(tmpToChain: IBridgeChain) {
       const fromChainId = fromChain!.id;
 

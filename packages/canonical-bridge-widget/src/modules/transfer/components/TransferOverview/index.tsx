@@ -6,6 +6,7 @@ import {
   useColorMode,
   useIntl,
   useTheme,
+  Collapse,
 } from '@bnb-chain/space';
 import { ReactNode, useEffect, useMemo } from 'react';
 
@@ -109,7 +110,7 @@ export function TransferOverview({ routeContentBottom }: { routeContentBottom?: 
 
   return (
     <Flex flexDir="column" ml={['0', '0', '0', '24px']} gap={['12px', '12px', '12px', '24px']}>
-      {showRoute && (
+      <Collapse in={showRoute} animateOpacity>
         <Box overflow={['auto', 'auto', 'auto', 'hidden']}>
           <Box
             position={'relative'}
@@ -120,30 +121,29 @@ export function TransferOverview({ routeContentBottom }: { routeContentBottom?: 
             w={'100%'}
           >
             <Flex flexDir={'column'} gap={'12px'}>
-              {!isBase ? (
-                <Flex
-                  justifyContent={'space-between'}
-                  alignItems={'center'}
-                  px={['0', '0', '0', '24px']}
-                  color={theme.colors[colorMode].text.route.title}
-                  fontSize={'14px'}
-                  fontWeight={500}
-                  h={'32px'}
-                  sx={{
-                    svg: {
-                      w: '32px',
-                      h: '32px',
-                    },
-                  }}
-                >
-                  {formatMessage({ id: 'route.title' })}
-                  {!options.length || isGlobalFeeLoading ? (
-                    <SkeletonCircle w={'32px'} h={'32px'} />
-                  ) : !isBase ? (
-                    <RefreshingButton />
-                  ) : null}
-                </Flex>
-              ) : null}
+              <Flex
+                display={{ base: 'none', lg: 'flex' }}
+                justifyContent={'space-between'}
+                alignItems={'center'}
+                px={['0', '0', '0', '24px']}
+                color={theme.colors[colorMode].text.route.title}
+                fontSize={'14px'}
+                fontWeight={500}
+                h={'32px'}
+                sx={{
+                  svg: {
+                    w: '32px',
+                    h: '32px',
+                  },
+                }}
+              >
+                {formatMessage({ id: 'route.title' })}
+                {!options.length || isGlobalFeeLoading ? (
+                  <SkeletonCircle w={'32px'} h={'32px'} />
+                ) : !isBase ? (
+                  <RefreshingButton />
+                ) : null}
+              </Flex>
               <Box
                 px={['0', '0', '0', '24px']}
                 flex={1}
@@ -171,7 +171,7 @@ export function TransferOverview({ routeContentBottom }: { routeContentBottom?: 
             </Flex>
           </Box>
         </Box>
-      )}
+      </Collapse>
       <Box>{routeContentBottom ? routeContentBottom : null}</Box>
     </Flex>
   );
