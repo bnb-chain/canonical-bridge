@@ -46,17 +46,14 @@ jobs:
       - name: get pr env
         id: pr-env
         run: |
-          BRANCH_NAME=${{ fromJSON(steps.get-pr.outputs.result).head.ref }}
-          echo "BRANCH_NAME=${BRANCH_NAME}" >> $GITHUB_OUTPUT
-
-      - name: get comment
-        id: get-comment
-        run: |
           #!/bin/bash
           input_comment="${{ github.event.comment.body }}"
           comment_format=${input_comment// /}
           APP_NAME=${comment_format#*:}
           echo "APP_NAME=${APP_NAME}" >> $GITHUB_OUTPUT
+
+          BRANCH_NAME=${{ fromJSON(steps.get-pr.outputs.result).head.ref }}
+          echo "BRANCH_NAME=${BRANCH_NAME}" >> $GITHUB_OUTPUT
 
       - name: Checkout code repository
         uses: actions/checkout@v4
@@ -70,7 +67,7 @@ jobs:
           npm-token: ${{ secrets.NPM_TOKEN }}
 
       - name: Deploy github pages
-        if: contains(steps.get-comment.outputs.APP_NAME, 'canonical-bridge-ui')
+        if: contains(steps.pr-env.outputs.APP_NAME, 'canonical-bridge-ui')
         uses: ./.github/actions/gh-pages
         with:
           server-endpoint: ${{ vars.SERVER_ENDPOINT }}
@@ -78,17 +75,19 @@ jobs:
           api-token-github: ${{ secrets.API_TOKEN_GITHUB }}
 
       - name: Deploy SDK
-        if: contains(steps.get-comment.outputs.APP_NAME, 'canonical-bridge-sdk')
+        if: contains(steps.pr-env.outputs.APP_NAME, 'canonical-bridge-sdk')
         uses: ./.github/actions/alpha
         with:
-          app-name: ${{steps.get-comment.outputs.APP_NAME}}
+          app-name: ${{steps.pr-env.outputs.APP_NAME}}
           npm-token: ${{ secrets.NPM_TOKEN }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
+          branch: ${{ steps.pr-env.outputs.BRANCH_NAME }}
 
       - name: Deploy Widget
-        if: contains(steps.get-comment.outputs.APP_NAME, 'canonical-bridge-widget')
+        if: contains(steps.pr-env.outputs.APP_NAME, 'canonical-bridge-widget')
         uses: ./.github/actions/alpha
         with:
-          app-name: ${{steps.get-comment.outputs.APP_NAME}}
+          app-name: ${{steps.pr-env.outputs.APP_NAME}}
           npm-token: ${{ secrets.NPM_TOKEN }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
+          branch: ${{ steps.pr-env.outputs.BRANCH_NAME }}
