@@ -6,6 +6,7 @@
     "@bnb-chain/canonical-bridge-widget": "0.1.2"
   },
   "changesets": [
-    "big-spoons-clean"
+    "big-spoons-clean",
+    "new-planets-relate"
   ]
 }
