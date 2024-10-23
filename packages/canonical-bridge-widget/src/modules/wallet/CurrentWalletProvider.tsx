@@ -1,4 +1,4 @@
-import { useWalletKit } from '@node-real/walletkit';
+import { isMobile, useWalletKit } from '@node-real/walletkit';
 import { TronWallet, useTronWallet } from '@node-real/walletkit/tron';
 import React, { useCallback, useContext, useState } from 'react';
 import { useAccount, useDisconnect } from 'wagmi';
@@ -11,6 +11,8 @@ import { useTronAccount } from '@/modules/wallet/hooks/useTronAccount';
 import { useTronBalance } from '@/modules/wallet/hooks/useTronBalance';
 import { useWalletModal } from '@/modules/wallet/hooks/useWalletModal';
 import { useTronSwitchChain } from '@/modules/wallet/hooks/useTronSwitchChain';
+import { useAppDispatch } from '@/modules/store/StoreProvider';
+import { setIsOpenSwitchingTipsModal } from '@/modules/wallet/action';
 
 export interface CurrentWalletContextProps {
   disconnect: () => void;
@@ -23,7 +25,7 @@ export interface CurrentWalletContextProps {
   address?: string;
   balance?: FormattedBalance;
   chain?: IChainConfig;
-  chainId?: number | string;
+  chainId?: number;
 }
 
 export const CurrentWalletContext = React.createContext({} as CurrentWalletContextProps);
@@ -34,6 +36,8 @@ export interface CurrentWalletProviderProps {
 
 export function CurrentWalletProvider(props: CurrentWalletProviderProps) {
   const { children } = props;
+
+  const dispatch = useAppDispatch();
 
   const evmAccount = useAccount();
   const evmBalance = useEvmBalance(evmAccount.address);
@@ -99,6 +103,7 @@ export function CurrentWalletProvider(props: CurrentWalletProviderProps) {
           });
         }
       }
+
       if (targetChainType === 'tron') {
         if (walletType !== targetChainType || !tronAccount.isConnected) {
           onOpen({
@@ -110,13 +115,18 @@ export function CurrentWalletProvider(props: CurrentWalletProviderProps) {
             },
           });
         } else if (targetChainId && tronAccount.chainId !== targetChainId) {
-          switchTronChain({
-            chainId: targetChainId,
-          });
+          if (isMobile()) {
+            dispatch(setIsOpenSwitchingTipsModal(true));
+          } else {
+            switchTronChain({
+              chainId: targetChainId,
+            });
+          }
         }
       }
     },
     [
+      dispatch,
       evmAccount.chainId,
       evmAccount.isConnected,
       onOpen,
@@ -128,6 +138,11 @@ export function CurrentWalletProvider(props: CurrentWalletProviderProps) {
     ],
   );
 
+  const evmChain = chainConfigs.find((e) => e.chainType === 'evm' && e.id === evmAccount.chainId);
+  const tronChain = chainConfigs.find(
+    (e) => e.chainType === 'tron' && e.id === tronAccount.chainId,
+  );
+
   const commonProps = {
     disconnect,
     linkWallet,
@@ -135,11 +150,6 @@ export function CurrentWalletProvider(props: CurrentWalletProviderProps) {
     isEvmConnected: evmAccount.isConnected,
     isTronConnected: tronAccount.isConnected,
   };
-
-  const evmChain = chainConfigs.find((e) => e.chainType === 'evm' && e.id === evmAccount.chainId);
-  const tronChain = chainConfigs.find(
-    (e) => e.chainType === 'tron' && e.id === tronAccount.chainId,
-  );
 
   let value: CurrentWalletContextProps;
   if (walletType === 'tron') {

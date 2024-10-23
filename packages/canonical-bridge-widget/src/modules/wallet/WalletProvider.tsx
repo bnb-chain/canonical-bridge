@@ -24,6 +24,7 @@ import { useBridgeConfig } from '@/CanonicalBridgeProvider';
 import { useAggregator } from '@/modules/aggregator/components/AggregatorProvider';
 import { CurrentWalletProvider } from '@/modules/wallet/CurrentWalletProvider';
 import { StateModal } from '@/core/components/StateModal';
+import { SwitchingTipsModal } from '@/modules/wallet/components/SwitchingTipsModal';
 
 interface WalletProviderProps {
   children: React.ReactNode;
@@ -34,6 +35,7 @@ export function WalletProvider(props: WalletProviderProps) {
 
   const bridgeConfig = useBridgeConfig();
   const { chainConfigs } = useAggregator();
+
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { formatMessage } = useIntl();
 
@@ -83,7 +85,7 @@ export function WalletProvider(props: WalletProviderProps) {
         chains: getEvmChains(chainConfigs),
       }),
       tronConfig: defaultTronConfig({
-        autoConnect: false,
+        autoConnect: true,
         wallets: tronWallets,
       }),
     };
@@ -95,16 +97,20 @@ export function WalletProvider(props: WalletProviderProps) {
 
   return (
     <WalletKitProvider config={config} mode="light">
-      <CurrentWalletProvider>{children}</CurrentWalletProvider>
-      <ConnectModal />
+      <CurrentWalletProvider>
+        {children}
 
-      <StateModal
-        title={formatMessage({ id: 'wallet.preventing-modal.title' })}
-        description={formatMessage({ id: 'wallet.preventing-modal.desc' })}
-        isOpen={isOpen}
-        type="error"
-        onClose={onClose}
-      />
+        <StateModal
+          title={formatMessage({ id: 'wallet.preventing-modal.title' })}
+          description={formatMessage({ id: 'wallet.preventing-modal.desc' })}
+          isOpen={isOpen}
+          type="error"
+          onClose={onClose}
+        />
+
+        <SwitchingTipsModal />
+      </CurrentWalletProvider>
+      <ConnectModal />
     </WalletKitProvider>
   );
 }
