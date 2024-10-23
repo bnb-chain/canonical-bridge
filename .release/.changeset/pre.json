@@ -1,0 +1,11 @@
+{
+  "mode": "pre",
+  "tag": "alpha",
+  "initialVersions": {
+    "@bnb-chain/canonical-bridge-sdk": "0.1.6",
+    "@bnb-chain/canonical-bridge-widget": "0.1.6"
+  },
+  "changesets": [
+    "tiny-lizards-cross"
+  ]
+}

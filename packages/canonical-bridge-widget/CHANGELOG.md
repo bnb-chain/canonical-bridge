@@ -1,5 +1,11 @@
 # @bnb-chain/canonical-bridge-widget
 
+## 0.2.0-alpha.0
+
+### Minor Changes
+
+- Support tron
+
 ## 0.1.2
 
 ### Patch Changes
