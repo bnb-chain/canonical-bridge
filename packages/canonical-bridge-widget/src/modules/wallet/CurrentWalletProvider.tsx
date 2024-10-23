@@ -1,6 +1,6 @@
 import { isMobile, useWalletKit } from '@node-real/walletkit';
 import { TronWallet, useTronWallet } from '@node-real/walletkit/tron';
-import React, { useCallback, useContext, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { useAccount, useDisconnect } from 'wagmi';
 
 import { ChainType, IChainConfig } from '@/modules/aggregator';
@@ -49,6 +49,17 @@ export function CurrentWalletProvider(props: CurrentWalletProviderProps) {
   const tronDisconnect = useTronWallet();
 
   const [walletType, setWalletType] = useState<ChainType>('evm');
+  const [isAutoConnect, setIsAutoConnect] = useState(true);
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (tronAccount.isConnected && isAutoConnect && !evmAccount.isConnected) {
+        setWalletType('tron');
+      }
+    }, 1000);
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [evmAccount.isConnected, isAutoConnect, tronAccount.isConnected]);
 
   const tronWalletId = useTronWalletId();
   const { chainConfigs } = useAggregator();
@@ -87,6 +98,8 @@ export function CurrentWalletProvider(props: CurrentWalletProviderProps) {
       targetChainType?: ChainType;
       targetChainId?: number;
     }) => {
+      setIsAutoConnect(false);
+
       if (targetChainType === 'evm') {
         if (walletType !== targetChainType || !evmAccount.isConnected) {
           onOpen({
