@@ -6,6 +6,7 @@
     "@bnb-chain/canonical-bridge-widget": "0.1.6"
   },
   "changesets": [
+    "great-jars-float",
     "tiny-lizards-cross"
   ]
 }

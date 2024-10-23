@@ -34,7 +34,7 @@ export const InputValidationMessage = () => {
     });
 
     const balanceResult = validateInput({
-      balance,
+      balance: balance ? Number(balance) : undefined,
       decimal: selectedToken?.decimals || 0,
       value: Number(sendValue),
       // isConnected: !!chain,

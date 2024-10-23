@@ -65,8 +65,8 @@ export const MaxLink: React.FC = () => {
             },
           }}
         >
-          {formatMessage({ id: 'from.section.balance.button.max' })} {formatNumber(balance || 0, 8)}{' '}
-          {selectedToken?.displaySymbol}
+          {formatMessage({ id: 'from.section.balance.button.max' })}{' '}
+          {formatNumber(Number(balance) || 0, 8)} {selectedToken?.displaySymbol}
           {tokenPrice && ` ($${formatNumber(tokenPrice * Number(balance || 0), 2)})`}
         </Box>
       ) : null}

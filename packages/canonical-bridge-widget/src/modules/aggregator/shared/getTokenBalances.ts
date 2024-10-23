@@ -69,7 +69,7 @@ async function getEvmTokenBalances({
       }),
     ]);
 
-    const balances: Record<string, number | undefined> = {};
+    const balances: Record<string, string | undefined> = {};
     if (erc20TokensRes.status === 'fulfilled') {
       const values = erc20TokensRes.value?.map((item) => item.result) ?? [];
 
@@ -78,17 +78,13 @@ async function getEvmTokenBalances({
 
         const symbol = token.displaySymbol?.toUpperCase();
         balances[symbol] =
-          typeof value === 'undefined'
-            ? undefined
-            : Number(formatUnits(BigInt(value), token.decimals));
+          typeof value === 'undefined' ? undefined : formatUnits(BigInt(value), token.decimals);
       });
     }
 
     if (nativeTokenRes.status === 'fulfilled') {
       const symbol = chain.nativeCurrency.symbol?.toUpperCase();
-      balances[symbol] = Number(
-        formatUnits(BigInt(nativeTokenRes.value), chain.nativeCurrency.decimals),
-      );
+      balances[symbol] = formatUnits(BigInt(nativeTokenRes.value), chain.nativeCurrency.decimals);
     }
 
     return balances;
@@ -125,7 +121,7 @@ async function getTronTokenBalances({
       return {};
     }
 
-    const balances: Record<string, number | undefined> = {};
+    const balances: Record<string, string | undefined> = {};
 
     for (let i = 0; i < Math.min(tokens.length, 2); i++) {
       const token = tokens?.[i];
@@ -136,9 +132,7 @@ async function getTronTokenBalances({
       const balanceOf = await contractInstance.balanceOf(account).call();
       const balance = balanceOf?.toString() as string;
 
-      balances[token.displaySymbol?.toUpperCase()] = Number(
-        formatUnits(BigInt(balance), token.decimals),
-      );
+      balances[token.displaySymbol?.toUpperCase()] = formatUnits(BigInt(balance), token.decimals);
     }
 
     return balances;

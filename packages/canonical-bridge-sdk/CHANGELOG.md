@@ -1,5 +1,11 @@
 # @bnb-chain/canonical-bridge-sdk
 
+## 0.2.0-alpha.1
+
+### Patch Changes
+
+- Support switch network for tron & fix issues
+
 ## 0.2.0-alpha.0
 
 ### Minor Changes
