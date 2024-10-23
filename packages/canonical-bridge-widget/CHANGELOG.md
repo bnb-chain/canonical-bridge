@@ -1,5 +1,11 @@
 # @bnb-chain/canonical-bridge-widget
 
+## 0.1.5-alpha.1
+
+### Patch Changes
+
+- 8601541: Update unknown network title
+
 ## 0.1.5-alpha.0
 
 ### Patch Changes
