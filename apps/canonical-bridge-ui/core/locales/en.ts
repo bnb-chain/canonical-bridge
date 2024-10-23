@@ -51,6 +51,10 @@ export const en = {
   'route.option.info.service-fee': 'Service Fee:',
   'route.option.info.protocol-fee': 'Protocol Fee:',
 
+  'route.error.amount.max': 'Your send amount must be less than {max}',
+  'route.error.amount.min': 'Your send amount must be greater than {min}',
+  'route.error.amount.digits': 'The send amount must be less than 6 digits',
+
   'transfer.button.confirm': 'Send',
   'transfer.button.approve': 'Approve',
   'transfer.button.switch-network': 'Switch Network',

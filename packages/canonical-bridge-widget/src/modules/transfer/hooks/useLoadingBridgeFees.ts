@@ -3,6 +3,7 @@ import { formatUnits, parseUnits } from 'viem';
 import { useAccount, useBalance, usePublicClient } from 'wagmi';
 import { BridgeType, DeBridgeCreateQuoteResponse } from '@bnb-chain/canonical-bridge-sdk';
 import { useTronWallet } from '@node-real/walletkit/tron';
+import { useIntl } from '@bnb-chain/space';
 
 import { useAppDispatch, useAppSelector } from '@/modules/store/StoreProvider';
 import {
@@ -42,6 +43,7 @@ export const useLoadingBridgeFees = () => {
   const { stargateFeeSorting } = useGetStargateFees();
   const { layerZeroFeeSorting } = useGetLayerZeroFees();
   const { mesonFeeSorting } = useGetMesonFees();
+  const { formatMessage } = useIntl();
 
   const toToken = useAppSelector((state) => state.transfer.toToken);
   const selectedToken = useAppSelector((state) => state.transfer.selectedToken);
@@ -135,14 +137,24 @@ export const useLoadingBridgeFees = () => {
             dispatch(setEstimatedAmount({ meson: 'error' }));
             dispatch(
               setRouteError({
-                meson: `Maximum amount is ${error.data.max}`,
+                meson: formatMessage({ id: 'route.error.amount.max' }, { max: error.data.max }),
               }),
             );
           } else if (error.code === 66 && error.message === 'fee-over-amount') {
             dispatch(setEstimatedAmount({ meson: 'error' }));
             dispatch(
               setRouteError({
-                meson: `Minimum amount is ${error.data.fee} ${selectedToken.symbol}`,
+                meson: formatMessage(
+                  { id: 'route.error.amount.min' },
+                  { min: `${error.data.fee} ${selectedToken.symbol}` },
+                ),
+              }),
+            );
+          } else if (error.code === 19 && error.message === 'amount-exceeds-6-decimals') {
+            dispatch(setEstimatedAmount({ meson: 'error' }));
+            dispatch(
+              setRouteError({
+                meson: formatMessage({ id: 'route.error.amount.digits' }),
               }),
             );
           } else {
