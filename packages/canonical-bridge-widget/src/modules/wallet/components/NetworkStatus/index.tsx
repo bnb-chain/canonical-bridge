@@ -9,6 +9,7 @@ import { DropdownList } from '@/modules/wallet/components/Dropdown/DropdownList'
 import { DropdownItem } from '@/modules/wallet/components/Dropdown/DropdownItem';
 import { useCurrentWallet } from '@/modules/wallet/CurrentWalletProvider';
 import { useFromChains } from '@/modules/aggregator/hooks/useFromChains';
+import { useAggregator } from '@/modules/aggregator/components/AggregatorProvider';
 
 export function NetworkStatus() {
   const fromChain = useAppSelector((state) => state.transfer.fromChain);
@@ -20,12 +21,15 @@ export function NetworkStatus() {
   const { chain, chainId, linkWallet } = useCurrentWallet();
   const fromChains = useFromChains();
 
+  const isWrongNetwork = !!fromChain && fromChain.id !== chainId;
+
+  const { chainConfigs } = useAggregator();
+  const supportedChains = fromChains.filter((c) => chainConfigs.find((e) => c.id === e.id));
+  const iconUrl = supportedChains.find((e) => e.id === chainId)?.icon;
+
   if (!chain) {
     return null;
   }
-
-  const isWrongNetwork = !!fromChain && fromChain.id !== chainId;
-  const iconUrl = fromChains.find((e) => e.id === chainId)?.icon;
 
   return (
     <Dropdown>
@@ -52,7 +56,7 @@ export function NetworkStatus() {
             </DropdownButton>
 
             <DropdownList>
-              {fromChains.map((item) => {
+              {supportedChains.map((item) => {
                 const isSelected = chainId === item.id;
 
                 return (
