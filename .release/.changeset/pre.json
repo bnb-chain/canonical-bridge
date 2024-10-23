@@ -5,8 +5,5 @@
     "@bnb-chain/canonical-bridge-sdk": "0.1.2",
     "@bnb-chain/canonical-bridge-widget": "0.1.2"
   },
-  "changesets": [
-    "big-spoons-clean",
-    "new-planets-relate"
-  ]
+  "changesets": []
 }
