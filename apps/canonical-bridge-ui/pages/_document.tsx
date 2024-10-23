@@ -19,7 +19,16 @@ export default class Document extends NextDocument {
               }
             `,
             }}
-          ></script>
+          />
+          <style
+            dangerouslySetInnerHTML={{
+              __html: `
+              #__vconsole .vc-switch {
+                bottom: 100px !important;
+              }
+            `,
+            }}
+          ></style>
         </Head>
         <body>
           <ColorModeScript initialColorMode={theme.config.initialColorMode} />

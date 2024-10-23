@@ -97,4 +97,7 @@ export const en = {
   'wallet.error.switch-network':
     'An error occurred when attempting to switch the network. Please select another network or try again.',
   'wallet.popover.disconnect': 'Disconnect',
+  'wallet.preventing-modal.title': 'Oops!',
+  'wallet.preventing-modal.desc':
+    'Opening an app is not allowed on this site. Please go to BNB Chain Bridge site on your mobile browser to continue.',
 };

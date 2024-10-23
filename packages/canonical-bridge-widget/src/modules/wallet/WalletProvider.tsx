@@ -1,5 +1,11 @@
 import { useMemo } from 'react';
-import { WalletKitProvider, ConnectModal, WalletKitConfig } from '@node-real/walletkit';
+import {
+  WalletKitProvider,
+  ConnectModal,
+  WalletKitConfig,
+  BaseWallet,
+  isMobile,
+} from '@node-real/walletkit';
 import {
   trustWallet,
   metaMask,
@@ -11,11 +17,13 @@ import {
 import * as allChains from 'viem/chains';
 import { defaultTronConfig, tronLink } from '@node-real/walletkit/tron';
 import React from 'react';
+import { useDisclosure, useIntl } from '@bnb-chain/space';
 
 import { IChainConfig } from '@/modules/aggregator/types';
 import { useBridgeConfig } from '@/CanonicalBridgeProvider';
 import { useAggregator } from '@/modules/aggregator/components/AggregatorProvider';
 import { CurrentWalletProvider } from '@/modules/wallet/CurrentWalletProvider';
+import { StateModal } from '@/core/components/StateModal';
 
 interface WalletProviderProps {
   children: React.ReactNode;
@@ -26,12 +34,38 @@ export function WalletProvider(props: WalletProviderProps) {
 
   const bridgeConfig = useBridgeConfig();
   const { chainConfigs } = useAggregator();
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const { formatMessage } = useIntl();
 
   const config = useMemo<WalletKitConfig>(() => {
+    const evmWallets = [
+      metaMask(),
+      trustWallet(),
+      binanceWeb3Wallet(),
+      okxWallet(),
+      walletConnect(),
+    ];
+    const tronWallets = [tronLink()];
+
     return {
       options: {
         useGridLayoutOnMobile: false,
         gridLayoutThreshold: 10,
+        onClickWallet(wallet: BaseWallet) {
+          if (isMobile()) {
+            const isInDappBrowser = evmWallets.some((e) => e.isInstalled());
+
+            if (isInDappBrowser) {
+              if (wallet.isInstalled()) {
+                return true;
+              } else {
+                onOpen();
+                return false;
+              }
+            }
+          }
+          return true;
+        },
       },
       evmConfig: defaultEvmConfig({
         autoConnect: true,
@@ -40,15 +74,15 @@ export function WalletProvider(props: WalletProviderProps) {
         metadata: {
           name: bridgeConfig.appName,
         },
-        wallets: [metaMask(), trustWallet(), binanceWeb3Wallet(), okxWallet(), walletConnect()],
+        wallets: evmWallets,
         chains: getEvmChains(chainConfigs),
       }),
       tronConfig: defaultTronConfig({
         autoConnect: false,
-        wallets: [tronLink()],
+        wallets: tronWallets,
       }),
     };
-  }, [bridgeConfig.appName, bridgeConfig.wallet.walletConnectProjectId, chainConfigs]);
+  }, [bridgeConfig.appName, bridgeConfig.wallet.walletConnectProjectId, chainConfigs, onOpen]);
 
   if (!config.evmConfig?.chains?.length) {
     return null;
@@ -58,6 +92,14 @@ export function WalletProvider(props: WalletProviderProps) {
     <WalletKitProvider config={config} mode="light">
       <CurrentWalletProvider>{children}</CurrentWalletProvider>
       <ConnectModal />
+
+      <StateModal
+        title={formatMessage({ id: 'wallet.preventing-modal.title' })}
+        description={formatMessage({ id: 'wallet.preventing-modal.desc' })}
+        isOpen={isOpen}
+        type="error"
+        onClose={onClose}
+      />
     </WalletKitProvider>
   );
 }
