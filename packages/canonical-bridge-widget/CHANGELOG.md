@@ -1,5 +1,11 @@
 # @bnb-chain/canonical-bridge-widget
 
+## 0.1.5-alpha.0
+
+### Patch Changes
+
+- d2c4330: Some ui updates & Header chain switch update
+
 ## 0.1.2
 
 ### Patch Changes

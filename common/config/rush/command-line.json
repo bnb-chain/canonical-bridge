@@ -52,6 +52,12 @@
       "commandKind": "global",
       "summary": "Create changeset",
       "shellCommand": "node .release/scripts/changeset.js"
+    },
+    {
+      "name": "publish-alpha",
+      "commandKind": "global",
+      "summary": "Publish alpha packages",
+      "shellCommand": "cd .release && pnpm ci:alpha-version && pnpm ci:publish && cd -"
     }
   ],
   "parameters": []
