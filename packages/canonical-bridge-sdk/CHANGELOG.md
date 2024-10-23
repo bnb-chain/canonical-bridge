@@ -1,5 +1,11 @@
 # @bnb-chain/canonical-bridge-sdk
 
+## 0.2.0-alpha.2
+
+### Patch Changes
+
+- 8218b07: Add tips for switching network in tronLink
+
 ## 0.2.0-alpha.1
 
 ### Patch Changes
