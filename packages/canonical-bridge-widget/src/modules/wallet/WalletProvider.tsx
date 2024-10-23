@@ -56,7 +56,12 @@ export function WalletProvider(props: WalletProviderProps) {
             const isInDappBrowser = evmWallets.some((e) => e.isInstalled());
 
             if (isInDappBrowser) {
-              if (wallet.isInstalled()) {
+              // Some wallets will set `isMetaMask=true`
+              const counter = evmWallets.filter((e) => e.isInstalled()).length;
+              if (
+                (counter === 1 && wallet.isInstalled()) ||
+                (counter > 1 && wallet.isInstalled() && wallet.id !== 'metaMask')
+              ) {
                 return true;
               } else {
                 onOpen();
