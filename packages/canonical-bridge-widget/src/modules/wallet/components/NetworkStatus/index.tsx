@@ -86,7 +86,7 @@ export function NetworkStatus() {
                 />
                 <Flex flexDir="column" gap="0" alignItems="flex-start" textAlign="left">
                   <Text fontSize="14px" noOfLines={1} fontWeight={500}>
-                    Unknown
+                    {formatMessage({ id: 'wallet.network.unknown-network' })}
                   </Text>
                 </Flex>
               </DropdownButton>
