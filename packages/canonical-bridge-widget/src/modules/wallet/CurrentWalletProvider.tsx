@@ -14,7 +14,7 @@ import { useTronSwitchChain } from '@/modules/wallet/hooks/useTronSwitchChain';
 
 export interface CurrentWalletContextProps {
   disconnect: () => void;
-  linkWallet: (params: { chainType?: ChainType; initialChainId?: number }) => void;
+  linkWallet: (params: { targetChainType?: ChainType; targetChainId?: number }) => void;
   walletType: ChainType;
   isEvmConnected: boolean;
   isTronConnected: boolean;
@@ -77,32 +77,41 @@ export function CurrentWalletProvider(props: CurrentWalletProviderProps) {
 
   const linkWallet = useCallback(
     async ({
-      chainType = 'evm',
-      initialChainId,
+      targetChainType = 'evm',
+      targetChainId,
     }: {
-      chainType?: ChainType;
-      initialChainId?: number;
+      targetChainType?: ChainType;
+      targetChainId?: number;
     }) => {
-      if (
-        walletType !== chainType ||
-        (chainType === 'evm' && !evmAccount.isConnected) ||
-        (chainType === 'tron' && !tronAccount.isConnected)
-      ) {
-        onOpen({
-          initialChainId,
-          onConnected({ wallet }) {
-            setWalletType(wallet.walletType as ChainType);
-          },
-        });
-      } else {
-        if (walletType === 'evm' && initialChainId && evmAccount.chainId !== initialChainId) {
+      if (targetChainType === 'evm') {
+        if (walletType !== targetChainType || !evmAccount.isConnected) {
+          onOpen({
+            evmConfig: {
+              initialChainId: targetChainId,
+            },
+            onConnected({ wallet }) {
+              setWalletType(wallet.walletType as ChainType);
+            },
+          });
+        } else if (targetChainId && evmAccount.chainId !== targetChainId) {
           switchEvmChain({
-            chainId: initialChainId,
+            chainId: targetChainId,
           });
         }
-        if (walletType === 'tron' && initialChainId && tronAccount.chainId !== initialChainId) {
+      }
+      if (targetChainType === 'tron') {
+        if (walletType !== targetChainType || !tronAccount.isConnected) {
+          onOpen({
+            tronConfig: {
+              initialChainId: targetChainId,
+            },
+            onConnected({ wallet }) {
+              setWalletType(wallet.walletType as ChainType);
+            },
+          });
+        } else if (targetChainId && tronAccount.chainId !== targetChainId) {
           switchTronChain({
-            chainId: initialChainId,
+            chainId: targetChainId,
           });
         }
       }

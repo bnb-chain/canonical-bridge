@@ -66,8 +66,8 @@ export function NetworkStatus() {
                     bg={isSelected ? theme.colors[colorMode].popover.selected : undefined}
                     onClick={() => {
                       linkWallet({
-                        chainType: item.chainType,
-                        initialChainId: item.id,
+                        targetChainType: item.chainType,
+                        targetChainId: item.id,
                       });
                     }}
                   >

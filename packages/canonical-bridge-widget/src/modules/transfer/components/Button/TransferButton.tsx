@@ -353,6 +353,18 @@ export function TransferButton({
           if (swapId?.error) {
             throw new Error(swapId?.error.message);
           }
+
+          reportEvent({
+            id: 'transaction_bridge_success',
+            params: {
+              item_category: fromChain?.name,
+              item_category2: toChain?.name,
+              token: selectedToken.displaySymbol,
+              value: sendValue,
+              item_variant: 'meson',
+            },
+          });
+
           onCloseConfirmingModal();
           onOpenSubmittedModal();
         } else {

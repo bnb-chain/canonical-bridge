@@ -30,8 +30,8 @@ export function ConnectButton(props: ConnectButtonProps) {
           fontWeight={500}
           onClick={() => {
             linkWallet({
-              chainType: fromChain?.chainType,
-              initialChainId: fromChain?.id,
+              targetChainType: fromChain?.chainType,
+              targetChainId: fromChain?.id,
             });
           }}
           sx={{

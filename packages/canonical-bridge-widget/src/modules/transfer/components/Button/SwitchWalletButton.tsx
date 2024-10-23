@@ -25,8 +25,8 @@ export const SwitchWalletButton = () => {
       }}
       onClick={() => {
         linkWallet({
-          chainType: fromChain?.chainType,
-          initialChainId: fromChain?.id,
+          targetChainType: fromChain?.chainType,
+          targetChainId: fromChain?.id,
         });
 
         reportEvent({
