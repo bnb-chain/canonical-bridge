@@ -3,7 +3,7 @@ import { BridgeType } from '@bnb-chain/canonical-bridge-sdk';
 import { BaseAdapter, ITransferTokenPair } from '@/modules/aggregator/shared/BaseAdapter';
 import { IMesonChain, IMesonToken } from '@/modules/aggregator/adapters/meson/types';
 
-const SUPPORTED_CHAIN_IDS = [56, 97, 728126427, 728126428];
+const SUPPORTED_CHAIN_IDS = [56, 97, 3448148188, 728126428];
 const SUPPORTED_TOKENS = ['USDT', 'USDC'];
 
 export class MesonAdapter extends BaseAdapter<IMesonChain[], IMesonChain, IMesonToken> {

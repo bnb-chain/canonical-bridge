@@ -11,7 +11,7 @@ export function useTestnetTransferConfig() {
       const transferConfig: ITransferConfig = {
         defaultSelectedInfo: {
           fromChainId: 97,
-          toChainId: 728126427,
+          toChainId: 3448148188,
           tokenSymbol: 'USDT', // USDT
           amount: '',
         },

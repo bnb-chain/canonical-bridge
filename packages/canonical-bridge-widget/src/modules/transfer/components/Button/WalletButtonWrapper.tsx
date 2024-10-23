@@ -10,13 +10,13 @@ export function WalletButtonWrapper(props: PropsWithChildren) {
   const { children } = props;
 
   const fromChain = useAppSelector((state) => state.transfer.fromChain);
-  const { isConnected, chain, walletType } = useCurrentWallet();
+  const { isConnected, chainId, walletType } = useCurrentWallet();
 
   if (isConnected) {
     if (walletType !== fromChain?.chainType) {
       return <SwitchWalletButton />;
     } else {
-      if (chain?.id !== fromChain.id) {
+      if (chainId !== fromChain.id) {
         return <SwitchNetworkButton />;
       }
       return <>{children}</>;

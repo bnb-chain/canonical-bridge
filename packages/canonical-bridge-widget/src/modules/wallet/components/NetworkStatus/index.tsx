@@ -24,8 +24,8 @@ export function NetworkStatus() {
     return null;
   }
 
-  const isWrongNetwork = !!fromChain && fromChain.id !== chain.id;
-  const iconUrl = fromChains.find((e) => e.id === chain.id)?.icon;
+  const isWrongNetwork = !!fromChain && fromChain.id !== chainId;
+  const iconUrl = fromChains.find((e) => e.id === chainId)?.icon;
 
   return (
     <Dropdown>

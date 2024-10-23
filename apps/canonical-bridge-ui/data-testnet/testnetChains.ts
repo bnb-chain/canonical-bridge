@@ -72,7 +72,7 @@ export const testnetChains: IChainConfig[] = [
     },
   },
   {
-    id: 728126427,
+    id: 3448148188,
     name: 'Tron Nile Testnet',
     nativeCurrency: {
       name: 'TRX',

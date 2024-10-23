@@ -10,6 +10,7 @@ import { useEvmSwitchChain } from '@/modules/wallet/hooks/useEvmSwitchChain';
 import { useTronAccount } from '@/modules/wallet/hooks/useTronAccount';
 import { useTronBalance } from '@/modules/wallet/hooks/useTronBalance';
 import { useWalletModal } from '@/modules/wallet/hooks/useWalletModal';
+import { useTronSwitchChain } from '@/modules/wallet/hooks/useTronSwitchChain';
 
 export interface CurrentWalletContextProps {
   disconnect: () => void;
@@ -49,10 +50,18 @@ export function CurrentWalletProvider(props: CurrentWalletProviderProps) {
   const { chainConfigs } = useAggregator();
   const { onOpen } = useWalletModal();
 
-  const { switchChain } = useEvmSwitchChain({
+  const { switchChain: switchEvmChain } = useEvmSwitchChain({
     mutation: {
       onSuccess() {
         setWalletType('evm');
+      },
+    },
+  });
+
+  const { switchChain: switchTronChain } = useTronSwitchChain({
+    mutation: {
+      onSuccess() {
+        setWalletType('tron');
       },
     },
   });
@@ -87,7 +96,12 @@ export function CurrentWalletProvider(props: CurrentWalletProviderProps) {
         });
       } else {
         if (walletType === 'evm' && initialChainId && evmAccount.chainId !== initialChainId) {
-          switchChain({
+          switchEvmChain({
+            chainId: initialChainId,
+          });
+        }
+        if (walletType === 'tron' && initialChainId && tronAccount.chainId !== initialChainId) {
+          switchTronChain({
             chainId: initialChainId,
           });
         }
@@ -97,7 +111,9 @@ export function CurrentWalletProvider(props: CurrentWalletProviderProps) {
       evmAccount.chainId,
       evmAccount.isConnected,
       onOpen,
-      switchChain,
+      switchEvmChain,
+      switchTronChain,
+      tronAccount.chainId,
       tronAccount.isConnected,
       walletType,
     ],
@@ -111,8 +127,10 @@ export function CurrentWalletProvider(props: CurrentWalletProviderProps) {
     isTronConnected: tronAccount.isConnected,
   };
 
-  const tronChain = chainConfigs.find((e) => e.chainType === 'tron');
   const evmChain = chainConfigs.find((e) => e.chainType === 'evm' && e.id === evmAccount.chainId);
+  const tronChain = chainConfigs.find(
+    (e) => e.chainType === 'tron' && e.id === tronAccount.chainId,
+  );
 
   let value: CurrentWalletContextProps;
   if (walletType === 'tron') {
@@ -123,7 +141,7 @@ export function CurrentWalletProvider(props: CurrentWalletProviderProps) {
       address: tronAccount.address,
       balance: tronBalance.data,
       chain: tronChain,
-      chainId: tronChain?.id,
+      chainId: tronAccount?.chainId,
     };
   } else {
     value = {
