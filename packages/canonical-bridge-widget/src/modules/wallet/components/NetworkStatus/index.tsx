@@ -24,7 +24,9 @@ export function NetworkStatus() {
   const isWrongNetwork = !!fromChain && fromChain.id !== chainId;
 
   const { chainConfigs } = useAggregator();
-  const supportedChains = fromChains.filter((c) => chainConfigs.find((e) => c.id === e.id));
+  const supportedChains = fromChains.filter(
+    (c) => chainConfigs.find((e) => c.id === e.id) && c.chainType !== 'link',
+  );
   const iconUrl = supportedChains.find((e) => e.id === chainId)?.icon;
 
   if (!chain) {

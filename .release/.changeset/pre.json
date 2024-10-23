@@ -6,6 +6,7 @@
     "@bnb-chain/canonical-bridge-widget": "0.1.6"
   },
   "changesets": [
+    "fluffy-rocks-count",
     "great-jars-float",
     "odd-lies-design",
     "stupid-mugs-push",

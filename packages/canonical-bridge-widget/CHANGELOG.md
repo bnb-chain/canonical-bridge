@@ -1,5 +1,11 @@
 # @bnb-chain/canonical-bridge-widget
 
+## 0.2.0-alpha.4
+
+### Patch Changes
+
+- Only show supported networks in status popup
+
 ## 0.2.0-alpha.3
 
 ### Patch Changes
