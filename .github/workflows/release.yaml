@@ -7,6 +7,7 @@ on:
     branches:
       - main
     paths:
+      - .release/**
       - packages/canonical-bridge-sdk/**
       - packages/canonical-bridge-widget/**
 
