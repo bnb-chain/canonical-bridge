@@ -6,8 +6,9 @@ import { ERC20_TOKEN } from '@/core/contract/abi';
 
 export const useGetTokenBalance = ({ tokenAddress }: { tokenAddress: `0x${string}` }) => {
   const { address } = useAccount();
-  const { data: nativeBalance } = useBalance({ address });
   const selectedToken = useAppSelector((state) => state.transfer.selectedToken);
+  const fromChain = useAppSelector((state) => state.transfer.fromChain);
+  const { data: nativeBalance } = useBalance({ address, chainId: fromChain?.id });
   const {
     data: balance,
     isError,
