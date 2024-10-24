@@ -15,7 +15,7 @@ export interface ICanonicalBridgeConfig {
   appName: string;
   assetPrefix?: string;
 
-  appearance?: {
+  appearance: {
     mode?: ColorMode;
     theme?: ThemeProviderProps['themeConfig'];
     locale?: string;
@@ -88,9 +88,9 @@ export function CanonicalBridgeProvider(props: CanonicalBridgeProviderProvider) 
   return (
     <CanonicalBridgeContext.Provider value={value}>
       <StoreProvider>
-        <IntlProvider locale={value.appearance!.locale!} messages={value.appearance!.messages}>
+        <IntlProvider locale={value.appearance.locale!} messages={value.appearance.messages}>
           <AggregatorProvider transferConfig={transferConfig} chains={chains}>
-            <ThemeProvider themeConfig={value.appearance!.theme} colorMode={value.appearance!.mode}>
+            <ThemeProvider themeConfig={value.appearance.theme} colorMode={value.appearance.mode}>
               <WalletProvider>
                 <TokenBalancesProvider />
                 <TokenPricesProvider />
