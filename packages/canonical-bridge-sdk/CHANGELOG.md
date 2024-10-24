@@ -1,5 +1,11 @@
 # @bnb-chain/canonical-bridge-sdk
 
+## 0.2.0
+
+### Minor Changes
+
+- 29d5a31: Support tron
+
 ## 0.2.0-alpha.4
 
 ### Patch Changes
