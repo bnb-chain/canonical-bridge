@@ -1,5 +1,5 @@
 import { Box, Flex, Input, useColorMode, useDisclosure, useIntl, useTheme } from '@bnb-chain/space';
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 
 import { useAppDispatch, useAppSelector } from '@/modules/store/StoreProvider';
 import { setSendValue } from '@/modules/transfer/action';
@@ -40,9 +40,11 @@ export const SendInput: React.FC = () => {
   const dispatch = useAppDispatch();
   const { formatMessage } = useIntl();
   const timerRef = useRef<any>();
+  const theme = useTheme();
+
+  const [isFocused, setIsFocused] = useState(false);
 
   const sendValue = useAppSelector((state) => state.transfer.sendValue);
-  const theme = useTheme();
   const selectedToken = useAppSelector((state) => state.transfer.selectedToken);
   const isGlobalFeeLoading = useAppSelector((state) => state.transfer.isGlobalFeeLoading);
   const fromChain = useAppSelector((state) => state.transfer.fromChain);
@@ -100,13 +102,38 @@ export const SendInput: React.FC = () => {
         p={'12px 16px'}
         h={'64px'}
         borderRadius={'8px'}
-        border={`1px solid ${
+        border={'1px solid'}
+        borderColor={`${
           !!error?.text
             ? theme.colors[colorMode].text.danger
+            : isFocused
+            ? theme.colors[colorMode].text.brand
             : theme.colors[colorMode].input.border.default
         }`}
+        boxShadow={
+          !!error?.text
+            ? `0 0 0 1px ${theme.colors[colorMode].text.danger}`
+            : isFocused
+            ? `0 0 0 1px ${theme.colors[colorMode].text.brand}`
+            : 'none'
+        }
         background={theme.colors[colorMode].input.background}
         position={'relative'}
+        _hover={{
+          outline: '1px solid',
+          outlineColor: !!error?.text
+            ? theme.colors[colorMode].text.danger
+            : isFocused
+            ? theme.colors[colorMode].text.brand
+            : theme.colors[colorMode].input.border.hover,
+          border: `1px solid ${
+            !!error?.text
+              ? theme.colors[colorMode].text.danger
+              : isFocused
+              ? theme.colors[colorMode].text.brand
+              : theme.colors[colorMode].input.border.hover
+          }`,
+        }}
       >
         <Input
           inputMode={'decimal'}
@@ -115,6 +142,12 @@ export const SendInput: React.FC = () => {
           fontSize={'24px'}
           onChange={onChangeSendValue}
           placeholder={'0.0'}
+          onFocus={() => {
+            setIsFocused(true);
+          }}
+          onBlur={() => {
+            setIsFocused(false);
+          }}
           border={'none'}
           disabled={!selectedToken || (isGlobalFeeLoading && sendValue === debouncedSendValue)}
           _hover={{

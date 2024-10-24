@@ -3,7 +3,7 @@ import {
   Box,
   Input,
   useColorMode,
-  theme,
+  useTheme,
   FlexProps,
   useIntl,
   InputGroup,
@@ -25,6 +25,7 @@ export function ToAccount(props: FlexProps) {
   const { colorMode } = useColorMode();
   const { formatMessage } = useIntl();
   const dispatch = useAppDispatch();
+  const theme = useTheme();
 
   const [isChecked, setIsChecked] = useState(false);
 
@@ -86,24 +87,34 @@ export function ToAccount(props: FlexProps) {
       {...props}
     >
       <Box>{formatMessage({ id: 'to.section.account.label' })}</Box>
-      <InputGroup alignItems="center" mt={'12px'}>
+      <InputGroup
+        alignItems="center"
+        mt={'12px'}
+        _hover={{
+          outline: '2px solid',
+          outlineColor: theme.colors[colorMode].input.border.hover,
+          borderRadius: '8px',
+        }}
+      >
         <Input
           isInvalid={isInvalid}
+          background={theme.colors[colorMode].input.background}
+          borderColor={theme.colors[colorMode].input.border.default}
           size={'lg'}
           value={inputValue}
           placeholder={formatMessage(
             { id: 'to.section.account.placeholder' },
             { network: toChain?.name ?? '' },
           )}
-          bg="transparent"
           onChange={onChange}
           _active={{}}
           _focusVisible={{}}
           _hover={{
-            bg: 'transparent',
+            borderColor: isInvalid
+              ? theme.colors[colorMode].text.danger
+              : theme.colors[colorMode].input.border.hover,
           }}
           _focus={{
-            bg: 'transparent',
             boxShadow: `0 0 0 1px ${theme.colors[colorMode].text.brand}`,
             borderColor: theme.colors[colorMode].text.brand,
           }}
@@ -121,7 +132,7 @@ export function ToAccount(props: FlexProps) {
       </InputGroup>
 
       {isInvalid && (
-        <Flex mt={'8px'} color={theme.colors[colorMode].text.danger}>
+        <Flex mt={'8px'} fontSize={'14px'} color={theme.colors[colorMode].text.danger}>
           {formatMessage({ id: 'to.section.account.invalid' })}
         </Flex>
       )}
