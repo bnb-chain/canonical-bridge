@@ -23,7 +23,7 @@ jobs:
   cicd:
     needs: [pre-check]
     if: contains(needs.pre-check.outputs.codeowners, github.event.comment.user.login)
-    timeout-minutes: 10
+    timeout-minutes: 30
     runs-on: ubuntu-latest
     steps:
       - uses: actions/github-script@v3
