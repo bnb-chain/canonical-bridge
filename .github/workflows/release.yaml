@@ -27,6 +27,11 @@ jobs:
         with:
           path: .github/CODEOWNERS
 
+      - name: Print GitHub context
+        run: echo "$GITHUB_CONTEXT"
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github.event.pull_request) }}
+
   cicd:
     needs: [pre-check]
     if: contains(needs.pre-check.outputs.codeowners, github.event.pull_request.user.login)
