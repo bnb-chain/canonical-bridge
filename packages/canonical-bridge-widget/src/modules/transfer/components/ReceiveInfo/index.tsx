@@ -87,6 +87,9 @@ export const ReceiveInfo = ({ onOpen }: ReceiveInfoProps) => {
     } else if (bridgeType === 'layerZero' && routeFees?.['layerZero']) {
       feeContent = routeFees?.['layerZero'].summary;
       feeBreakdown.push(...routeFees?.['layerZero'].breakdown);
+    } else if (bridgeType === 'meson' && routeFees?.['meson']) {
+      feeContent = routeFees?.['meson'].summary;
+      feeBreakdown.push(...routeFees?.['meson'].breakdown);
     }
     return { summary: feeContent ? feeContent : '--', breakdown: feeBreakdown };
   }, [bridgeType, routeFees]);

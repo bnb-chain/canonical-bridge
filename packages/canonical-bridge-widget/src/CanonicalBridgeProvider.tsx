@@ -7,6 +7,9 @@ import { StoreProvider } from '@/modules/store/StoreProvider';
 import { WalletProvider } from '@/modules/wallet/WalletProvider';
 import { ThemeProvider, ThemeProviderProps } from '@/core/theme/ThemeProvider';
 import { AggregatorProvider } from '@/modules/aggregator/components/AggregatorProvider';
+import { TokenBalancesProvider } from '@/modules/aggregator/components/TokenBalancesProvider';
+import { TokenPricesProvider } from '@/modules/aggregator/components/TokenPricesProvider';
+import { locales } from '@/core/locales';
 
 export interface ICanonicalBridgeConfig {
   appName: string;
@@ -15,8 +18,8 @@ export interface ICanonicalBridgeConfig {
   appearance: {
     mode?: ColorMode;
     theme?: ThemeProviderProps['themeConfig'];
-    locale: string;
-    messages: Record<string, string>;
+    locale?: string;
+    messages?: Record<string, string>;
     bridgeTitle?: string;
   };
 
@@ -29,6 +32,7 @@ export interface ICanonicalBridgeConfig {
     apiTimeOut?: number;
     deBridgeAccessToken?: string;
     serverEndpoint: string;
+    mesonEndpoint?: string;
   };
 }
 
@@ -60,6 +64,8 @@ export function CanonicalBridgeProvider(props: CanonicalBridgeProviderProvider) 
       appearance: {
         bridgeTitle: 'BNB Chain Cross-Chain Bridge',
         mode: 'dark',
+        locale: 'en',
+        messages: locales.en,
         ...config.appearance,
       },
 
@@ -71,6 +77,7 @@ export function CanonicalBridgeProvider(props: CanonicalBridgeProviderProvider) 
         refetchingInterval: 30000,
         apiTimeOut: 60000,
         deBridgeAccessToken: '',
+        mesonEndpoint: 'https://relayer.meson.fi/api/v1',
         ...config.http,
       },
 
@@ -81,15 +88,17 @@ export function CanonicalBridgeProvider(props: CanonicalBridgeProviderProvider) 
   return (
     <CanonicalBridgeContext.Provider value={value}>
       <StoreProvider>
-        <ThemeProvider themeConfig={value.appearance.theme} colorMode={value.appearance.mode}>
-          <IntlProvider locale={value.appearance.locale} messages={value.appearance.messages}>
-            <WalletProvider chainConfigs={chains}>
-              <AggregatorProvider transferConfig={transferConfig} chainConfigs={chains}>
+        <IntlProvider locale={value.appearance.locale!} messages={value.appearance.messages}>
+          <AggregatorProvider transferConfig={transferConfig} chains={chains}>
+            <ThemeProvider themeConfig={value.appearance.theme} colorMode={value.appearance.mode}>
+              <WalletProvider>
+                <TokenBalancesProvider />
+                <TokenPricesProvider />
                 {children}
-              </AggregatorProvider>
-            </WalletProvider>
-          </IntlProvider>
-        </ThemeProvider>
+              </WalletProvider>
+            </ThemeProvider>
+          </AggregatorProvider>
+        </IntlProvider>
       </StoreProvider>
     </CanonicalBridgeContext.Provider>
   );

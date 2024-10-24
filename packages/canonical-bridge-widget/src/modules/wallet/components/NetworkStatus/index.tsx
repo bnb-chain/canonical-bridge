@@ -1,28 +1,34 @@
 import { Flex, useColorMode, useIntl, useTheme, Text, Typography, Box } from '@bnb-chain/space';
-import { useAccount } from 'wagmi';
 import { TickIcon, WarningTriangleSolidIcon, InfoCircleIcon } from '@bnb-chain/icons';
 import { useEffect, useRef } from 'react';
 
 import { IconImage } from '@/core/components/IconImage';
 import { useAppSelector } from '@/modules/store/StoreProvider';
-import { useFromChains } from '@/modules/aggregator/hooks/useFromChains';
-import { useEvmSwitchChain } from '@/modules/wallet/hooks/useEvmSwitchChain';
 import { Dropdown } from '@/modules/wallet/components/Dropdown/Dropdown';
 import { DropdownButton } from '@/modules/wallet/components/Dropdown/DropdownButton';
 import { DropdownList } from '@/modules/wallet/components/Dropdown/DropdownList';
 import { DropdownItem } from '@/modules/wallet/components/Dropdown/DropdownItem';
+import { useCurrentWallet } from '@/modules/wallet/CurrentWalletProvider';
+import { useFromChains } from '@/modules/aggregator/hooks/useFromChains';
+import { useAggregator } from '@/modules/aggregator/components/AggregatorProvider';
 import { TransferToIcon } from '@/core/components/icons/TransferToIcon';
 import { SwitchNetworkButton } from '@/modules/transfer/components/Button/SwitchNetworkButton';
 
 export function NetworkStatus() {
   const fromChain = useAppSelector((state) => state.transfer.fromChain);
+
+  const { formatMessage } = useIntl();
   const thresholdRef = useRef(false);
   const theme = useTheme();
   const { colorMode } = useColorMode();
-  const { chain, chainId } = useAccount();
-  const { formatMessage } = useIntl();
+
+  const { chain, chainId, linkWallet } = useCurrentWallet();
   const fromChains = useFromChains();
-  const { switchChain } = useEvmSwitchChain();
+
+  const { chainConfigs } = useAggregator();
+  const supportedChains = fromChains.filter(
+    (c) => chainConfigs.find((e) => c.id === e.id) && c.chainType !== 'link',
+  );
   const bridgeChains = useFromChains();
 
   useEffect(() => {
@@ -127,7 +133,7 @@ export function NetworkStatus() {
               switchDropdown(onClose)
             ) : (
               <DropdownList>
-                {fromChains.map((item) => {
+                {supportedChains.map((item) => {
                   const isSelected = chainId === item.id;
 
                   return (
@@ -140,11 +146,10 @@ export function NetworkStatus() {
                       }
                       bg={isSelected ? theme.colors[colorMode].popover.selected : undefined}
                       onClick={() => {
-                        if (chainId !== item.id) {
-                          switchChain({
-                            chainId: item.id,
-                          });
-                        }
+                        linkWallet({
+                          targetChainType: item.chainType,
+                          targetChainId: item.id,
+                        });
                       }}
                     >
                       <IconImage src={item.icon} boxSize="16px" flexShrink={0} />

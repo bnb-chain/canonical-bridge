@@ -1,16 +1,68 @@
 # @bnb-chain/canonical-bridge-widget
 
-## 0.1.5-alpha.1
+## 0.3.2-alpha.0
 
 ### Patch Changes
 
-- 8601541: Update unknown network title
+- Update ui
 
-## 0.1.5-alpha.0
+## 0.3.1
 
 ### Patch Changes
 
-- d2c4330: Some ui updates & Header chain switch update
+- bdf228d: Test cicd
+
+## 0.3.0
+
+### Minor Changes
+
+- f0ce0fd: Support tron
+
+### Patch Changes
+
+- 8908e36: Fix input styling
+
+## 0.2.1-alpha.0
+
+### Patch Changes
+
+- Fix input styling
+
+## 0.2.0
+
+### Minor Changes
+
+- 29d5a31: Support tron
+
+## 0.2.0-alpha.4
+
+### Patch Changes
+
+- Only show supported networks in status popup
+
+## 0.2.0-alpha.3
+
+### Patch Changes
+
+- Only show supported networks in status popup
+
+## 0.2.0-alpha.2
+
+### Patch Changes
+
+- 8218b07: Add tips for switching network in tronLink
+
+## 0.2.0-alpha.1
+
+### Patch Changes
+
+- Support switch network for tron & fix issues
+
+## 0.2.0-alpha.0
+
+### Minor Changes
+
+- Support tron
 
 ## 0.1.2
 

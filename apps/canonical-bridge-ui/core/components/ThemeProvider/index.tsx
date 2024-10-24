@@ -11,6 +11,10 @@ const colorModeManager = createLocalStorageManager(`${env.APP_NAME}-color-mode`)
 export const ThemeProvider = ({ children }: ThemeProviderProps) => {
   const customTheme = {
     ...theme,
+    breakpoints: {
+      ...theme.breakpoints,
+      lg: '1080px',
+    },
     config: {
       ...theme.config,
       initialColorMode: 'dark',
@@ -20,7 +24,6 @@ export const ThemeProvider = ({ children }: ThemeProviderProps) => {
       global: ({ colorMode }: { colorMode: ColorMode }) => ({
         body: {
           bg: theme.colors[colorMode].background[3],
-          minWidth: '998px',
         },
       }),
     },

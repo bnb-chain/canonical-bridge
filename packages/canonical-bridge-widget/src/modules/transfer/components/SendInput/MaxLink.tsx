@@ -6,6 +6,7 @@ import { formatNumber } from '@/core/utils/number';
 import { reportEvent } from '@/core/utils/gtm';
 import { useTokenPrice } from '@/modules/aggregator/hooks/useTokenPrice';
 import { useTokenBalance } from '@/modules/aggregator/hooks/useTokenBalance';
+import { useCurrentWallet } from '@/modules/wallet/CurrentWalletProvider';
 
 export const MaxLink: React.FC = () => {
   const theme = useTheme();
@@ -21,6 +22,7 @@ export const MaxLink: React.FC = () => {
 
   const balance = getTokenBalance(selectedToken);
   const tokenPrice = getTokenPrice(selectedToken);
+  const { walletType } = useCurrentWallet();
 
   const setMaxAmount = () => {
     if (!!balance && selectedToken) {
@@ -37,9 +39,12 @@ export const MaxLink: React.FC = () => {
     }
   };
 
+  const showBalance =
+    fromChain?.chainType === walletType && balance !== undefined && !!selectedToken;
+
   return (
     <Flex alignItems={'center'}>
-      {balance !== undefined && !!selectedToken ? (
+      {showBalance ? (
         <Box
           onClick={setMaxAmount}
           color={theme.colors[colorMode].text.tertiary}
@@ -60,8 +65,8 @@ export const MaxLink: React.FC = () => {
             },
           }}
         >
-          {formatMessage({ id: 'from.section.balance.button.max' })} {formatNumber(balance || 0, 8)}{' '}
-          {selectedToken?.displaySymbol}
+          {formatMessage({ id: 'from.section.balance.button.max' })}{' '}
+          {formatNumber(Number(balance) || 0, 8)} {selectedToken?.displaySymbol}
           {tokenPrice && ` ($${formatNumber(tokenPrice * Number(balance || 0), 2)})`}
         </Box>
       ) : null}

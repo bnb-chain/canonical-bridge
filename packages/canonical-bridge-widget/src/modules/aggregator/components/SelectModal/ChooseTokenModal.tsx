@@ -1,12 +1,11 @@
-import { Flex, formatAddress, Text, useColorMode, useIntl, useTheme } from '@bnb-chain/space';
-import { useAccount } from 'wagmi';
+import { Flex, Text, useColorMode, useIntl, useTheme } from '@bnb-chain/space';
 
 import { useAppSelector } from '@/modules/store/StoreProvider';
 import { useTokens } from '@/modules/aggregator/hooks/useTokens';
 import { VirtualList } from '@/core/components/VirtualList';
 import { isChainOrTokenCompatible } from '@/modules/aggregator/shared/isChainOrTokenCompatible';
 import { useSelection } from '@/modules/aggregator/hooks/useSelection';
-import { isNativeToken, isSameAddress } from '@/core/utils/address';
+import { formatAppAddress, isNativeToken, isSameAddress } from '@/core/utils/address';
 import { ExLinkIcon } from '@/core/components/icons/ExLinkIcon';
 import { formatTokenUrl } from '@/core/utils/string';
 import { useResponsive } from '@/core/hooks/useResponsive';
@@ -17,6 +16,7 @@ import { useSearch } from '@/modules/aggregator/components/SelectModal/hooks/use
 import { useTokenList } from '@/modules/aggregator/components/SelectModal/hooks/useTokenList';
 import { ListItem } from '@/modules/aggregator/components/SelectModal/components/ListItem';
 import { openLink } from '@/core/utils/common';
+import { useCurrentWallet } from '@/modules/wallet/CurrentWalletProvider';
 
 interface ChooseTokenModalProps {
   isOpen: boolean;
@@ -28,7 +28,7 @@ export function ChooseTokenModal(props: ChooseTokenModalProps) {
   const { formatMessage } = useIntl();
   const theme = useTheme();
   const { colorMode } = useColorMode();
-  const { isConnected } = useAccount();
+  const { isConnected, walletType } = useCurrentWallet();
 
   const fromChain = useAppSelector((state) => state.transfer.fromChain);
   const toChain = useAppSelector((state) => state.transfer.toChain);
@@ -53,7 +53,7 @@ export function ChooseTokenModal(props: ChooseTokenModalProps) {
   });
 
   const { isLoading, data } = useTokenList(result);
-  const showBalance = isConnected && !isLoading;
+  const showBalance = isConnected && !isLoading && fromChain?.chainType === walletType;
 
   return (
     <BaseModal
@@ -208,8 +208,8 @@ function TokenAddress(props: TokenAddressProps) {
         fontWeight={500}
         lineHeight="16px"
       >
-        {formatAddress({
-          value: address,
+        {formatAppAddress({
+          address,
         })}
         {!isMobile && (
           <ExLinkIcon

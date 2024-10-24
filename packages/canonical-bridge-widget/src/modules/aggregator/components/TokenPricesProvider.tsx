@@ -24,7 +24,7 @@ export function TokenPricesProvider() {
   const { isLoading, data } = useQuery<TokenPricesContextProps>({
     staleTime: TIME.MINUTE * 5,
     refetchInterval: TIME.MINUTE * 5,
-    queryKey: ['token-prices'],
+    queryKey: ['tokenPrices'],
     queryFn: async () => {
       const { serverEndpoint } = bridgeConfig.http;
 

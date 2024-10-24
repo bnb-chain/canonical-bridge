@@ -1,16 +1,18 @@
 import { Button, useColorMode, useIntl, useTheme, ButtonProps } from '@bnb-chain/space';
 
 import { useAppSelector } from '@/modules/store/StoreProvider';
-import { useEvmSwitchChain } from '@/modules/wallet/hooks/useEvmSwitchChain';
 import { reportEvent } from '@/core/utils/gtm';
+import { useCurrentWallet } from '@/modules/wallet/CurrentWalletProvider';
 
 export const SwitchNetworkButton = (props: ButtonProps) => {
   const { formatMessage } = useIntl();
 
   const fromChain = useAppSelector((state) => state.transfer.fromChain);
-  const { switchChain } = useEvmSwitchChain();
   const theme = useTheme();
   const { colorMode } = useColorMode();
+
+  const { linkWallet } = useCurrentWallet();
+
   return (
     <Button
       size="lg"
@@ -22,18 +24,17 @@ export const SwitchNetworkButton = (props: ButtonProps) => {
         background: theme.colors[colorMode].support.warning['2'],
       }}
       onClick={() => {
-        if (fromChain?.id && switchChain) {
-          switchChain({
-            chainId: fromChain?.id,
-          });
+        linkWallet({
+          targetChainType: fromChain?.chainType,
+          targetChainId: fromChain?.id,
+        });
 
-          reportEvent({
-            id: 'click_bridge_goal',
-            params: {
-              item_name: 'Switch Network',
-            },
-          });
-        }
+        reportEvent({
+          id: 'click_bridge_goal',
+          params: {
+            item_name: 'Switch Network',
+          },
+        });
       }}
       {...props}
     >

@@ -7,6 +7,7 @@ on:
     branches:
       - main
     paths:
+      - .release/**
       - packages/canonical-bridge-sdk/**
       - packages/canonical-bridge-widget/**
 
@@ -28,7 +29,7 @@ jobs:
 
   cicd:
     needs: [pre-check]
-    if: contains(needs.pre-check.outputs.codeowners, github.event.pull_request.user.login)
+    if: contains(needs.pre-check.outputs.codeowners, github.event.pull_request.merged_by.login)
     timeout-minutes: 10
     runs-on: ubuntu-latest
     steps:
@@ -36,6 +37,8 @@ jobs:
         uses: actions/checkout@v4
 
       - uses: ./.github/actions/setup
+        with:
+          npm-token: ${{ secrets.NPM_TOKEN }}
 
       - name: Install & build
         shell: bash

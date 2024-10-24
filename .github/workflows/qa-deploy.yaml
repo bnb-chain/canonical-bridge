@@ -74,7 +74,14 @@ jobs:
           wallet-connect-project-id: ${{ vars.WALLET_CONNECT_PROJECT_ID }}
           api-token-github: ${{ secrets.API_TOKEN_GITHUB }}
 
-      - name: Deploy SDK
+      - name: Create server docker
+        if: contains(steps.pr-env.outputs.APP_NAME, 'canonical-bridge-server')
+        uses: ./.github/actions/server
+        with:
+          username: ${{ github.repository_owner }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Publish sdk
         if: contains(steps.pr-env.outputs.APP_NAME, 'canonical-bridge-sdk')
         uses: ./.github/actions/alpha
         with:
@@ -83,7 +90,7 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           branch: ${{ steps.pr-env.outputs.BRANCH_NAME }}
 
-      - name: Deploy Widget
+      - name: Publish widget
         if: contains(steps.pr-env.outputs.APP_NAME, 'canonical-bridge-widget')
         uses: ./.github/actions/alpha
         with:

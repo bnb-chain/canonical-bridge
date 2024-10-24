@@ -32,6 +32,7 @@ export default defineConfig({
         index: 'src/index.tsx',
       },
     },
+
     rollupOptions: {
       plugins: [peerDepsExternal()],
     },

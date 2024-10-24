@@ -44,6 +44,7 @@ export const NetWorkSection = () => {
         justifyContent={'space-between'}
         alignItems={'center'}
         gap={['16px', '16px', '16px', '12px']}
+        minW={0}
       >
         <FromSection />
         <TransferToIcon w={'24px'} h={'24px'} transform={{ base: 'rotate(90deg)', md: 'none' }} />

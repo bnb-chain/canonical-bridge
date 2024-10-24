@@ -46,6 +46,8 @@ export const useGetReceiveAmount = () => {
           );
         } else if (bridgeType === 'layerZero' && sendValue && estimatedAmount?.['layerZero']) {
           return sendValue;
+        } else if (bridgeType === 'meson' && estimatedAmount?.['meson']) {
+          return estimatedAmount?.['meson'];
         }
       }
       return null;
@@ -70,6 +72,10 @@ export const useGetReceiveAmount = () => {
       layerZero: {
         value: Number(getReceiveAmount('layerZero')) ?? 0,
         isSorting: !routeError?.['layerZero'],
+      },
+      meson: {
+        value: Number(getReceiveAmount('meson')) ?? 0,
+        isSorting: !routeError?.['meson'],
       },
     };
 

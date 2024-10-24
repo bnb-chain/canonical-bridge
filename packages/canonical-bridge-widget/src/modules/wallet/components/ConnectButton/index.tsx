@@ -1,10 +1,9 @@
-import { useConnectModal } from '@node-real/walletkit';
-import { useAccount } from 'wagmi';
-import { Button, Flex, useTheme, useColorMode } from '@bnb-chain/space';
+import { Button, Flex, useTheme, useColorMode, useIntl } from '@bnb-chain/space';
 
-import { useAppSelector } from '@/modules/store/StoreProvider';
 import { NetworkStatus } from '@/modules/wallet/components/NetworkStatus';
 import { ProfileMenu } from '@/modules/wallet/components/ProfileMenu';
+import { useCurrentWallet } from '@/modules/wallet/CurrentWalletProvider';
+import { useAppSelector } from '@/modules/store/StoreProvider';
 
 interface ConnectButtonProps {}
 
@@ -13,9 +12,9 @@ export function ConnectButton(props: ConnectButtonProps) {
 
   const theme = useTheme();
   const { colorMode } = useColorMode();
+  const { formatMessage } = useIntl();
 
-  const { isConnected } = useAccount();
-  const { onOpen } = useConnectModal();
+  const { isConnected, linkWallet } = useCurrentWallet();
   const fromChain = useAppSelector((state) => state.transfer.fromChain);
 
   return (
@@ -29,11 +28,12 @@ export function ConnectButton(props: ConnectButtonProps) {
           fontSize="14px"
           lineHeight="16px"
           fontWeight={500}
-          onClick={() =>
-            onOpen({
-              initialChainId: fromChain?.id,
-            })
-          }
+          onClick={() => {
+            linkWallet({
+              targetChainType: fromChain?.chainType,
+              targetChainId: fromChain?.id,
+            });
+          }}
           sx={{
             '@media (hover: none)': {
               _hover: {
@@ -44,7 +44,7 @@ export function ConnectButton(props: ConnectButtonProps) {
             },
           }}
         >
-          Connect Wallet
+          {formatMessage({ id: 'wallet.button.connect-wallet' })}
         </Button>
       )}
 

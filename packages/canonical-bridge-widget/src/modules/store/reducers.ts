@@ -1,9 +1,11 @@
 import transfer from '@/modules/transfer/reducer';
 import aggregator from '@/modules/aggregator/reducer';
+import wallet from '@/modules/wallet/reducer';
 
 const reducers = {
   transfer,
   aggregator,
+  wallet,
 } as const;
 
 type Reducers = typeof reducers;

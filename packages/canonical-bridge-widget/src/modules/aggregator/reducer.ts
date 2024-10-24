@@ -5,7 +5,7 @@ export interface IAggregatorState {
     cmcPrices: Record<string, { price: number }>;
     llamaPrices: Record<string, { price: number }>;
   };
-  tokenBalances: Record<string, number | undefined>;
+  tokenBalances: Record<string, string | undefined>;
   isLoadingTokenPrices: boolean;
   isLoadingTokenBalances: boolean;
 }

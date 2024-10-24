@@ -13,7 +13,7 @@ export function useEvmBalance(address?: Address, enabled = true) {
   const { chain, chainId } = useAccount();
 
   return useQuery<FormattedBalance>({
-    queryKey: ['evm:getBalance', address, chainId],
+    queryKey: ['useEvmBalance', address, chainId],
     refetchInterval: 1000 * 5,
     enabled: !!address && enabled && !!chain && !!chainId,
     queryFn: async () => {
