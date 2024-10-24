@@ -37,3 +37,6 @@ jobs:
 
       - name: Create server docker
         uses: ./.github/actions/server
+        with:
+          username: ${{ github.repository_owner }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
