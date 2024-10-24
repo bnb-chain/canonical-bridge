@@ -1,4 +1,4 @@
-name: alpha-cicd-trigger-by-comment
+name: alpha
 
 inputs:
   app-name:

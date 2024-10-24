@@ -1,4 +1,4 @@
-name: 'setup'
+name: setup
 description: Prepare the environment
 
 inputs:
