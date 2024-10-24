@@ -1,4 +1,4 @@
-name: github-pages-cicd
+name: github-pages
 
 inputs:
   server-endpoint:
