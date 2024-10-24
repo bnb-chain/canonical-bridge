@@ -1,6 +1,12 @@
 name: server
 
 inputs:
+  username:
+    description: 'username'
+    required: true
+  github-token:
+    description: 'github token'
+    required: true
 
 runs:
   using: composite
@@ -12,15 +18,15 @@ runs:
       uses: docker/login-action@v2
       with:
         registry: ghcr.io
-        username: ${{ github.repository_owner }}
-        password: ${{ secrets.GITHUB_TOKEN }}
+        username: ${{ inputs.username }}
+        password: ${{ inputs.github-token }}
 
     - name: image meta
       id: meta
       uses: docker/metadata-action@v5
       with:
         images: |
-          ghcr.io/${{ github.repository_owner }}/canonical-bridge-server
+          ghcr.io/${{ inputs.username }}/canonical-bridge-server
         tags: |
           type=ref,event=branch
           type=ref,event=tag
