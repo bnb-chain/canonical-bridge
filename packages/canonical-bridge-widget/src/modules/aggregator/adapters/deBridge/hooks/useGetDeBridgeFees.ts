@@ -32,7 +32,10 @@ export const useGetDeBridgeFees = () => {
   const sendValue = useAppSelector((state) => state.transfer.sendValue);
   const toChain = useAppSelector((state) => state.transfer.toChain);
 
-  const { data: nativeTokenBalance } = useBalance({ address: address as `0x${string}` });
+  const { data: nativeTokenBalance } = useBalance({
+    address: address as `0x${string}`,
+    chainId: fromChain?.id,
+  });
 
   const { toTokenInfo } = useToTokenInfo();
   const { balance } = useGetTokenBalance({
