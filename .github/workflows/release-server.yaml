@@ -28,7 +28,7 @@ jobs:
   cicd:
     needs: [pre-check]
     if: contains(needs.pre-check.outputs.codeowners, github.event.pull_request.merged_by.login)
-    timeout-minutes: 10
+    timeout-minutes: 30
     runs-on: ubuntu-latest
 
     steps:
