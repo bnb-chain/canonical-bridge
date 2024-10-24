@@ -27,14 +27,9 @@ jobs:
         with:
           path: .github/CODEOWNERS
 
-      - name: Print GitHub context
-        run: echo "$GITHUB_CONTEXT"
-        env:
-          GITHUB_CONTEXT: ${{ toJson(github) }}
-
   cicd:
     needs: [pre-check]
-    if: contains(needs.pre-check.outputs.codeowners, github.event.pull_request.user.login)
+    if: contains(needs.pre-check.outputs.codeowners, github.event.pull_request.merged_by.login)
     timeout-minutes: 10
     runs-on: ubuntu-latest
     steps:
