@@ -1,5 +1,15 @@
 # @bnb-chain/canonical-bridge-widget
 
+## 0.3.0
+
+### Minor Changes
+
+- f0ce0fd: Support tron
+
+### Patch Changes
+
+- 8908e36: Fix input styling
+
 ## 0.2.1-alpha.0
 
 ### Patch Changes
