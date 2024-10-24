@@ -1,5 +1,11 @@
 # @bnb-chain/canonical-bridge-widget
 
+## 0.2.1-alpha.0
+
+### Patch Changes
+
+- Fix input styling
+
 ## 0.2.0
 
 ### Minor Changes
