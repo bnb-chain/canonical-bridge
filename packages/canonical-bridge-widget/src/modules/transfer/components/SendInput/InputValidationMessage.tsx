@@ -1,4 +1,4 @@
-import { Box, useBreakpointValue, useColorMode, useTheme } from '@bnb-chain/space';
+import { Box, useColorMode, useTheme } from '@bnb-chain/space';
 import { useEffect, useState } from 'react';
 import { useAccount } from 'wagmi';
 
@@ -13,7 +13,6 @@ export const InputValidationMessage = () => {
   const { validateInput } = useInputValidation();
   const { chain } = useAccount();
   const dispatch = useAppDispatch();
-  const isBase = useBreakpointValue({ base: true, lg: false }) ?? false;
 
   const transferActionInfo = useAppSelector((state) => state.transfer.transferActionInfo);
   const theme = useTheme();
@@ -62,11 +61,10 @@ export const InputValidationMessage = () => {
   return error || balanceInputError ? (
     <Box
       color={theme.colors[colorMode].text.danger}
-      fontSize={'12px'}
+      fontSize={'14px'}
       fontWeight={400}
       lineHeight={'16px'}
-      position={isBase ? 'static' : 'absolute'}
-      top={`calc(100% + ${'8px'})`}
+      mt={'8px'}
     >
       {balanceInputError ?? error?.text}
     </Box>
