@@ -1,11 +1,13 @@
 import { parseUnits } from 'viem';
 import { Button, theme, Typography, useColorMode, useIntl } from '@bnb-chain/space';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 import { useApprove } from '@/core/contract/hooks';
 import { useAppSelector } from '@/modules/store/StoreProvider';
 import { StateModal, StateModalProps } from '@/core/components/StateModal';
 import { reportEvent } from '@/core/utils/gtm';
+import { useCurrentWallet } from '@/modules/wallet/CurrentWalletProvider';
+import { useTrc20 } from '@/modules/aggregator/adapters/meson/hooks/useTrc20';
 
 export function TransactionApproveModal(
   props: Omit<StateModalProps, 'title'> & {
@@ -15,8 +17,11 @@ export function TransactionApproveModal(
 ) {
   const { onOpenConfirmingModal, onCloseConfirmingModal, ...restProps } = props;
 
+  const [mainButtonIsDisabled, setMainButtonIsDisabled] = useState(false);
   const { approveErc20Token, isLoadingApprove } = useApprove();
   const { formatMessage } = useIntl();
+  const { isEvmConnected, isTronConnected } = useCurrentWallet();
+  const { approveTrc20 } = useTrc20();
 
   const { colorMode } = useColorMode();
   const selectedToken = useAppSelector((state) => state.transfer.selectedToken);
@@ -68,23 +73,37 @@ export function TransactionApproveModal(
         </>
       }
       mainButtonText={formatMessage({ id: 'modal.approve.button.confirm' })}
+      mainButtonIsDisabled={mainButtonIsDisabled}
       onMainButtonClick={async () => {
         if (selectedToken && transferActionInfo?.bridgeAddress) {
           try {
             reportApproval('Approve');
-
-            const hash = await approveErc20Token(
-              selectedToken.address as `0x${string}`,
-              transferActionInfo?.bridgeAddress as `0x${string}`,
-              parseUnits(sendValue, selectedToken.decimals),
-            );
-            if (hash) {
-              restProps.onClose();
+            setMainButtonIsDisabled(true);
+            if (isEvmConnected && fromChain?.chainType !== 'tron') {
+              const hash = await approveErc20Token(
+                selectedToken.address as `0x${string}`,
+                transferActionInfo?.bridgeAddress as `0x${string}`,
+                parseUnits(sendValue, selectedToken.decimals),
+              );
+              if (hash) {
+                restProps.onClose();
+              }
+            } else if (isTronConnected && fromChain?.chainType === 'tron') {
+              const approveReceipt = await approveTrc20({
+                tronBridgeAddress: transferActionInfo.bridgeAddress,
+                trc20Address: selectedToken.address,
+                amount: sendValue,
+              });
+              if (approveReceipt) {
+                restProps.onClose();
+              }
             }
           } catch (e: any) {
             //eslint-disable-next-line no-console
             console.log(e);
             restProps.onClose();
+          } finally {
+            setMainButtonIsDisabled(false);
           }
         }
       }}

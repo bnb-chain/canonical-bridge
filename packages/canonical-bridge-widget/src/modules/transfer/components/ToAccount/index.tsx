@@ -3,26 +3,41 @@ import {
   Box,
   Input,
   useColorMode,
+  useTheme,
   FlexProps,
   useIntl,
   InputGroup,
   InputRightElement,
-  useTheme,
 } from '@bnb-chain/space';
 import { ChangeEvent, useRef, useState } from 'react';
+import { useEffect } from 'react';
+import { useBytecode } from 'wagmi';
 
-import { useAppDispatch, useAppSelector } from '@/modules/store/StoreProvider';
-import { setToAccount } from '@/modules/transfer/action';
+import { setIsToAddressChecked, setToAccount } from '@/modules/transfer/action';
+import { useTronTransferInfo } from '@/modules/transfer/hooks/tron/useTronTransferInfo';
 import { ErrorIcon } from '@/core/components/icons/ErrorIcon';
-// import { CorrectIcon } from '@/core/components/icons/CorrectIcon';
+import { CorrectIcon } from '@/core/components/icons/CorrectIcon';
+import { useAppDispatch, useAppSelector } from '@/modules/store/StoreProvider';
+import { ConfirmCheckbox } from '@/core/components/ConfirmCheckbox';
+import { useTronContract } from '@/modules/aggregator/adapters/meson/hooks/useTronContract';
 
 export function ToAccount(props: FlexProps) {
   const { colorMode } = useColorMode();
   const { formatMessage } = useIntl();
   const dispatch = useAppDispatch();
+  const theme = useTheme();
+
+  const [isChecked, setIsChecked] = useState(false);
 
   const toAccount = useAppSelector((state) => state.transfer.toAccount);
-  const theme = useTheme();
+  const toChain = useAppSelector((state) => state.transfer.toChain);
+
+  const { isTronTransfer, isAvailableAccount } = useTronTransferInfo();
+  const { isTronContract } = useTronContract();
+  const { data: evmBytecode } = useBytecode({
+    address: toAccount.address as `0x${string}`,
+    chainId: toChain?.id,
+  });
 
   const timerRef = useRef<any>();
   const [inputValue, setInputValue] = useState(toAccount.address);
@@ -31,7 +46,7 @@ export function ToAccount(props: FlexProps) {
     setInputValue(value);
 
     clearTimeout(timerRef.current);
-    timerRef.current = setTimeout(() => {
+    timerRef.current = setTimeout(async () => {
       dispatch(
         setToAccount({
           address: value,
@@ -40,7 +55,27 @@ export function ToAccount(props: FlexProps) {
     }, 500);
   };
 
-  const isInvalid = !!toAccount.address;
+  useEffect(() => {
+    // Clear input value when toAccount is cleared
+    if (!toAccount.address) setInputValue('');
+  }, [toAccount.address]);
+
+  if (!isTronTransfer) {
+    return null;
+  }
+
+  const isInvalid =
+    (!isAvailableAccount && !!toAccount.address) || isTronContract === true || !!evmBytecode;
+
+  const onCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.checked === true) {
+      setIsChecked(true);
+      dispatch(setIsToAddressChecked(true));
+    } else {
+      setIsChecked(false);
+      dispatch(setIsToAddressChecked(false));
+    }
+  };
 
   return (
     <Flex
@@ -52,21 +87,34 @@ export function ToAccount(props: FlexProps) {
       {...props}
     >
       <Box>{formatMessage({ id: 'to.section.account.label' })}</Box>
-      <InputGroup alignItems="center" mt={'12px'}>
+      <InputGroup
+        alignItems="center"
+        mt={'12px'}
+        _hover={{
+          outline: '2px solid',
+          outlineColor: theme.colors[colorMode].input.border.hover,
+          borderRadius: '8px',
+        }}
+      >
         <Input
           isInvalid={isInvalid}
+          background={theme.colors[colorMode].input.background}
+          borderColor={theme.colors[colorMode].input.border.default}
           size={'lg'}
           value={inputValue}
-          placeholder={formatMessage({ id: 'to.section.account.placeholder' })}
-          bg="transparent"
+          placeholder={formatMessage(
+            { id: 'to.section.account.placeholder' },
+            { network: toChain?.name ?? '' },
+          )}
           onChange={onChange}
           _active={{}}
           _focusVisible={{}}
           _hover={{
-            bg: 'transparent',
+            borderColor: isInvalid
+              ? theme.colors[colorMode].text.danger
+              : theme.colors[colorMode].input.border.hover,
           }}
           _focus={{
-            bg: 'transparent',
             boxShadow: `0 0 0 1px ${theme.colors[colorMode].text.brand}`,
             borderColor: theme.colors[colorMode].text.brand,
           }}
@@ -75,18 +123,30 @@ export function ToAccount(props: FlexProps) {
             borderColor: theme.colors[colorMode].text.danger,
           }}
         />
-        {isInvalid && (
+        {(isInvalid || isAvailableAccount) && (
           <InputRightElement h="100%" w="auto" pr={'16px'} pl={'8px'}>
-            <ErrorIcon boxSize={'16px'} />
+            {isInvalid && <ErrorIcon boxSize={'16px'} />}
+            {isAvailableAccount && !isInvalid && <CorrectIcon boxSize={'16px'} />}
           </InputRightElement>
         )}
       </InputGroup>
 
       {isInvalid && (
-        <Flex mt={'8px'} color={theme.colors[colorMode].text.danger}>
+        <Flex mt={'8px'} fontSize={'14px'} color={theme.colors[colorMode].text.danger}>
           {formatMessage({ id: 'to.section.account.invalid' })}
         </Flex>
       )}
+
+      <ConfirmCheckbox
+        isChecked={isChecked}
+        onChange={onCheckboxChange}
+        borderRadius={'2px'}
+        mt={'12px'}
+        mb={'8px'}
+        justifyItems={'flex-start'}
+      >
+        {formatMessage({ id: 'to.section.confirm.text' })}
+      </ConfirmCheckbox>
     </Flex>
   );
 }

@@ -1,0 +1,118 @@
+{
+  "result": [
+    {
+      "id": "arb-sepolia",
+      "name": "Arbitrum Sepolia",
+      "chainId": "0x66eee",
+      "address": "0x0d12d15b26a32e72A3330B2ac9016A22b1410CB6",
+      "tokens": [
+        {
+          "id": "usdc",
+          "addr": "0x75faf114eafb1BDbe2F0316DF893fd58CE46AA4d",
+          "min": "0.5",
+          "max": "20000",
+          "decimals": 6
+        },
+        {
+          "id": "eth",
+          "decimals": 18,
+          "min": "0.001",
+          "max": "2"
+        }
+      ]
+    },
+    {
+      "id": "sepolia",
+      "name": "Sepolia Testnet",
+      "chainId": "0xaa36a7",
+      "address": "0x0d12d15b26a32e72A3330B2ac9016A22b1410CB6",
+      "tokens": [
+        {
+          "id": "usdc",
+          "addr": "0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238",
+          "decimals": 6,
+          "min": "0.5",
+          "max": "20000"
+        },
+        {
+          "id": "usdt",
+          "addr": "0xd53e9530107a8d8856099d7d80126478d48e06dA",
+          "decimals": 6,
+          "min": "0.5",
+          "max": "20000"
+        },
+        {
+          "id": "eth",
+          "decimals": 18,
+          "min": "0.001",
+          "max": "2"
+        }
+      ]
+    },
+    {
+      "id": "bnb-testnet",
+      "name": "BNB Testnet",
+      "chainId": "0x61",
+      "address": "0x0d12d15b26a32e72A3330B2ac9016A22b1410CB6",
+      "tokens": [
+        {
+          "id": "usdc",
+          "addr": "0x64544969ed7EBf5f083679233325356EbE738930",
+          "decimals": 18,
+          "min": "0.5",
+          "max": "20000"
+        },
+        {
+          "id": "usdt",
+          "addr": "0x337610d27c682E347C9cD60BD4b3b107C9d34dDd",
+          "decimals": 18,
+          "min": "0.5",
+          "max": "20000"
+        }
+      ]
+    },
+    {
+      "id": "opt-sepolia",
+      "name": "OP Sepolia",
+      "chainId": "0xaa37dc",
+      "address": "0x0d12d15b26a32e72A3330B2ac9016A22b1410CB6",
+      "tokens": [
+        {
+          "id": "usdc",
+          "addr": "0x5fd84259d66Cd46123540766Be93DFE6D43130D7",
+          "decimals": 6,
+          "min": "0.5",
+          "max": "20000"
+        },
+        {
+          "id": "eth",
+          "decimals": 18,
+          "min": "0.001",
+          "max": "2"
+        }
+      ]
+    },
+    {
+      "id": "tron-testnet",
+      "name": "Tron Nile Testnet",
+      "chainId": "3448148188",
+      "address": "TAp1rBTjC4tefEMR54vT2NDwLEhDL7E7Jo",
+      "tokens": [
+        {
+          "id": "usdc",
+          "addr": "TNavP4dSwhGssWjX4gR8NvrMsgAQvBWoyY",
+          "decimals": 6,
+          "min": "0.5",
+          "max": "20000"
+        },
+        {
+          "id": "usdt",
+          "addr": "THkCEyw2uaJYPfxb2BNizGuiosCkyAsbWW",
+          "decimals": 6,
+          "min": "0.5",
+          "max": "20000"
+        }
+      ]
+    }
+  ]
+}

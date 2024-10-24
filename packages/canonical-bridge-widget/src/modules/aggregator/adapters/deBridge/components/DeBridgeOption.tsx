@@ -1,4 +1,3 @@
-import { Flex, useColorMode, useTheme } from '@bnb-chain/space';
 import { useCallback, useMemo } from 'react';
 import { formatUnits } from 'viem';
 
@@ -11,13 +10,13 @@ import { EstimatedArrivalTime } from '@/modules/transfer/components/TransferOver
 import { FeesInfo } from '@/modules/transfer/components/TransferOverview/RouteInfo/FeesInfo';
 import { OtherRouteError } from '@/modules/transfer/components/TransferOverview/RouteInfo/OtherRouteError';
 import { RouteName } from '@/modules/transfer/components/TransferOverview/RouteInfo/RouteName';
+import { RouteWrapper } from '@/modules/transfer/components/TransferOverview/RouteInfo/RouteWrapper';
 
 interface DeBridgeOptionProps {
   isReceiveTab?: boolean;
 }
 
 export const DeBridgeOption = ({}: DeBridgeOptionProps) => {
-  const { colorMode } = useColorMode();
   const dispatch = useAppDispatch();
   const { toTokenInfo, getToDecimals } = useToTokenInfo();
 
@@ -25,7 +24,6 @@ export const DeBridgeOption = ({}: DeBridgeOptionProps) => {
   const estimatedAmount = useAppSelector((state) => state.transfer.estimatedAmount);
   const routeError = useAppSelector((state) => state.transfer.routeError);
   const routeFees = useAppSelector((state) => state.transfer.routeFees);
-  const theme = useTheme();
 
   const receiveAmt = useMemo(() => {
     return estimatedAmount?.['deBridge'] &&
@@ -69,30 +67,10 @@ export const DeBridgeOption = ({}: DeBridgeOptionProps) => {
   }, [estimatedAmount, dispatch, isError]);
 
   return (
-    <Flex
-      flex={1}
-      gap={'4px'}
-      flexDir={'column'}
-      height={'fit-content'}
-      border={`1px solid`}
-      borderColor={
-        transferActionInfo?.bridgeType === 'deBridge'
-          ? theme.colors[colorMode].border.brand
-          : theme.colors[colorMode].button.select.border
-      }
-      background={
-        transferActionInfo?.bridgeType === 'deBridge' ? 'rgba(255, 233, 0, 0.06);' : 'none'
-      }
-      borderRadius={'8px'}
-      padding={'16px'}
-      position={'relative'}
-      cursor={isError ? 'default' : 'pointer'}
-      _hover={{
-        borderColor: isError
-          ? theme.colors[colorMode].button.select.border
-          : theme.colors[colorMode].border.brand,
-      }}
-      onClick={onSelectBridge}
+    <RouteWrapper
+      isSelected={transferActionInfo?.bridgeType === 'deBridge'}
+      isError={isError}
+      onSelectBridge={onSelectBridge}
     >
       <RouteName isError={isError} bridgeType="deBridge" />
       <RouteTitle
@@ -108,6 +86,6 @@ export const DeBridgeOption = ({}: DeBridgeOptionProps) => {
         breakdown={routeFees?.['deBridge']?.breakdown}
       />
       <OtherRouteError bridgeType={'deBridge'} />
-    </Flex>
+    </RouteWrapper>
   );
 };

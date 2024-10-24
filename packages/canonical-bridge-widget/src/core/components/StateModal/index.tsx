@@ -40,6 +40,8 @@ export interface StateModalProps extends Omit<ModalProps, 'children'> {
   mainButtonProps?: ButtonProps;
   footerProps?: ModalFooterProps;
   bodyProps?: ModalBodyProps;
+  mainButtonIsDisabled?: boolean;
+  closeButtonIsDisabled?: boolean;
 }
 
 export function StateModal(props: StateModalProps) {
@@ -53,6 +55,8 @@ export function StateModal(props: StateModalProps) {
     onMainButtonClick,
     closeButton,
     isOpen,
+    mainButtonIsDisabled = false,
+    closeButtonIsDisabled = false,
     onClose,
     mainButtonProps,
     bodyProps,
@@ -130,6 +134,7 @@ export function StateModal(props: StateModalProps) {
                 fontSize={'16px'}
                 lineHeight={1.5}
                 onClick={onMainButtonClick}
+                isDisabled={mainButtonIsDisabled}
                 {...mainButtonProps}
               >
                 {mainButtonText}
@@ -144,6 +149,7 @@ export function StateModal(props: StateModalProps) {
                 fontSize={'16px'}
                 lineHeight={1.5}
                 onClick={onBeforeClose}
+                isDisabled={closeButtonIsDisabled}
               >
                 {buttonText}
               </Button>

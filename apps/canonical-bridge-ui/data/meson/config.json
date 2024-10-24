@@ -1,0 +1,35 @@
+{
+  "result": [
+    {
+      "id": "bnb",
+      "name": "BNB Smart Chain",
+      "chainId": "0x38",
+      "address": "0x25aB3Efd52e6470681CE037cD546Dc60726948D3",
+      "tokens": [
+        {
+          "id": "usdt",
+          "addr": "0x55d398326f99059ff775485246999027b3197955",
+          "decimals": 18,
+          "min": "1.0",
+          "max": "20000"
+        }
+      ]
+    },
+
+    {
+      "id": "tron",
+      "name": "Tron",
+      "chainId": "728126428",
+      "address": "TKWqpzNucNNBMpfaE47F8CLhA8vzfNndH4",
+      "tokens": [
+        {
+          "id": "usdt",
+          "addr": "TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t",
+          "decimals": 6,
+          "min": "6.5",
+          "max": "20000"
+        }
+      ]
+    }
+  ]
+}

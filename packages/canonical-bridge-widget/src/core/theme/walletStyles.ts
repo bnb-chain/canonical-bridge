@@ -7,7 +7,7 @@ export function walletStyles(colorMode: ColorMode) {
     },
     '.wk-modal-content': {
       width: { base: '100%', md: '435px' },
-      padding: '34px 40px 40px',
+      padding: { base: undefined, md: '34px 40px 40px' },
     },
     '.wk-modal-header': {
       fontWeight: 700,

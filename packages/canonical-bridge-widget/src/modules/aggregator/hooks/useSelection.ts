@@ -1,14 +1,21 @@
-import { useAccount, useChains } from 'wagmi';
+import { useChains } from 'wagmi';
 import { useCallback } from 'react';
 
 import { useAggregator } from '@/modules/aggregator/components/AggregatorProvider';
 import { isChainOrTokenCompatible } from '@/modules/aggregator/shared/isChainOrTokenCompatible';
-import { IBridgeChain, IBridgeToken, IBridgeTokenWithBalance } from '@/modules/aggregator/types';
+import {
+  ChainType,
+  IBridgeChain,
+  IBridgeToken,
+  IBridgeTokenWithBalance,
+} from '@/modules/aggregator/types';
 import { useAppDispatch, useAppSelector } from '@/modules/store/StoreProvider';
 import { setFromChain, setSelectedToken, setToChain, setToToken } from '@/modules/transfer/action';
 import { useTokenPrice } from '@/modules/aggregator/hooks/useTokenPrice';
 import { getTokenBalances } from '@/modules/aggregator/shared/getTokenBalances';
 import { sortTokens } from '@/modules/aggregator/shared/sortTokens';
+import { useTronWeb } from '@/core/hooks/useTronWeb';
+import { useCurrentWallet } from '@/modules/wallet/CurrentWalletProvider';
 
 export function useSelection() {
   const { getFromChains, getToChains, getTokens, getToToken, adapters } = useAggregator();
@@ -127,6 +134,7 @@ export function useSelection() {
         toChains.find((c) => isChainOrTokenCompatible(c) && c.chainType !== 'link');
 
       const tmpTokens = await getSortedTokens({
+        chainType: tmpFromChain.chainType,
         fromChainId: tmpFromChain.id,
         tokens: getTokens({
           fromChainId: tmpFromChain.id,
@@ -152,6 +160,7 @@ export function useSelection() {
       const fromChainId = fromChain!.id;
 
       const tmpTokens = await getSortedTokens({
+        chainType: fromChain?.chainType,
         fromChainId,
         tokens: getTokens({
           fromChainId,
@@ -184,15 +193,27 @@ export function useSelection() {
 function useSortedTokens() {
   const { transferConfig } = useAggregator();
   const chains = useChains();
-  const { address } = useAccount();
+
+  const { address } = useCurrentWallet();
   const { getTokenPrice } = useTokenPrice();
+  const tronWeb = useTronWeb();
 
   const getSortedTokens = useCallback(
-    async ({ fromChainId, tokens }: { fromChainId: number; tokens: IBridgeToken[] }) => {
+    async ({
+      fromChainId,
+      chainType,
+      tokens,
+    }: {
+      fromChainId: number;
+      chainType?: ChainType;
+      tokens: IBridgeToken[];
+    }) => {
       const balances = await getTokenBalances({
+        chainType,
         account: address,
-        chain: chains.find((e) => e.id === fromChainId),
         tokens,
+        chain: chains.find((e) => e.id === fromChainId),
+        tronWeb,
       });
 
       const tmpTokens = tokens.map((item) => {
@@ -216,7 +237,7 @@ function useSortedTokens() {
         orders: transferConfig.order?.tokens,
       });
     },
-    [address, chains, transferConfig.order?.tokens, getTokenPrice],
+    [address, chains, tronWeb, transferConfig.order?.tokens, getTokenPrice],
   );
 
   return {

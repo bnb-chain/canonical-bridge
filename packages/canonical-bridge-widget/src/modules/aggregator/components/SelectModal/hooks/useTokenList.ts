@@ -25,7 +25,7 @@ export function useTokenList(tokens: IBridgeToken[] = []) {
 
       let value: number | undefined;
       if (balance !== undefined && price !== undefined) {
-        value = balance * price;
+        value = Number(balance) * price;
       }
 
       return {

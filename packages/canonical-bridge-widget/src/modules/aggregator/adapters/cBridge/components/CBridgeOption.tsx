@@ -1,4 +1,3 @@
-import { Flex, useColorMode, useTheme } from '@bnb-chain/space';
 import { useCallback, useEffect, useMemo } from 'react';
 import { formatUnits } from 'viem';
 
@@ -13,10 +12,11 @@ import { AllowedSendAmount } from '@/modules/transfer/components/TransferOvervie
 import { OtherRouteError } from '@/modules/transfer/components/TransferOverview/RouteInfo/OtherRouteError';
 import { RouteName } from '@/modules/transfer/components/TransferOverview/RouteInfo/RouteName';
 import { useGetCBridgeFees } from '@/modules/aggregator/adapters/cBridge/hooks/useGetCBridgeFees';
+import { RouteWrapper } from '@/modules/transfer/components/TransferOverview/RouteInfo/RouteWrapper';
 
 export const CBridgeOption = () => {
   const dispatch = useAppDispatch();
-  const { colorMode } = useColorMode();
+
   const { toTokenInfo, getToDecimals } = useToTokenInfo();
   const { isAllowSendError, bridgeAddress, cBridgeAllowedAmt } = useGetCBridgeFees();
 
@@ -26,7 +26,6 @@ export const CBridgeOption = () => {
   const sendValue = useAppSelector((state) => state.transfer.sendValue);
   const routeError = useAppSelector((state) => state.transfer.routeError);
   const routeFees = useAppSelector((state) => state.transfer.routeFees);
-  const theme = useTheme();
 
   const receiveAmt = useMemo(() => {
     return estimatedAmount &&
@@ -78,30 +77,10 @@ export const CBridgeOption = () => {
   }, [bridgeAddress, dispatch, isError]);
 
   return (
-    <Flex
-      flex={1}
-      flexDir={'column'}
-      gap={'4px'}
-      border={`1px solid`}
-      height={'fit-content'}
-      borderColor={
-        transferActionInfo?.bridgeType === 'cBridge'
-          ? theme.colors[colorMode].border.brand
-          : theme.colors[colorMode].button.select.border
-      }
-      background={
-        transferActionInfo?.bridgeType === 'cBridge' ? 'rgba(255, 233, 0, 0.06);' : 'none'
-      }
-      borderRadius={'8px'}
-      padding={'16px'}
-      position={'relative'}
-      cursor={isError ? 'default' : 'pointer'}
-      _hover={{
-        borderColor: isError
-          ? theme.colors[colorMode].button.select.border
-          : theme.colors[colorMode].border.brand,
-      }}
-      onClick={onSelectBridge}
+    <RouteWrapper
+      isSelected={transferActionInfo?.bridgeType === 'cBridge'}
+      isError={isError}
+      onSelectBridge={onSelectBridge}
     >
       <RouteName isError={isError} bridgeType="cBridge" />
       <RouteTitle
@@ -118,7 +97,6 @@ export const CBridgeOption = () => {
       />
       <AllowedSendAmount
         position={'static'}
-        zIndex={2}
         isError={isAllowSendError}
         allowedSendAmount={
           !!Number(cBridgeAllowedAmt.min) && !!Number(cBridgeAllowedAmt.max) && selectedToken
@@ -130,6 +108,6 @@ export const CBridgeOption = () => {
         }
       />
       {!isAllowSendError && <OtherRouteError bridgeType={'cBridge'} />}
-    </Flex>
+    </RouteWrapper>
   );
 };
