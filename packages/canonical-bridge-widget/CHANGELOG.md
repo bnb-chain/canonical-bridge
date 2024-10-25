@@ -1,5 +1,11 @@
 # @bnb-chain/canonical-bridge-widget
 
+## 0.3.2-alpha.1
+
+### Patch Changes
+
+- Fix input and checkbox style
+
 ## 0.3.2-alpha.0
 
 ### Patch Changes

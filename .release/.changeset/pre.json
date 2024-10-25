@@ -6,6 +6,7 @@
     "@bnb-chain/canonical-bridge-widget": "0.1.4"
   },
   "changesets": [
+    "metal-steaks-drive",
     "polite-monkeys-share",
     "rare-grapes-act",
     "sixty-scissors-protect"
