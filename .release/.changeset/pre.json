@@ -1,0 +1,13 @@
+{
+  "mode": "pre",
+  "tag": "alpha",
+  "initialVersions": {
+    "@bnb-chain/canonical-bridge-sdk": "0.1.2",
+    "@bnb-chain/canonical-bridge-widget": "0.1.4"
+  },
+  "changesets": [
+    "polite-monkeys-share",
+    "rare-grapes-act",
+    "sixty-scissors-protect"
+  ]
+}

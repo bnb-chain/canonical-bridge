@@ -1,5 +1,5 @@
 import { Box, Flex, Input, useColorMode, useDisclosure, useIntl, useTheme } from '@bnb-chain/space';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import { useAppDispatch, useAppSelector } from '@/modules/store/StoreProvider';
 import { setSendValue } from '@/modules/transfer/action';
@@ -84,6 +84,12 @@ export const SendInput: React.FC = () => {
       });
     }, DEBOUNCE_DELAY);
   };
+
+  useEffect(() => {
+    if (isGlobalFeeLoading && sendValue === debouncedSendValue) {
+      setIsFocused(false);
+    }
+  }, [isGlobalFeeLoading, debouncedSendValue, sendValue]);
 
   return (
     <Flex flexDir={'column'} position={'relative'}>

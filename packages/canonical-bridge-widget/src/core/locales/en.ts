@@ -96,6 +96,8 @@ export const en = {
   'select-modal.destination.incompatible.tooltip':
     'The token you’ve selected is incompatible with this network. Please select another token.',
 
+  'wallet.network.switch-network': 'Please switch the network',
+  'wallet.network.unknown-network': 'Unsupported Network',
   'wallet.button.connect-wallet': 'Connect Wallet',
   'wallet.network.wrong-network': 'Wrong network',
   'wallet.error.switch-network':
