@@ -18,8 +18,8 @@ import { useTronTransferInfo } from '@/modules/transfer/hooks/tron/useTronTransf
 import { ErrorIcon } from '@/core/components/icons/ErrorIcon';
 import { CorrectIcon } from '@/core/components/icons/CorrectIcon';
 import { useAppDispatch, useAppSelector } from '@/modules/store/StoreProvider';
-import { ConfirmCheckbox } from '@/core/components/ConfirmCheckbox';
 import { useTronContract } from '@/modules/aggregator/adapters/meson/hooks/useTronContract';
+import { ToAccountCheckBox } from '@/core/components/icons/ConfirmCheckIcon';
 
 export function ToAccount(props: FlexProps) {
   const { colorMode } = useColorMode();
@@ -67,13 +67,13 @@ export function ToAccount(props: FlexProps) {
   const isInvalid =
     (!isAvailableAccount && !!toAccount.address) || isTronContract === true || !!evmBytecode;
 
-  const onCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.checked === true) {
-      setIsChecked(true);
-      dispatch(setIsToAddressChecked(true));
-    } else {
+  const toggleChecked = () => {
+    if (isChecked) {
       setIsChecked(false);
       dispatch(setIsToAddressChecked(false));
+    } else {
+      setIsChecked(true);
+      dispatch(setIsToAddressChecked(true));
     }
   };
 
@@ -137,16 +137,10 @@ export function ToAccount(props: FlexProps) {
         </Flex>
       )}
 
-      <ConfirmCheckbox
-        isChecked={isChecked}
-        onChange={onCheckboxChange}
-        borderRadius={'2px'}
-        mt={'12px'}
-        mb={'8px'}
-        justifyItems={'flex-start'}
-      >
-        {formatMessage({ id: 'to.section.confirm.text' })}
-      </ConfirmCheckbox>
+      <Flex flexDir={'row'} mt={'12px'} mb={'8px'} ml={'-6px'} gap={'2px'}>
+        <ToAccountCheckBox onClick={toggleChecked} isChecked={isChecked} />
+        <Box>{formatMessage({ id: 'to.section.confirm.text' })}</Box>
+      </Flex>
     </Flex>
   );
 }
