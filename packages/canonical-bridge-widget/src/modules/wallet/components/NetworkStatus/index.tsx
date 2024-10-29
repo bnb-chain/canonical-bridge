@@ -67,9 +67,18 @@ export function NetworkStatus() {
           gap={'8px'}
         >
           <IconImage src={fromChain!.icon} boxSize="24px" flexShrink={0} />
-          <Flex flex={1} flexShrink={0} noOfLines={1}>
+          <Typography
+            as={'div'}
+            display={'flex'}
+            flex={1}
+            flexShrink={0}
+            noOfLines={1}
+            variant={'label'}
+            size={'md'}
+            gap={'4px'}
+          >
             {fromChain!.name}
-          </Flex>
+          </Typography>
         </Flex>
 
         <Box onClick={onClose} w={'100%'}>

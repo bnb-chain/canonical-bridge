@@ -147,6 +147,7 @@ export const ReceiveInfo = ({ onOpen }: ReceiveInfoProps) => {
             ) : null}
           </Flex>
           <Flex
+            minH={'114px'}
             borderRadius={'8px'}
             p={'16px'}
             flexDir={'column'}
@@ -163,7 +164,7 @@ export const ReceiveInfo = ({ onOpen }: ReceiveInfoProps) => {
                     </Box>
                   }
                   {
-                    <Box display={{ base: 'block', lg: 'none' }}>
+                    <Box display={{ base: 'block', lg: 'none' }} mb={'-12px'}>
                       <RefreshingButton position={'absolute'} right={'16px'} top={'16px'} />
                     </Box>
                   }
