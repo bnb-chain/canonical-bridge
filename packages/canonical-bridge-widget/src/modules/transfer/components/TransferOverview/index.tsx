@@ -167,20 +167,20 @@ export function TransferOverview({ routeContentBottom }: { routeContentBottom?: 
       transition={'width 0.15s'}
       overflow={['auto', 'auto', 'auto', 'hidden']}
     >
-      <Box ml={{ base: 0, lg: '24px' }} w={'100%'}>
+      <Flex flexDir={'column'} gap={'24px'} ml={{ base: 0, lg: '24px' }} w={'100%'}>
         {!routeContentBottom ? (
           showRoute ? (
             content
           ) : null
         ) : (
-          <Collapse in={showRoute} animateOpacity>
-            {content}
-          </Collapse>
+          <Box mb={showRoute ? 0 : '-24px'}>
+            <Collapse in={showRoute} animateOpacity>
+              {content}
+            </Collapse>
+          </Box>
         )}
-        <Box mt={['12px', '12px', '12px', '24px']}>
-          {routeContentBottom ? routeContentBottom : null}
-        </Box>
-      </Box>
+        <Box>{routeContentBottom ? routeContentBottom : null}</Box>
+      </Flex>
     </Flex>
   );
 }
