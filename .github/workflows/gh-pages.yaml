@@ -6,7 +6,6 @@ on:
       - gh-pages
 
     paths:
-      - .github/**
       - apps/canonical-bridge-ui/**
       - packages/canonical-bridge-sdk/**
       - packages/canonical-bridge-widget/**
