@@ -1,9 +1,9 @@
-name: Release demo
+name: Release example
 
 on:
   push:
     branches:
-      - gh-pages
+      - example
 
     paths:
       - apps/canonical-bridge-ui/**
