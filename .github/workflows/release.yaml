@@ -6,7 +6,6 @@ on:
       - main
 
     paths:
-      - .github/**
       - .release/**
       - packages/canonical-bridge-sdk/**
       - packages/canonical-bridge-widget/**
