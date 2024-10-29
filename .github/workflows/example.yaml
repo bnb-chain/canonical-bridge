@@ -10,8 +10,12 @@ on:
       - packages/canonical-bridge-sdk/**
       - packages/canonical-bridge-widget/**
 
+permissions:
+  contents: read
+
 jobs:
   cicd:
+    if: github.repository == 'bnb-chain/canonical-bridge'
     timeout-minutes: 30
     runs-on: ubuntu-latest
     steps:
