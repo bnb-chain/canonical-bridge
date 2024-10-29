@@ -107,10 +107,11 @@ export function TransferOverview({ routeContentBottom }: { routeContentBottom?: 
     <Box
       position={'relative'}
       borderRadius={'24px'}
-      py={['0', '0', '0', '24px']}
+      py={'24px'}
       background={theme.colors[colorMode].background.route}
       maxW={['auto', 'auto', 'auto', '384px']}
       w={'100%'}
+      overflow={['auto', 'auto', 'auto', 'hidden']}
     >
       <Flex flexDir={'column'} gap={'12px'}>
         <Flex
@@ -165,13 +166,10 @@ export function TransferOverview({ routeContentBottom }: { routeContentBottom?: 
     <Flex
       w={{ base: 'auto', lg: showRoute || !!routeContentBottom ? '408px' : 0 }}
       transition={'width 0.15s'}
-      overflow={['auto', 'auto', 'auto', 'hidden']}
     >
       <Flex flexDir={'column'} gap={'24px'} ml={{ base: 0, lg: '24px' }} w={'100%'}>
         {!routeContentBottom ? (
-          showRoute ? (
-            content
-          ) : null
+          content
         ) : (
           <Box mb={showRoute ? 0 : '-24px'}>
             <Collapse in={showRoute} animateOpacity>
