@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-      - alpha
 
     paths:
       - .github/**
@@ -39,20 +38,10 @@ jobs:
         run: |
           echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
 
-      - name: Enter pre mode
-        if: steps.get-branch.outputs.branch == 'alpha'
-        run: |
-          pnpm ci:enter
-
-      - name: Exit pre mode
-        if: steps.get-branch.outputs.branch == 'main'
-        run: |
-          pnpm ci:exit
-
       - name: Create and publish versions
         uses: changesets/action@v1
         with:
-          version: pnpm ci:version
+          version: pnpm ci:stable-version
           publish: pnpm ci:publish
           commit: 'chore: Update versions'
           title: 'chore: Update versions'
