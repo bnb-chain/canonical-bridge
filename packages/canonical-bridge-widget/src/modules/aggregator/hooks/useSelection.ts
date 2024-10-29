@@ -1,4 +1,4 @@
-import { useChains, useAccount } from 'wagmi';
+import { useChains } from 'wagmi';
 import { useCallback } from 'react';
 
 import { useAggregator } from '@/modules/aggregator/components/AggregatorProvider';
@@ -18,7 +18,7 @@ import { useTronWeb } from '@/core/hooks/useTronWeb';
 import { useCurrentWallet } from '@/modules/wallet/CurrentWalletProvider';
 
 export function useSelection() {
-  const { chainId } = useAccount();
+  const { chainId } = useCurrentWallet();
   const { getFromChains, getToChains, getTokens, getToToken, adapters, defaultSelectedInfo } =
     useAggregator();
 
@@ -135,6 +135,7 @@ export function useSelection() {
           selectFromChain(chain);
           return;
         }
+        if (fromChain?.id) return;
       }
 
       const fromChains = getFromChains({

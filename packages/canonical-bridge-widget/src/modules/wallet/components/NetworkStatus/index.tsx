@@ -1,5 +1,5 @@
 import { Flex, useColorMode, useIntl, useTheme, Text, Typography, Box } from '@bnb-chain/space';
-import { TickIcon, WarningTriangleSolidIcon, InfoCircleIcon } from '@bnb-chain/icons';
+import { TickIcon, InfoCircleIcon } from '@bnb-chain/icons';
 import { useEffect, useRef } from 'react';
 
 import { IconImage } from '@/core/components/IconImage';
@@ -13,6 +13,10 @@ import { useFromChains } from '@/modules/aggregator/hooks/useFromChains';
 import { useAggregator } from '@/modules/aggregator/components/AggregatorProvider';
 import { TransferToIcon } from '@/core/components/icons/TransferToIcon';
 import { SwitchNetworkButton } from '@/modules/transfer/components/Button/SwitchNetworkButton';
+import { WarningIcon } from '@/core/components/icons/WarningIcon.tsx';
+import { SwitchWalletButton } from '@/modules/transfer/components/Button/SwitchWalletButton';
+import { ExLinkIcon } from '@/core/components/icons/ExLinkIcon.tsx';
+import { openLink } from '@/core/utils/common.ts';
 
 export function NetworkStatus() {
   const fromChain = useAppSelector((state) => state.transfer.fromChain);
@@ -22,13 +26,11 @@ export function NetworkStatus() {
   const theme = useTheme();
   const { colorMode } = useColorMode();
 
-  const { chain, chainId, linkWallet } = useCurrentWallet();
+  const { chain, chainId, linkWallet, walletType } = useCurrentWallet();
   const fromChains = useFromChains();
 
   const { chainConfigs } = useAggregator();
-  const supportedChains = fromChains.filter(
-    (c) => chainConfigs.find((e) => c.id === e.id) && c.chainType !== 'link',
-  );
+  const supportedChains = fromChains.filter((c) => chainConfigs.find((e) => c.id === e.id));
   const bridgeChains = useFromChains();
 
   useEffect(() => {
@@ -65,13 +67,26 @@ export function NetworkStatus() {
           gap={'8px'}
         >
           <IconImage src={fromChain!.icon} boxSize="24px" flexShrink={0} />
-          <Flex flex={1} flexShrink={0} noOfLines={1}>
+          <Typography
+            as={'div'}
+            display={'flex'}
+            flex={1}
+            flexShrink={0}
+            noOfLines={1}
+            variant={'label'}
+            size={'md'}
+            gap={'4px'}
+          >
             {fromChain!.name}
-          </Flex>
+          </Typography>
         </Flex>
 
         <Box onClick={onClose} w={'100%'}>
-          <SwitchNetworkButton h={'40px'} mt={'16px'} fontSize={'14px'} />
+          {walletType !== fromChain?.chainType ? (
+            <SwitchWalletButton h={'40px'} mt={'16px'} fontSize={'14px'} />
+          ) : (
+            <SwitchNetworkButton h={'40px'} mt={'16px'} fontSize={'14px'} />
+          )}
         </Box>
       </Flex>
     </DropdownList>
@@ -85,14 +100,31 @@ export function NetworkStatus() {
         {({ isOpen, onClose }) => {
           return (
             <>
-              <DropdownButton isActive={isOpen} isWarning={true}>
-                <WarningTriangleSolidIcon
+              <DropdownButton
+                bgColor={theme.colors[colorMode].layer[3].default}
+                isActive={isOpen}
+                isWarning={isOpen}
+              >
+                <WarningIcon
                   boxSize={'24px'}
                   color={theme.colors[colorMode].support.warning['3']}
                 />
                 <Flex flexDir="column" gap="0" alignItems="flex-start" textAlign="left">
-                  <Text fontSize="14px" noOfLines={1} fontWeight={500}>
+                  <Text
+                    fontSize="14px"
+                    noOfLines={1}
+                    fontWeight={500}
+                    display={{ base: 'none', md: 'block' }}
+                  >
                     {formatMessage({ id: 'wallet.network.unknown-network' })}
+                  </Text>
+                  <Text
+                    fontSize="14px"
+                    noOfLines={1}
+                    fontWeight={500}
+                    display={{ base: 'block', md: 'none' }}
+                  >
+                    {formatMessage({ id: 'wallet.network.unknown-network-mobile' })}
                   </Text>
                 </Flex>
               </DropdownButton>
@@ -113,9 +145,13 @@ export function NetworkStatus() {
       {({ isOpen, onClose }) => {
         return (
           <>
-            <DropdownButton isActive={isOpen} isWarning={isWrongNetwork}>
+            <DropdownButton
+              bgColor={theme.colors[colorMode].layer[3].default}
+              isActive={isOpen}
+              isWarning={isOpen && isWrongNetwork}
+            >
               {isWrongNetwork ? (
-                <WarningTriangleSolidIcon
+                <WarningIcon
                   boxSize={'24px'}
                   color={theme.colors[colorMode].support.warning['3']}
                 />
@@ -146,6 +182,10 @@ export function NetworkStatus() {
                       }
                       bg={isSelected ? theme.colors[colorMode].popover.selected : undefined}
                       onClick={() => {
+                        if (item.chainType === 'link') {
+                          openLink(item.externalBridgeUrl);
+                          return;
+                        }
                         linkWallet({
                           targetChainType: item.chainType,
                           targetChainId: item.id,
@@ -156,6 +196,13 @@ export function NetworkStatus() {
                       <Flex flex={1} flexShrink={0} noOfLines={1}>
                         {item.name}
                       </Flex>
+                      {item.chainType === 'link' && (
+                        <ExLinkIcon
+                          ml={'4px'}
+                          color={theme.colors[colorMode].text.secondary}
+                          boxSize={theme.sizes['4']}
+                        />
+                      )}
                       {isSelected && <TickIcon boxSize={'16px'} />}
                     </DropdownItem>
                   );

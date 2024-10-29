@@ -1,5 +1,107 @@
 # @bnb-chain/canonical-bridge-widget
 
+## 0.3.2-alpha.18
+
+### Patch Changes
+
+- Update widget
+
+## 0.3.2-alpha.17
+
+### Patch Changes
+
+- Update widget ui
+
+## 0.3.2-alpha.16
+
+### Patch Changes
+
+- Update widge ui
+
+## 0.3.2-alpha.15
+
+### Patch Changes
+
+- Update widget ui
+
+## 0.3.2-alpha.14
+
+### Patch Changes
+
+- Update widget ui
+
+## 0.3.2-alpha.13
+
+### Patch Changes
+
+- Update widget ui
+
+## 0.3.2-alpha.12
+
+### Patch Changes
+
+- Update widget ui
+
+## 0.3.2-alpha.11
+
+### Patch Changes
+
+- Update widget ui
+
+## 0.3.2-alpha.10
+
+### Patch Changes
+
+- Update widget ui
+
+## 0.3.2-alpha.9
+
+### Patch Changes
+
+- Update widget ui
+
+## 0.3.2-alpha.8
+
+### Patch Changes
+
+- Update widget ui
+
+## 0.3.2-alpha.7
+
+### Patch Changes
+
+- Update widget ui
+
+## 0.3.2-alpha.6
+
+### Patch Changes
+
+- Update widget ui
+
+## 0.3.2-alpha.5
+
+### Patch Changes
+
+- Update widget ui
+
+## 0.3.2-alpha.4
+
+### Patch Changes
+
+- Update widget ui
+
+## 0.3.2-alpha.3
+
+### Patch Changes
+
+- Update widget ui
+
+## 0.3.2-alpha.2
+
+### Patch Changes
+
+- Update widget ui
+
 ## 0.3.2-alpha.1
 
 ### Patch Changes

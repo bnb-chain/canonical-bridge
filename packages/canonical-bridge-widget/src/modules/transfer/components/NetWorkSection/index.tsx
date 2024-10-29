@@ -43,7 +43,7 @@ export const NetWorkSection = () => {
         flexDir={['column', 'column', 'row']}
         justifyContent={'space-between'}
         alignItems={'center'}
-        gap={['16px', '16px', '16px', '12px']}
+        gap={{ base: '8px', md: '16px' }}
         minW={0}
       >
         <FromSection />

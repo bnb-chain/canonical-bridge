@@ -1,11 +1,10 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useMemo } from 'react';
 import { formatUnits, parseUnits } from 'viem';
 import { useAccount, usePublicClient } from 'wagmi';
 import { useIntl } from '@bnb-chain/space';
 
 import { useAppDispatch, useAppSelector } from '@/modules/store/StoreProvider';
 import { useToTokenInfo } from '@/modules/transfer/hooks/useToTokenInfo';
-import { useCBridgeSendMaxMin } from '@/modules/aggregator/adapters/cBridge/hooks/useCBridgeSendMaxMin';
 import { useCBridgeTransferParams } from '@/modules/aggregator/adapters/cBridge/hooks/useCBridgeTransferParams';
 import { useGetTokenBalance } from '@/core/contract/hooks/useGetTokenBalance';
 import { formatNumber } from '@/core/utils/number';
@@ -17,7 +16,7 @@ import { ERC20_TOKEN } from '@/core/contract/abi';
 export const useGetCBridgeFees = () => {
   const { toTokenInfo } = useToTokenInfo();
   const { args, bridgeAddress } = useCBridgeTransferParams();
-  const { minMaxSendAmt: cBridgeAllowedAmt } = useCBridgeSendMaxMin();
+  const cBridgeAllowedAmt = useAppSelector((state) => state.aggregator.bridgeMaxMin.cBridge);
   const nativeToken = useGetNativeToken();
   const { formatMessage } = useIntl();
   const dispatch = useAppDispatch();
@@ -29,27 +28,24 @@ export const useGetCBridgeFees = () => {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const publicClient = usePublicClient({ chainId: fromChain?.id }) as any;
-  const [isAllowSendError, setIsAllowSendError] = useState(false);
 
   const { balance } = useGetTokenBalance({
     tokenAddress: selectedToken?.address as `0x${string}`,
   });
 
-  useEffect(() => {
+  const isAllowSendError = useMemo(() => {
     if (!Number(sendValue) || !selectedToken || !toTokenInfo) {
-      setIsAllowSendError(false);
-      return;
+      return false;
     }
     if (!!Number(cBridgeAllowedAmt?.min) && !!Number(cBridgeAllowedAmt?.max)) {
-      if (Number(sendValue) <= Number(cBridgeAllowedAmt.min)) {
-        setIsAllowSendError(true);
-      } else if (Number(sendValue) >= Number(cBridgeAllowedAmt.max)) {
-        setIsAllowSendError(true);
+      if (
+        Number(sendValue) <= Number(cBridgeAllowedAmt.min) ||
+        Number(sendValue) >= Number(cBridgeAllowedAmt.max)
+      ) {
+        return true;
       }
     }
-    return () => {
-      setIsAllowSendError(false);
-    };
+    return false;
   }, [cBridgeAllowedAmt, sendValue, selectedToken, toTokenInfo]);
 
   const cBridgeFeeSorting = useCallback(
