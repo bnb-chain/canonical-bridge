@@ -15,6 +15,8 @@ import { TransferToIcon } from '@/core/components/icons/TransferToIcon';
 import { SwitchNetworkButton } from '@/modules/transfer/components/Button/SwitchNetworkButton';
 import { WarningIcon } from '@/core/components/icons/WarningIcon.tsx';
 import { SwitchWalletButton } from '@/modules/transfer/components/Button/SwitchWalletButton';
+import { ExLinkIcon } from '@/core/components/icons/ExLinkIcon.tsx';
+import { openLink } from '@/core/utils/common.ts';
 
 export function NetworkStatus() {
   const fromChain = useAppSelector((state) => state.transfer.fromChain);
@@ -28,9 +30,7 @@ export function NetworkStatus() {
   const fromChains = useFromChains();
 
   const { chainConfigs } = useAggregator();
-  const supportedChains = fromChains.filter(
-    (c) => chainConfigs.find((e) => c.id === e.id) && c.chainType !== 'link',
-  );
+  const supportedChains = fromChains.filter((c) => chainConfigs.find((e) => c.id === e.id));
   const bridgeChains = useFromChains();
 
   useEffect(() => {
@@ -165,6 +165,10 @@ export function NetworkStatus() {
                       }
                       bg={isSelected ? theme.colors[colorMode].popover.selected : undefined}
                       onClick={() => {
+                        if (item.chainType === 'link') {
+                          openLink(item.externalBridgeUrl);
+                          return;
+                        }
                         linkWallet({
                           targetChainType: item.chainType,
                           targetChainId: item.id,
@@ -175,6 +179,13 @@ export function NetworkStatus() {
                       <Flex flex={1} flexShrink={0} noOfLines={1}>
                         {item.name}
                       </Flex>
+                      {item.chainType === 'link' && (
+                        <ExLinkIcon
+                          ml={'4px'}
+                          color={theme.colors[colorMode].text.secondary}
+                          boxSize={theme.sizes['4']}
+                        />
+                      )}
                       {isSelected && <TickIcon boxSize={'16px'} />}
                     </DropdownItem>
                   );
