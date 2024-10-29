@@ -2,7 +2,9 @@ name: Release demo
 
 on:
   push:
-    branches: [demo]
+    branches:
+      - gh-pages
+
     paths:
       - .github/**
       - apps/canonical-bridge-ui/**
