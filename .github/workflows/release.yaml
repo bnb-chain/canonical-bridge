@@ -1,35 +1,19 @@
 name: Release
 
 on:
-  pull_request:
-    types:
-      - closed
+  push:
     branches:
       - main
+      - alpha
+
     paths:
+      - .github/**
       - .release/**
       - packages/canonical-bridge-sdk/**
       - packages/canonical-bridge-widget/**
 
 jobs:
-  pre-check:
-    runs-on: ubuntu-latest
-    if: github.repository == 'bnb-chain/canonical-bridge'
-    outputs:
-      codeowners: ${{ steps.codeowners.outputs.content }}
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Read codeowners
-        id: codeowners
-        uses: juliangruber/read-file-action@v1
-        with:
-          path: .github/CODEOWNERS
-
   cicd:
-    needs: [pre-check]
-    if: contains(needs.pre-check.outputs.codeowners, github.event.pull_request.merged_by.login)
     timeout-minutes: 30
     runs-on: ubuntu-latest
     steps:
@@ -41,7 +25,6 @@ jobs:
           npm-token: ${{ secrets.NPM_TOKEN }}
 
       - name: Install & build
-        shell: bash
         run: |
           node .release/scripts/install.js
 
@@ -51,10 +34,25 @@ jobs:
           node common/scripts/install-run-rush.js install -t @bnb-chain/canonical-bridge-widget
           node common/scripts/install-run-rush.js build -t @bnb-chain/canonical-bridge-widget
 
+      - name: Get branch name
+        id: get-branch
+        run: |
+          echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
+
+      - name: Enter pre mode
+        if: steps.get-branch.outputs.branch == 'alpha'
+        run: |
+          pnpm ci:enter
+
+      - name: Exit pre mode
+        if: steps.get-branch.outputs.branch == 'main'
+        run: |
+          pnpm ci:exit
+
       - name: Create and publish versions
         uses: changesets/action@v1
         with:
-          version: pnpm ci:stable-version
+          version: pnpm ci:version
           publish: pnpm ci:publish
           commit: 'chore: Update versions'
           title: 'chore: Update versions'
