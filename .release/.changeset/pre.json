@@ -6,9 +6,12 @@
     "@bnb-chain/canonical-bridge-widget": "0.1.4"
   },
   "changesets": [
+    "chilled-lizards-compare",
     "metal-steaks-drive",
     "polite-monkeys-share",
     "rare-grapes-act",
-    "sixty-scissors-protect"
+    "sixty-scissors-protect",
+    "slimy-clocks-rule",
+    "tasty-pianos-raise"
   ]
 }

@@ -1,5 +1,5 @@
 import { Flex, useColorMode, useIntl, useTheme, Text, Typography, Box } from '@bnb-chain/space';
-import { TickIcon, WarningTriangleSolidIcon, InfoCircleIcon } from '@bnb-chain/icons';
+import { TickIcon, InfoCircleIcon } from '@bnb-chain/icons';
 import { useEffect, useRef } from 'react';
 
 import { IconImage } from '@/core/components/IconImage';
@@ -13,6 +13,8 @@ import { useFromChains } from '@/modules/aggregator/hooks/useFromChains';
 import { useAggregator } from '@/modules/aggregator/components/AggregatorProvider';
 import { TransferToIcon } from '@/core/components/icons/TransferToIcon';
 import { SwitchNetworkButton } from '@/modules/transfer/components/Button/SwitchNetworkButton';
+import { WarningIcon } from '@/core/components/icons/WarningIcon.tsx';
+import { SwitchWalletButton } from '@/modules/transfer/components/Button/SwitchWalletButton';
 
 export function NetworkStatus() {
   const fromChain = useAppSelector((state) => state.transfer.fromChain);
@@ -22,7 +24,7 @@ export function NetworkStatus() {
   const theme = useTheme();
   const { colorMode } = useColorMode();
 
-  const { chain, chainId, linkWallet } = useCurrentWallet();
+  const { chain, chainId, linkWallet, walletType } = useCurrentWallet();
   const fromChains = useFromChains();
 
   const { chainConfigs } = useAggregator();
@@ -71,7 +73,11 @@ export function NetworkStatus() {
         </Flex>
 
         <Box onClick={onClose} w={'100%'}>
-          <SwitchNetworkButton h={'40px'} mt={'16px'} fontSize={'14px'} />
+          {walletType !== fromChain?.chainType ? (
+            <SwitchWalletButton h={'40px'} mt={'16px'} fontSize={'14px'} />
+          ) : (
+            <SwitchNetworkButton h={'40px'} mt={'16px'} fontSize={'14px'} />
+          )}
         </Box>
       </Flex>
     </DropdownList>
@@ -85,14 +91,27 @@ export function NetworkStatus() {
         {({ isOpen, onClose }) => {
           return (
             <>
-              <DropdownButton isActive={isOpen} isWarning={true}>
-                <WarningTriangleSolidIcon
+              <DropdownButton isActive={isOpen} isWarning={isOpen}>
+                <WarningIcon
                   boxSize={'24px'}
                   color={theme.colors[colorMode].support.warning['3']}
                 />
                 <Flex flexDir="column" gap="0" alignItems="flex-start" textAlign="left">
-                  <Text fontSize="14px" noOfLines={1} fontWeight={500}>
+                  <Text
+                    fontSize="14px"
+                    noOfLines={1}
+                    fontWeight={500}
+                    display={{ base: 'none', md: 'block' }}
+                  >
                     {formatMessage({ id: 'wallet.network.unknown-network' })}
+                  </Text>
+                  <Text
+                    fontSize="14px"
+                    noOfLines={1}
+                    fontWeight={500}
+                    display={{ base: 'block', md: 'none' }}
+                  >
+                    {formatMessage({ id: 'wallet.network.unknown-network-mobile' })}
                   </Text>
                 </Flex>
               </DropdownButton>
@@ -113,9 +132,9 @@ export function NetworkStatus() {
       {({ isOpen, onClose }) => {
         return (
           <>
-            <DropdownButton isActive={isOpen} isWarning={isWrongNetwork}>
+            <DropdownButton isActive={isOpen} isWarning={isOpen && isWrongNetwork}>
               {isWrongNetwork ? (
-                <WarningTriangleSolidIcon
+                <WarningIcon
                   boxSize={'24px'}
                   color={theme.colors[colorMode].support.warning['3']}
                 />

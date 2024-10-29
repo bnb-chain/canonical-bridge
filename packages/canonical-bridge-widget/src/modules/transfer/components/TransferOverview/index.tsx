@@ -104,70 +104,77 @@ export function TransferOverview({ routeContentBottom }: { routeContentBottom?: 
     selectedToken && !!Number(sendValue) && toTokenInfo && options && !!options?.length;
 
   return (
-    <Flex flexDir="column" ml={['0', '0', '0', '24px']} gap={['12px', '12px', '12px', '24px']}>
-      <Collapse in={showRoute} animateOpacity>
-        <Box overflow={['auto', 'auto', 'auto', 'hidden']}>
-          <Box
-            position={'relative'}
-            borderRadius={'24px'}
-            py={['0', '0', '0', '24px']}
-            background={theme.colors[colorMode].background.route}
-            maxW={['auto', 'auto', 'auto', '384px']}
-            w={'100%'}
-          >
-            <Flex flexDir={'column'} gap={'12px'}>
-              <Flex
-                display={{ base: 'none', lg: 'flex' }}
-                justifyContent={'space-between'}
-                alignItems={'center'}
-                px={['0', '0', '0', '24px']}
-                color={theme.colors[colorMode].text.route.title}
-                fontSize={'14px'}
-                fontWeight={500}
-                h={'32px'}
-                sx={{
-                  svg: {
-                    w: '32px',
-                    h: '32px',
-                  },
-                }}
-              >
-                {formatMessage({ id: 'route.title' })}
-                {!options.length || isGlobalFeeLoading ? (
-                  <SkeletonCircle w={'32px'} h={'32px'} />
-                ) : !isBase ? (
-                  <RefreshingButton />
-                ) : null}
+    <Flex
+      flexDir="column"
+      gap={['12px', '12px', '12px', '24px']}
+      w={{ base: 'auto', lg: showRoute || !!routeContentBottom ? '408px' : 0 }}
+      transition={'width 0.15s'}
+    >
+      <Box ml={{ base: 0, lg: '24px' }}>
+        <Collapse in={!routeContentBottom ? true : showRoute} animateOpacity>
+          <Box overflow={['auto', 'auto', 'auto', 'hidden']}>
+            <Box
+              position={'relative'}
+              borderRadius={'24px'}
+              py={['0', '0', '0', '24px']}
+              background={theme.colors[colorMode].background.route}
+              maxW={['auto', 'auto', 'auto', '384px']}
+              w={'100%'}
+            >
+              <Flex flexDir={'column'} gap={'12px'}>
+                <Flex
+                  display={{ base: 'none', lg: 'flex' }}
+                  justifyContent={'space-between'}
+                  alignItems={'center'}
+                  px={['0', '0', '0', '24px']}
+                  color={theme.colors[colorMode].text.route.title}
+                  fontSize={'14px'}
+                  fontWeight={500}
+                  h={'32px'}
+                  sx={{
+                    svg: {
+                      w: '32px',
+                      h: '32px',
+                    },
+                  }}
+                >
+                  {formatMessage({ id: 'route.title' })}
+                  {!options.length || isGlobalFeeLoading ? (
+                    <SkeletonCircle w={'32px'} h={'32px'} />
+                  ) : !isBase ? (
+                    <RefreshingButton />
+                  ) : null}
+                </Flex>
+                <Box
+                  px={['0', '0', '0', '24px']}
+                  flex={1}
+                  overflow={'auto'}
+                  overscrollBehavior={'contain'}
+                  maxHeight={'698px'}
+                  w={['auto', 'auto', 'auto', '384px']}
+                >
+                  {!options || !options?.length || isGlobalFeeLoading ? (
+                    <Flex flexDir={'column'} gap={'12px'}>
+                      <RouteSkeleton />
+                      <RouteSkeleton />
+                      <RouteSkeleton />
+                    </Flex>
+                  ) : (
+                    <Flex
+                      flexDir={'column'}
+                      gap={'12px'}
+                      display={isGlobalFeeLoading ? 'none' : 'flex'}
+                    >
+                      {options?.map((bridge: ReactNode) => bridge)}
+                    </Flex>
+                  )}
+                </Box>
               </Flex>
-              <Box
-                px={['0', '0', '0', '24px']}
-                flex={1}
-                overflow={'auto'}
-                overscrollBehavior={'contain'}
-                maxHeight={'698px'}
-                w={['auto', 'auto', 'auto', '384px']}
-              >
-                {!options || !options?.length || isGlobalFeeLoading ? (
-                  <Flex flexDir={'column'} gap={'12px'}>
-                    <RouteSkeleton />
-                    <RouteSkeleton />
-                    <RouteSkeleton />
-                  </Flex>
-                ) : (
-                  <Flex
-                    flexDir={'column'}
-                    gap={'12px'}
-                    display={isGlobalFeeLoading ? 'none' : 'flex'}
-                  >
-                    {options?.map((bridge: ReactNode) => bridge)}
-                  </Flex>
-                )}
-              </Box>
-            </Flex>
+            </Box>
           </Box>
-        </Box>
-      </Collapse>
-      <Box>{routeContentBottom ? routeContentBottom : null}</Box>
+        </Collapse>
+        <Box>{routeContentBottom ? routeContentBottom : null}</Box>
+      </Box>
     </Flex>
   );
 }
