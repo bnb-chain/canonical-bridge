@@ -7,7 +7,6 @@ import {
   FlexProps,
   useIntl,
   InputGroup,
-  InputRightElement,
 } from '@bnb-chain/space';
 import { ChangeEvent, useRef, useState } from 'react';
 import { useEffect } from 'react';
@@ -15,8 +14,6 @@ import { useBytecode } from 'wagmi';
 
 import { setIsToAddressChecked, setToAccount } from '@/modules/transfer/action';
 import { useTronTransferInfo } from '@/modules/transfer/hooks/tron/useTronTransferInfo';
-import { ErrorIcon } from '@/core/components/icons/ErrorIcon';
-import { CorrectIcon } from '@/core/components/icons/CorrectIcon';
 import { useAppDispatch, useAppSelector } from '@/modules/store/StoreProvider';
 import { useTronContract } from '@/modules/aggregator/adapters/meson/hooks/useTronContract';
 import { ToAccountCheckBox } from '@/core/components/icons/ConfirmCheckIcon';
@@ -123,12 +120,6 @@ export function ToAccount(props: FlexProps) {
             borderColor: theme.colors[colorMode].text.danger,
           }}
         />
-        {(isInvalid || isAvailableAccount) && (
-          <InputRightElement h="100%" w="auto" pr={'16px'} pl={'8px'}>
-            {isInvalid && <ErrorIcon boxSize={'16px'} />}
-            {isAvailableAccount && !isInvalid && <CorrectIcon boxSize={'16px'} />}
-          </InputRightElement>
-        )}
       </InputGroup>
 
       {isInvalid && (
