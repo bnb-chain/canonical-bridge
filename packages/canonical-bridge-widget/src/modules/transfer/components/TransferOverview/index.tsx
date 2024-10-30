@@ -103,6 +103,7 @@ export function TransferOverview({ routeContentBottom }: { routeContentBottom?: 
   const showRoute =
     selectedToken && !!Number(sendValue) && toTokenInfo && options && !!options?.length;
 
+  const loading = !options || !options?.length || isGlobalFeeLoading;
   const content = (
     <Box
       position={'relative'}
@@ -146,17 +147,14 @@ export function TransferOverview({ routeContentBottom }: { routeContentBottom?: 
           maxHeight={'698px'}
           w={['auto', 'auto', 'auto', '384px']}
         >
-          {!options || !options?.length || isGlobalFeeLoading ? (
-            <Flex flexDir={'column'} gap={'12px'}>
-              <RouteSkeleton />
-              <RouteSkeleton />
-              <RouteSkeleton />
-            </Flex>
-          ) : (
-            <Flex flexDir={'column'} gap={'12px'} display={isGlobalFeeLoading ? 'none' : 'flex'}>
-              {options?.map((bridge: ReactNode) => bridge)}
-            </Flex>
-          )}
+          <Flex flexDir={'column'} gap={'12px'} display={loading ? 'flex' : 'none'}>
+            <RouteSkeleton />
+            <RouteSkeleton />
+            <RouteSkeleton />
+          </Flex>
+          <Flex flexDir={'column'} gap={'12px'} display={loading ? 'none' : 'flex'}>
+            {options?.map((bridge: ReactNode) => bridge)}
+          </Flex>
         </Box>
       </Flex>
     </Box>
