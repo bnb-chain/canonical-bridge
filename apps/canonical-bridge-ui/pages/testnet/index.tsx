@@ -5,7 +5,7 @@ import {
 } from '@bnb-chain/canonical-bridge-widget';
 
 import { en as messages } from '@/core/locales/en';
-import { useTestnetTransferConfig } from '@/token-config/testnet';
+import { useTestnetTransferConfig } from '@/token-config/testnet/useTestnetTransferConfig';
 import { testnetChains } from '@/token-config/testnet/testnetChains';
 import { Layout } from '@/core/components/Layout';
 import { dark } from '@/core/theme/dark';
