@@ -94,7 +94,12 @@ export const SendInput: React.FC = () => {
   return (
     <Flex flexDir={'column'} position={'relative'}>
       <Flex flexDir={'row'} justifyContent={'space-between'}>
-        <Box color={theme.colors[colorMode].input.title} fontSize={'14px'} fontWeight={400}>
+        <Box
+          color={theme.colors[colorMode].input.title}
+          fontSize={'14px'}
+          fontWeight={400}
+          lineHeight={'16px'}
+        >
           {formatMessage({ id: 'you.send.title' })}
         </Box>
         <MaxLink />

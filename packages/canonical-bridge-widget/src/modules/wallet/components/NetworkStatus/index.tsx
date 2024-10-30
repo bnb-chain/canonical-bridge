@@ -100,7 +100,11 @@ export function NetworkStatus() {
         {({ isOpen, onClose }) => {
           return (
             <>
-              <DropdownButton isActive={isOpen} isWarning={isOpen}>
+              <DropdownButton
+                bgColor={theme.colors[colorMode].layer[3].default}
+                isActive={isOpen}
+                isWarning={isOpen}
+              >
                 <WarningIcon
                   boxSize={'24px'}
                   color={theme.colors[colorMode].support.warning['3']}
@@ -141,7 +145,11 @@ export function NetworkStatus() {
       {({ isOpen, onClose }) => {
         return (
           <>
-            <DropdownButton isActive={isOpen} isWarning={isOpen && isWrongNetwork}>
+            <DropdownButton
+              bgColor={theme.colors[colorMode].layer[3].default}
+              isActive={isOpen}
+              isWarning={isOpen && isWrongNetwork}
+            >
               {isWrongNetwork ? (
                 <WarningIcon
                   boxSize={'24px'}

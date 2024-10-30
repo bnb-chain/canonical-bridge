@@ -1,6 +1,7 @@
 import {
   Box,
   Flex,
+  Typography,
   useBreakpointValue,
   useColorMode,
   useDisclosure,
@@ -51,17 +52,17 @@ export function TransferWidget() {
         position="relative"
       >
         {appearance.bridgeTitle && (
-          <Box
+          <Typography
+            variant={'heading'}
+            size={{ base: 'xs', md: 'sm' }}
             as="h1"
-            fontSize={{ base: '20px', md: '24px' }}
             fontWeight={500}
             textAlign={'center'}
-            lineHeight={{ base: 1.4, md: 1.333 }}
             borderBottom={{ base: 'none', md: `1px solid ${theme.colors[colorMode].border[2]}` }}
             pb={{ base: 0, md: '24px' }}
           >
             {appearance.bridgeTitle}
-          </Box>
+          </Typography>
         )}
 
         <NetWorkSection />

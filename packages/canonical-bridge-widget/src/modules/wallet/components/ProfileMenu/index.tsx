@@ -1,4 +1,4 @@
-import { Box, Center, Flex, useColorMode, useIntl, useTheme } from '@bnb-chain/space';
+import { Box, Center, Flex, Typography, useColorMode, useIntl, useTheme } from '@bnb-chain/space';
 import { DisconnectIcon } from '@bnb-chain/icons';
 import { useWalletKit } from '@node-real/walletkit';
 import { useMemo } from 'react';
@@ -10,6 +10,7 @@ import { Dropdown } from '@/modules/wallet/components/Dropdown/Dropdown';
 import { DropdownButton } from '@/modules/wallet/components/Dropdown/DropdownButton';
 import { DropdownList } from '@/modules/wallet/components/Dropdown/DropdownList';
 import { useCurrentWallet } from '@/modules/wallet/CurrentWalletProvider';
+import { WalletIcon } from '@/core/components/icons/WalletIcon';
 
 export const ProfileMenu = () => {
   const { formatMessage } = useIntl();
@@ -23,6 +24,7 @@ export const ProfileMenu = () => {
       {({ isOpen, onClose }) => (
         <>
           <DropdownButton
+            bgColor={theme.colors[colorMode].layer[3].default}
             isActive={isOpen}
             pl={{ base: '0', md: '12px' }}
             pr={{ base: '0', md: '16px' }}
@@ -52,7 +54,11 @@ export const ProfileMenu = () => {
                 {walletIcon}
               </Center>
             )}
-            <Box display={{ base: 'none', md: 'block' }}>{formatAppAddress({ address })}</Box>
+            <Box display={{ base: 'none', md: 'block' }}>
+              <Typography as={'span'} variant={'label'} size={'md'} fontWeight={500}>
+                {formatAppAddress({ address })}
+              </Typography>
+            </Box>
           </DropdownButton>
 
           <DropdownList overflowY="visible">
@@ -130,7 +136,7 @@ function useWalletIcon() {
     if (selectedWallet) {
       const { transparent: transparentLogos } = selectedWallet.logos ?? {};
       const transparentLogo = (transparentLogos as any)?.[colorMode] ?? transparentLogos;
-      return transparentLogo;
+      return transparentLogo || <WalletIcon />;
     }
 
     return null;
