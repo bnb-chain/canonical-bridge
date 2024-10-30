@@ -5,7 +5,7 @@ import {
 } from '@bnb-chain/canonical-bridge-widget';
 
 import { en as messages } from '@/core/locales/en';
-import { useTransferConfig } from '@/token-config/mainnet';
+import { useTransferConfig } from '@/token-config/mainnet/useTransferConfig';
 import { chains } from '@/token-config/mainnet/chains';
 import { Layout } from '@/core/components/Layout';
 import { env } from '@/core/env';
