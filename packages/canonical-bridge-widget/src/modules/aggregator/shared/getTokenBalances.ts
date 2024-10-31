@@ -1,34 +1,54 @@
 import { Address, Chain, createPublicClient, formatUnits, http } from 'viem';
 import { TronWeb } from 'tronweb';
+import * as SPLToken from '@solana/spl-token';
+import { Connection, PublicKey } from '@solana/web3.js';
+import { TOKEN_PROGRAM_ID } from '@solana/spl-token';
 
 import { ChainType, IBridgeToken } from '@/modules/aggregator/types';
 import { ERC20_TOKEN } from '@/core/contract/abi';
 import { isChainOrTokenCompatible } from '@/modules/aggregator/shared/isChainOrTokenCompatible';
+import { isSameAddress } from '@/core/utils/address';
 
 export async function getTokenBalances({
+  walletType,
   chainType,
   account,
   tokens,
   chain,
   tronWeb,
+  connection,
 }: {
+  walletType?: ChainType;
   chainType?: ChainType;
   account?: string;
   tokens?: IBridgeToken[];
   chain?: Chain;
   tronWeb?: TronWeb;
+  connection?: Connection;
 }) {
+  if (walletType !== chainType) return {};
+
+  const compatibleTokens = tokens?.filter((item) => isChainOrTokenCompatible(item));
+
+  if (chainType === 'solana') {
+    return await getSolanaTokenBalances({
+      account,
+      tokens: compatibleTokens,
+      connection,
+    });
+  }
+
   if (chainType === 'tron') {
     return await getTronTokenBalances({
       account,
-      tokens,
+      tokens: compatibleTokens,
       tronWeb,
     });
   }
   return await getEvmTokenBalances({
     account,
     chain,
-    tokens,
+    tokens: compatibleTokens,
   });
 }
 
@@ -51,8 +71,7 @@ async function getEvmTokenBalances({
       transport: http(),
     });
 
-    const compatibleTokens = tokens.filter((item) => isChainOrTokenCompatible(item));
-    const contracts = compatibleTokens.map((item) => ({
+    const contracts = tokens.map((item) => ({
       abi: ERC20_TOKEN,
       address: item.address as Address,
       functionName: 'balanceOf',
@@ -74,7 +93,7 @@ async function getEvmTokenBalances({
       const values = erc20TokensRes.value?.map((item) => item.result) ?? [];
 
       values.map((value, index) => {
-        const token = compatibleTokens[index];
+        const token = tokens[index];
 
         const symbol = token.displaySymbol?.toUpperCase();
         balances[symbol] =
@@ -134,6 +153,51 @@ async function getTronTokenBalances({
 
       balances[token.displaySymbol?.toUpperCase()] = formatUnits(BigInt(balance), token.decimals);
     }
+
+    return balances;
+  } catch (err) {
+    // eslint-disable-next-line no-console
+    console.log('[getTronTokenBalances] error:', err);
+    return {};
+  }
+}
+
+async function getSolanaTokenBalances({
+  account,
+  tokens,
+  connection,
+}: {
+  account?: string;
+  tokens?: IBridgeToken[];
+  connection?: Connection;
+}) {
+  try {
+    if (!account || !tokens?.length || !connection) {
+      return {};
+    }
+    const balances: Record<string, string | undefined> = {};
+
+    // https://stackoverflow.com/questions/69700173/solana-check-all-spl-token-balances-of-a-wallet
+    const res = await connection.getTokenAccountsByOwner(new PublicKey(account), {
+      programId: TOKEN_PROGRAM_ID,
+    });
+
+    res?.value?.forEach((e) => {
+      const accountInfo = SPLToken.AccountLayout.decode(e.account.data);
+
+      const token = tokens.find((t) => isSameAddress(t.address, accountInfo.mint.toBase58()));
+      if (token) {
+        balances[token.displaySymbol.toUpperCase()] = formatUnits(
+          accountInfo.amount,
+          token.decimals,
+        );
+      }
+    });
+
+    tokens.forEach((t) => {
+      const key = t.displaySymbol.toUpperCase();
+      balances[key] = balances[key] ?? '0';
+    });
 
     return balances;
   } catch (err) {

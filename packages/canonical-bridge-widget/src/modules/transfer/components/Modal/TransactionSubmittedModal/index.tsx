@@ -6,6 +6,7 @@ import { useAppDispatch } from '@/modules/store/StoreProvider';
 import { EXPLORER_URL } from '@/core/constants';
 import { setEstimatedAmount, setSendValue, setTransferActionInfo } from '@/modules/transfer/action';
 import { ExLinkIcon } from '@/core/components/icons/ExLinkIcon';
+import { useCurrentWallet } from '@/modules/wallet/CurrentWalletProvider';
 
 export function TransactionSubmittedModal(
   props: Omit<StateModalProps, 'title'> & { hash: string; chosenBridge: string },
@@ -15,7 +16,8 @@ export function TransactionSubmittedModal(
   const { formatMessage } = useIntl();
   const { chain } = useAccount();
 
-  const { address } = useAccount();
+  const { address } = useCurrentWallet();
+
   return (
     <StateModal
       title={formatMessage({ id: 'modal.submit.title' })}
