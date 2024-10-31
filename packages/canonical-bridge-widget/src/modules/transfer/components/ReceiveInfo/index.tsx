@@ -138,8 +138,16 @@ export const ReceiveInfo = ({ onOpen }: ReceiveInfoProps) => {
 
   const isHideSection = useMemo(() => {
     // no receive amount and some routes are displayed
-    return !Number(sendValue);
-  }, [sendValue]);
+    if (!Number(sendValue)) return true;
+    if (isGlobalFeeLoading) return false;
+    return (
+      !Number(sendValue) ||
+      (!isBase &&
+        estimatedAmount &&
+        !Object.values(estimatedAmount).every((element) => element === undefined) &&
+        !receiveAmt)
+    );
+  }, [sendValue, estimatedAmount, receiveAmt, isGlobalFeeLoading, isBase]);
 
   const isHideRouteButton = useMemo(() => {
     return (
