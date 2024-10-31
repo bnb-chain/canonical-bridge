@@ -18,6 +18,7 @@ export const useCBridgeSendMaxMin = (isDisabled = false) => {
     min: '0',
     max: '0',
   });
+
   useEffect(() => {
     (async () => {
       try {
@@ -29,7 +30,7 @@ export const useCBridgeSendMaxMin = (isDisabled = false) => {
           isDisabled ||
           !bridgeSDK?.cBridge
         ) {
-          return;
+          return setMinMaxSendAmt({ min: '0', max: '0' });
         }
         const { min, max } = await bridgeSDK.cBridge.getSendRange({
           bridgeAddress: bridgeAddress as `0x${string}`,

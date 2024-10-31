@@ -36,7 +36,7 @@ export const NoRouteFound = ({ onOpen }: NoRouteFoundProps) => {
       gap={'8px'}
       background={theme.colors[colorMode].receive.background}
       borderRadius={'8px'}
-      p={[0, 0, 0, '24px 16px']}
+      p={[0, 0, 0, '0 16px']}
     >
       <Flex justifyContent={'center'}>
         <RouteNotFoundIcon w={'40px'} h={'40px'} />

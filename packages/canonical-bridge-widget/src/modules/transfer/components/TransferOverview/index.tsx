@@ -8,7 +8,8 @@ import {
   useTheme,
   Collapse,
 } from '@bnb-chain/space';
-import { ReactNode, useEffect, useMemo } from 'react';
+import { ReactNode, useCallback, useEffect, useMemo, useRef } from 'react';
+import { debounce } from 'lodash';
 
 import {
   setEstimatedAmount,
@@ -43,6 +44,16 @@ export function TransferOverview({ routeContentBottom }: { routeContentBottom?: 
   const sendValue = useAppSelector((state) => state.transfer.sendValue);
   const estimatedAmount = useAppSelector((state) => state.transfer.estimatedAmount);
   const toTokenInfo = useAppSelector((state) => state.transfer.toToken);
+  const loadingBridgeFeesRef = useRef(loadingBridgeFees);
+  loadingBridgeFeesRef.current = loadingBridgeFees;
+
+  // todo fix it
+  const debounceLoadingFee = useCallback(
+    debounce(() => {
+      loadingBridgeFeesRef.current();
+    }, 600),
+    [],
+  );
 
   const debouncedSendValue = useDebounce(sendValue, DEBOUNCE_DELAY);
 
@@ -60,7 +71,7 @@ export function TransferOverview({ routeContentBottom }: { routeContentBottom?: 
       }
       dispatch(setIsGlobalFeeLoading(true));
       dispatch(setIsRefreshing(true));
-      loadingBridgeFees();
+      debounceLoadingFee();
       dispatch(setIsRefreshing(false));
     } else {
       dispatch(setIsGlobalFeeLoading(true));

@@ -1,5 +1,14 @@
-import { Box, Flex, useColorMode, useIntl, useTheme, Collapse } from '@bnb-chain/space';
-import { useEffect, useMemo } from 'react';
+import {
+  Box,
+  Flex,
+  useColorMode,
+  useIntl,
+  useTheme,
+  Collapse,
+  useBreakpointValue,
+} from '@bnb-chain/space';
+import { useCallback, useEffect, useMemo, useRef } from 'react';
+import { debounce } from 'lodash';
 
 import { useAppDispatch, useAppSelector } from '@/modules/store/StoreProvider';
 import { useGetReceiveAmount } from '@/modules/transfer/hooks/useGetReceiveAmount';
@@ -38,6 +47,16 @@ export const ReceiveInfo = ({ onOpen }: ReceiveInfoProps) => {
   const { formatMessage } = useIntl();
   const { loadingBridgeFees } = useLoadingBridgeFees();
   const dispatch = useAppDispatch();
+  const loadingBridgeFeesRef = useRef(loadingBridgeFees);
+  loadingBridgeFeesRef.current = loadingBridgeFees;
+
+  // todo fix it
+  const debounceLoadingFee = useCallback(
+    debounce(() => {
+      loadingBridgeFeesRef.current();
+    }, 600),
+    [],
+  );
 
   const transferActionInfo = useAppSelector((state) => state.transfer.transferActionInfo);
   const isGlobalFeeLoading = useAppSelector((state) => state.transfer.isGlobalFeeLoading);
@@ -45,6 +64,7 @@ export const ReceiveInfo = ({ onOpen }: ReceiveInfoProps) => {
   const selectedToken = useAppSelector((state) => state.transfer.selectedToken);
   const routeFees = useAppSelector((state) => state.transfer.routeFees);
   const estimatedAmount = useAppSelector((state) => state.transfer.estimatedAmount);
+  const isBase = useBreakpointValue({ base: true, lg: false }) ?? false;
 
   const receiveAmt = useMemo(() => {
     if (!Number(sendValue)) return null;
@@ -97,6 +117,7 @@ export const ReceiveInfo = ({ onOpen }: ReceiveInfoProps) => {
   const debouncedSendValue = useDebounce(sendValue, DEBOUNCE_DELAY);
 
   useEffect(() => {
+    if (!isBase) return;
     // On mobile
     if (sendValue === debouncedSendValue) {
       dispatch(setTransferActionInfo(undefined));
@@ -108,23 +129,17 @@ export const ReceiveInfo = ({ onOpen }: ReceiveInfoProps) => {
       }
       dispatch(setIsGlobalFeeLoading(true));
       dispatch(setIsRefreshing(true));
-      loadingBridgeFees();
+      debounceLoadingFee();
       dispatch(setIsRefreshing(false));
     } else {
       dispatch(setIsGlobalFeeLoading(true));
     }
-  }, [selectedToken, debouncedSendValue, dispatch, sendValue, loadingBridgeFees]);
+  }, [selectedToken, debouncedSendValue, dispatch, sendValue, loadingBridgeFees, isBase]);
 
   const isHideSection = useMemo(() => {
     // no receive amount and some routes are displayed
-    if (!Number(sendValue)) return true;
-    if (isGlobalFeeLoading) return false;
-    return (
-      estimatedAmount &&
-      Object.values(estimatedAmount).every((element) => element === undefined) &&
-      !receiveAmt
-    );
-  }, [sendValue, estimatedAmount, receiveAmt, isGlobalFeeLoading]);
+    return !Number(sendValue);
+  }, [sendValue]);
 
   const isHideRouteButton = useMemo(() => {
     return (
@@ -195,7 +210,7 @@ export const ReceiveInfo = ({ onOpen }: ReceiveInfoProps) => {
                     />
                   </Flex>
                 </>
-              ) : !receiveAmt && !isGlobalFeeLoading && !isHideSection ? (
+              ) : !receiveAmt && !isGlobalFeeLoading ? (
                 <NoRouteFound onOpen={onOpen} />
               ) : (
                 <ReceiveLoading />

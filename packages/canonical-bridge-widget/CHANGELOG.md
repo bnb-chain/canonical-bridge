@@ -1,5 +1,11 @@
 # @bnb-chain/canonical-bridge-widget
 
+## 0.3.2-alpha.16
+
+### Patch Changes
+
+- Update widge ui
+
 ## 0.3.2-alpha.15
 
 ### Patch Changes
