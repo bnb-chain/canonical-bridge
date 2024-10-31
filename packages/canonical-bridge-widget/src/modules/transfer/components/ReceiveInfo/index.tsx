@@ -121,7 +121,7 @@ export const ReceiveInfo = ({ onOpen }: ReceiveInfoProps) => {
     if (isGlobalFeeLoading) return false;
     return (
       estimatedAmount &&
-      !Object.values(estimatedAmount).every((element) => element === undefined) &&
+      Object.values(estimatedAmount).every((element) => element === undefined) &&
       !receiveAmt
     );
   }, [sendValue, estimatedAmount, receiveAmt, isGlobalFeeLoading]);
