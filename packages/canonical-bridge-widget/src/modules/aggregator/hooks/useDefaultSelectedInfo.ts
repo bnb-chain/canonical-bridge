@@ -1,16 +1,16 @@
 import { useEffect } from 'react';
-import { useAccount } from 'wagmi';
 
 import { useAppDispatch, useAppSelector } from '@/modules/store/StoreProvider';
 import { setSendValue } from '@/modules/transfer/action';
 import { useSelection } from '@/modules/aggregator/hooks/useSelection';
 import { useAggregator } from '@/modules/aggregator/components/AggregatorProvider';
+import { useCurrentWallet } from '@/modules/wallet/CurrentWalletProvider.tsx';
 
 export function useDefaultSelectedInfo() {
   const { isReady, defaultSelectedInfo } = useAggregator();
   const { selectDefault } = useSelection();
   const dispatch = useAppDispatch();
-  const { chainId } = useAccount();
+  const { chainId } = useCurrentWallet();
   const sendValue = useAppSelector((state) => state.transfer.sendValue);
 
   useEffect(() => {
