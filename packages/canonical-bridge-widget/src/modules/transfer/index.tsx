@@ -56,7 +56,7 @@ export function TransferWidget() {
             variant={'heading'}
             size={{ base: 'xs', md: 'sm' }}
             as="h1"
-            fontWeight={500}
+            fontWeight={700}
             textAlign={'center'}
             borderBottom={{ base: 'none', md: `1px solid ${theme.colors[colorMode].border[2]}` }}
             pb={{ base: 0, md: '24px' }}
