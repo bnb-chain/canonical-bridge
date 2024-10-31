@@ -58,58 +58,54 @@ export function WalletProvider(props: WalletProviderProps) {
     const tron = chainConfigs.find((e) => e.chainType === 'tron');
     const solana = chainConfigs.find((e) => e.chainType === 'solana');
 
-    const options: WalletKitConfig['options'] = {
-      useGridLayoutOnMobile: false,
-      gridLayoutThreshold: 10,
-      onClickWallet(wallet: BaseWallet) {
-        if (isMobile()) {
-          const isInDappBrowser = evmWallets.some((e) => e.isInstalled());
+    return {
+      options: {
+        useGridLayoutOnMobile: false,
+        gridLayoutThreshold: 10,
+        onClickWallet(wallet: BaseWallet) {
+          if (isMobile()) {
+            const isInDappBrowser = evmWallets.some((e) => e.isInstalled());
 
-          if (isInDappBrowser) {
-            // Some wallets will set `isMetaMask=true`
-            const counter = evmWallets.filter((e) => e.isInstalled()).length;
-            if (
-              (counter === 1 && wallet.isInstalled()) ||
-              (counter > 1 && wallet.isInstalled() && wallet.id !== 'metaMask')
-            ) {
-              return true;
-            } else {
-              onOpen();
-              return false;
+            if (isInDappBrowser) {
+              // Some wallets will set `isMetaMask=true`
+              const counter = evmWallets.filter((e) => e.isInstalled()).length;
+              if (
+                (counter === 1 && wallet.isInstalled()) ||
+                (counter > 1 && wallet.isInstalled() && wallet.id !== 'metaMask')
+              ) {
+                return true;
+              } else {
+                onOpen();
+                return false;
+              }
             }
           }
-        }
-        return true;
+          return true;
+        },
       },
-    };
-
-    const evmConfig: WalletKitConfig['evmConfig'] = defaultEvmConfig({
-      autoConnect: true,
-      initialChainId: 1,
-      walletConnectProjectId: bridgeConfig.wallet.walletConnectProjectId,
-      metadata: {
-        name: bridgeConfig.appName,
-      },
-      wallets: evmWallets,
-      chains: getEvmChains(chainConfigs),
-    });
-
-    const tronConfig: WalletKitConfig['tronConfig'] = defaultTronConfig({
-      autoConnect: true,
-      wallets: tronWallets,
-    });
-
-    const solanaConfig: WalletKitConfig['solanaConfig'] = defaultSolanaConfig({
-      autoConnect: true,
-      rpcUrl: solana!.rpcUrl,
-      wallets: solanaWallets,
-    });
-
-    return {
-      options,
-      evmConfig,
-      tronConfig: tron ? tronConfig : undefined,
-      solanaConfig: solana ? solanaConfig : undefined,
+      evmConfig: defaultEvmConfig({
+        autoConnect: true,
+        initialChainId: 1,
+        walletConnectProjectId: bridgeConfig.wallet.walletConnectProjectId,
+        metadata: {
+          name: bridgeConfig.appName,
+        },
+        wallets: evmWallets,
+        chains: getEvmChains(chainConfigs),
+      }),
+      tronConfig: tron
+        ? defaultTronConfig({
+            autoConnect: true,
+            wallets: tronWallets,
+          })
+        : undefined,
+      solanaConfig: solana
+        ? defaultSolanaConfig({
+            autoConnect: true,
+            rpcUrl: solana?.rpcUrl,
+            wallets: solanaWallets,
+          })
+        : undefined,
     };
   }, [bridgeConfig.appName, bridgeConfig.wallet.walletConnectProjectId, chainConfigs, onOpen]);
 
