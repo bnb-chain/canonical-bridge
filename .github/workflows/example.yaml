@@ -1,0 +1,61 @@
+name: Release example
+
+on:
+  push:
+    branches:
+      - example
+
+    paths:
+      - apps/canonical-bridge-ui/**
+      - packages/canonical-bridge-sdk/**
+      - packages/canonical-bridge-widget/**
+
+permissions:
+  contents: read
+
+jobs:
+  cicd:
+    if: github.repository == 'bnb-chain/canonical-bridge'
+    timeout-minutes: 30
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code repository
+        uses: actions/checkout@v4
+
+      - uses: ./.github/actions/setup
+        with:
+          npm-token: ${{ secrets.NPM_TOKEN }}
+
+      - name: Creating .env
+        shell: bash
+        run: |
+          cat << EOF > "./apps/canonical-bridge-ui/.env"
+            NEXT_PUBLIC_APP_NAME=$APP_NAME
+            NEXT_PUBLIC_BASE_PATH=$BASE_PATH
+            NEXT_PUBLIC_ASSET_PREFIX=$ASSET_PREFIX
+            NEXT_PUBLIC_SERVER_ENDPOINT=$SERVER_ENDPOINT
+            NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID=$WALLET_CONNECT_PROJECT_ID
+          EOF
+        env:
+          APP_NAME: canonical-bridge
+          BASE_PATH: /canonical-bridge
+          ASSET_PREFIX: /canonical-bridge
+          SERVER_ENDPOINT: ${{ vars.SERVER_ENDPOINT }}
+          WALLET_CONNECT_PROJECT_ID: ${{ vars.WALLET_CONNECT_PROJECT_ID }}
+
+      - name: Install & build
+        shell: bash
+        run: |
+          node common/scripts/install-run-rush.js install -t canonical-bridge-ui
+          node common/scripts/install-run-rush.js build -t canonical-bridge-ui
+
+      - name: Pushes to another repository
+        uses: cpina/github-action-push-to-another-repository@main
+        env:
+          API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
+        with:
+          source-directory: './apps/canonical-bridge-ui/dist'
+          destination-github-username: 'wenty22'
+          destination-repository-name: 'canonical-bridge'
+          user-email: github-actions[bot]@users.noreply.github.com
+          target-branch: main

@@ -1,35 +1,23 @@
 name: Release
 
 on:
-  pull_request:
-    types:
-      - closed
+  push:
     branches:
       - main
+
     paths:
       - .release/**
       - packages/canonical-bridge-sdk/**
       - packages/canonical-bridge-widget/**
 
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
+
 jobs:
-  pre-check:
-    runs-on: ubuntu-latest
-    if: github.repository == 'bnb-chain/canonical-bridge'
-    outputs:
-      codeowners: ${{ steps.codeowners.outputs.content }}
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Read codeowners
-        id: codeowners
-        uses: juliangruber/read-file-action@v1
-        with:
-          path: .github/CODEOWNERS
-
   cicd:
-    needs: [pre-check]
-    if: contains(needs.pre-check.outputs.codeowners, github.event.pull_request.merged_by.login)
+    if: github.repository == 'bnb-chain/canonical-bridge'
     timeout-minutes: 30
     runs-on: ubuntu-latest
     steps:
@@ -41,7 +29,6 @@ jobs:
           npm-token: ${{ secrets.NPM_TOKEN }}
 
       - name: Install & build
-        shell: bash
         run: |
           node .release/scripts/install.js
 
@@ -50,6 +37,11 @@ jobs:
 
           node common/scripts/install-run-rush.js install -t @bnb-chain/canonical-bridge-widget
           node common/scripts/install-run-rush.js build -t @bnb-chain/canonical-bridge-widget
+
+      - name: Get branch name
+        id: get-branch
+        run: |
+          echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
 
       - name: Create and publish versions
         uses: changesets/action@v1

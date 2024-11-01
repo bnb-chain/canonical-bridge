@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { ITransferConfig } from '@bnb-chain/canonical-bridge-widget';
 
-import mesonConfigTestnet from '@/data-testnet/meson/config.json';
+import mesonConfigTestnet from '@/token-config/testnet/meson/config.json';
 
 export function useTestnetTransferConfig() {
   const [transferConfig, setTransferConfig] = useState<ITransferConfig>();
