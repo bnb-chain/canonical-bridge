@@ -27,6 +27,8 @@ import { useGetNativeToken } from '@/modules/transfer/hooks/useGetNativeToken';
 import { useGetMesonFees } from '@/modules/aggregator/adapters/meson/hooks/useGetMesonFees';
 import { formatNumber } from '@/core/utils/number';
 
+let lastTime = Date.now();
+
 export const useLoadingBridgeFees = () => {
   const dispatch = useAppDispatch();
   const { preSelectRoute } = usePreSelectRoute();
@@ -84,6 +86,8 @@ export const useLoadingBridgeFees = () => {
     });
     try {
       const amount = parseUnits(debouncedSendValue, selectedToken.decimals);
+      const now = Date.now();
+      lastTime = now;
       const response = await bridgeSDK.loadBridgeFees({
         bridgeType: bridgeTypeList,
         fromChainId: fromChain.id,
@@ -126,6 +130,9 @@ export const useLoadingBridgeFees = () => {
         'API response deBridge[0], cBridge[1], stargate[2], layerZero[3], meson[4]',
         response,
       );
+      if (lastTime > now) {
+        return;
+      }
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const [debridgeEst, cbridgeEst, stargateEst, layerZeroEst, mesonEst] = response as any;
@@ -344,11 +351,11 @@ export const useLoadingBridgeFees = () => {
           preSelectRoute(response, highestValue.type as BridgeType);
         }
       }
+      dispatch(setIsGlobalFeeLoading(false));
       // eslint-disable-next-line
     } catch (error: any) {
       // eslint-disable-next-line no-console
       console.log(error, error.message);
-    } finally {
       dispatch(setIsGlobalFeeLoading(false));
     }
   }, [
