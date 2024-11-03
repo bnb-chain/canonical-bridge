@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { usePublicClient } from 'wagmi';
 import { formatUnits } from 'viem';
+import { useWhyDidYouUpdate } from 'ahooks';
 
 import { useAppSelector } from '@/modules/store/StoreProvider';
 import { useCBridgeTransferParams } from '@/modules/aggregator/adapters/cBridge/hooks/useCBridgeTransferParams';
@@ -19,6 +20,14 @@ export const useCBridgeSendMaxMin = (isDisabled = false) => {
     max: '0',
   });
 
+  useWhyDidYouUpdate('useWhyDidYouUpdate', {
+    selectedToken,
+    publicClient,
+    bridgeAddress,
+    isDisabled,
+    bridgeSDK: bridgeSDK?.cBridge,
+  });
+
   useEffect(() => {
     (async () => {
       try {
@@ -32,6 +41,7 @@ export const useCBridgeSendMaxMin = (isDisabled = false) => {
         ) {
           return setMinMaxSendAmt({ min: '0', max: '0' });
         }
+
         const { min, max } = await bridgeSDK.cBridge.getSendRange({
           bridgeAddress: bridgeAddress as `0x${string}`,
           tokenAddress: selectedToken?.address as `0x${string}`,
@@ -48,7 +58,15 @@ export const useCBridgeSendMaxMin = (isDisabled = false) => {
         console.log('error', error);
       }
     })();
-  }, [selectedToken, publicClient, bridgeAddress, isDisabled, bridgeSDK?.cBridge]);
+  }, [
+    selectedToken?.address,
+    selectedToken?.isPegged,
+    selectedToken?.decimals,
+    publicClient,
+    bridgeAddress,
+    isDisabled,
+    bridgeSDK?.cBridge,
+  ]);
 
   return {
     minMaxSendAmt,

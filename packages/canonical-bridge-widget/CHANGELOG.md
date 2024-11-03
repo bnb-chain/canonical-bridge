@@ -1,5 +1,11 @@
 # @bnb-chain/canonical-bridge-widget
 
+## 0.3.2-alpha.22
+
+### Patch Changes
+
+- Fix Cbridge send minmax multi call
+
 ## 0.3.2-alpha.21
 
 ### Patch Changes

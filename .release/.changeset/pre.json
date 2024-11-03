@@ -6,6 +6,7 @@
     "@bnb-chain/canonical-bridge-widget": "0.1.4"
   },
   "changesets": [
+    "big-ligers-stare",
     "chilled-lizards-compare",
     "cyan-boxes-judge",
     "dirty-shoes-tap",
