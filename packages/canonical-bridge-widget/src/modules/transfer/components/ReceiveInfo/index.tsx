@@ -7,8 +7,7 @@ import {
   Collapse,
   useBreakpointValue,
 } from '@bnb-chain/space';
-import { useCallback, useEffect, useMemo, useRef } from 'react';
-import { debounce } from 'lodash';
+import { useEffect, useMemo } from 'react';
 
 import { useAppDispatch, useAppSelector } from '@/modules/store/StoreProvider';
 import { useGetReceiveAmount } from '@/modules/transfer/hooks/useGetReceiveAmount';
@@ -47,16 +46,6 @@ export const ReceiveInfo = ({ onOpen }: ReceiveInfoProps) => {
   const { formatMessage } = useIntl();
   const { loadingBridgeFees } = useLoadingBridgeFees();
   const dispatch = useAppDispatch();
-  const loadingBridgeFeesRef = useRef(loadingBridgeFees);
-  loadingBridgeFeesRef.current = loadingBridgeFees;
-
-  // todo fix it
-  const debounceLoadingFee = useCallback(
-    debounce(() => {
-      loadingBridgeFeesRef.current();
-    }, 300),
-    [],
-  );
 
   const transferActionInfo = useAppSelector((state) => state.transfer.transferActionInfo);
   const isGlobalFeeLoading = useAppSelector((state) => state.transfer.isGlobalFeeLoading);
@@ -129,7 +118,7 @@ export const ReceiveInfo = ({ onOpen }: ReceiveInfoProps) => {
       }
       dispatch(setIsGlobalFeeLoading(true));
       dispatch(setIsRefreshing(true));
-      debounceLoadingFee();
+      loadingBridgeFees();
       dispatch(setIsRefreshing(false));
     } else {
       dispatch(setIsGlobalFeeLoading(true));

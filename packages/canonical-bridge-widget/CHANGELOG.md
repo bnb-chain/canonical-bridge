@@ -1,5 +1,11 @@
 # @bnb-chain/canonical-bridge-widget
 
+## 0.3.2-alpha.21
+
+### Patch Changes
+
+- Resolve multi loadingFee requst
+
 ## 0.3.2-alpha.20
 
 ### Patch Changes

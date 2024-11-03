@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useRef } from 'react';
 import { formatUnits, parseUnits } from 'viem';
 import { useAccount, useBalance, usePublicClient } from 'wagmi';
 import { BridgeType, DeBridgeCreateQuoteResponse } from '@bnb-chain/canonical-bridge-sdk';
@@ -40,11 +40,31 @@ export const useLoadingBridgeFees = () => {
     http: { deBridgeAccessToken },
   } = useBridgeConfig();
   const nativeToken = useGetNativeToken();
-  const { deBridgeFeeSorting } = useGetDeBridgeFees();
-  const { cBridgeFeeSorting, isAllowSendError } = useGetCBridgeFees();
-  const { stargateFeeSorting } = useGetStargateFees();
-  const { layerZeroFeeSorting } = useGetLayerZeroFees();
-  const { mesonFeeSorting } = useGetMesonFees();
+  const { deBridgeFeeSorting: _deBridgeFeeSorting } = useGetDeBridgeFees();
+  const deBridgeFeeSorting = useRef(_deBridgeFeeSorting);
+  deBridgeFeeSorting.current = _deBridgeFeeSorting;
+
+  const { cBridgeFeeSorting: _cBridgeFeeSorting, isAllowSendError: _isAllowSendError } =
+    useGetCBridgeFees();
+  const cBridgeFeeSorting = useRef(_cBridgeFeeSorting);
+  cBridgeFeeSorting.current = _cBridgeFeeSorting;
+
+  // todo ensure cbridge minmax range updates before loadingBridgeFees
+  const isAllowSendError = useRef(_isAllowSendError);
+  isAllowSendError.current = _isAllowSendError;
+
+  const { stargateFeeSorting: _stargateFeeSorting } = useGetStargateFees();
+  const stargateFeeSorting = useRef(_stargateFeeSorting);
+  stargateFeeSorting.current = _stargateFeeSorting;
+
+  const { layerZeroFeeSorting: _layerZeroFeeSorting } = useGetLayerZeroFees();
+  const layerZeroFeeSorting = useRef(_layerZeroFeeSorting);
+  layerZeroFeeSorting.current = _layerZeroFeeSorting;
+
+  const { mesonFeeSorting: _mesonFeeSorting } = useGetMesonFees();
+  const mesonFeeSorting = useRef(_mesonFeeSorting);
+  mesonFeeSorting.current = _mesonFeeSorting;
+
   const { formatMessage } = useIntl();
 
   const toToken = useAppSelector((state) => state.transfer.toToken);
@@ -54,11 +74,15 @@ export const useLoadingBridgeFees = () => {
   const toChain = useAppSelector((state) => state.transfer.toChain);
   const max_slippage = useAppSelector((state) => state.transfer.slippage);
 
+  // todo ensure nativeBalance updates before loadingBridgeFees
   const { data: nativeBalance } = useBalance({ address, chainId: fromChain?.id });
+  const nativeBalanceRef = useRef(nativeBalance);
+  nativeBalanceRef.current = nativeBalance;
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const publicClient = usePublicClient({ chainId: fromChain?.id }) as any;
   const debouncedSendValue = useDebounce(sendValue, DEBOUNCE_DELAY);
+
   const loadingBridgeFees = useCallback(async () => {
     dispatch(setRouteFees(undefined));
     if (!selectedToken || !fromChain || !toChain || !debouncedSendValue) {
@@ -174,7 +198,7 @@ export const useLoadingBridgeFees = () => {
             );
           }
         } else {
-          const feeSortingRes = await mesonFeeSorting(mesonEst.value.result);
+          const feeSortingRes = await mesonFeeSorting.current(mesonEst.value.result);
           const decimals = selectedToken?.meson?.raw?.decimals || 6;
           const receiveMesonAmt =
             parseUnits(debouncedSendValue, decimals) -
@@ -203,7 +227,7 @@ export const useLoadingBridgeFees = () => {
 
       // deBridge
       if (debridgeEst.status === 'fulfilled' && debridgeEst?.value) {
-        const feeSortingRes = await deBridgeFeeSorting(
+        const feeSortingRes = await deBridgeFeeSorting.current(
           debridgeEst.value as DeBridgeCreateQuoteResponse,
         );
         if (!feeSortingRes?.isFailedToGetGas) {
@@ -250,12 +274,12 @@ export const useLoadingBridgeFees = () => {
           } else {
             dispatch(setEstimatedAmount({ cBridge: cbridgeEst.value }));
 
-            const feeSortingRes = await cBridgeFeeSorting(cbridgeEst.value);
+            const feeSortingRes = await cBridgeFeeSorting.current(cbridgeEst.value);
             // Hide route on gas error
             if (feeSortingRes?.isFailedToGetGas) {
               dispatch(setEstimatedAmount({ cBridge: undefined }));
             }
-            if (!isAllowSendError && !feeSortingRes?.isFailedToGetGas) {
+            if (!isAllowSendError.current && !feeSortingRes?.isFailedToGetGas) {
               valueArr.push({
                 type: 'cBridge',
                 value: formatUnits(
@@ -278,7 +302,7 @@ export const useLoadingBridgeFees = () => {
 
       // stargate
       if (stargateEst.status === 'fulfilled' && stargateEst?.value) {
-        const feeSortingRes = await stargateFeeSorting(stargateEst.value);
+        const feeSortingRes = await stargateFeeSorting.current(stargateEst.value);
         // Hide route if we can not get gas fee.
         if (!feeSortingRes?.isFailedToGetGas) {
           dispatch(setEstimatedAmount({ stargate: toObject(stargateEst.value) }));
@@ -307,11 +331,11 @@ export const useLoadingBridgeFees = () => {
       // layerZero
       if (layerZeroEst.status === 'fulfilled' && layerZeroEst?.value) {
         const nativeFee = layerZeroEst?.value[0];
-        if (nativeBalance?.value && nativeBalance.value < Number(nativeFee)) {
+        if (nativeBalanceRef.current?.value && nativeBalanceRef.current.value < Number(nativeFee)) {
           dispatch(setRouteError({ layerZero: `Insufficient ${nativeToken} to cover native fee` }));
           dispatch(setEstimatedAmount({ layerZero: 'error' }));
         } else {
-          const feeSortingRes = await layerZeroFeeSorting(layerZeroEst.value);
+          const feeSortingRes = await layerZeroFeeSorting.current(layerZeroEst.value);
           if (!feeSortingRes?.isFailedToGetGas) {
             dispatch(
               setEstimatedAmount({
@@ -373,15 +397,7 @@ export const useLoadingBridgeFees = () => {
     max_slippage,
     bridgeSDK,
     deBridgeAccessToken,
-    nativeBalance?.value,
-    deBridgeFeeSorting,
-    cBridgeFeeSorting,
-    stargateFeeSorting,
-    layerZeroFeeSorting,
-    mesonFeeSorting,
-
     preSelectRoute,
-    isAllowSendError,
     nativeToken,
   ]);
 

@@ -12,7 +12,7 @@ export const CBridgeSendMaxMin = memo<CBridgeSendMaxMinProps>(function CBridgeSe
 
   useEffect(() => {
     dispatch(setCBridgeMaxMinSendAmt(cBridgeAllowedAmt));
-  }, [cBridgeAllowedAmt, dispatch]);
+  }, [cBridgeAllowedAmt.max, cBridgeAllowedAmt.min, dispatch]);
 
   return null;
 });
