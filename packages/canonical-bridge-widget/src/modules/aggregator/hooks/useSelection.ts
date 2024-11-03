@@ -19,8 +19,7 @@ import { useCurrentWallet } from '@/modules/wallet/CurrentWalletProvider';
 
 export function useSelection() {
   const { chainId } = useCurrentWallet();
-  const { getFromChains, getToChains, getTokens, getToToken, adapters, defaultSelectedInfo } =
-    useAggregator();
+  const { getFromChains, getToChains, getTokens, getToToken, adapters } = useAggregator();
 
   const fromChain = useAppSelector((state) => state.transfer.fromChain);
   const toChain = useAppSelector((state) => state.transfer.toChain);
@@ -128,7 +127,7 @@ export function useSelection() {
         bridgeTypes.map((item) => [item, { symbol: tokenSymbol }]),
       ) as any as IBridgeToken;
 
-      if (chainId && chainId !== defaultSelectedInfo.fromChainId) {
+      if (chainId) {
         const fromChains = getFromChains({});
         const chain = fromChains.find((chain) => chain.id === chainId);
         if (chain) {

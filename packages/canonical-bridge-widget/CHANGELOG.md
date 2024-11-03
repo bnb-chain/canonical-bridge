@@ -1,5 +1,11 @@
 # @bnb-chain/canonical-bridge-widget
 
+## 0.3.2-alpha.20
+
+### Patch Changes
+
+- Fix switch to ethereum token
+
 ## 0.3.2-alpha.19
 
 ### Patch Changes
