@@ -1,6 +1,5 @@
 import { memo, useEffect } from 'react';
 import { usePublicClient } from 'wagmi';
-import { useWhyDidYouUpdate } from 'ahooks';
 import { formatUnits } from 'viem';
 
 import { useAppDispatch, useAppSelector } from '@/modules/store/StoreProvider';
@@ -22,14 +21,6 @@ export const CBridgeSendMaxMin = memo<CBridgeSendMaxMinProps>(function CBridgeSe
   const publicClient = usePublicClient({ chainId: fromChain?.id }) as any;
   const selectedToken = useAppSelector((state) => state.transfer.selectedToken);
   const dispatch = useAppDispatch();
-
-  useWhyDidYouUpdate('useWhyDidYouUpdate', {
-    selectedToken,
-    publicClient,
-    bridgeAddress,
-    isDisabled,
-    bridgeSDK: bridgeSDK?.cBridge,
-  });
 
   useEffect(() => {
     (async () => {

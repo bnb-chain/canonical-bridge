@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { usePublicClient } from 'wagmi';
 import { formatUnits } from 'viem';
-import { useWhyDidYouUpdate } from 'ahooks';
 
 import { useAppSelector } from '@/modules/store/StoreProvider';
 import { useCBridgeTransferParams } from '@/modules/aggregator/adapters/cBridge/hooks/useCBridgeTransferParams';
@@ -18,14 +17,6 @@ export const useCBridgeSendMaxMin = (isDisabled = false) => {
   const [minMaxSendAmt, setMinMaxSendAmt] = useState<ICBridgeMaxMinSendAmt>({
     min: '0',
     max: '0',
-  });
-
-  useWhyDidYouUpdate('useWhyDidYouUpdate', {
-    selectedToken,
-    publicClient,
-    bridgeAddress,
-    isDisabled,
-    bridgeSDK: bridgeSDK?.cBridge,
   });
 
   useEffect(() => {
