@@ -3,10 +3,11 @@ import { useState } from 'react';
 
 export function NoNetworkIcon(props: IconProps) {
   const [id1] = useState('mask0_27267_116884_' + Date.now());
+  const [id2] = useState('clip0_27267_116884_' + Date.now());
 
   return (
     <Icon width="49px" height="48px" viewBox="0 0 49 48" fill="none" {...props}>
-      <g clipPath="url(#clip0_27267_116884)">
+      <g clipPath={`url(#${id2})`}>
         <rect x="0.5" width="48" height="48" rx="24" fill="#373943" />
         <mask id={id1} maskUnits="userSpaceOnUse" x="8" y="8" width="33" height="32">
           <rect x="8.5" y="8" width="32" height="32" fill="#D9D9D9" />
@@ -19,7 +20,7 @@ export function NoNetworkIcon(props: IconProps) {
         </g>
       </g>
       <defs>
-        <clipPath id="clip0_27267_116884">
+        <clipPath id={id2}>
           <rect width="48" height="48" fill="white" transform="translate(0.5)" />
         </clipPath>
       </defs>

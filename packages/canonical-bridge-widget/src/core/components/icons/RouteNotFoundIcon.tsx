@@ -3,6 +3,7 @@ import { useState } from 'react';
 
 export const RouteNotFoundIcon = (props: IconProps) => {
   const [id1] = useState('mask0_26136_34658_no_route_found_' + Date.now());
+  const [id2] = useState('clip0_26136_34658_' + Date.now());
 
   return (
     <Icon
@@ -13,7 +14,7 @@ export const RouteNotFoundIcon = (props: IconProps) => {
       xmlns="http://www.w3.org/2000/svg"
       {...props}
     >
-      <g id="icon" clipPath="url(#clip0_26136_34658)">
+      <g id="icon" clipPath={`url(#${id2})`}>
         <rect id="Rectangle 43671" width="40" height="40" rx="20" fill="#5C5F6A" />
         <g id="conversion_path_off">
           <mask
@@ -37,7 +38,7 @@ export const RouteNotFoundIcon = (props: IconProps) => {
         </g>
       </g>
       <defs>
-        <clipPath id="clip0_26136_34658">
+        <clipPath id={id2}>
           <rect width="40" height="40" fill="white" />
         </clipPath>
       </defs>
