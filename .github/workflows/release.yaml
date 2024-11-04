@@ -45,12 +45,11 @@ jobs:
           node common/scripts/install-run-rush.js build -t @bnb-chain/canonical-bridge-widget
 
       - name: CD .release
-        run: |
-          cd .release
+        run: pwd && ls -a && cd .release && pwd
 
       - name: Enter pre mode
         if: ${{steps.get-branch.outputs.branch == 'alpha'}}
-        run: pnpm ci:enter
+        run: pwd && pnpm ci:enter
 
       - name: Exit pre mode
         if: ${{steps.get-branch.outputs.branch == 'main'}}
