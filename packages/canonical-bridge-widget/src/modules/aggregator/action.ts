@@ -16,3 +16,7 @@ export const setIsLoadingTokenPrices = createAction<IAggregatorState['isLoadingT
 export const setIsLoadingTokenBalances = createAction<IAggregatorState['isLoadingTokenBalances']>(
   'aggregator/setIsLoadingTokenBalances',
 );
+
+export const setCBridgeMaxMinSendAmt = createAction<IAggregatorState['bridgeMaxMin']['cBridge']>(
+  'aggregator/setCBridgeMaxMinSendAmt',
+);

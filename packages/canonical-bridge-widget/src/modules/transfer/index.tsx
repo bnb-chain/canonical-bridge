@@ -1,6 +1,7 @@
 import {
   Box,
   Flex,
+  Typography,
   useBreakpointValue,
   useColorMode,
   useDisclosure,
@@ -32,7 +33,6 @@ export function TransferWidget() {
   return (
     <Flex
       flexDir={['column', 'column', 'column', 'row']}
-      gap={[]}
       w={['100%']}
       mb={['120px', '120px', '160px']}
       alignItems={['flex-start', 'flex-start', 'center', 'flex-start']}
@@ -52,17 +52,17 @@ export function TransferWidget() {
         position="relative"
       >
         {appearance.bridgeTitle && (
-          <Box
+          <Typography
+            variant={'heading'}
+            size={{ base: 'xs', md: 'sm' }}
             as="h1"
-            display={['none', 'none', 'block']}
-            fontSize={'24px'}
-            fontWeight={500}
+            fontWeight={700}
             textAlign={'center'}
-            borderBottom={`1px solid ${theme.colors[colorMode].border[2]}`}
-            pb={'24px'}
+            borderBottom={{ base: 'none', md: `1px solid ${theme.colors[colorMode].border[2]}` }}
+            pb={{ base: 0, md: '24px' }}
           >
             {appearance.bridgeTitle}
-          </Box>
+          </Typography>
         )}
 
         <NetWorkSection />
@@ -72,11 +72,12 @@ export function TransferWidget() {
         <Flex flexDir="column">
           <TransferButtonGroup />
         </Flex>
-        {isBase ? routeContentBottom : null}
+        <Box display={{ base: 'block', lg: 'none' }}>{routeContentBottom}</Box>
       </Flex>
-      {!isBase ? (
+      <Box display={{ base: 'none', lg: 'flex' }}>
         <TransferOverview routeContentBottom={routeContentBottom} />
-      ) : (
+      </Box>
+      {isBase && (
         <RoutesModal
           title={formatMessage({ id: 'route.title.select.routes' })}
           isOpen={isOpen}

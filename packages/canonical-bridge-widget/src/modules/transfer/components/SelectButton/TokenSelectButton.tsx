@@ -31,9 +31,10 @@ export function TokenSelectButton(props: SelectButtonProps) {
       p={'4px 8px 4px 4px'}
       justifyContent={'space-between'}
       gap={'8px'}
-      background={theme.colors[colorMode].button.select.background.default}
+      transition={'all .15s'}
+      background={theme.colors[colorMode].layer[4].default}
       _hover={{
-        background: theme.colors[colorMode].button.select.background.hover,
+        background: theme.colors[colorMode].layer[4].hover,
       }}
       color={theme.colors[colorMode].text.primary}
       {...restProps}

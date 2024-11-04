@@ -34,6 +34,8 @@ import { formatNumber } from '@/core/utils/number';
 import { useSolanaAccount } from '@/modules/wallet/hooks/useSolanaAccount';
 import { useSolanaTransferInfo } from '@/modules/transfer/hooks/solana/useSolanaTransferInfo';
 
+let lastTime = Date.now();
+
 export const useLoadingBridgeFees = () => {
   const dispatch = useAppDispatch();
   const { preSelectRoute } = usePreSelectRoute();
@@ -49,11 +51,31 @@ export const useLoadingBridgeFees = () => {
     http: { deBridgeAccessToken },
   } = useBridgeConfig();
   const nativeToken = useGetNativeToken();
-  const { deBridgeFeeSorting } = useGetDeBridgeFees();
-  const { cBridgeFeeSorting, isAllowSendError } = useGetCBridgeFees();
-  const { stargateFeeSorting } = useGetStargateFees();
-  const { layerZeroFeeSorting } = useGetLayerZeroFees();
-  const { mesonFeeSorting } = useGetMesonFees();
+  const { deBridgeFeeSorting: _deBridgeFeeSorting } = useGetDeBridgeFees();
+  const deBridgeFeeSorting = useRef(_deBridgeFeeSorting);
+  deBridgeFeeSorting.current = _deBridgeFeeSorting;
+
+  const { cBridgeFeeSorting: _cBridgeFeeSorting, isAllowSendError: _isAllowSendError } =
+    useGetCBridgeFees();
+  const cBridgeFeeSorting = useRef(_cBridgeFeeSorting);
+  cBridgeFeeSorting.current = _cBridgeFeeSorting;
+
+  // todo ensure cbridge minmax range updates before loadingBridgeFees
+  const isAllowSendError = useRef(_isAllowSendError);
+  isAllowSendError.current = _isAllowSendError;
+
+  const { stargateFeeSorting: _stargateFeeSorting } = useGetStargateFees();
+  const stargateFeeSorting = useRef(_stargateFeeSorting);
+  stargateFeeSorting.current = _stargateFeeSorting;
+
+  const { layerZeroFeeSorting: _layerZeroFeeSorting } = useGetLayerZeroFees();
+  const layerZeroFeeSorting = useRef(_layerZeroFeeSorting);
+  layerZeroFeeSorting.current = _layerZeroFeeSorting;
+
+  const { mesonFeeSorting: _mesonFeeSorting } = useGetMesonFees();
+  const mesonFeeSorting = useRef(_mesonFeeSorting);
+  mesonFeeSorting.current = _mesonFeeSorting;
+
   const { formatMessage } = useIntl();
 
   const toToken = useAppSelector((state) => state.transfer.toToken);
@@ -68,11 +90,15 @@ export const useLoadingBridgeFees = () => {
   const toAccountRef = useRef<string | undefined>(toAccount.address);
   toAccountRef.current = toAccount.address;
 
+  // todo ensure nativeBalance updates before loadingBridgeFees
   const { data: nativeBalance } = useBalance({ address, chainId: fromChain?.id });
+  const nativeBalanceRef = useRef(nativeBalance);
+  nativeBalanceRef.current = nativeBalance;
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const publicClient = usePublicClient({ chainId: fromChain?.id }) as any;
   const debouncedSendValue = useDebounce(sendValue, DEBOUNCE_DELAY);
+
   const loadingBridgeFees = useCallback(async () => {
     dispatch(setRouteFees(undefined));
     if (!selectedToken || !fromChain || !toChain || !debouncedSendValue) {
@@ -100,6 +126,8 @@ export const useLoadingBridgeFees = () => {
     });
     try {
       const amount = parseUnits(debouncedSendValue, selectedToken.decimals);
+      const now = Date.now();
+      lastTime = now;
       const response = await bridgeSDK.loadBridgeFees({
         bridgeType: bridgeTypeList,
         fromChainId: fromChain.id,
@@ -155,6 +183,9 @@ export const useLoadingBridgeFees = () => {
         'API response deBridge[0], cBridge[1], stargate[2], layerZero[3], meson[4]',
         response,
       );
+      if (lastTime > now) {
+        return;
+      }
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const [debridgeEst, cbridgeEst, stargateEst, layerZeroEst, mesonEst] = response as any;
@@ -196,7 +227,7 @@ export const useLoadingBridgeFees = () => {
             );
           }
         } else {
-          const feeSortingRes = await mesonFeeSorting(mesonEst.value.result);
+          const feeSortingRes = await mesonFeeSorting.current(mesonEst.value.result);
           const decimals = selectedToken?.meson?.raw?.decimals || 6;
           const receiveMesonAmt =
             parseUnits(debouncedSendValue, decimals) -
@@ -225,7 +256,7 @@ export const useLoadingBridgeFees = () => {
 
       // deBridge
       if (debridgeEst.status === 'fulfilled' && debridgeEst?.value) {
-        const feeSortingRes = await deBridgeFeeSorting(
+        const feeSortingRes = await deBridgeFeeSorting.current(
           debridgeEst.value as DeBridgeCreateQuoteResponse,
         );
         if (!feeSortingRes?.isFailedToGetGas) {
@@ -272,12 +303,12 @@ export const useLoadingBridgeFees = () => {
           } else {
             dispatch(setEstimatedAmount({ cBridge: cbridgeEst.value }));
 
-            const feeSortingRes = await cBridgeFeeSorting(cbridgeEst.value);
+            const feeSortingRes = await cBridgeFeeSorting.current(cbridgeEst.value);
             // Hide route on gas error
             if (feeSortingRes?.isFailedToGetGas) {
               dispatch(setEstimatedAmount({ cBridge: undefined }));
             }
-            if (!isAllowSendError && !feeSortingRes?.isFailedToGetGas) {
+            if (!isAllowSendError.current && !feeSortingRes?.isFailedToGetGas) {
               valueArr.push({
                 type: 'cBridge',
                 value: formatUnits(
@@ -300,7 +331,7 @@ export const useLoadingBridgeFees = () => {
 
       // stargate
       if (stargateEst.status === 'fulfilled' && stargateEst?.value) {
-        const feeSortingRes = await stargateFeeSorting(stargateEst.value);
+        const feeSortingRes = await stargateFeeSorting.current(stargateEst.value);
         // Hide route if we can not get gas fee.
         if (!feeSortingRes?.isFailedToGetGas) {
           dispatch(setEstimatedAmount({ stargate: toObject(stargateEst.value) }));
@@ -329,11 +360,11 @@ export const useLoadingBridgeFees = () => {
       // layerZero
       if (layerZeroEst.status === 'fulfilled' && layerZeroEst?.value) {
         const nativeFee = layerZeroEst?.value[0];
-        if (nativeBalance?.value && nativeBalance.value < Number(nativeFee)) {
+        if (nativeBalanceRef.current?.value && nativeBalanceRef.current.value < Number(nativeFee)) {
           dispatch(setRouteError({ layerZero: `Insufficient ${nativeToken} to cover native fee` }));
           dispatch(setEstimatedAmount({ layerZero: 'error' }));
         } else {
-          const feeSortingRes = await layerZeroFeeSorting(layerZeroEst.value);
+          const feeSortingRes = await layerZeroFeeSorting.current(layerZeroEst.value);
           if (!feeSortingRes?.isFailedToGetGas) {
             dispatch(
               setEstimatedAmount({
@@ -373,11 +404,11 @@ export const useLoadingBridgeFees = () => {
           preSelectRoute(response, highestValue.type as BridgeType);
         }
       }
+      dispatch(setIsGlobalFeeLoading(false));
       // eslint-disable-next-line
     } catch (error: any) {
       // eslint-disable-next-line no-console
       console.log(error, error.message);
-    } finally {
       dispatch(setIsGlobalFeeLoading(false));
     }
   }, [
@@ -399,15 +430,8 @@ export const useLoadingBridgeFees = () => {
     solanaAddress,
     isSolanaAvailableToAccount,
     formatMessage,
-    mesonFeeSorting,
-    deBridgeFeeSorting,
     getToDecimals,
-    cBridgeFeeSorting,
-    isAllowSendError,
-    stargateFeeSorting,
-    nativeBalance?.value,
     nativeToken,
-    layerZeroFeeSorting,
     preSelectRoute,
   ]);
 

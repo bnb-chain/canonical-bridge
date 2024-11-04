@@ -22,6 +22,11 @@ export const FeesInfo = ({ summary, breakdown, bridgeType, isError }: FeesInfoPr
       display={'inline-block'}
       lineHeight={'16px'}
       opacity={isError ? 0.5 : 1}
+      sx={{
+        '>svg': {
+          verticalAlign: '-3px',
+        },
+      }}
     >
       <FeesIcon w={'16px'} h={'16px'} mr={'4px'} />
       <Box

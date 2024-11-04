@@ -17,6 +17,7 @@ export const InfoTooltip = (props: InfoTooltipProps) => {
   const isBase = useBreakpointValue({ base: true, md: false }) ?? false;
   const { isOpen, onOpen, onToggle, onClose } = useDisclosure();
 
+  if (!restProps.label) return null;
   return (
     <Tooltip
       hasArrow

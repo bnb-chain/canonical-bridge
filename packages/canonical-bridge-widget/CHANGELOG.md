@@ -1,5 +1,161 @@
 # @bnb-chain/canonical-bridge-widget
 
+## 0.3.2-alpha.25
+
+### Patch Changes
+
+- Update icon element id
+
+## 0.3.2-alpha.24
+
+### Patch Changes
+
+- Fix svg icon mask duplicate id
+
+## 0.3.2-alpha.23
+
+### Patch Changes
+
+- Update widget ui
+
+## 0.3.2-alpha.22
+
+### Patch Changes
+
+- Fix Cbridge send minmax multi call
+
+## 0.3.2-alpha.21
+
+### Patch Changes
+
+- Resolve multi loadingFee requst
+
+## 0.3.2-alpha.20
+
+### Patch Changes
+
+- Fix switch to ethereum token
+
+## 0.3.2-alpha.19
+
+### Patch Changes
+
+- Update widget ui
+
+## 0.3.2-alpha.18
+
+### Patch Changes
+
+- Update widget
+
+## 0.3.2-alpha.17
+
+### Patch Changes
+
+- Update widget ui
+
+## 0.3.2-alpha.16
+
+### Patch Changes
+
+- Update widge ui
+
+## 0.3.2-alpha.15
+
+### Patch Changes
+
+- Update widget ui
+
+## 0.3.2-alpha.14
+
+### Patch Changes
+
+- Update widget ui
+
+## 0.3.2-alpha.13
+
+### Patch Changes
+
+- Update widget ui
+
+## 0.3.2-alpha.12
+
+### Patch Changes
+
+- Update widget ui
+
+## 0.3.2-alpha.11
+
+### Patch Changes
+
+- Update widget ui
+
+## 0.3.2-alpha.10
+
+### Patch Changes
+
+- Update widget ui
+
+## 0.3.2-alpha.9
+
+### Patch Changes
+
+- Update widget ui
+
+## 0.3.2-alpha.8
+
+### Patch Changes
+
+- Update widget ui
+
+## 0.3.2-alpha.7
+
+### Patch Changes
+
+- Update widget ui
+
+## 0.3.2-alpha.6
+
+### Patch Changes
+
+- Update widget ui
+
+## 0.3.2-alpha.5
+
+### Patch Changes
+
+- Update widget ui
+
+## 0.3.2-alpha.4
+
+### Patch Changes
+
+- Update widget ui
+
+## 0.3.2-alpha.3
+
+### Patch Changes
+
+- Update widget ui
+
+## 0.3.2-alpha.2
+
+### Patch Changes
+
+- Update widget ui
+
+## 0.3.2-alpha.1
+
+### Patch Changes
+
+- Fix input and checkbox style
+
+## 0.3.2-alpha.0
+
+### Patch Changes
+
+- Update ui
+
 ## 0.3.1
 
 ### Patch Changes

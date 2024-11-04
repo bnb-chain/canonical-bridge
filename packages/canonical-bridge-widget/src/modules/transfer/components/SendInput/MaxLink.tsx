@@ -53,7 +53,7 @@ export const MaxLink: React.FC = () => {
           cursor={!!balance ? 'pointer' : 'auto'}
           fontSize={'12px'}
           fontWeight={500}
-          pb={`1px`}
+          lineHeight={'16px'}
           transitionDuration="normal"
           sx={{
             '@media (hover:hover)': {
