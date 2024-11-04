@@ -44,16 +44,13 @@ jobs:
           node common/scripts/install-run-rush.js install -t @bnb-chain/canonical-bridge-widget
           node common/scripts/install-run-rush.js build -t @bnb-chain/canonical-bridge-widget
 
-      - name: CD .release
-        run: pwd && ls -a && cd .release && pwd
-
       - name: Enter pre mode
         if: ${{steps.get-branch.outputs.branch == 'alpha'}}
-        run: pwd && pnpm ci:enter
+        run: cd .release && pnpm ci:enter
 
       - name: Exit pre mode
         if: ${{steps.get-branch.outputs.branch == 'main'}}
-        run: pnpm ci:exit
+        run: cd .release && pnpm ci:exit
 
       - name: Create and publish versions
         uses: changesets/action@v1
@@ -62,6 +59,7 @@ jobs:
           publish: pnpm ci:publish
           commit: 'chore: Update versions'
           title: 'chore: Update versions'
+          cwd: '.release'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
