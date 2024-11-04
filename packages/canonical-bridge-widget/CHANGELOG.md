@@ -1,5 +1,11 @@
 # @bnb-chain/canonical-bridge-widget
 
+## 0.3.3-alpha.0
+
+### Patch Changes
+
+- 71cc911: Test cicd
+
 ## 0.3.2
 
 ### Patch Changes
