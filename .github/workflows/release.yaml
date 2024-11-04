@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - alpha
 
     paths:
       - .release/**
@@ -24,6 +25,11 @@ jobs:
       - name: Checkout code repository
         uses: actions/checkout@v4
 
+      - name: Get branch name
+        id: get-branch
+        run: |
+          echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
+
       - uses: ./.github/actions/setup
         with:
           npm-token: ${{ secrets.NPM_TOKEN }}
@@ -38,19 +44,25 @@ jobs:
           node common/scripts/install-run-rush.js install -t @bnb-chain/canonical-bridge-widget
           node common/scripts/install-run-rush.js build -t @bnb-chain/canonical-bridge-widget
 
-      - name: Get branch name
-        id: get-branch
+      - name: CD .release
         run: |
-          echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
+          cd .release
+
+      - name: Enter pre mode
+        if: ${{steps.get-branch.outputs.branch == 'alpha'}}
+        run: pnpm ci:enter
+
+      - name: Exit pre mode
+        if: ${{steps.get-branch.outputs.branch == 'main'}}
+        run: pnpm ci:exit
 
       - name: Create and publish versions
         uses: changesets/action@v1
         with:
-          version: pnpm ci:stable-version
+          version: pnpm ci:version
           publish: pnpm ci:publish
           commit: 'chore: Update versions'
           title: 'chore: Update versions'
-          cwd: '.release'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
