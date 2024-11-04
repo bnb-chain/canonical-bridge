@@ -1,6 +1,10 @@
 import { Icon, IconProps } from '@bnb-chain/space';
+import { useState } from 'react';
 
 export function CBridgeIcon(props: IconProps) {
+  const [id1] = useState('mask0_1455_365_' + Date.now());
+  const [id2] = useState('mask1_1455_365_' + Date.now());
+
   return (
     <Icon
       width="440"
@@ -13,7 +17,7 @@ export function CBridgeIcon(props: IconProps) {
       <circle cx="89.8975" cy="187.751" r="70.8975" fill="#444444" />
       <circle cx="349.536" cy="187.751" r="70.8975" fill="#DDDDDD" />
       <mask
-        id="mask0_1455_365"
+        id={id1}
         style={{ maskType: 'alpha' }}
         maskUnits="userSpaceOnUse"
         x="44"
@@ -23,9 +27,9 @@ export function CBridgeIcon(props: IconProps) {
       >
         <rect x="44.8662" y="22" width="348.739" height="173.412" fill="#C4C4C4" />
       </mask>
-      <g mask="url(#mask0_1455_365)">
+      <g mask={`url(#${id1})`}>
         <mask
-          id="mask1_1455_365"
+          id={id2}
           style={{ maskType: 'alpha' }}
           maskUnits="userSpaceOnUse"
           x="46"
@@ -40,7 +44,7 @@ export function CBridgeIcon(props: IconProps) {
             fill="#E9BCFF"
           />
         </mask>
-        <g mask="url(#mask1_1455_365)">
+        <g mask={`url(#${id2})`}>
           <path
             d="M46.0176 197.92C46.0176 102.219 123.599 24.6375 219.3 24.6375C315.001 24.6375 392.582 102.219 392.582 197.92V504.033H46.0176V197.92Z"
             fill="#E9BCFF"

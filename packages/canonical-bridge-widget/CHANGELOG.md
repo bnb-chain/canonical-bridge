@@ -1,5 +1,11 @@
 # @bnb-chain/canonical-bridge-widget
 
+## 0.3.2-alpha.24
+
+### Patch Changes
+
+- Fix svg icon mask duplicate id
+
 ## 0.3.2-alpha.23
 
 ### Patch Changes

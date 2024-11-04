@@ -8,11 +8,11 @@ import { useCBridgeTransferParams } from '@/modules/aggregator/adapters/cBridge/
 import { useBridgeSDK } from '@/core/hooks/useBridgeSDK.ts';
 
 interface CBridgeSendMaxMinProps {
-  isDisabled: boolean;
+  isDisabled?: boolean;
 }
 
 export const CBridgeSendMaxMin = memo<CBridgeSendMaxMinProps>(function CBridgeSendMaxMin({
-  isDisabled,
+  isDisabled = false,
 }) {
   const { bridgeAddress } = useCBridgeTransferParams();
   const bridgeSDK = useBridgeSDK();
