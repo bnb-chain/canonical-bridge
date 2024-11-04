@@ -1,5 +1,6 @@
 import { createReducer } from '@/modules/store/createReducer';
 import * as actions from '@/modules/aggregator/action';
+import { ICBridgeMaxMinSendAmt } from '@/modules/aggregator/adapters/cBridge/types';
 export interface IAggregatorState {
   tokenPrices: {
     cmcPrices: Record<string, { price: number }>;
@@ -8,6 +9,9 @@ export interface IAggregatorState {
   tokenBalances: Record<string, string | undefined>;
   isLoadingTokenPrices: boolean;
   isLoadingTokenBalances: boolean;
+  bridgeMaxMin: {
+    cBridge: ICBridgeMaxMinSendAmt;
+  };
 }
 
 const initStates: IAggregatorState = {
@@ -18,6 +22,9 @@ const initStates: IAggregatorState = {
   tokenBalances: {},
   isLoadingTokenPrices: false,
   isLoadingTokenBalances: false,
+  bridgeMaxMin: {
+    cBridge: { max: '0', min: '0' },
+  },
 };
 
 export default createReducer(initStates, (builder) => {
@@ -42,5 +49,13 @@ export default createReducer(initStates, (builder) => {
   builder.addCase(actions.setIsLoadingTokenBalances, (state, { payload }) => ({
     ...state,
     isLoadingTokenBalances: payload,
+  }));
+
+  builder.addCase(actions.setCBridgeMaxMinSendAmt, (state, { payload }) => ({
+    ...state,
+    bridgeMaxMin: {
+      ...state.bridgeMaxMin,
+      cBridge: payload,
+    },
   }));
 });

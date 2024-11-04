@@ -5,7 +5,6 @@ import { useAccount } from 'wagmi';
 import { useAppDispatch, useAppSelector } from '@/modules/store/StoreProvider';
 import { useInputValidation } from '@/modules/transfer/hooks/useInputValidation';
 import { setError, setIsTransferable } from '@/modules/transfer/action';
-import { useCBridgeSendMaxMin } from '@/modules/aggregator/adapters/cBridge/hooks/useCBridgeSendMaxMin';
 import { useTokenBalance } from '@/modules/aggregator/hooks/useTokenBalance';
 
 export const InputValidationMessage = () => {
@@ -20,10 +19,9 @@ export const InputValidationMessage = () => {
   const selectedToken = useAppSelector((state) => state.transfer.selectedToken);
   const sendValue = useAppSelector((state) => state.transfer.sendValue);
   const estimatedAmount = useAppSelector((state) => state.transfer.estimatedAmount);
+  const minMaxSendAmt = useAppSelector((state) => state.aggregator.bridgeMaxMin.cBridge);
 
   const { getTokenBalance } = useTokenBalance();
-
-  const { minMaxSendAmt } = useCBridgeSendMaxMin();
 
   const [balanceInputError, setBalanceInputError] = useState<string>('');
 
@@ -54,7 +52,8 @@ export const InputValidationMessage = () => {
     sendValue,
     dispatch,
     estimatedAmount,
-    minMaxSendAmt,
+    minMaxSendAmt?.min,
+    minMaxSendAmt?.max,
     selectedToken?.decimals,
     selectedToken?.isPegged,
     transferActionInfo,

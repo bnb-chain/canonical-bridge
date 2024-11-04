@@ -56,7 +56,7 @@ export function SelectButton(props: SelectButtonProps) {
           }}
         >
           <Text fontSize={'16px'} lineHeight={'24px'} fontWeight={400}>
-            {chain?.name ?? 'Select Network'}
+            {chain?.name ?? ''}
           </Text>
         </Flex>
       </Flex>

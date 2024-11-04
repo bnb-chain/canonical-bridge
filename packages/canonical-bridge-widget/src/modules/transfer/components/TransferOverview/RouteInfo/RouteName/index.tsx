@@ -25,8 +25,15 @@ export const RouteName = React.memo(
     const receiveValue = getSortedReceiveAmount();
     const bestTimeRoute = useGetBestTime();
     const bestReturnRoute = getMaxValueKey(receiveValue);
+
     return (
-      <Flex flexDir={'row'} gap={'8px'} alignItems={'center'} opacity={isError ? 0.5 : 1}>
+      <Flex
+        minH={'24px'}
+        flexDir={'row'}
+        gap={'8px'}
+        alignItems={'center'}
+        opacity={isError ? 0.5 : 1}
+      >
         {bridgeType === 'cBridge' ? (
           <CBridgeIcon w={['16px', '16px', '16px', '20px']} h={['16px', '16px', '16px', '20px']} />
         ) : bridgeType === 'deBridge' ? (

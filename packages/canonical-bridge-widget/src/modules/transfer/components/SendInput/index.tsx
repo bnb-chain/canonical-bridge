@@ -1,5 +1,5 @@
 import { Box, Flex, Input, useColorMode, useDisclosure, useIntl, useTheme } from '@bnb-chain/space';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import { useAppDispatch, useAppSelector } from '@/modules/store/StoreProvider';
 import { setSendValue } from '@/modules/transfer/action';
@@ -85,10 +85,21 @@ export const SendInput: React.FC = () => {
     }, DEBOUNCE_DELAY);
   };
 
+  useEffect(() => {
+    if (isGlobalFeeLoading && sendValue === debouncedSendValue) {
+      setIsFocused(false);
+    }
+  }, [isGlobalFeeLoading, debouncedSendValue, sendValue]);
+
   return (
     <Flex flexDir={'column'} position={'relative'}>
       <Flex flexDir={'row'} justifyContent={'space-between'}>
-        <Box color={theme.colors[colorMode].input.title} fontSize={'14px'} fontWeight={400}>
+        <Box
+          color={theme.colors[colorMode].input.title}
+          fontSize={'14px'}
+          fontWeight={400}
+          lineHeight={'16px'}
+        >
           {formatMessage({ id: 'you.send.title' })}
         </Box>
         <MaxLink />

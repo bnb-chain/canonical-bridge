@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useMemo } from 'react';
 import { useAccount, useBalance, usePublicClient } from 'wagmi';
 import { formatUnits, parseUnits } from 'viem';
 import { useIntl } from '@bnb-chain/space';
@@ -32,35 +32,34 @@ export const useGetStargateFees = () => {
   const publicClient = usePublicClient({ chainId: fromChain?.id }) as any;
   const sendValue = useAppSelector((state) => state.transfer.sendValue);
   const estimatedAmount = useAppSelector((state) => state.transfer.estimatedAmount);
-  const [allowedSendAmount, setAllowedSendAmount] = useState<{ min: string; max: string } | null>(
-    null,
-  );
-  const [isAllowSendError, setIsAllowSendError] = useState(false);
 
   const { balance } = useGetTokenBalance({
     tokenAddress: selectedToken?.address as `0x${string}`,
   });
 
-  useEffect(() => {
+  const allowedSendAmount = useMemo(() => {
     if (estimatedAmount?.stargate && estimatedAmount?.stargate?.[0]) {
       const fees = estimatedAmount?.stargate;
       const decimal = selectedToken?.stargate?.raw?.decimals ?? (18 as number);
       const allowedMin = Number(formatUnits(fees[0].minAmountLD, decimal));
       const allowedMax = Number(formatUnits(fees[0].maxAmountLD, decimal));
-      setAllowedSendAmount({
+      return {
         min: formatNumber(allowedMin, 8),
         max: formatNumber(allowedMax, 8),
-      });
-      if (Number(sendValue) < allowedMin || Number(sendValue) > allowedMax) {
-        setIsAllowSendError(true);
-      } else {
-        setIsAllowSendError(false);
-      }
+      };
     }
-    return () => {
-      setAllowedSendAmount(null);
-      setIsAllowSendError(false);
-    };
+    return null;
+  }, [estimatedAmount?.stargate, selectedToken?.stargate?.raw?.decimals]);
+
+  const isAllowSendError = useMemo(() => {
+    if (estimatedAmount?.stargate && estimatedAmount?.stargate?.[0]) {
+      const fees = estimatedAmount?.stargate;
+      const decimal = selectedToken?.stargate?.raw?.decimals ?? (18 as number);
+      const allowedMin = Number(formatUnits(fees[0].minAmountLD, decimal));
+      const allowedMax = Number(formatUnits(fees[0].maxAmountLD, decimal));
+      return Number(sendValue) < allowedMin || Number(sendValue) > allowedMax;
+    }
+    return false;
   }, [estimatedAmount?.stargate, selectedToken?.stargate?.raw?.decimals, sendValue]);
 
   const stargateFeeSorting = useCallback(

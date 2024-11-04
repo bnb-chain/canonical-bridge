@@ -54,7 +54,7 @@ export const CBridgeOption = () => {
         }),
       );
     }
-  }, [dispatch, estimatedAmount]);
+  }, [dispatch, estimatedAmount?.['cBridge']?.estimated_receive_amt]);
 
   const isError = useMemo(
     () =>
