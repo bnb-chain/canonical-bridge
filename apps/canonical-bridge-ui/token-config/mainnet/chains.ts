@@ -44,6 +44,20 @@ export const chains: IChainConfig[] = [
     },
   },
   {
+    id: 25,
+    name: 'Cronos',
+    nativeCurrency: {
+      name: 'CRO',
+      symbol: 'CRO',
+      decimals: 18,
+    },
+    rpcUrl: 'https://evm.cronos.org',
+    explorer: {
+      name: 'Crono Scan',
+      url: 'https://cronoscan.com/',
+    },
+  },
+  {
     id: 44,
     name: 'Crab Network',
     nativeCurrency: {
@@ -213,6 +227,20 @@ export const chains: IChainConfig[] = [
     },
   },
   {
+    id: 223,
+    name: 'b2',
+    nativeCurrency: {
+      name: 'BTC',
+      symbol: 'BTC',
+      decimals: 18,
+    },
+    rpcUrl: 'https://rpc.bsquared.network',
+    explorer: {
+      name: 'B2 Network Explorer',
+      url: 'https://explorer.bsquared.network',
+    },
+  },
+  {
     id: 248,
     name: 'Oasys',
     nativeCurrency: {
@@ -238,6 +266,20 @@ export const chains: IChainConfig[] = [
     explorer: {
       name: 'ftmscan',
       url: 'https://ftmscan.com',
+    },
+  },
+  {
+    id: 255,
+    name: 'Kroma',
+    nativeCurrency: {
+      name: 'ETH',
+      symbol: 'ETH',
+      decimals: 18,
+    },
+    rpcUrl: 'https://api.kroma.network',
+    explorer: {
+      name: 'Kroma Scan',
+      url: 'https://kromascan.com',
     },
   },
   {
@@ -382,6 +424,20 @@ export const chains: IChainConfig[] = [
     },
   },
   {
+    id: 1116,
+    name: 'Core',
+    nativeCurrency: {
+      name: 'CORE',
+      symbol: 'CORE',
+      decimals: 18,
+    },
+    rpcUrl: 'https://rpc.coredao.org',
+    explorer: {
+      name: 'Core Explorer',
+      url: 'https://scan.coredao.org',
+    },
+  },
+  {
     id: 1284,
     name: 'Moonbeam',
     nativeCurrency: {
@@ -480,6 +536,48 @@ export const chains: IChainConfig[] = [
     },
   },
   {
+    id: 2525,
+    name: 'inEVM',
+    nativeCurrency: {
+      name: 'INJ',
+      symbol: 'INJ',
+      decimals: 18,
+    },
+    rpcUrl: 'https://mainnet.rpc.inevm.com/http',
+    explorer: {
+      name: 'inEVM Explorer',
+      url: 'https://explorer.inevm.com',
+    },
+  },
+  {
+    id: 2649,
+    name: 'AILayer',
+    nativeCurrency: {
+      name: 'BTC',
+      symbol: 'BTC',
+      decimals: 18,
+    },
+    rpcUrl: 'https://mainnet-rpc.ailayer.xyz',
+    explorer: {
+      name: 'AI Layer Explorer',
+      url: 'https://mainnet-explorer.ailayer.xyz',
+    },
+  },
+  {
+    id: 4200,
+    name: 'Merlin',
+    nativeCurrency: {
+      name: 'BTC',
+      symbol: 'BTC',
+      decimals: 18,
+    },
+    rpcUrl: 'https://rpc.merlinchain.io',
+    explorer: {
+      name: 'Merlin Scan',
+      url: 'https://scan.merlinchain.io',
+    },
+  },
+  {
     id: 5000,
     name: 'Mantle',
     nativeCurrency: {
@@ -491,6 +589,34 @@ export const chains: IChainConfig[] = [
     explorer: {
       name: 'Mantle Mainnet Explorer',
       url: 'https://explorer.mantle.xyz/',
+    },
+  },
+  {
+    id: 6001,
+    name: 'BB',
+    nativeCurrency: {
+      name: 'BB',
+      symbol: 'BB',
+      decimals: 18,
+    },
+    rpcUrl: 'https://fullnode-mainnet.bouncebitapi.com',
+    explorer: {
+      name: 'BB Scan',
+      url: 'https://bbscan.io',
+    },
+  },
+  {
+    id: 7000,
+    name: 'ZetaChain',
+    nativeCurrency: {
+      name: 'ZETA',
+      symbol: 'ZETA',
+      decimals: 18,
+    },
+    rpcUrl: 'https://zetachain-evm.blockpi.network:443/v1/rpc/public',
+    explorer: {
+      name: 'Zeta Chain Explorer',
+      url: 'https://explorer.zetachain.com/',
     },
   },
   {
@@ -565,6 +691,20 @@ export const chains: IChainConfig[] = [
     },
   },
   {
+    id: 11501,
+    name: 'BEVM',
+    nativeCurrency: {
+      name: 'BTC',
+      symbol: 'BTC',
+      decimals: 18,
+    },
+    rpcUrl: 'https://rpc-mainnet-1.bevm.io',
+    explorer: {
+      name: 'BEVM Explorer',
+      url: 'https://scan-mainnet.bevm.io',
+    },
+  },
+  {
     id: 13000,
     name: 'SPS',
     nativeCurrency: {
@@ -579,6 +719,34 @@ export const chains: IChainConfig[] = [
     },
   },
   {
+    id: 17777,
+    name: 'EOS EVM',
+    nativeCurrency: {
+      name: 'EOS',
+      symbol: 'EOS',
+      decimals: 18,
+    },
+    rpcUrl: 'https://api.evm.eosnetwork.com',
+    explorer: {
+      name: 'EOS EVM Explorer',
+      url: 'https://explorer.evm.eosnetwork.com',
+    },
+  },
+  {
+    id: 22776,
+    name: 'MAP Protocol',
+    nativeCurrency: {
+      name: 'MAPO',
+      symbol: 'MAPO',
+      decimals: 18,
+    },
+    rpcUrl: 'https://rpc.maplabs.io',
+    explorer: {
+      name: 'MAPO Scan',
+      url: 'https://maposcan.io',
+    },
+  },
+  {
     id: 23294,
     name: 'Oasis Sapphire',
     nativeCurrency: {
@@ -590,6 +758,20 @@ export const chains: IChainConfig[] = [
     explorer: {
       name: 'Oasis Sapphire Explorer',
       url: 'https://explorer.oasis.io/mainnet/sapphire',
+    },
+  },
+  {
+    id: 34443,
+    name: 'Mode',
+    nativeCurrency: {
+      name: 'ETH',
+      symbol: 'ETH',
+      decimals: 18,
+    },
+    rpcUrl: 'https://mainnet.mode.network',
+    explorer: {
+      name: 'Mode Explorer',
+      url: 'https://explorer.mode.network',
     },
   },
   {
@@ -649,6 +831,20 @@ export const chains: IChainConfig[] = [
     },
   },
   {
+    id: 42766,
+    name: 'ZKFair',
+    nativeCurrency: {
+      name: 'USDC',
+      symbol: 'USDC',
+      decimals: 18,
+    },
+    rpcUrl: 'https://rpc.zkfair.io',
+    explorer: {
+      name: 'Zkfair Scan',
+      url: 'https://scan.zkfair.io',
+    },
+  },
+  {
     id: 43114,
     name: 'Avalanche',
     nativeCurrency: {
@@ -674,6 +870,20 @@ export const chains: IChainConfig[] = [
     explorer: {
       name: 'rei-scan',
       url: 'https://scan.rei.network',
+    },
+  },
+  {
+    id: 48900,
+    name: 'Zircuit',
+    nativeCurrency: {
+      name: 'ETH',
+      symbol: 'ETH',
+      decimals: 18,
+    },
+    rpcUrl: 'https://zircuit-mainnet.drpc.org',
+    explorer: {
+      name: 'Zircuit Explorer',
+      url: 'https://explorer.zircuit.com',
     },
   },
   {
@@ -748,6 +958,20 @@ export const chains: IChainConfig[] = [
     },
   },
   {
+    id: 200901,
+    name: 'Bitlayer Mainnet',
+    nativeCurrency: {
+      name: 'BTC',
+      symbol: 'BTC',
+      decimals: 18,
+    },
+    rpcUrl: 'https://rpc.bitlayer.org',
+    explorer: {
+      name: 'Bitlayer Scan',
+      url: 'https://www.btrscan.com',
+    },
+  },
+  {
     id: 210425,
     name: 'PlatON',
     nativeCurrency: {
@@ -774,6 +998,48 @@ export const chains: IChainConfig[] = [
     explorer: {
       name: 'Scrollscan',
       url: 'https://scrollscan.com',
+    },
+  },
+  {
+    id: 60808,
+    name: 'BOB',
+    nativeCurrency: {
+      name: 'ETH',
+      symbol: 'ETH',
+      decimals: 18,
+    },
+    rpcUrl: 'https://rpc.gobob.xyz',
+    explorer: {
+      name: 'BOB Explorer',
+      url: 'https://explorer.gobob.xyz',
+    },
+  },
+  {
+    id: 810180,
+    name: 'zkLink',
+    nativeCurrency: {
+      name: 'ETH',
+      symbol: 'ETH',
+      decimals: 18,
+    },
+    rpcUrl: 'https://rpc.zklink.io',
+    explorer: {
+      name: 'ZKLink Explorer',
+      url: 'https://explorer.zklink.io',
+    },
+  },
+  {
+    id: 888888888,
+    name: 'Ancient8',
+    nativeCurrency: {
+      name: 'ETH',
+      symbol: 'ETH',
+      decimals: 18,
+    },
+    rpcUrl: 'https://rpc.ancient8.gg',
+    explorer: {
+      name: 'Ancient8 Scan',
+      url: 'https://scan.ancient8.gg',
     },
   },
   {
@@ -805,6 +1071,34 @@ export const chains: IChainConfig[] = [
     },
   },
   {
+    id: 1482601649,
+    name: 'SKALE Nebula Hub',
+    nativeCurrency: {
+      name: 'sFUEL',
+      symbol: 'sFUEL',
+      decimals: 18,
+    },
+    rpcUrl: 'https://mainnet.skalenodes.com/v1/green-giddy-denebola',
+    explorer: {
+      name: 'SKALE Nebula Explorer',
+      url: 'https://green-giddy-denebola.explorer.mainnet.skalenodes.com',
+    },
+  },
+  {
+    id: 1564830818,
+    name: 'SKALE Calypso',
+    nativeCurrency: {
+      name: 'sFUEL',
+      symbol: 'sFUEL',
+      decimals: 18,
+    },
+    rpcUrl: 'https://mainnet.skalenodes.com/v1/honorable-steel-rasalhague',
+    explorer: {
+      name: 'SKALE Calypso Hub Explorer',
+      url: 'https://honorable-steel-rasalhague.explorer.mainnet.skalenodes.com/',
+    },
+  },
+  {
     id: 1666600000,
     name: 'Harmony One',
     nativeCurrency: {
@@ -816,6 +1110,20 @@ export const chains: IChainConfig[] = [
     explorer: {
       name: 'Harmony Block Explorer',
       url: 'https://explorer.harmony.one',
+    },
+  },
+  {
+    id: 2046399126,
+    name: 'SKALE Europa Hub',
+    nativeCurrency: {
+      name: 'sFUEL',
+      symbol: 'sFUEL',
+      decimals: 18,
+    },
+    rpcUrl: 'https://mainnet.skalenodes.com/v1/elated-tan-skat',
+    explorer: {
+      name: 'SKALE Europa Hub Explorer',
+      url: 'https://elated-tan-skat.explorer.mainnet.skalenodes.com',
     },
   },
   {

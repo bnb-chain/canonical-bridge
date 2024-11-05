@@ -169,7 +169,7 @@ export function useTransferConfig() {
           config: mesonConfig.result as any,
           exclude: {
             chains: [],
-            tokens: {},
+            tokens: { 42161: ['SOL'] },
           },
           bridgedTokenGroups: [],
         },

@@ -1,5 +1,39 @@
 # @bnb-chain/canonical-bridge-widget
 
+## 0.3.2
+
+### Patch Changes
+
+- 743e39d: Fix Cbridge send minmax multi call
+- c80c95e: Update widget ui
+- c80c95e: Update widget ui
+- c80c95e: Update widget ui
+- c80c95e: Update widget ui
+- c80c95e: Update widget ui
+- c39d53e: Test cicd
+- cf6063a: Fix switch to ethereum token
+- c80c95e: Update widget ui
+- 8dc4f60: Fix input and checkbox style
+- c80c95e: Update widget
+- c80c95e: Update widget ui
+- 8b2bcfe: Fix svg icon mask duplicate id
+- 66ec1c0: Update unknown network title
+- d2c4330: Some ui updates & Header chain switch update
+- c80c95e: Update widget ui
+- ee4e63e: Resolve multi loadingFee requst
+- 0473c82: Update widget ui
+- c80c95e: Update widget ui
+- 3f1f337: Update icon element id
+- Update ui
+- c80c95e: Update widget ui
+- c80c95e: Update widge ui
+- aed642a: Update widget ui
+- c80c95e: Update widget ui
+- c80c95e: Update widget ui
+- c80c95e: Update widget ui
+- c80c95e: Update widget ui
+- c80c95e: Update widget ui
+
 ## 0.3.2-alpha.25
 
 ### Patch Changes
