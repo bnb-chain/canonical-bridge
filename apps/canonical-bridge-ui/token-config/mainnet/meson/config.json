@@ -1,35 +1,6 @@
 {
   "result": [
     {
-      "id": "ailayer",
-      "name": "AILayer",
-      "chainId": "0xa59",
-      "address": "0x25aB3Efd52e6470681CE037cD546Dc60726948D3",
-      "tokens": [
-        {
-          "id": "btc",
-          "addr": "0x0000000000000000000000000000000000000000",
-          "min": "0.0005",
-          "decimals": 18,
-          "max": "0.05"
-        },
-        {
-          "id": "usdc",
-          "addr": "0xfaBc451eA1Fd9707c6Ba1769F570E760101C7f22",
-          "min": "0.5",
-          "decimals": 18,
-          "max": "20000"
-        },
-        {
-          "id": "usdt",
-          "addr": "0x0663C09Bd0911181B39D66ec4bfAC9d89c8516BA",
-          "min": "0.5",
-          "decimals": 18,
-          "max": "20000"
-        }
-      ]
-    },
-    {
       "id": "ancient8",
       "name": "Ancient8",
       "chainId": "0x34fb5e38",
@@ -77,20 +48,6 @@
           "decimals": 8,
           "min": "0.00055",
           "max": "0.05"
-        },
-        {
-          "id": "sol",
-          "addr": "0x3647c54c4c2C65bC7a2D63c0Da2809B399DBBDC0",
-          "decimals": 18,
-          "min": "0.001",
-          "max": "2"
-        },
-        {
-          "id": "sol",
-          "addr": "0x346c574C56e1A4aAa8dc88Cda8F7EB12b39947aB",
-          "decimals": 18,
-          "min": "0.001",
-          "max": "2"
         }
       ]
     },
@@ -185,13 +142,6 @@
           "decimals": 18,
           "min": "0.001",
           "max": "2"
-        },
-        {
-          "id": "matic",
-          "addr": "0xc3ee2Df14B1Bc526c24ED802f1873d49664a0d5c",
-          "decimals": 18,
-          "min": "1.0",
-          "max": "20000"
         }
       ]
     },
@@ -214,13 +164,6 @@
           "addr": "0x0000000000000000000000000000000000000000",
           "decimals": 18,
           "max": "2"
-        },
-        {
-          "id": "btc",
-          "addr": "0xF469fBD2abcd6B9de8E169d128226C0Fc90a012e",
-          "decimals": 8,
-          "min": "0.0005",
-          "max": "0.05"
         }
       ]
     },
@@ -383,13 +326,6 @@
           "max": "20000"
         },
         {
-          "id": "bnb",
-          "addr": "0x0000000000000000000000000000000000000000",
-          "decimals": 18,
-          "min": "0.001",
-          "max": "2"
-        },
-        {
           "id": "btc",
           "addr": "0x7130d2A12B9BCbFAe4f2634d864A1Ee1Ce3Ead9c",
           "decimals": 18,
@@ -478,6 +414,13 @@
           "max": "20000"
         },
         {
+          "id": "btc",
+          "decimals": 8,
+          "addr": "0x8034ab88c3512246bf7894f57c834dddbd1de01f",
+          "min": "0.00055",
+          "max": "0.05"
+        },
+        {
           "id": "usdt",
           "addr": "0x900101d06A7426441Ae63e9AB3B9b0F63Be145F1",
           "decimals": 6,
@@ -563,20 +506,6 @@
           "decimals": 8,
           "min": "0.0006",
           "max": "0.05"
-        },
-        {
-          "id": "merl",
-          "addr": "0x0F3A12b78FEE11Ee088E454a0547BdBC5A253a6d",
-          "decimals": 18,
-          "min": "2.0",
-          "max": "20000"
-        },
-        {
-          "id": "btc",
-          "addr": "0x160025Ea66a26eCA9ea4042B22F618381fCB86Cb",
-          "decimals": 18,
-          "min": "0.0006",
-          "max": "0.05"
         }
       ]
     },
@@ -648,21 +577,6 @@
       ]
     },
     {
-      "id": "kroma",
-      "name": "Kroma",
-      "chainId": "0xff",
-      "address": "0x25aB3Efd52e6470681CE037cD546Dc60726948D3",
-      "tokens": [
-        {
-          "id": "eth",
-          "addr": "0x0000000000000000000000000000000000000000",
-          "decimals": 18,
-          "min": "0.001",
-          "max": "2"
-        }
-      ]
-    },
-    {
       "id": "linea",
       "name": "Linea",
       "chainId": "0xe708",
@@ -688,13 +602,6 @@
           "decimals": 18,
           "min": "0.001",
           "max": "2"
-        },
-        {
-          "id": "busd",
-          "addr": "0x17E7332300F6a1B3b14eDce9Ef9Bf582E32a00f4",
-          "decimals": 18,
-          "min": "1.0",
-          "max": "20000"
         }
       ]
     },
@@ -768,13 +675,6 @@
           "decimals": 6,
           "min": "1.5",
           "max": "20000"
-        },
-        {
-          "id": "merl",
-          "addr": "0x5c46bFF4B38dc1EAE09C5BAc65872a1D8bc87378",
-          "decimals": 18,
-          "min": "1.5",
-          "max": "20000"
         }
       ]
     },
@@ -819,13 +719,6 @@
           "decimals": 6,
           "min": "0.5",
           "max": "20000"
-        },
-        {
-          "id": "btc",
-          "addr": "0xCAbAE6f6Ea1ecaB08Ad02fE02ce9A44F09aebfA2",
-          "decimals": 8,
-          "min": "0.0005",
-          "max": "0.05"
         }
       ]
     },
@@ -862,13 +755,6 @@
           "decimals": 8,
           "min": "0.00055",
           "max": "0.05"
-        },
-        {
-          "id": "busd",
-          "addr": "0xeAa2b5F25a6DD61149B4bF37311209788394f9c4",
-          "decimals": 18,
-          "min": "1.5",
-          "max": "20000"
         }
       ]
     },
@@ -884,13 +770,6 @@
           "decimals": 18,
           "min": "1.0",
           "max": "20000"
-        },
-        {
-          "id": "bnb",
-          "addr": "0x0000000000000000000000000000000000000000",
-          "decimals": 18,
-          "min": "0.001",
-          "max": "2"
         }
       ]
     },
@@ -949,13 +828,6 @@
           "decimals": 8,
           "min": "0.00055",
           "max": "0.05"
-        },
-        {
-          "id": "pol",
-          "addr": "0x0000000000000000000000000000000000000000",
-          "decimals": 18,
-          "min": "1.0",
-          "max": "20000"
         }
       ]
     },
@@ -1007,20 +879,6 @@
           "decimals": 6,
           "min": "0.5",
           "max": "20000"
-        },
-        {
-          "id": "eth",
-          "addr": "0x59ab97Ee239e02112652587F9Ef86CB6F762983b",
-          "decimals": 18,
-          "min": "0.001",
-          "max": "2"
-        },
-        {
-          "id": "btc",
-          "addr": "0x98f7d76CfFaD0263Ddb30B10244C02530Ba704c4",
-          "decimals": 8,
-          "min": "0.0005",
-          "max": "0.05"
         }
       ]
     },
@@ -1043,20 +901,6 @@
           "decimals": 6,
           "min": "0.5",
           "max": "20000"
-        },
-        {
-          "id": "eth",
-          "addr": "0xD2Aaa00700000000000000000000000000000000",
-          "decimals": 18,
-          "min": "0.001",
-          "max": "2"
-        },
-        {
-          "id": "btc",
-          "addr": "0xcb011E86DF014a46F4e3AC3F3cbB114A4EB80870",
-          "decimals": 8,
-          "min": "0.0005",
-          "max": "0.05"
         }
       ]
     },
@@ -1072,20 +916,6 @@
           "decimals": 6,
           "min": "0.5",
           "max": "20000"
-        },
-        {
-          "id": "eth",
-          "addr": "0xaB01BAd2C86e24D371A13eD6367bdCa819589C5D",
-          "decimals": 18,
-          "min": "0.001",
-          "max": "2"
-        },
-        {
-          "id": "btc",
-          "addr": "0x64d2EebA8B02f2aB19e2238f1655A8409dB64817",
-          "decimals": 8,
-          "min": "0.0005",
-          "max": "0.05"
         }
       ]
     },
@@ -1185,21 +1015,6 @@
       ]
     },
     {
-      "id": "zircuit",
-      "name": "Zircuit",
-      "chainId": "0xbf04",
-      "address": "0x25aB3Efd52e6470681CE037cD546Dc60726948D3",
-      "tokens": [
-        {
-          "id": "eth",
-          "addr": "0x0000000000000000000000000000000000000000",
-          "decimals": 18,
-          "min": "0.001",
-          "max": "2"
-        }
-      ]
-    },
-    {
       "id": "zkevm",
       "name": "Polygon zkEVM",
       "chainId": "0x44d",
@@ -1276,6 +1091,20 @@
           "decimals": 18,
           "min": "0.001",
           "max": "2"
+        },
+        {
+          "id": "busd",
+          "addr": "0x7F934E97101e2239b9cB438A4B07d9474AD51406",
+          "decimals": 18,
+          "min": "1.0",
+          "max": "20000"
+        },
+        {
+          "id": "btc",
+          "decimals": 18,
+          "addr": "0x7118D8700B1b635CA37992294349Dc616fDC94Fe",
+          "min": "0.0005",
+          "max": "0.05"
         }
       ]
     },
