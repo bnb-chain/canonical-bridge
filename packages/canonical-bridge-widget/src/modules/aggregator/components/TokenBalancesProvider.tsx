@@ -11,7 +11,7 @@ import { useTronWeb } from '@/core/hooks/useTronWeb';
 import { useCurrentWallet } from '@/modules/wallet/CurrentWalletProvider';
 
 export function TokenBalancesProvider() {
-  const { address } = useCurrentWallet();
+  const { address, walletType } = useCurrentWallet();
   const chains = useChains();
   const tronWeb = useTronWeb();
 
@@ -30,6 +30,7 @@ export function TokenBalancesProvider() {
     queryKey: ['tokenBalances', address, fromChain?.id, toChain?.id],
     queryFn: async () => {
       const balances = await getTokenBalances({
+        walletType,
         chainType: fromChain?.chainType,
         account: address,
         tokens,

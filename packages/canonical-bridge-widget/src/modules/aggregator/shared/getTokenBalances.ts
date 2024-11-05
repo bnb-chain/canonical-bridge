@@ -1,34 +1,42 @@
 import { Address, Chain, createPublicClient, formatUnits, http } from 'viem';
 import { TronWeb } from 'tronweb';
+import axios from 'axios';
 
 import { ChainType, IBridgeToken } from '@/modules/aggregator/types';
 import { ERC20_TOKEN } from '@/core/contract/abi';
 import { isChainOrTokenCompatible } from '@/modules/aggregator/shared/isChainOrTokenCompatible';
+import { isSameAddress } from '@/core/utils/address';
 
 export async function getTokenBalances({
+  walletType,
   chainType,
   account,
   tokens,
   chain,
   tronWeb,
 }: {
+  walletType?: ChainType;
   chainType?: ChainType;
   account?: string;
   tokens?: IBridgeToken[];
   chain?: Chain;
   tronWeb?: TronWeb;
 }) {
+  if (walletType !== chainType) return {};
+
+  const compatibleTokens = tokens?.filter((item) => isChainOrTokenCompatible(item));
+
   if (chainType === 'tron') {
     return await getTronTokenBalances({
       account,
-      tokens,
+      tokens: compatibleTokens,
       tronWeb,
     });
   }
   return await getEvmTokenBalances({
     account,
     chain,
-    tokens,
+    tokens: compatibleTokens,
   });
 }
 
@@ -51,8 +59,7 @@ async function getEvmTokenBalances({
       transport: http(),
     });
 
-    const compatibleTokens = tokens.filter((item) => isChainOrTokenCompatible(item));
-    const contracts = compatibleTokens.map((item) => ({
+    const contracts = tokens.map((item) => ({
       abi: ERC20_TOKEN,
       address: item.address as Address,
       functionName: 'balanceOf',
@@ -74,7 +81,7 @@ async function getEvmTokenBalances({
       const values = erc20TokensRes.value?.map((item) => item.result) ?? [];
 
       values.map((value, index) => {
-        const token = compatibleTokens[index];
+        const token = tokens[index];
 
         const symbol = token.displaySymbol?.toUpperCase();
         balances[symbol] =
@@ -95,17 +102,11 @@ async function getEvmTokenBalances({
   }
 }
 
-const tronBalanceABI = [
-  {
-    constant: true,
-    inputs: [{ internalType: 'address', name: '', type: 'address' }],
-    name: 'balanceOf',
-    outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
-    payable: false,
-    stateMutability: 'view',
-    type: 'function',
-  },
-];
+interface ITronAccountToken {
+  balance: string;
+  tokenId: string;
+  tokenAbbr: string;
+}
 
 async function getTronTokenBalances({
   account,
@@ -120,20 +121,42 @@ async function getTronTokenBalances({
     if (!account || !tokens?.length || !tronWeb) {
       return {};
     }
-
     const balances: Record<string, string | undefined> = {};
 
-    for (let i = 0; i < Math.min(tokens.length, 2); i++) {
-      const token = tokens?.[i];
-      const tokenAddress = token.address;
+    const isTestnet = tronWeb.fullNode.host.includes('nile');
+    const endpoint = isTestnet
+      ? 'https://nileapi.tronscan.org/api'
+      : 'https://apilist.tronscan.org/api';
 
-      tronWeb.setAddress(token.address);
-      const contractInstance = await tronWeb.contract(tronBalanceABI, tokenAddress);
-      const balanceOf = await contractInstance.balanceOf(account).call();
-      const balance = balanceOf?.toString() as string;
+    const res = await axios<{ data: ITronAccountToken[] }>({
+      url: `${endpoint}/account/tokens`,
+      params: {
+        address: account,
+        start: 0,
+        limit: 50,
+      },
+    });
 
-      balances[token.displaySymbol?.toUpperCase()] = formatUnits(BigInt(balance), token.decimals);
-    }
+    const tokenInfos = res.data?.data ?? [];
+    tokenInfos.forEach((tokenInfo) => {
+      const token = tokens.find(
+        (t) =>
+          isSameAddress(t.address, tokenInfo.tokenId) ||
+          (t.displaySymbol.toUpperCase() === 'TRX' && tokenInfo.tokenId === '_'),
+      );
+
+      if (token) {
+        balances[token.displaySymbol.toUpperCase()] = formatUnits(
+          BigInt(tokenInfo.balance),
+          token.decimals,
+        );
+      }
+    });
+
+    tokens.forEach((t) => {
+      const key = t.displaySymbol.toUpperCase();
+      balances[key] = balances[key] ?? '0';
+    });
 
     return balances;
   } catch (err) {
