@@ -1,0 +1,11 @@
+{
+  "mode": "pre",
+  "tag": "alpha",
+  "initialVersions": {
+    "@bnb-chain/canonical-bridge-sdk": "0.3.2",
+    "@bnb-chain/canonical-bridge-widget": "0.3.2"
+  },
+  "changesets": [
+    "funny-olives-allow"
+  ]
+}

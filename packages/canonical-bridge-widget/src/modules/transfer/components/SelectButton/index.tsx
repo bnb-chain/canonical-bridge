@@ -19,9 +19,8 @@ export function SelectButton(props: SelectButtonProps) {
     <Button
       borderRadius={'8px'}
       flexShrink={0}
-      h={'64px'}
-      px={'16px'}
-      py={'12px'}
+      h={'48px'}
+      padding={'12px'}
       justifyContent={'space-between'}
       gap={'8px'}
       background={theme.colors[colorMode].input.background}
@@ -39,8 +38,12 @@ export function SelectButton(props: SelectButtonProps) {
       _active={{}}
       {...restProps}
     >
-      <Flex gap={'12px'} alignItems={'center'} position={'relative'} overflow="hidden">
-        <IconImage src={chain?.icon} fallbackBgColor={theme.colors[colorMode].support.primary[4]} />
+      <Flex gap={'8px'} alignItems={'center'} position={'relative'} overflow="hidden">
+        <IconImage
+          boxSize={'24px'}
+          src={chain?.icon}
+          fallbackBgColor={theme.colors[colorMode].support.primary[4]}
+        />
         <Flex
           flexDir={'column'}
           alignItems={'flex-start'}

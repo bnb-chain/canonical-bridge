@@ -18,6 +18,7 @@ import { useDefaultSelectedInfo } from '@/modules/aggregator/hooks/useDefaultSel
 import { RoutesModal } from '@/modules/transfer/components/TransferOverview/modal/RoutesModal';
 import { useBridgeConfig } from '@/CanonicalBridgeProvider';
 import { ToAccount } from '@/modules/transfer/components/ToAccount';
+import { SvgDefs } from '@/core/components/icons/defs.tsx';
 
 export function TransferWidget() {
   const { colorMode } = useColorMode();
@@ -31,61 +32,63 @@ export function TransferWidget() {
   const { appearance, routeContentBottom } = useBridgeConfig();
 
   return (
-    <Flex
-      flexDir={['column', 'column', 'column', 'row']}
-      w={['100%']}
-      mb={['120px', '120px', '160px']}
-      alignItems={['flex-start', 'flex-start', 'center', 'flex-start']}
-      justifyContent={'center'}
-    >
+    <>
+      <SvgDefs />
       <Flex
-        flexDir="column"
-        background={['none', 'none', theme.colors[colorMode].background.main]}
-        color={theme.colors[colorMode].text.primary}
-        boxShadow={['none', 'none', `0 ${'24px'} ${'64px'} 0 rgba(0, 0, 0, 0.48)`]}
-        borderRadius={'24px'}
-        px={['0', '0', '24px']}
-        py={['0', '0', '32px']}
-        w={'100%'}
-        maxW={['100%', '100%', '588px']}
-        gap={'24px'}
-        position="relative"
+        flexDir={['column', 'column', 'column', 'row']}
+        w={['100%']}
+        mb={['120px', '120px', '160px']}
+        alignItems={['flex-start', 'flex-start', 'center', 'flex-start']}
+        justifyContent={'center'}
       >
-        {appearance.bridgeTitle && (
-          <Typography
-            variant={'heading'}
-            size={{ base: 'xs', md: 'sm' }}
-            as="h1"
-            fontWeight={700}
-            textAlign={'center'}
-            borderBottom={{ base: 'none', md: `1px solid ${theme.colors[colorMode].border[2]}` }}
-            pb={{ base: 0, md: '24px' }}
-          >
-            {appearance.bridgeTitle}
-          </Typography>
-        )}
-
-        <NetWorkSection />
-        <SendInput />
-        <ToAccount />
-        <ReceiveInfo onOpen={onOpen} />
-        <Flex flexDir="column">
-          <TransferButtonGroup />
-        </Flex>
-        <Box display={{ base: 'block', lg: 'none' }}>{routeContentBottom}</Box>
-      </Flex>
-      <Box display={{ base: 'none', lg: 'flex' }}>
-        <TransferOverview routeContentBottom={routeContentBottom} />
-      </Box>
-      {isBase && (
-        <RoutesModal
-          title={formatMessage({ id: 'route.title.select.routes' })}
-          isOpen={isOpen}
-          onClose={onClose}
+        <Flex
+          flexDir="column"
+          background={['none', 'none', theme.colors[colorMode].layer[2].default]}
+          color={theme.colors[colorMode].text.primary}
+          boxShadow={['none', 'none', `0 ${'24px'} ${'64px'} 0 rgba(0, 0, 0, 0.48)`]}
+          borderRadius={'24px'}
+          px={['0', '0', '24px']}
+          py={['0', '0', '32px']}
+          w={'100%'}
+          maxW={['100%', '100%', '588px']}
+          gap={'24px'}
+          position="relative"
         >
-          <TransferOverview />
-        </RoutesModal>
-      )}
-    </Flex>
+          {appearance.bridgeTitle && (
+            <Typography
+              variant={'heading'}
+              size={{ base: 'xs', md: 'sm' }}
+              as="h1"
+              fontWeight={700}
+              textAlign={'center'}
+              mb={'-4px'}
+            >
+              {appearance.bridgeTitle}
+            </Typography>
+          )}
+
+          <NetWorkSection />
+          <SendInput />
+          <ToAccount />
+          <ReceiveInfo onOpen={onOpen} />
+          <Flex flexDir="column">
+            <TransferButtonGroup />
+          </Flex>
+          <Box display={{ base: 'block', lg: 'none' }}>{routeContentBottom}</Box>
+        </Flex>
+        <Box display={{ base: 'none', lg: 'flex' }}>
+          <TransferOverview routeContentBottom={routeContentBottom} />
+        </Box>
+        {isBase && (
+          <RoutesModal
+            title={formatMessage({ id: 'route.title.select.routes' })}
+            isOpen={isOpen}
+            onClose={onClose}
+          >
+            <TransferOverview />
+          </RoutesModal>
+        )}
+      </Flex>
+    </>
   );
 }
