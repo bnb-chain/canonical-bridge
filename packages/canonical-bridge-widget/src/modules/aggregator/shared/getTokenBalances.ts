@@ -1,5 +1,6 @@
 import { Address, Chain, createPublicClient, formatUnits, http } from 'viem';
 import { TronWeb } from 'tronweb';
+import axios from 'axios';
 import * as SPLToken from '@solana/spl-token';
 import { Connection, PublicKey } from '@solana/web3.js';
 import { TOKEN_PROGRAM_ID } from '@solana/spl-token';
@@ -114,17 +115,11 @@ async function getEvmTokenBalances({
   }
 }
 
-const tronBalanceABI = [
-  {
-    constant: true,
-    inputs: [{ internalType: 'address', name: '', type: 'address' }],
-    name: 'balanceOf',
-    outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
-    payable: false,
-    stateMutability: 'view',
-    type: 'function',
-  },
-];
+interface ITronAccountToken {
+  balance: string;
+  tokenId: string;
+  tokenAbbr: string;
+}
 
 async function getTronTokenBalances({
   account,
@@ -139,20 +134,42 @@ async function getTronTokenBalances({
     if (!account || !tokens?.length || !tronWeb) {
       return {};
     }
-
     const balances: Record<string, string | undefined> = {};
 
-    for (let i = 0; i < Math.min(tokens.length, 2); i++) {
-      const token = tokens?.[i];
-      const tokenAddress = token.address;
+    const isTestnet = tronWeb.fullNode.host.includes('nile');
+    const endpoint = isTestnet
+      ? 'https://nileapi.tronscan.org/api'
+      : 'https://apilist.tronscan.org/api';
 
-      tronWeb.setAddress(token.address);
-      const contractInstance = await tronWeb.contract(tronBalanceABI, tokenAddress);
-      const balanceOf = await contractInstance.balanceOf(account).call();
-      const balance = balanceOf?.toString() as string;
+    const res = await axios<{ data: ITronAccountToken[] }>({
+      url: `${endpoint}/account/tokens`,
+      params: {
+        address: account,
+        start: 0,
+        limit: 50,
+      },
+    });
 
-      balances[token.displaySymbol?.toUpperCase()] = formatUnits(BigInt(balance), token.decimals);
-    }
+    const tokenInfos = res.data?.data ?? [];
+    tokenInfos.forEach((tokenInfo) => {
+      const token = tokens.find(
+        (t) =>
+          isSameAddress(t.address, tokenInfo.tokenId) ||
+          (t.displaySymbol.toUpperCase() === 'TRX' && tokenInfo.tokenId === '_'),
+      );
+
+      if (token) {
+        balances[token.displaySymbol.toUpperCase()] = formatUnits(
+          BigInt(tokenInfo.balance),
+          token.decimals,
+        );
+      }
+    });
+
+    tokens.forEach((t) => {
+      const key = t.displaySymbol.toUpperCase();
+      balances[key] = balances[key] ?? '0';
+    });
 
     return balances;
   } catch (err) {
