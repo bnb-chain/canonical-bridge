@@ -59,12 +59,13 @@ export class CBridgeAdapter extends BaseAdapter<
   }
 
   protected initTokens() {
-    const { chain_token } = this.config;
+    const { chain_token, chains } = this.config;
 
     const tokenMap = new Map<number, ICBridgeToken[]>();
     const symbolMap = new Map<number, Map<string, ICBridgeToken>>();
     Object.entries(chain_token).forEach(([id, { token: chainTokens }]) => {
       const chainId = Number(id);
+      const nativeChain = chains.find((chain) => Number(chain.id) === Number(id));
 
       const filteredTokens = chainTokens.filter((token) => {
         const isEnabledToken = !token.token.xfer_disabled;
@@ -75,6 +76,28 @@ export class CBridgeAdapter extends BaseAdapter<
         });
         return isEnabledToken && !isExcludedToken;
       });
+
+      // Add native token info
+      if (nativeChain) {
+        filteredTokens.push({
+          token: {
+            symbol: nativeChain?.gas_token_symbol ?? '',
+            address: '0x0000000000000000000000000000000000000000',
+            decimal: 18,
+            xfer_disabled: false,
+          },
+          name: nativeChain?.gas_token_symbol,
+          icon: nativeChain?.icon,
+          inbound_lmt: '',
+          inbound_epoch_cap: '',
+          transfer_disabled: false,
+          liq_add_disabled: false,
+          liq_rm_disabled: false,
+          liq_agg_rm_src_disabled: false,
+          delay_threshold: '',
+          delay_period: 0,
+        });
+      }
 
       if (filteredTokens.length > 0 && this.chainMap.has(chainId)) {
         symbolMap.set(chainId, new Map<string, ICBridgeToken>());
