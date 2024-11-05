@@ -52,7 +52,21 @@ jobs:
         if: ${{steps.get-branch.outputs.branch == 'main'}}
         run: cd .release && pnpm ci:exit
 
+      - name: Create and publish alpha versions
+        if: steps.get-branch.outputs.branch == 'alpha'
+        uses: changesets/action@v1
+        with:
+          version: pnpm ci:alpha-version
+          publish: pnpm ci:publish
+          commit: 'chore: Update versions'
+          title: 'chore: Update versions'
+          cwd: '.release'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+
       - name: Create and publish versions
+        if: steps.get-branch.outputs.branch == 'main'
         uses: changesets/action@v1
         with:
           version: pnpm ci:version

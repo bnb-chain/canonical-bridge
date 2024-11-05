@@ -1,7 +1,8 @@
-import { isMobile, useWalletKit } from '@node-real/walletkit';
+import { BaseWallet, isMobile, useWalletKit } from '@node-real/walletkit';
 import { TronWallet, useTronWallet } from '@node-real/walletkit/tron';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { useAccount, useDisconnect } from 'wagmi';
+import { SolanaWallet, useSolanaWallet } from '@node-real/walletkit/solana';
 
 import { ChainType, IChainConfig } from '@/modules/aggregator';
 import { useAggregator } from '@/modules/aggregator/components/AggregatorProvider';
@@ -13,6 +14,10 @@ import { useWalletModal } from '@/modules/wallet/hooks/useWalletModal';
 import { useTronSwitchChain } from '@/modules/wallet/hooks/useTronSwitchChain';
 import { useAppDispatch } from '@/modules/store/StoreProvider';
 import { setIsOpenSwitchingTipsModal } from '@/modules/wallet/action';
+import { useSolanaAccount } from '@/modules/wallet/hooks/useSolanaAccount';
+import { useSolanaBalance } from '@/modules/wallet/hooks/useSolanaBalance';
+
+const KEY_LAST_CONNECTED_WALLET_TYPE = 'lastConnectedWalletType';
 
 export interface CurrentWalletContextProps {
   disconnect: () => void;
@@ -40,28 +45,27 @@ export function CurrentWalletProvider(props: CurrentWalletProviderProps) {
   const dispatch = useAppDispatch();
 
   const evmAccount = useAccount();
-  const evmBalance = useEvmBalance(evmAccount.address);
+  const evmBalance = useEvmBalance();
 
   const tronAccount = useTronAccount();
-  const tronBalance = useTronBalance(tronAccount.address);
+  const tronBalance = useTronBalance();
+
+  const solanaAccount = useSolanaAccount();
+  const solanaBalance = useSolanaBalance();
 
   const evmDisconnect = useDisconnect();
   const tronDisconnect = useTronWallet();
+  const solanaDisconnect = useSolanaWallet();
 
   const [walletType, setWalletType] = useState<ChainType>('evm');
-  const [isAutoConnect, setIsAutoConnect] = useState(true);
   useEffect(() => {
-    const timer = setTimeout(() => {
-      if (tronAccount.isConnected && isAutoConnect && !evmAccount.isConnected) {
-        setWalletType('tron');
-      }
-    }, 1000);
-    return () => {
-      clearTimeout(timer);
-    };
-  }, [evmAccount.isConnected, isAutoConnect, tronAccount.isConnected]);
+    const lastConnectedWalletType = localStorage.getItem(KEY_LAST_CONNECTED_WALLET_TYPE) || 'evm';
+    setWalletType(lastConnectedWalletType as ChainType);
+  }, []);
 
   const tronWalletId = useTronWalletId();
+  const solanaWalletId = useSolanaWalletId();
+
   const { chainConfigs } = useAggregator();
   const { onOpen } = useWalletModal();
 
@@ -88,7 +92,17 @@ export function CurrentWalletProvider(props: CurrentWalletProviderProps) {
     if (tronAccount.isConnected) {
       tronDisconnect.disconnect();
     }
-  }, [evmAccount.isConnected, evmDisconnect, tronAccount.isConnected, tronDisconnect]);
+    if (solanaAccount.isConnected) {
+      solanaDisconnect.disconnect();
+    }
+  }, [
+    evmAccount.isConnected,
+    evmDisconnect,
+    solanaAccount.isConnected,
+    solanaDisconnect,
+    tronAccount.isConnected,
+    tronDisconnect,
+  ]);
 
   const linkWallet = useCallback(
     async ({
@@ -98,7 +112,12 @@ export function CurrentWalletProvider(props: CurrentWalletProviderProps) {
       targetChainType?: ChainType;
       targetChainId?: number;
     }) => {
-      setIsAutoConnect(false);
+      const onConnected = ({ wallet }: { wallet: BaseWallet }) => {
+        const walletType = wallet.walletType as ChainType;
+
+        localStorage.setItem(KEY_LAST_CONNECTED_WALLET_TYPE, walletType);
+        setWalletType(walletType);
+      };
 
       if (targetChainType === 'evm') {
         if (walletType !== targetChainType || !evmAccount.isConnected) {
@@ -106,9 +125,7 @@ export function CurrentWalletProvider(props: CurrentWalletProviderProps) {
             evmConfig: {
               initialChainId: targetChainId,
             },
-            onConnected({ wallet }) {
-              setWalletType(wallet.walletType as ChainType);
-            },
+            onConnected,
           });
         } else if (targetChainId && evmAccount.chainId !== targetChainId) {
           switchEvmChain({
@@ -123,9 +140,7 @@ export function CurrentWalletProvider(props: CurrentWalletProviderProps) {
             tronConfig: {
               initialChainId: targetChainId,
             },
-            onConnected({ wallet }) {
-              setWalletType(wallet.walletType as ChainType);
-            },
+            onConnected,
           });
         } else if (targetChainId && tronAccount.chainId !== targetChainId) {
           if (isMobile()) {
@@ -137,12 +152,21 @@ export function CurrentWalletProvider(props: CurrentWalletProviderProps) {
           }
         }
       }
+
+      if (targetChainType === 'solana') {
+        if (walletType !== targetChainType || !solanaAccount.isConnected) {
+          onOpen({
+            onConnected,
+          });
+        }
+      }
     },
     [
       dispatch,
       evmAccount.chainId,
       evmAccount.isConnected,
       onOpen,
+      solanaAccount.isConnected,
       switchEvmChain,
       switchTronChain,
       tronAccount.chainId,
@@ -155,6 +179,7 @@ export function CurrentWalletProvider(props: CurrentWalletProviderProps) {
   const tronChain = chainConfigs.find(
     (e) => e.chainType === 'tron' && e.id === tronAccount.chainId,
   );
+  const solanaChain = chainConfigs.find((e) => e.chainType === 'solana');
 
   const commonProps = {
     disconnect,
@@ -174,6 +199,16 @@ export function CurrentWalletProvider(props: CurrentWalletProviderProps) {
       balance: tronBalance.data,
       chain: tronChain,
       chainId: tronAccount?.chainId,
+    };
+  } else if (walletType === 'solana') {
+    value = {
+      ...commonProps,
+      walletId: solanaWalletId,
+      isConnected: solanaAccount.isConnected,
+      address: solanaAccount.address,
+      balance: solanaBalance.data,
+      chain: solanaChain,
+      chainId: solanaAccount?.chainId,
     };
   } else {
     value = {
@@ -199,6 +234,17 @@ function useTronWalletId() {
   const { wallet } = useTronWallet();
 
   const target = (tronConfig?.wallets as TronWallet[])?.find(
+    (item) => item.adapterName === wallet?.adapter.name,
+  );
+
+  return target?.id;
+}
+
+function useSolanaWalletId() {
+  const { solanaConfig } = useWalletKit();
+  const { wallet } = useSolanaWallet();
+
+  const target = (solanaConfig?.wallets as SolanaWallet[])?.find(
     (item) => item.adapterName === wallet?.adapter.name,
   );
 

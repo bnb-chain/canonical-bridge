@@ -6,7 +6,6 @@ import { useIntl } from '@bnb-chain/space';
 
 import { formatNumber } from '@/core/utils/number';
 import { useAppDispatch, useAppSelector } from '@/modules/store/StoreProvider';
-import { useGetNativeToken } from '@/modules/transfer/hooks/useGetNativeToken';
 import { DeBridgeAdapter } from '@/modules/aggregator/adapters/deBridge/DeBridgeAdapter';
 import { formatFeeAmount } from '@/core/utils/string';
 import { useAdapter } from '@/modules/aggregator/hooks/useAdapter';
@@ -14,6 +13,8 @@ import { setRouteError, setRouteFees } from '@/modules/transfer/action';
 import { useToTokenInfo } from '@/modules/transfer/hooks/useToTokenInfo';
 import { useGetTokenBalance } from '@/core/contract/hooks/useGetTokenBalance';
 import { ERC20_TOKEN } from '@/core/contract/abi';
+import { useNativeCurrency } from '@/modules/aggregator/hooks/useNativeCurrency';
+import { useSolanaBalance } from '@/modules/wallet/hooks/useSolanaBalance';
 
 export interface IFeeDetails {
   value: string;
@@ -23,8 +24,6 @@ export interface IFeeDetails {
 export const useGetDeBridgeFees = () => {
   const dispatch = useAppDispatch();
   const deBridgeAdapter = useAdapter<DeBridgeAdapter>('deBridge');
-  const nativeToken = useGetNativeToken();
-  const { address, chain } = useAccount();
   const { formatMessage } = useIntl();
 
   const fromChain = useAppSelector((state) => state.transfer.fromChain);
@@ -32,7 +31,8 @@ export const useGetDeBridgeFees = () => {
   const sendValue = useAppSelector((state) => state.transfer.sendValue);
   const toChain = useAppSelector((state) => state.transfer.toChain);
 
-  const { data: nativeTokenBalance } = useBalance({
+  const { address, chain } = useAccount();
+  const { data: nativeEvmBalance } = useBalance({
     address: address as `0x${string}`,
     chainId: fromChain?.id,
   });
@@ -42,18 +42,28 @@ export const useGetDeBridgeFees = () => {
     tokenAddress: selectedToken?.address as `0x${string}`,
   });
 
+  const nativeCurrency = useNativeCurrency(fromChain?.id);
+  const { data: nativeSolanaBalance } = useSolanaBalance();
+
+  const nativeTokenBalance =
+    fromChain?.chainType === 'solana' ? nativeSolanaBalance : nativeEvmBalance;
+
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const publicClient = usePublicClient({ chainId: fromChain?.id }) as any;
 
   const deBridgeFeeSorting = useCallback(
     async (fees: DeBridgeCreateQuoteResponse) => {
+      const nativeToken = nativeCurrency?.symbol;
+      const nativeDecimals = nativeCurrency?.decimals ?? 18;
+
       const feeList: IFeeDetails[] = [];
       const feeBreakdown = [];
       let isFailedToGetGas = false;
       let isDisplayError = false;
+
       // protocol fee
       if (fees?.fixFee && nativeToken) {
-        const protocolFee = formatUnits(BigInt(fees?.fixFee), 18);
+        const protocolFee = formatUnits(BigInt(fees?.fixFee), nativeDecimals);
         feeList.push({
           symbol: nativeToken,
           value: protocolFee,
@@ -140,7 +150,13 @@ export const useGetDeBridgeFees = () => {
       const decimals = selectedToken?.deBridge?.raw?.decimals ?? (18 as number);
       const amount = parseUnits(sendValue, decimals);
       try {
-        if (chain && fromChain?.id === chain?.id && address && selectedToken?.address) {
+        if (
+          chain &&
+          fromChain?.id === chain?.id &&
+          address &&
+          selectedToken?.address &&
+          fromChain.chainType !== 'solana'
+        ) {
           let allowance = null;
           if (selectedToken?.address !== '0x0000000000000000000000000000000000000000') {
             allowance = await publicClient.readContract({
@@ -226,20 +242,23 @@ export const useGetDeBridgeFees = () => {
       };
     },
     [
-      nativeToken,
-      deBridgeAdapter,
-      formatMessage,
-      dispatch,
-      address,
-      publicClient,
-      balance,
-      nativeTokenBalance,
-      chain,
+      nativeCurrency?.symbol,
+      nativeCurrency?.decimals,
+      selectedToken?.deBridge?.raw?.decimals,
+      selectedToken?.deBridge?.raw?.address,
+      selectedToken?.address,
       sendValue,
+      dispatch,
+      formatMessage,
+      nativeTokenBalance,
+      deBridgeAdapter,
+      chain,
       fromChain,
-      selectedToken,
+      address,
       toChain,
       toTokenInfo,
+      balance,
+      publicClient,
     ],
   );
 
