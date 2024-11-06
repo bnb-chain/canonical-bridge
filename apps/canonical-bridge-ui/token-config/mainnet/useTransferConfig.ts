@@ -26,7 +26,7 @@ export function useTransferConfig() {
 
       const transferConfig: ITransferConfig = {
         defaultSelectedInfo: {
-          fromChainId: 1,
+          fromChainId: 7565164,
           toChainId: 56,
           tokenSymbol: 'USDT', // USDT
           amount: '',
@@ -170,7 +170,7 @@ export function useTransferConfig() {
           config: mesonConfig.result as any,
           exclude: {
             chains: [],
-            tokens: {},
+            tokens: { 42161: ['SOL'] },
           },
           bridgedTokenGroups: [],
         },
