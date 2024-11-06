@@ -6,6 +6,7 @@
     "@bnb-chain/canonical-bridge-widget": "0.3.2"
   },
   "changesets": [
+    "five-hotels-rule",
     "funny-olives-allow"
   ]
 }
