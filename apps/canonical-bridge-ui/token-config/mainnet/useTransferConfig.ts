@@ -47,6 +47,7 @@ export function useTransferConfig() {
             'AAVE',
             'LDO',
             'LINK',
+            'BTC',
             'BTCB',
             'WBTC',
             'sUSDe',
