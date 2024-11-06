@@ -26,7 +26,7 @@ export function useTransferConfig() {
 
       const transferConfig: ITransferConfig = {
         defaultSelectedInfo: {
-          fromChainId: 7565164,
+          fromChainId: 1,
           toChainId: 56,
           tokenSymbol: 'USDT', // USDT
           amount: '',
@@ -47,6 +47,7 @@ export function useTransferConfig() {
             'AAVE',
             'LDO',
             'LINK',
+            'BTC',
             'BTCB',
             'WBTC',
             'sUSDe',
@@ -169,7 +170,7 @@ export function useTransferConfig() {
           config: mesonConfig.result as any,
           exclude: {
             chains: [],
-            tokens: { 42161: ['SOL'] },
+            tokens: {},
           },
           bridgedTokenGroups: [],
         },
