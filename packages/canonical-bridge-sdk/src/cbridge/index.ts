@@ -156,13 +156,25 @@ export class CBridge {
         isNativeToken,
         transferType,
       });
-      const cBridgeArgs = {
-        address: bridgeAddress,
-        abi: ABI,
-        functionName,
-        account: address,
-        args,
-      };
+      let cBridgeArgs = null;
+      if (isNativeToken) {
+        cBridgeArgs = {
+          address: bridgeAddress,
+          abi: ABI,
+          functionName,
+          account: address,
+          args,
+          value: args[1],
+        };
+      } else {
+        cBridgeArgs = {
+          address: bridgeAddress,
+          abi: ABI,
+          functionName,
+          account: address,
+          args,
+        };
+      }
       const gas = await publicClient.estimateContractGas(cBridgeArgs as any);
       const gasPrice = await publicClient.getGasPrice();
       const hash = await walletClient.writeContract({

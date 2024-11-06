@@ -38,6 +38,7 @@ export interface ICBridgeToken {
   delay_period: number;
   method?: string;
   bridgeAddress?: string; //bridge address for transfer
+  weth_address?: string;
 }
 
 export interface ICBridgePeggedPairConfig {

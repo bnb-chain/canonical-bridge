@@ -1,4 +1,5 @@
 import { BridgeType } from '@bnb-chain/canonical-bridge-sdk';
+import { isAddress } from 'viem';
 
 import {
   ICBridgeBurnPairConfig,
@@ -77,15 +78,17 @@ export class CBridgeAdapter extends BaseAdapter<
         return isEnabledToken && !isExcludedToken;
       });
 
-      // Add native token info
+      // Add native token info.
       if (nativeChain) {
-        filteredTokens.push({
+        const weth_token = chainTokens.find((token) => token.token.symbol === 'WETH');
+        const nativeTokenObj = {
           token: {
             symbol: nativeChain?.gas_token_symbol ?? '',
             address: '0x0000000000000000000000000000000000000000',
             decimal: 18,
             xfer_disabled: false,
           },
+          weth_address: weth_token?.token.address,
           name: nativeChain?.gas_token_symbol,
           icon: nativeChain?.icon,
           inbound_lmt: '',
@@ -96,7 +99,16 @@ export class CBridgeAdapter extends BaseAdapter<
           liq_agg_rm_src_disabled: false,
           delay_threshold: '',
           delay_period: 0,
-        });
+        };
+        // The address of WETH (weth_address) is required for retrieving native token min/ max send amount
+        // https://cbridge-docs.celer.network/developer/cbridge-limit-parameters#id-1.-minsend-maxsend
+        if (
+          nativeChain?.gas_token_symbol === 'ETH' &&
+          isAddress(weth_token?.token?.address ?? '')
+        ) {
+          nativeTokenObj.weth_address = weth_token?.token.address;
+        }
+        filteredTokens.push(nativeTokenObj);
       }
 
       if (filteredTokens.length > 0 && this.chainMap.has(chainId)) {

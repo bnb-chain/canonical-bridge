@@ -14,6 +14,7 @@ import { useCurrentWallet } from '@/modules/wallet/CurrentWalletProvider';
 import { useTronTransferInfo } from '@/modules/transfer/hooks/tron/useTronTransferInfo';
 import { utf8ToHex } from '@/core/utils/string';
 import { useTronContract } from '@/modules/aggregator/adapters/meson/hooks/useTronContract';
+import { isNativeToken } from '@/core/utils/address';
 
 export function TransferButton({
   onOpenSubmittedModal,
@@ -164,6 +165,7 @@ export function TransferButton({
             bridgeAddress: transferActionInfo.bridgeAddress as string,
             fromChainId: fromChain?.id,
             isPegged: selectedToken.isPegged,
+            isNativeToken: isNativeToken(selectedToken.address),
             address,
             peggedConfig: selectedToken?.cBridge?.peggedConfig,
             args: cBridgeArgs.args,
