@@ -57,7 +57,7 @@ export const en = {
 
   'transfer.button.confirm': 'Send',
   'transfer.button.approve': 'Approve',
-  'transfer.button.switch-network': 'Switch Network',
+  'transfer.button.switch-network': 'Switch Network in Wallet',
   'transfer.button.wallet-connect': 'Connect Wallet',
   'transfer.button.switch-wallet': 'Switch Wallet',
 
@@ -96,6 +96,9 @@ export const en = {
   'select-modal.destination.incompatible.tooltip':
     'The token you’ve selected is incompatible with this network. Please select another token.',
 
+  'wallet.network.switch-network': 'Please switch the network',
+  'wallet.network.unknown-network': 'Unsupported Network',
+  'wallet.network.unknown-network-mobile': 'Network',
   'wallet.button.connect-wallet': 'Connect Wallet',
   'wallet.network.wrong-network': 'Wrong network',
   'wallet.error.switch-network':

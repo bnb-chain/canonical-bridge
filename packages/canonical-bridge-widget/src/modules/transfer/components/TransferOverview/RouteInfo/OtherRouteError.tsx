@@ -14,7 +14,16 @@ export const OtherRouteError = ({ bridgeType }: OtherRouteErrorProps) => {
 
   const routeError = useAppSelector((state) => state.transfer.routeError);
   return routeError && routeError[bridgeType] ? (
-    <Box position={'static'} color={theme.colors[colorMode].route.warning} lineHeight={'16px'}>
+    <Box
+      position={'static'}
+      color={theme.colors[colorMode].route.warning}
+      lineHeight={'16px'}
+      sx={{
+        '>svg': {
+          verticalAlign: '-3px',
+        },
+      }}
+    >
       <InfoCircleIcon display={'inline'} w={'16px'} h={'16px'} />
       <Box ml={'4px'} display={'inline'} lineHeight={'16px'} fontSize={'14px'} fontWeight={400}>
         {routeError[bridgeType]}

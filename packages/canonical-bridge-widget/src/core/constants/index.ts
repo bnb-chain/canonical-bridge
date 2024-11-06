@@ -13,6 +13,7 @@ export const STARGATE_QUEUE_URL = 'https://mainnet.stargate-api.com/v1/buses/bus
 
 export const DEFAULT_ADDRESS = '0x6836CbaCbBd1E798cC56802AC7d8BDf6Da0d0980';
 export const DEFAULT_TRON_ADDRESS = 'TTb3A6ASFejJuGcM1UVcRCJA23WGiJKSiY';
+export const DEFAULT_SOLANA_ADDRESS = 'J7JYXS8PMMBgfFKP1bqUu7mGgWyWUDL9xqfYujznc61r';
 
 export const nativeTokenMap = {
   1: 'ETH',
@@ -37,3 +38,5 @@ export const TIME = {
 };
 
 export const MIN_FEE = 0.0001;
+
+export const REFETCH_INTERVAL = 8 * 1000;

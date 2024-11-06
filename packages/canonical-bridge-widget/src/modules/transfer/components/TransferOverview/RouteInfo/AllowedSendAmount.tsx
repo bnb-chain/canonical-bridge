@@ -28,6 +28,11 @@ export const AllowedSendAmount = ({
       }
       lineHeight={'16px'}
       display={'inline-block'}
+      sx={{
+        '>svg': {
+          verticalAlign: '-3px',
+        },
+      }}
       {...otherProps}
     >
       <InfoCircleIcon display={'inline'} w={'16px'} h={'16px'} />

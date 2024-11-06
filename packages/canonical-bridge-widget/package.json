@@ -1,6 +1,6 @@
 {
   "name": "@bnb-chain/canonical-bridge-widget",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "canonical bridge widget",
   "author": "bnb-chain",
   "private": false,
@@ -45,7 +45,7 @@
     "@bnb-chain/space": "workspace:*",
     "@emotion/react": "~11.13.0",
     "@emotion/styled": "~11.13.0",
-    "@node-real/walletkit": "2.4.0-alpha.10",
+    "@node-real/walletkit": "2.4.1-alpha.0",
     "@tanstack/react-query": "~5.50.1",
     "@types/lodash": "~4.17.7",
     "@types/node": "^20",
@@ -75,6 +75,9 @@
     "wagmi": "~2.12.14"
   },
   "dependencies": {
+    "@solana/spl-token": "~0.4.9",
+    "@solana/wallet-adapter-react": "~0.15.35",
+    "@solana/web3.js": "~1.95.4",
     "tronweb": "~6.0.0"
   },
   "lint-staged": {

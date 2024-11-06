@@ -18,6 +18,7 @@ export const useCBridgeSendMaxMin = (isDisabled = false) => {
     min: '0',
     max: '0',
   });
+
   useEffect(() => {
     (async () => {
       try {
@@ -29,7 +30,7 @@ export const useCBridgeSendMaxMin = (isDisabled = false) => {
           isDisabled ||
           !bridgeSDK?.cBridge
         ) {
-          return;
+          return setMinMaxSendAmt({ min: '0', max: '0' });
         }
         const tokenAddress =
           selectedToken?.symbol === 'ETH'
@@ -51,7 +52,15 @@ export const useCBridgeSendMaxMin = (isDisabled = false) => {
         console.log('error', error);
       }
     })();
-  }, [selectedToken, publicClient, bridgeAddress, isDisabled, bridgeSDK?.cBridge]);
+  }, [
+    selectedToken?.address,
+    selectedToken?.isPegged,
+    selectedToken?.decimals,
+    publicClient,
+    bridgeAddress,
+    isDisabled,
+    bridgeSDK?.cBridge,
+  ]);
 
   return {
     minMaxSendAmt,

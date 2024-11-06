@@ -1,10 +1,10 @@
-import { Button, useColorMode, useIntl, useTheme } from '@bnb-chain/space';
+import { Button, useColorMode, useIntl, useTheme, ButtonProps } from '@bnb-chain/space';
 
 import { useAppSelector } from '@/modules/store/StoreProvider';
 import { reportEvent } from '@/core/utils/gtm';
 import { useCurrentWallet } from '@/modules/wallet/CurrentWalletProvider';
 
-export const SwitchNetworkButton = () => {
+export const SwitchNetworkButton = (props: ButtonProps) => {
   const { formatMessage } = useIntl();
 
   const fromChain = useAppSelector((state) => state.transfer.fromChain);
@@ -36,6 +36,7 @@ export const SwitchNetworkButton = () => {
           },
         });
       }}
+      {...props}
     >
       {formatMessage({ id: 'transfer.button.switch-network' })}
     </Button>
