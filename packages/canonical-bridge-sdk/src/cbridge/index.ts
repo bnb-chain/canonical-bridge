@@ -137,6 +137,7 @@ export class CBridge {
     fromChainId,
     address,
     isPegged,
+    isNativeToken,
     peggedConfig,
     args,
   }: ISendCBridgeToken): Promise<Hash> {
@@ -152,15 +153,28 @@ export class CBridge {
       });
       const functionName = this.getTransferFunction({
         isPegged,
+        isNativeToken,
         transferType,
       });
-      const cBridgeArgs = {
-        address: bridgeAddress,
-        abi: ABI,
-        functionName,
-        account: address,
-        args,
-      };
+      let cBridgeArgs = null;
+      if (isNativeToken) {
+        cBridgeArgs = {
+          address: bridgeAddress,
+          abi: ABI,
+          functionName,
+          account: address,
+          args,
+          value: args[1],
+        };
+      } else {
+        cBridgeArgs = {
+          address: bridgeAddress,
+          abi: ABI,
+          functionName,
+          account: address,
+          args,
+        };
+      }
       const gas = await publicClient.estimateContractGas(cBridgeArgs as any);
       const gasPrice = await publicClient.getGasPrice();
       const hash = await walletClient.writeContract({
@@ -222,6 +236,7 @@ export class CBridge {
   getTransferParams({
     amount,
     isPegged,
+    isNativeToken = false,
     toChainId,
     tokenAddress,
     address,
@@ -231,7 +246,9 @@ export class CBridge {
     nonce,
   }: IGetCBridgeTransferParamsInput) {
     return isPegged === false
-      ? [address, tokenAddress, amount, toChainId, nonce, maxSlippage]
+      ? isNativeToken
+        ? [address, amount, toChainId, nonce, maxSlippage]
+        : [address, tokenAddress, amount, toChainId, nonce, maxSlippage]
       : transferType === 'deposit'
       ? [tokenAddress, amount, toChainId, address as `0x${string}`, nonce]
       : transferType === 'withdraw'
@@ -269,9 +286,15 @@ export class CBridge {
    * @param isPegged
    * @returns string
    */
-  getTransferFunction({ isPegged, transferType }: IGetCBridgeTransferFunction) {
+  getTransferFunction({
+    isPegged,
+    transferType,
+    isNativeToken = false,
+  }: IGetCBridgeTransferFunction) {
     return isPegged === false
-      ? 'send'
+      ? isNativeToken
+        ? 'sendNative'
+        : 'send'
       : transferType === 'deposit'
       ? 'deposit'
       : transferType === 'withdraw'
@@ -317,6 +340,7 @@ export class CBridge {
     userAddress,
     maxSlippage,
     nonce,
+    isNativeToken = false,
   }: {
     isPegged: boolean;
     peggedConfig?: CBridgePeggedPairConfig;
@@ -328,6 +352,7 @@ export class CBridge {
     userAddress: `0x${string}`;
     maxSlippage: number;
     nonce: number;
+    isNativeToken?: boolean;
   }) {
     const transferType = this.getTransferType({
       peggedConfig,
@@ -355,6 +380,7 @@ export class CBridge {
       transferType,
       peggedConfig,
       nonce,
+      isNativeToken,
     });
     return {
       address: bridgeAddress as `0x${string}`,

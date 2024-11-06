@@ -134,7 +134,7 @@ export const useLoadingBridgeFees = () => {
         fromAccount: address || DEFAULT_ADDRESS,
         toChainId: toChain?.id,
         sendValue: amount,
-        fromTokenSymbol: selectedToken.symbol,
+        fromTokenSymbol: selectedToken.symbol === 'ETH' ? 'WETH' : selectedToken.symbol,
         publicClient,
         endPointId: {
           layerZeroV1: toToken?.layerZero?.raw?.endpointID,
