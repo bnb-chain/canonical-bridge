@@ -176,7 +176,13 @@ export function TransferOverview({ routeContentBottom }: { routeContentBottom?: 
       transition={'width 0.15s'}
     >
       {cBridgeSupport && <CBridgeSendMaxMin />}
-      <Flex className="bccb-widget-route" flexDir={'column'} gap={'12px'} ml={{ base: 0, lg: '24px' }} w={'100%'}>
+      <Flex
+        className="bccb-widget-route"
+        flexDir={'column'}
+        gap={'12px'}
+        ml={{ base: 0, lg: '24px' }}
+        w={'100%'}
+      >
         {!routeContentBottom ? (
           content
         ) : (

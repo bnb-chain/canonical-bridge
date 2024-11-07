@@ -14,7 +14,14 @@ export function FromSection() {
   const theme = useTheme();
 
   return (
-    <Flex className="bccb-widget-network-from" flexDir="column" gap={'8px'} w={'100%'} flex={1} h={'48px'}>
+    <Flex
+      className="bccb-widget-network-from"
+      flexDir="column"
+      gap={'8px'}
+      w={'100%'}
+      flex={1}
+      h={'48px'}
+    >
       <Flex
         className="bccb-widget-network-title"
         alignItems="center"

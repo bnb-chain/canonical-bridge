@@ -10,9 +10,19 @@ export const NetWorkSection = () => {
   const theme = useTheme();
 
   return (
-    <Flex className="bccb-widget-network" flexDir={'column'} gap={'8px'} mb={{ base: 0, md: theme.sizes['2'] }}>
+    <Flex
+      className="bccb-widget-network"
+      flexDir={'column'}
+      gap={'8px'}
+      mb={{ base: 0, md: theme.sizes['2'] }}
+    >
       <Flex flexDir={'row'} display={{ base: 'none', md: 'flex' }}>
-        <Flex className="bccb-widget-network-title" alignItems="center" justifyContent={'space-between'} flex={1}>
+        <Flex
+          className="bccb-widget-network-title"
+          alignItems="center"
+          justifyContent={'space-between'}
+          flex={1}
+        >
           <Typography variant="label" size={'md'} color={theme.colors[colorMode].text.placeholder}>
             {formatMessage({ id: 'from.section.title' })}
           </Typography>
