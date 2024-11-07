@@ -20,8 +20,15 @@ export const RouteTitle = ({ receiveAmt, toTokenInfo, isError }: RouteTitleProps
   const tokenUrl = formatTokenUrl(toChain?.tokenUrlPattern, toTokenInfo?.address);
 
   return (
-    <Flex flexDir={'row'} gap={'8px'} display={'inline'} opacity={isError ? 0.5 : 1}>
+    <Flex
+      className="bccb-widget-route-token"
+      flexDir={'row'}
+      gap={'8px'}
+      display={'inline'}
+      opacity={isError ? 0.5 : 1}
+    >
       <Flex
+        className="bccb-widget-route-title-amount"
         fontSize={'24px'}
         fontWeight={500}
         lineHeight={'32px'}
@@ -39,6 +46,7 @@ export const RouteTitle = ({ receiveAmt, toTokenInfo, isError }: RouteTitleProps
           isReceiveArea={true}
         >
           <Flex
+            className="bccb-widget-route-token-icon"
             flexDir={'row'}
             gap={'4px'}
             alignItems={'center'}

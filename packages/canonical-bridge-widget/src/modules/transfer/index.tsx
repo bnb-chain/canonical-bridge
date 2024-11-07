@@ -32,6 +32,7 @@ export function TransferWidget() {
 
   return (
     <Flex
+      className="bccb-widget-transfer-widget"
       flexDir={['column', 'column', 'column', 'row']}
       w={['100%']}
       mb={['120px', '120px', '160px']}
@@ -39,6 +40,7 @@ export function TransferWidget() {
       justifyContent={'center'}
     >
       <Flex
+        className="bccb-widget-transfer-widget-title"
         flexDir="column"
         background={['none', 'none', theme.colors[colorMode].background.main]}
         color={theme.colors[colorMode].text.primary}

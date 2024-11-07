@@ -10,9 +10,14 @@ export const NetWorkSection = () => {
   const theme = useTheme();
 
   return (
-    <Flex flexDir={'column'} gap={'12px'}>
+    <Flex className="bccb-widget-network" flexDir={'column'} gap={'12px'}>
       <Flex flexDir={'row'} display={{ base: 'none', md: 'flex' }}>
-        <Flex alignItems="center" justifyContent={'space-between'} flex={1}>
+        <Flex
+          className="bccb-widget-network-title"
+          alignItems="center"
+          justifyContent={'space-between'}
+          flex={1}
+        >
           <Typography
             variant="body"
             size={'sm'}
@@ -23,6 +28,7 @@ export const NetWorkSection = () => {
           </Typography>
         </Flex>
         <Flex
+          className="bccb-widget-network-title"
           alignItems="center"
           justifyContent={'space-between'}
           flex={1}
@@ -40,6 +46,7 @@ export const NetWorkSection = () => {
         </Flex>
       </Flex>{' '}
       <Flex
+        className="bccb-widget-network-row"
         flexDir={['column', 'column', 'row']}
         justifyContent={'space-between'}
         alignItems={'center'}
