@@ -110,7 +110,8 @@ export function TransferOverview({ routeContentBottom }: { routeContentBottom?: 
       position={'relative'}
       borderRadius={'24px'}
       py={'24px'}
-      background={theme.colors[colorMode].background.route}
+      background={{ base: 'transparent', lg: theme.colors[colorMode].layer[2].default }}
+      boxShadow={{ base: 'none', lg: '0px 24px 64px 0px rgba(0, 0, 0, 0.48)' }}
       maxW={['auto', 'auto', 'auto', '384px']}
       w={'100%'}
       overflow={['auto', 'auto', 'auto', 'hidden']}
@@ -172,11 +173,11 @@ export function TransferOverview({ routeContentBottom }: { routeContentBottom?: 
       transition={'width 0.15s'}
     >
       {cBridgeSupport && <CBridgeSendMaxMin />}
-      <Flex flexDir={'column'} gap={'24px'} ml={{ base: 0, lg: '24px' }} w={'100%'}>
+      <Flex flexDir={'column'} gap={'12px'} ml={{ base: 0, lg: '24px' }} w={'100%'}>
         {!routeContentBottom ? (
           content
         ) : (
-          <Box mb={showRoute ? 0 : '-24px'}>
+          <Box mb={showRoute ? 0 : '-12px'} borderRadius={'24px'} overflow={'hidden'}>
             <Collapse in={showRoute} animateOpacity>
               {content}
             </Collapse>

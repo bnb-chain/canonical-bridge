@@ -1,5 +1,17 @@
 # @bnb-chain/canonical-bridge-widget
 
+## 0.3.3-alpha.1
+
+### Patch Changes
+
+- Update spacing
+
+## 0.3.3-alpha.0
+
+### Patch Changes
+
+- Update spacing & Icon id ssr
+
 ## 0.3.2
 
 ### Patch Changes

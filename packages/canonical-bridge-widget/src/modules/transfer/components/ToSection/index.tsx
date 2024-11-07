@@ -13,18 +13,13 @@ export function ToSection() {
   const toChain = useAppSelector((state) => state.transfer.toChain);
 
   return (
-    <Flex flexDir="column" gap={'12px'} w={'100%'} flex={1} h={'64px'}>
+    <Flex flexDir="column" gap={'8px'} w={'100%'} flex={1} h={'48px'}>
       <Flex
         alignItems="center"
         justifyContent={'space-between'}
         display={{ base: 'flex', md: 'none' }}
       >
-        <Typography
-          variant="body"
-          lineHeight={'16px'}
-          size={'sm'}
-          color={theme.colors[colorMode].text.placeholder}
-        >
+        <Typography variant="label" size={'md'} color={theme.colors[colorMode].text.placeholder}>
           {formatMessage({ id: 'to.section.title' })}
         </Typography>
       </Flex>
