@@ -32,7 +32,7 @@ export const TokenInfoTooltip = ({
   const nativeToken = useMemo(() => isNativeToken(tokenAddress), [tokenAddress]);
 
   return (
-    <Flex display={'inline-block'} w={'auto'}>
+    <Flex className="bccb-widget-route-token-tooltip" display={'inline-block'} w={'auto'}>
       <LightMode>
         <Popover placement="top-start" trigger={'hover'} strategy={'fixed'} autoFocus={false}>
           <PopoverTrigger>{children}</PopoverTrigger>

@@ -17,6 +17,7 @@ export function SelectButton(props: SelectButtonProps) {
 
   return (
     <Button
+      className="bccb-widget-network-button"
       borderRadius={'8px'}
       flexShrink={0}
       h={'48px'}
@@ -45,6 +46,7 @@ export function SelectButton(props: SelectButtonProps) {
           fallbackBgColor={theme.colors[colorMode].support.primary[4]}
         />
         <Flex
+          className="bccb-widget-network-name"
           flexDir={'column'}
           alignItems={'flex-start'}
           whiteSpace="nowrap"

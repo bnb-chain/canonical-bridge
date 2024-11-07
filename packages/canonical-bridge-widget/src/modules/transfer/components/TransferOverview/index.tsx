@@ -118,6 +118,7 @@ export function TransferOverview({ routeContentBottom }: { routeContentBottom?: 
     >
       <Flex flexDir={'column'} gap={'12px'}>
         <Flex
+          className="bccb-widget-route-header"
           display={{ base: 'none', lg: 'flex' }}
           justifyContent={'space-between'}
           alignItems={'center'}
@@ -142,6 +143,7 @@ export function TransferOverview({ routeContentBottom }: { routeContentBottom?: 
           ) : null}
         </Flex>
         <Box
+          className="bccb-widget-route-body"
           px={['0', '0', '0', '24px']}
           flex={1}
           overflow={'auto'}
@@ -156,7 +158,7 @@ export function TransferOverview({ routeContentBottom }: { routeContentBottom?: 
               <RouteSkeleton />
             </Flex>
           ) : (
-            <Flex flexDir={'column'} gap={'12px'}>
+            <Flex className="bccb-widget-route-list" flexDir={'column'} gap={'12px'}>
               {options?.map((bridge: ReactNode) => bridge)}
             </Flex>
           )}
@@ -173,7 +175,14 @@ export function TransferOverview({ routeContentBottom }: { routeContentBottom?: 
       transition={'width 0.15s'}
     >
       {cBridgeSupport && <CBridgeSendMaxMin />}
-      <Flex flexDir={'column'} gap={'12px'} ml={{ base: 0, lg: '24px' }} w={'100%'}>
+
+      <Flex
+        className="bccb-widget-route"
+        flexDir={'column'}
+        gap={'12px'}
+        ml={{ base: 0, lg: '24px' }}
+        w={'100%'}
+      >
         {!routeContentBottom ? (
           content
         ) : (
@@ -183,7 +192,9 @@ export function TransferOverview({ routeContentBottom }: { routeContentBottom?: 
             </Collapse>
           </Box>
         )}
-        <Box>{routeContentBottom ? routeContentBottom : null}</Box>
+        <Box className="bccb-widget-route-bottom">
+          {routeContentBottom ? routeContentBottom : null}
+        </Box>
       </Flex>
     </Flex>
   );
