@@ -204,7 +204,7 @@ function useSortedTokens() {
   const { transferConfig } = useAggregator();
   const chains = useChains();
 
-  const { address } = useCurrentWallet();
+  const { address, walletType } = useCurrentWallet();
   const { getTokenPrice } = useTokenPrice();
   const tronWeb = useTronWeb();
 
@@ -219,6 +219,7 @@ function useSortedTokens() {
       tokens: IBridgeToken[];
     }) => {
       const balances = await getTokenBalances({
+        walletType,
         chainType,
         account: address,
         tokens,
@@ -247,7 +248,7 @@ function useSortedTokens() {
         orders: transferConfig.order?.tokens,
       });
     },
-    [address, chains, tronWeb, transferConfig.order?.tokens, getTokenPrice],
+    [walletType, address, chains, tronWeb, transferConfig.order?.tokens, getTokenPrice],
   );
 
   return {
