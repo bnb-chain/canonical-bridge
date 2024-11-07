@@ -2,20 +2,22 @@ import { useQuery } from '@tanstack/react-query';
 import { Address, formatUnits } from 'viem';
 import { useAccount, usePublicClient } from 'wagmi';
 
+import { REFETCH_INTERVAL } from '@/core/constants';
+
 export interface FormattedBalance {
   formatted: string;
   symbol: string;
   value: bigint;
 }
 
-export function useEvmBalance(address?: Address, enabled = true) {
+export function useEvmBalance() {
   const publicClient = usePublicClient();
-  const { chain, chainId } = useAccount();
+  const { chain, chainId, address } = useAccount();
 
   return useQuery<FormattedBalance>({
     queryKey: ['useEvmBalance', address, chainId],
-    refetchInterval: 1000 * 5,
-    enabled: !!address && enabled && !!chain && !!chainId,
+    refetchInterval: REFETCH_INTERVAL,
+    enabled: !!address && !!chain && !!chainId,
     queryFn: async () => {
       const balance = await publicClient!.getBalance({
         address: address as Address,

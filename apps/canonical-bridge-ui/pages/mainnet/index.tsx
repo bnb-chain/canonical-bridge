@@ -31,7 +31,7 @@ export const bridgeConfig: ICanonicalBridgeConfig = {
   },
   http: {
     refetchingInterval: 30 * 1000, // 30s
-    apiTimeOut: 60 * 1000, // 60s
+    apiTimeOut: 10 * 1000, // 60s
     deBridgeAccessToken: '',
     serverEndpoint: env.SERVER_ENDPOINT,
   },
