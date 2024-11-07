@@ -164,6 +164,7 @@ export const useLoadingBridgeFees = () => {
       if (mesonEst.status === 'fulfilled' && mesonEst?.value) {
         if (mesonEst?.value?.error) {
           const error = mesonEst?.value?.error;
+          dispatch(setRouteFees({ meson: undefined }));
           if (error.code === 21 && error.message === 'amount-over-limit') {
             dispatch(setEstimatedAmount({ meson: 'error' }));
             dispatch(
