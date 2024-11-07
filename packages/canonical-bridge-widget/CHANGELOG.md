@@ -1,5 +1,13 @@
 # @bnb-chain/canonical-bridge-widget
 
+## 0.3.3
+
+### Patch Changes
+
+- 96adcfc: Update cicd
+- a7b6b66: Update spacing
+- 44089a0: Update spacing & Icon id ssr
+
 ## 0.3.3-alpha.1
 
 ### Patch Changes
