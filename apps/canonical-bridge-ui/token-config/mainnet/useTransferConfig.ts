@@ -26,7 +26,7 @@ export function useTransferConfig() {
 
       const transferConfig: ITransferConfig = {
         defaultSelectedInfo: {
-          fromChainId: 7565164,
+          fromChainId: 1,
           toChainId: 56,
           tokenSymbol: 'USDT', // USDT
           amount: '',
