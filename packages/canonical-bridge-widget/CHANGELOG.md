@@ -1,5 +1,11 @@
 # @bnb-chain/canonical-bridge-widget
 
+## 0.4.0
+
+### Minor Changes
+
+- a33ae70: Support more Meson chains and tokens
+
 ## 0.3.3
 
 ### Patch Changes
