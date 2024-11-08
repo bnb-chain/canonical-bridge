@@ -75,10 +75,10 @@
     "wagmi": "~2.12.14"
   },
   "dependencies": {
-    "tronweb": "~6.0.0",
+    "@solana/spl-token": "~0.4.9",
     "@solana/wallet-adapter-react": "~0.15.35",
     "@solana/web3.js": "~1.95.4",
-    "@solana/spl-token": "~0.4.9"
+    "tronweb": "~6.0.0"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": [
