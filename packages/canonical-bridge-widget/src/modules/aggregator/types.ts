@@ -102,7 +102,7 @@ export interface IBridgeToken extends IBridgeTokenBaseInfo {
 }
 
 export interface IBridgeTokenWithBalance extends IBridgeToken {
-  balance?: number;
+  balance?: string;
   value?: number;
 }
 
