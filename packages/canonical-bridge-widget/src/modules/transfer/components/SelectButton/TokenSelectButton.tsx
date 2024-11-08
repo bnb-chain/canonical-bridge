@@ -27,13 +27,14 @@ export function TokenSelectButton(props: SelectButtonProps) {
     <Button
       borderRadius={'24px'}
       flexShrink={0}
-      h={'40px'}
+      h={'32px'}
       p={'4px 8px 4px 4px'}
       justifyContent={'space-between'}
       gap={'8px'}
-      background={theme.colors[colorMode].button.select.background.default}
+      transition={'all .15s'}
+      background={theme.colors[colorMode].layer[4].default}
       _hover={{
-        background: theme.colors[colorMode].button.select.background.hover,
+        background: theme.colors[colorMode].layer[4].hover,
       }}
       color={theme.colors[colorMode].text.primary}
       {...restProps}
@@ -43,8 +44,8 @@ export function TokenSelectButton(props: SelectButtonProps) {
           <Box>
             <IconImage
               src={token?.icon}
-              w={'32px'}
-              h={'32px'}
+              w={'24px'}
+              h={'24px'}
               fallbackBgColor={theme.colors[colorMode].support.primary[4]}
             />
           </Box>

@@ -6,6 +6,7 @@ import {
   useColorMode,
   useIntl,
   useTheme,
+  Collapse,
 } from '@bnb-chain/space';
 import { ReactNode, useEffect, useMemo } from 'react';
 
@@ -27,12 +28,15 @@ import { DeBridgeOption } from '@/modules/aggregator/adapters/deBridge/component
 import { StarGateOption } from '@/modules/aggregator/adapters/stargate/components/StarGateOption';
 import { LayerZeroOption } from '@/modules/aggregator/adapters/layerZero/components/LayerZeroOption';
 import { MesonOption } from '@/modules/aggregator/adapters/meson/components/MesonOption';
+import { useAggregator } from '@/modules/aggregator/components/AggregatorProvider';
+import { CBridgeSendMaxMin } from '@/modules/aggregator/adapters/cBridge/components/CBridgeSendMaxMin';
 
 export function TransferOverview({ routeContentBottom }: { routeContentBottom?: ReactNode }) {
   const dispatch = useAppDispatch();
   const { formatMessage } = useIntl();
   const { colorMode } = useColorMode();
   const theme = useTheme();
+  const { transferConfig } = useAggregator();
 
   const { loadingBridgeFees } = useLoadingBridgeFees();
   const { getSortedReceiveAmount } = useGetReceiveAmount();
@@ -42,9 +46,7 @@ export function TransferOverview({ routeContentBottom }: { routeContentBottom?: 
   const sendValue = useAppSelector((state) => state.transfer.sendValue);
   const estimatedAmount = useAppSelector((state) => state.transfer.estimatedAmount);
   const toTokenInfo = useAppSelector((state) => state.transfer.toToken);
-
   const debouncedSendValue = useDebounce(sendValue, DEBOUNCE_DELAY);
-
   const isBase = useBreakpointValue({ base: true, lg: false }) ?? false;
 
   useEffect(() => {
@@ -102,72 +104,87 @@ export function TransferOverview({ routeContentBottom }: { routeContentBottom?: 
   const showRoute =
     selectedToken && !!Number(sendValue) && toTokenInfo && options && !!options?.length;
 
-  return (
-    <Flex flexDir="column" ml={['0', '0', '0', '24px']} gap={['12px', '12px', '12px', '24px']}>
-      {showRoute && (
-        <Box overflow={['auto', 'auto', 'auto', 'hidden']}>
-          <Box
-            position={'relative'}
-            borderRadius={'24px'}
-            py={['0', '0', '0', '24px']}
-            background={theme.colors[colorMode].background.route}
-            maxW={['auto', 'auto', 'auto', '384px']}
-            w={'100%'}
-          >
+  const loading = !options || !options?.length || isGlobalFeeLoading;
+  const content = (
+    <Box
+      position={'relative'}
+      borderRadius={'24px'}
+      py={'24px'}
+      background={{ base: 'transparent', lg: theme.colors[colorMode].layer[2].default }}
+      boxShadow={{ base: 'none', lg: '0px 24px 64px 0px rgba(0, 0, 0, 0.48)' }}
+      maxW={['auto', 'auto', 'auto', '384px']}
+      w={'100%'}
+      overflow={['auto', 'auto', 'auto', 'hidden']}
+    >
+      <Flex flexDir={'column'} gap={'12px'}>
+        <Flex
+          display={{ base: 'none', lg: 'flex' }}
+          justifyContent={'space-between'}
+          alignItems={'center'}
+          px={['0', '0', '0', '24px']}
+          color={theme.colors[colorMode].text.route.title}
+          fontSize={'14px'}
+          fontWeight={500}
+          whiteSpace={'nowrap'}
+          h={'32px'}
+          sx={{
+            svg: {
+              w: '32px',
+              h: '32px',
+            },
+          }}
+        >
+          {formatMessage({ id: 'route.title' })}
+          {!options.length || isGlobalFeeLoading ? (
+            <SkeletonCircle w={'32px'} h={'32px'} />
+          ) : !isBase ? (
+            <RefreshingButton />
+          ) : null}
+        </Flex>
+        <Box
+          px={['0', '0', '0', '24px']}
+          flex={1}
+          overflow={'auto'}
+          overscrollBehavior={'contain'}
+          maxHeight={'698px'}
+          w={['auto', 'auto', 'auto', '384px']}
+        >
+          {loading ? (
             <Flex flexDir={'column'} gap={'12px'}>
-              {!isBase ? (
-                <Flex
-                  justifyContent={'space-between'}
-                  alignItems={'center'}
-                  px={['0', '0', '0', '24px']}
-                  color={theme.colors[colorMode].text.route.title}
-                  fontSize={'14px'}
-                  fontWeight={500}
-                  h={'32px'}
-                  sx={{
-                    svg: {
-                      w: '32px',
-                      h: '32px',
-                    },
-                  }}
-                >
-                  {formatMessage({ id: 'route.title' })}
-                  {!options.length || isGlobalFeeLoading ? (
-                    <SkeletonCircle w={'32px'} h={'32px'} />
-                  ) : !isBase ? (
-                    <RefreshingButton />
-                  ) : null}
-                </Flex>
-              ) : null}
-              <Box
-                px={['0', '0', '0', '24px']}
-                flex={1}
-                overflow={'auto'}
-                overscrollBehavior={'contain'}
-                maxHeight={'698px'}
-                w={['auto', 'auto', 'auto', '384px']}
-              >
-                {!options || !options?.length || isGlobalFeeLoading ? (
-                  <Flex flexDir={'column'} gap={'12px'}>
-                    <RouteSkeleton />
-                    <RouteSkeleton />
-                    <RouteSkeleton />
-                  </Flex>
-                ) : (
-                  <Flex
-                    flexDir={'column'}
-                    gap={'12px'}
-                    display={isGlobalFeeLoading ? 'none' : 'flex'}
-                  >
-                    {options?.map((bridge: ReactNode) => bridge)}
-                  </Flex>
-                )}
-              </Box>
+              <RouteSkeleton />
+              <RouteSkeleton />
+              <RouteSkeleton />
             </Flex>
-          </Box>
+          ) : (
+            <Flex flexDir={'column'} gap={'12px'}>
+              {options?.map((bridge: ReactNode) => bridge)}
+            </Flex>
+          )}
         </Box>
-      )}
-      <Box>{routeContentBottom ? routeContentBottom : null}</Box>
+      </Flex>
+    </Box>
+  );
+
+  const cBridgeSupport = 'cBridge' in transferConfig;
+
+  return (
+    <Flex
+      w={{ base: 'auto', lg: showRoute || !!routeContentBottom ? '408px' : 0 }}
+      transition={'width 0.15s'}
+    >
+      {cBridgeSupport && <CBridgeSendMaxMin />}
+      <Flex flexDir={'column'} gap={'12px'} ml={{ base: 0, lg: '24px' }} w={'100%'}>
+        {!routeContentBottom ? (
+          content
+        ) : (
+          <Box mb={showRoute ? 0 : '-12px'} borderRadius={'24px'} overflow={'hidden'}>
+            <Collapse in={showRoute} animateOpacity>
+              {content}
+            </Collapse>
+          </Box>
+        )}
+        <Box>{routeContentBottom ? routeContentBottom : null}</Box>
+      </Flex>
     </Flex>
   );
 }

@@ -80,7 +80,7 @@ export const useGetDeBridgeFees = () => {
         if (nativeTokenBalance && nativeTokenBalance?.value < totalNativeAmount) {
           dispatch(
             setRouteError({
-              deBridge: 'Could not cover deBridge Protocol Fee',
+              deBridge: `Insufficient ${nativeToken} to cover protocol fee`,
             }),
           );
           isDisplayError = true;

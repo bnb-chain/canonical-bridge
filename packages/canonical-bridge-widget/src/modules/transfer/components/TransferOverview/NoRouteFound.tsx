@@ -36,7 +36,7 @@ export const NoRouteFound = ({ onOpen }: NoRouteFoundProps) => {
       gap={'8px'}
       background={theme.colors[colorMode].receive.background}
       borderRadius={'8px'}
-      p={[0, 0, 0, '24px 16px']}
+      p={[0, 0, 0, '0 16px']}
     >
       <Flex justifyContent={'center'}>
         <RouteNotFoundIcon w={'40px'} h={'40px'} />
@@ -56,8 +56,9 @@ export const NoRouteFound = ({ onOpen }: NoRouteFoundProps) => {
           ? formatMessage({ id: 'route.no-found.desc' })
           : formatMessage({ id: !isNoRoute ? 'route.adjust.desc' : 'route.no-found.desc' })}
       </Typography>
-      {isBase && !isNoRoute && (
+      {!isNoRoute && (
         <Box
+          display={{ base: 'block', lg: 'none' }}
           margin={'0 auto'}
           fontSize={'14px'}
           fontWeight={500}

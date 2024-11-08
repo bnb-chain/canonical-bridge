@@ -1,5 +1,17 @@
 # @bnb-chain/canonical-bridge-sdk
 
+## 0.3.3
+
+### Patch Changes
+
+- 96adcfc: Update cicd
+
+## 0.3.2
+
+### Patch Changes
+
+- c39d53e: Test cicd
+
 ## 0.3.1
 
 ### Patch Changes

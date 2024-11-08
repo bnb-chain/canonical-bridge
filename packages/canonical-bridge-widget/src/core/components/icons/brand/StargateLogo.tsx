@@ -10,8 +10,8 @@ export function StarGateLogo(props: IconProps) {
       fill="none"
       {...props}
     >
-      <g clipPath="url(#clip0_3204_147712)">
-        <g clipPath="url(#clip1_3204_147712)">
+      <g clipPath={`url(#clip0_3204_147712_)`}>
+        <g clipPath={`url(#clip1_3204_147712_)`}>
           <path
             d="M19.968 1.32562L20.8548 3.40275C22.5954 7.48112 25.8439 10.7296 29.9222 12.4702L31.9994 13.357C32.543 13.5888 32.9843 13.9212 33.325 14.3172C32.2906 6.90039 26.4246 1.03362 19.0078 0C19.403 0.33984 19.7362 0.78198 19.968 1.32562H19.968Z"
             fill="#999999"
@@ -34,14 +34,6 @@ export function StarGateLogo(props: IconProps) {
           fill="black"
         />
       </g>
-      <defs>
-        <clipPath id="clip0_3204_147712">
-          <rect width="33.3232" height="33.323" fill="white" />
-        </clipPath>
-        <clipPath id="clip1_3204_147712">
-          <rect width="33.3232" height="33.323" fill="white" />
-        </clipPath>
-      </defs>
     </Icon>
   );
 }
