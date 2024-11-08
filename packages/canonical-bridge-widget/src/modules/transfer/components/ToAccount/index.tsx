@@ -8,7 +8,7 @@ import {
   useIntl,
   InputGroup,
 } from '@bnb-chain/space';
-import { ChangeEvent, useRef, useState } from 'react';
+import { ChangeEvent, useMemo, useRef, useState } from 'react';
 import { useEffect } from 'react';
 import { useBytecode } from 'wagmi';
 
@@ -16,6 +16,7 @@ import { setIsToAddressChecked, setToAccount } from '@/modules/transfer/action';
 import { useTronTransferInfo } from '@/modules/transfer/hooks/tron/useTronTransferInfo';
 import { useAppDispatch, useAppSelector } from '@/modules/store/StoreProvider';
 import { useTronContract } from '@/modules/aggregator/adapters/meson/hooks/useTronContract';
+import { useSolanaTransferInfo } from '@/modules/transfer/hooks/solana/useSolanaTransferInfo';
 import { ToAccountCheckBox } from '@/core/components/icons/ConfirmCheckIcon';
 
 export function ToAccount(props: FlexProps) {
@@ -29,12 +30,14 @@ export function ToAccount(props: FlexProps) {
   const toAccount = useAppSelector((state) => state.transfer.toAccount);
   const toChain = useAppSelector((state) => state.transfer.toChain);
 
-  const { isTronTransfer, isAvailableAccount } = useTronTransferInfo();
+  const { isTronTransfer, isTronAvailableToAccount } = useTronTransferInfo();
   const { isTronContract } = useTronContract();
   const { data: evmBytecode } = useBytecode({
     address: toAccount.address as `0x${string}`,
     chainId: toChain?.id,
   });
+
+  const { isSolanaTransfer, isSolanaAvailableToAccount } = useSolanaTransferInfo();
 
   const timerRef = useRef<any>();
   const [inputValue, setInputValue] = useState(toAccount.address);
@@ -57,12 +60,41 @@ export function ToAccount(props: FlexProps) {
     if (!toAccount.address) setInputValue('');
   }, [toAccount.address]);
 
-  if (!isTronTransfer) {
+  const { isInvalid, isAvailableAccount } = useMemo(() => {
+    if (isTronTransfer) {
+      return {
+        isInvalid:
+          (!isTronAvailableToAccount && !!toAccount.address) ||
+          isTronContract === true ||
+          !!evmBytecode,
+        isAvailableAccount: isTronAvailableToAccount,
+      };
+    }
+
+    if (isSolanaTransfer) {
+      return {
+        isInvalid: !!toAccount.address && !isSolanaAvailableToAccount,
+        isAvailableAccount: isSolanaAvailableToAccount,
+      };
+    }
+
+    return {
+      isInvalid: false,
+      isAvailableAccount: false,
+    };
+  }, [
+    isTronTransfer,
+    isSolanaTransfer,
+    isTronAvailableToAccount,
+    toAccount.address,
+    isTronContract,
+    evmBytecode,
+    isSolanaAvailableToAccount,
+  ]);
+
+  if (!isTronTransfer && !isSolanaTransfer) {
     return null;
   }
-
-  const isInvalid =
-    (!isAvailableAccount && !!toAccount.address) || isTronContract === true || !!evmBytecode;
 
   const toggleChecked = () => {
     if (isChecked) {

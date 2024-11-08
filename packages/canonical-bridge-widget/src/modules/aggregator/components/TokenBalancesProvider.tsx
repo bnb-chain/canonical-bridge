@@ -1,8 +1,9 @@
 import { useQuery } from '@tanstack/react-query';
 import { useChains } from 'wagmi';
 import { useEffect } from 'react';
+import { useConnection } from '@solana/wallet-adapter-react';
 
-import { TIME } from '@/core/constants';
+import { REFETCH_INTERVAL } from '@/core/constants';
 import { useTokens } from '@/modules/aggregator/hooks/useTokens';
 import { getTokenBalances } from '@/modules/aggregator/shared/getTokenBalances';
 import { useAppDispatch, useAppSelector } from '@/modules/store/StoreProvider';
@@ -14,6 +15,7 @@ export function TokenBalancesProvider() {
   const { address, walletType } = useCurrentWallet();
   const chains = useChains();
   const tronWeb = useTronWeb();
+  const { connection } = useConnection();
 
   const fromChain = useAppSelector((state) => state.transfer.fromChain);
   const toChain = useAppSelector((state) => state.transfer.toChain);
@@ -26,7 +28,7 @@ export function TokenBalancesProvider() {
 
   const { isLoading, data } = useQuery<Record<string, string | undefined>>({
     enabled: !!address && !!fromChain?.id && !!toChain?.id,
-    refetchInterval: TIME.SECOND * 5,
+    refetchInterval: REFETCH_INTERVAL,
     queryKey: ['tokenBalances', address, fromChain?.id, toChain?.id],
     queryFn: async () => {
       const balances = await getTokenBalances({
@@ -36,6 +38,7 @@ export function TokenBalancesProvider() {
         tokens,
         chain: chains?.find((item) => item.id === fromChain?.id),
         tronWeb,
+        connection,
       });
       return balances;
     },

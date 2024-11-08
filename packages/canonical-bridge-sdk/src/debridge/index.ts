@@ -75,6 +75,7 @@ export class DeBridge {
     toChainId,
     toTokenAddress,
     userAddress,
+    toUserAddress,
     affiliateFeePercent = 0,
     accesstoken = '',
     prependOperatingExpenses = false,
@@ -88,10 +89,11 @@ export class DeBridge {
         dstChainTokenOut: toTokenAddress,
         prependOperatingExpenses,
         affiliateFeePercent,
-        dstChainTokenOutRecipient: userAddress,
-        dstChainOrderAuthorityAddress: userAddress,
+        dstChainTokenOutRecipient: toUserAddress || userAddress,
+        dstChainOrderAuthorityAddress: toUserAddress || userAddress,
         srcChainOrderAuthorityAddress: userAddress,
       } as any;
+
       if (accesstoken) {
         deBridgeParams.accesstoken = accesstoken;
       }
