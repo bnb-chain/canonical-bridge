@@ -3,6 +3,9 @@ import { useCallback, useState } from 'react';
 import { useAccount, useBytecode, usePublicClient, useSignMessage, useWalletClient } from 'wagmi';
 import { formatUnits, parseUnits } from 'viem';
 import { useTronWallet } from '@node-real/walletkit/tron';
+import { useConnection } from '@solana/wallet-adapter-react';
+import { useSolanaWallet } from '@node-real/walletkit/solana';
+import { VersionedTransaction } from '@solana/web3.js';
 
 import { useAppSelector } from '@/modules/store/StoreProvider';
 import { useGetAllowance } from '@/core/contract/hooks/useGetAllowance';
@@ -14,6 +17,8 @@ import { useCurrentWallet } from '@/modules/wallet/CurrentWalletProvider';
 import { useTronTransferInfo } from '@/modules/transfer/hooks/tron/useTronTransferInfo';
 import { utf8ToHex } from '@/core/utils/string';
 import { useTronContract } from '@/modules/aggregator/adapters/meson/hooks/useTronContract';
+import { isNativeToken } from '@/core/utils/address';
+import { useSolanaTransferInfo } from '@/modules/transfer/hooks/solana/useSolanaTransferInfo';
 
 export function TransferButton({
   onOpenSubmittedModal,
@@ -41,8 +46,12 @@ export function TransferButton({
 
   const { address } = useAccount();
   const { address: tronAddress, signTransaction } = useTronWallet();
-  const { isAvailableAccount, isTronTransfer } = useTronTransferInfo();
+  const { isTronAvailableToAccount, isTronTransfer } = useTronTransferInfo();
   const { signMessageAsync } = useSignMessage();
+
+  const { isSolanaTransfer, isSolanaAvailableToAccount } = useSolanaTransferInfo();
+  const { connection } = useConnection();
+  const { sendTransaction: sendSolanaTransaction } = useSolanaWallet();
 
   const sendValue = useAppSelector((state) => state.transfer.sendValue);
   const transferActionInfo = useAppSelector((state) => state.transfer.transferActionInfo);
@@ -73,7 +82,7 @@ export function TransferButton({
   const { isTronConnected, isEvmConnected } = useCurrentWallet();
 
   const isApproveNeeded =
-    (fromChain?.chainType !== 'tron' &&
+    (fromChain?.chainType === 'evm' &&
       allowance !== null &&
       selectedToken?.decimals &&
       Number(sendValue) > Number(formatUnits(allowance, selectedToken?.decimals || 18)) &&
@@ -82,20 +91,22 @@ export function TransferButton({
     (fromChain?.chainType === 'tron' &&
       tronAllowance !== null &&
       Number(sendValue) >
-        Number(formatUnits(tronAllowance, selectedToken?.meson?.raw?.decimals || 6)));
+        Number(formatUnits(tronAllowance, selectedToken?.meson?.raw?.decimals || 6))) ||
+    (fromChain?.chainType === 'solana' && false);
 
   const sendTx = useCallback(async () => {
     if (
       !selectedToken ||
       !transferActionInfo?.bridgeType ||
-      !transferActionInfo?.bridgeAddress ||
+      (!transferActionInfo?.bridgeAddress && fromChain?.chainType !== 'solana') ||
       ((!walletClient ||
         !publicClient ||
         !address ||
         (allowance === null &&
           selectedToken?.address !== '0x0000000000000000000000000000000000000000') ||
         !isEvmConnected) &&
-        fromChain?.chainType !== 'tron') ||
+        fromChain?.chainType !== 'tron' &&
+        fromChain?.chainType !== 'solana') ||
       ((!isTronConnected || !tronAddress || tronAllowance === null) &&
         fromChain?.chainType === 'tron')
     ) {
@@ -164,6 +175,7 @@ export function TransferButton({
             bridgeAddress: transferActionInfo.bridgeAddress as string,
             fromChainId: fromChain?.id,
             isPegged: selectedToken.isPegged,
+            isNativeToken: isNativeToken(selectedToken.address),
             address,
             peggedConfig: selectedToken?.cBridge?.peggedConfig,
             args: cBridgeArgs.args,
@@ -194,23 +206,33 @@ export function TransferButton({
           console.log(e);
           handleFailure(e);
         }
-      } else if (
-        transferActionInfo.bridgeType === 'deBridge' &&
-        transferActionInfo.value &&
-        address
-      ) {
+      } else if (transferActionInfo.bridgeType === 'deBridge') {
         try {
-          const deBridgeHash = await bridgeSDK.deBridge.sendToken({
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            walletClient: walletClient as any,
-            bridgeAddress: transferActionInfo.bridgeAddress as string,
-            data: transferActionInfo.data as `0x${string}`,
-            amount: BigInt(transferActionInfo.value),
-            address,
-          });
-          await publicClient.waitForTransactionReceipt({
-            hash: deBridgeHash,
-          });
+          let deBridgeHash: string | undefined;
+
+          if (fromChain?.chainType === 'evm' && transferActionInfo.value && address) {
+            deBridgeHash = await bridgeSDK.deBridge.sendToken({
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              walletClient: walletClient as any,
+              bridgeAddress: transferActionInfo.bridgeAddress as string,
+              data: transferActionInfo.data as `0x${string}`,
+              amount: BigInt(transferActionInfo.value),
+              address,
+            });
+            await publicClient.waitForTransactionReceipt({
+              hash: deBridgeHash,
+            });
+          }
+
+          if (fromChain?.chainType === 'solana') {
+            const { blockhash } = await connection.getLatestBlockhash();
+            const data = (transferActionInfo.data as string)?.slice(2);
+            const tx = VersionedTransaction.deserialize(Buffer.from(data, 'hex'));
+
+            tx.message.recentBlockhash = blockhash;
+            deBridgeHash = await sendSolanaTransaction(tx, connection);
+          }
+
           if (deBridgeHash) {
             reportEvent({
               id: 'transaction_bridge_success',
@@ -297,7 +319,7 @@ export function TransferButton({
           fromAddress = address;
         }
 
-        if (isTronTransfer && isAvailableAccount && toAccount?.address) {
+        if (isTronTransfer && isTronAvailableToAccount && toAccount?.address) {
           toAddress = toAccount.address;
         } else if (address) {
           toAddress = address;
@@ -380,36 +402,42 @@ export function TransferButton({
       setIsLoading(false);
     }
   }, [
+    selectedToken,
+    transferActionInfo,
     walletClient,
     publicClient,
-    selectedToken,
     address,
-    transferActionInfo,
     allowance,
+    isEvmConnected,
+    fromChain,
+    isTronConnected,
+    tronAddress,
     tronAllowance,
+    toChain?.name,
+    toChain?.meson?.raw?.id,
+    sendValue,
+    onOpenFailedModal,
     setHash,
     setChosenBridge,
-    sendValue,
+    isApproveNeeded,
     onOpenConfirmingModal,
     cBridgeArgs,
-    bridgeSDK,
-
     onOpenApproveModal,
+    bridgeSDK.cBridge,
+    bridgeSDK.deBridge,
+    bridgeSDK.stargate,
+    bridgeSDK.layerZero,
+    bridgeSDK.meson,
     onCloseConfirmingModal,
     onOpenSubmittedModal,
-    onOpenFailedModal,
-
-    toToken,
-    fromChain,
-    toChain,
-    isApproveNeeded,
-    isTronConnected,
-    isEvmConnected,
-    tronAddress,
-    isAvailableAccount,
+    connection,
+    sendSolanaTransaction,
+    toToken?.stargate?.raw?.endpointID,
+    toToken?.layerZero?.raw?.endpointID,
+    toToken?.meson?.raw?.id,
     isTronTransfer,
-    toAccount,
-
+    isTronAvailableToAccount,
+    toAccount.address,
     signMessageAsync,
     signTransaction,
   ]);
@@ -434,9 +462,12 @@ export function TransferButton({
           !Number(sendValue) ||
           !transferActionInfo ||
           !isTransferable ||
-          (isTronTransfer && (!isToAddressChecked || !toAccount?.address || !isAvailableAccount)) ||
+          (isTronTransfer &&
+            (!isToAddressChecked || !toAccount?.address || !isTronAvailableToAccount)) ||
           isTronContract === true ||
-          !!evmBytecode
+          !!evmBytecode ||
+          (isSolanaTransfer &&
+            (!isToAddressChecked || !toAccount.address || !isSolanaAvailableToAccount))
         }
       >
         {isApproveNeeded

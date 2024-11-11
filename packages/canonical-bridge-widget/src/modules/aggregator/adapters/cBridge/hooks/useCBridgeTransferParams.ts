@@ -4,6 +4,7 @@ import { useAccount } from 'wagmi';
 
 import { useAppSelector } from '@/modules/store/StoreProvider';
 import { useBridgeSDK } from '@/core/hooks/useBridgeSDK';
+import { isNativeToken } from '@/core/utils/address';
 
 export const useCBridgeTransferParams = () => {
   const { address } = useAccount();
@@ -93,6 +94,7 @@ export const useCBridgeTransferParams = () => {
       maxSlippage: max_slippage,
       transferType: transferType ? transferType : undefined,
       peggedConfig: selectedToken.cBridge?.peggedConfig,
+      isNativeToken: isNativeToken(selectedToken.address),
       nonce,
     });
   }, [
@@ -114,7 +116,8 @@ export const useCBridgeTransferParams = () => {
       (isPegged && !transferType) ||
       !address ||
       !bridgeAddress ||
-      !bridgeSDK?.cBridge
+      !bridgeSDK?.cBridge ||
+      !selectedToken
     ) {
       return null;
     }
@@ -125,6 +128,7 @@ export const useCBridgeTransferParams = () => {
     });
     const functionName = bridgeSDK.cBridge.getTransferFunction({
       isPegged,
+      isNativeToken: isNativeToken(selectedToken?.address),
       transferType: transferType || undefined,
     });
     return {

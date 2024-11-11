@@ -32,10 +32,13 @@ export const useCBridgeSendMaxMin = (isDisabled = false) => {
         ) {
           return setMinMaxSendAmt({ min: '0', max: '0' });
         }
-
+        const tokenAddress =
+          selectedToken?.symbol === 'ETH'
+            ? selectedToken?.cBridge?.raw?.weth_address
+            : selectedToken?.address;
         const { min, max } = await bridgeSDK.cBridge.getSendRange({
           bridgeAddress: bridgeAddress as `0x${string}`,
-          tokenAddress: selectedToken?.address as `0x${string}`,
+          tokenAddress: tokenAddress as `0x${string}`,
           client: publicClient,
         });
 

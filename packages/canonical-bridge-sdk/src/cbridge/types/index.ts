@@ -196,6 +196,7 @@ export interface ISendCBridgeToken {
   address: `0x${string}`;
   peggedConfig?: CBridgePeggedPairConfig;
   isPegged: boolean;
+  isNativeToken?: boolean;
   args: any;
 }
 
@@ -209,6 +210,7 @@ export interface IGetCBridgeTransferAddressInput {
 export interface IGetCBridgeTransferParamsInput {
   amount: bigint;
   isPegged: boolean;
+  isNativeToken?: boolean;
   toChainId: number;
   address: `0x${string}`;
   tokenAddress: `0x${string}`;
@@ -226,5 +228,6 @@ export interface IGetCBridgeABI {
 
 export interface IGetCBridgeTransferFunction {
   isPegged: boolean;
+  isNativeToken?: boolean;
   transferType?: 'deposit' | 'withdraw';
 }
