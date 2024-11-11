@@ -77,7 +77,7 @@ export function TransferWidget() {
             <TransferButtonGroup />
           </Flex>
           <Box display={{ base: 'block', lg: 'none' }}>{routeContentBottom}</Box>
-        </Flex
+        </Flex>
         <Box className="bccb-widget-route-bottom" display={{ base: 'none', lg: 'flex' }}>
           <TransferOverview routeContentBottom={routeContentBottom} />
         </Box>
