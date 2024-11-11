@@ -60,7 +60,7 @@ export function ToAccount(props: FlexProps) {
     if (!toAccount.address) setInputValue('');
   }, [toAccount.address]);
 
-  const { isInvalid, isAvailableAccount } = useMemo(() => {
+  const { isInvalid } = useMemo(() => {
     if (isTronTransfer) {
       return {
         isInvalid:
