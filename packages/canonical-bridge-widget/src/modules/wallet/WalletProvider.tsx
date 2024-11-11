@@ -101,6 +101,7 @@ export function WalletProvider(props: WalletProviderProps) {
         {children}
 
         <StateModal
+          className="bccb-widget-header-preventing-modal"
           title={formatMessage({ id: 'wallet.preventing-modal.title' })}
           description={formatMessage({ id: 'wallet.preventing-modal.desc' })}
           isOpen={isOpen}

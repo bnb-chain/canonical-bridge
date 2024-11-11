@@ -5,6 +5,7 @@ export function TransactionConfirmingModal(props: Omit<StateModalProps, 'title'>
 
   return (
     <StateModal
+      className="bccb-widget-transaction-confirming-modal"
       type="confirming"
       title="Waiting For Confirmation"
       description={'Confirm this transaction in your wallet'}

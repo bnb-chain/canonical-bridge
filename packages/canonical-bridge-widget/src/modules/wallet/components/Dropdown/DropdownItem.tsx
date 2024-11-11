@@ -10,6 +10,7 @@ export function DropdownItem(props: DropdownItemProps) {
 
   return (
     <MenuItem
+      className="bccb-widget-header-menu-item"
       px="16px"
       h="40px"
       alignItems="center"

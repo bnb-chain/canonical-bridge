@@ -28,6 +28,7 @@ export function DropdownButton(props: DropdownButtonProps) {
 
   return (
     <MenuButton
+      className="bccb-widget-header-menu-button"
       h={'40px'}
       minW={'40px'}
       pl="12px"

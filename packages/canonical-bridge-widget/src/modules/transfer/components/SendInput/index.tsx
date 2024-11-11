@@ -92,7 +92,7 @@ export const SendInput: React.FC = () => {
   }, [isGlobalFeeLoading, debouncedSendValue, sendValue]);
 
   return (
-    <Flex flexDir={'column'} position={'relative'}>
+    <Flex className="bccb-widget-transfer-input-container" flexDir={'column'} position={'relative'}>
       <Flex flexDir={'row'} justifyContent={'space-between'}>
         <Box
           color={theme.colors[colorMode].input.title}
@@ -147,6 +147,7 @@ export const SendInput: React.FC = () => {
         }}
       >
         <Input
+          className="bccb-widget-transfer-input"
           inputMode={'decimal'}
           value={sendValue}
           color={theme.colors[colorMode].text.primary}

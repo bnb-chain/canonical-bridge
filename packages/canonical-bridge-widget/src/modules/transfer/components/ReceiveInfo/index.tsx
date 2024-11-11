@@ -145,20 +145,29 @@ export const ReceiveInfo = ({ onOpen }: ReceiveInfoProps) => {
   }, [estimatedAmount]);
 
   return (
-    <Box mb={'-24px'}>
+    <Box className="bccb-widget-received-info-container" mb={'-24px'}>
       <Collapse in={!isHideSection} animateOpacity>
         <Flex flexDir={'column'} gap={'12px'}>
           <Flex flexDir={'row'} alignItems={'center'} justifyContent={'space-between'}>
-            <Box color={theme.colors[colorMode].input.title} fontSize={'14px'} fontWeight={400}>
+            <Box
+              className="title"
+              color={theme.colors[colorMode].input.title}
+              fontSize={'14px'}
+              fontWeight={400}
+            >
               {formatMessage({ id: 'you.receive.title' })}
             </Box>
             {!isHideRouteButton ? (
-              <Box display={{ base: 'block', lg: 'none' }}>
+              <Box
+                className="bccb-widget-received-info-route-open"
+                display={{ base: 'block', lg: 'none' }}
+              >
                 <RouteChangeButton onOpen={onOpen} />
               </Box>
             ) : null}
           </Flex>
           <Flex
+            className="bccb-widget-received-info-route-content"
             minH={'114px'}
             borderRadius={'8px'}
             p={'16px'}

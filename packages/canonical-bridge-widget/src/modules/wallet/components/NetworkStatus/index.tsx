@@ -41,7 +41,7 @@ export function NetworkStatus() {
   }, [chainId]);
 
   const switchDropdown = (onClose: () => void) => (
-    <DropdownList maxW={'240px'}>
+    <DropdownList className="bccb-widget-header-network-status" maxW={'240px'}>
       <Flex flexDir={'column'} alignItems={'center'} padding={'16px'} gap={'8px'}>
         <Typography
           color={theme.colors[colorMode].text.secondary}
@@ -101,6 +101,7 @@ export function NetworkStatus() {
           return (
             <>
               <DropdownButton
+                className="bccb-widget-header-dropdown-button"
                 bgColor={theme.colors[colorMode].layer[3].default}
                 isActive={isOpen}
                 isWarning={isOpen}

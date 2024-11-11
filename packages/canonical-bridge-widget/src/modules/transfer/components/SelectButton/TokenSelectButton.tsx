@@ -25,6 +25,7 @@ export function TokenSelectButton(props: SelectButtonProps) {
 
   return (
     <Button
+      className="bccb-widget-token-select-button"
       borderRadius={'24px'}
       flexShrink={0}
       h={'40px'}

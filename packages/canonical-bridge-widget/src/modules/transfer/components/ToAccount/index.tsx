@@ -76,6 +76,7 @@ export function ToAccount(props: FlexProps) {
 
   return (
     <Flex
+      className="bccb-widget-to-account-container"
       flexDirection="column"
       color={theme.colors[colorMode].text.tertiary}
       fontSize={'14px'}
@@ -83,8 +84,11 @@ export function ToAccount(props: FlexProps) {
       fontWeight={400}
       {...props}
     >
-      <Box>{formatMessage({ id: 'to.section.account.label' })}</Box>
+      <Box className="bccb-widget-to-account-title">
+        {formatMessage({ id: 'to.section.account.label' })}
+      </Box>
       <InputGroup
+        className="bccb-widget-to-account-input"
         alignItems="center"
         mt={'12px'}
         _hover={{
@@ -123,12 +127,24 @@ export function ToAccount(props: FlexProps) {
       </InputGroup>
 
       {isInvalid && (
-        <Flex mt={'8px'} fontSize={'14px'} color={theme.colors[colorMode].text.danger}>
+        <Flex
+          className="bccb-widget-to-account-input-error"
+          mt={'8px'}
+          fontSize={'14px'}
+          color={theme.colors[colorMode].text.danger}
+        >
           {formatMessage({ id: 'to.section.account.invalid' })}
         </Flex>
       )}
 
-      <Flex flexDir={'row'} mt={'12px'} mb={'8px'} ml={'-6px'} gap={'2px'}>
+      <Flex
+        className="bccb-widget-to-account-confirm"
+        flexDir={'row'}
+        mt={'12px'}
+        mb={'8px'}
+        ml={'-6px'}
+        gap={'2px'}
+      >
         <ToAccountCheckBox onClick={toggleChecked} isChecked={isChecked} />
         <Box>{formatMessage({ id: 'to.section.confirm.text' })}</Box>
       </Flex>
