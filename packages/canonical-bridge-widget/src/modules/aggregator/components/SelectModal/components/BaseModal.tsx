@@ -31,8 +31,9 @@ export function BaseModal(props: BaseModalProps) {
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} isCentered autoFocus={false}>
-      <ModalOverlay />
+      <ModalOverlay className={`${className}-overlay`} />
       <ModalContent
+        className={`${className}-content`}
         background={theme.colors[colorMode].background.modal}
         borderRadius={{ base: '0', md: '24px' }}
         p={0}

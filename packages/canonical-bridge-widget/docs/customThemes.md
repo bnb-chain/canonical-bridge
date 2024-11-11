@@ -1,5 +1,59 @@
-This document lists all the available styling class name in the widget. Please overwrite stylings
-based on these class name.
+# Widget custom themes
+
+## Usage
+
+```javascript
+import { ChakraProvider, ColorMode, createLocalStorageManager, theme } from '@bnb-chain/space';
+
+import { env } from '@/core/env';
+
+interface ThemeProviderProps {
+  children: React.ReactNode;
+}
+
+const colorModeManager = createLocalStorageManager(`${env.APP_NAME}-color-mode`);
+
+export const ThemeProvider = ({ children }: ThemeProviderProps) => {
+  const customTheme = {
+    ...theme,
+    breakpoints: {
+      ...theme.breakpoints,
+      lg: '1080px',
+    },
+    config: {
+      ...theme.config,
+      initialColorMode: 'dark',
+      useSystemColorMode: false,
+    },
+    styles: {
+      global: ({ colorMode }: { colorMode: ColorMode }) => ({
+        body: {
+          bg: theme.colors[colorMode].background[3],
+          '.bccb-widget-transfer-widget-title': {
+            borderRadius: '4px', // overwrite border radius
+          },
+        },
+      }),
+    },
+  };
+
+  return (
+    <ChakraProvider
+      colorModeManager={colorModeManager}
+      theme={customTheme}
+      toastOptions={{
+        defaultOptions: {
+          position: 'top',
+        },
+      }}
+    >
+      {children}
+    </ChakraProvider>
+  );
+};
+```
+
+## This document lists all the available styling class name in the widget. Please overwrite stylings based on these class name.
 
 1. Widget Main
 
@@ -65,6 +119,7 @@ based on these class name.
 5. Token Selection Modal
 
 - bccb-widget-token-modal
+- bccb-widget-token-modal-content
 - bccb-widget-token-virtual-list
 - bccb-widget-token-list-address
 - bccb-widget-token-address-link
@@ -76,12 +131,15 @@ based on these class name.
 - bccb-widget-from-network-list-item
 - bccb-widget-from-network-virtual-list
 - bccb-widget-from-network-modal
+- bccb-widget-from-network-modal-content
+- bccb-widget-to-network-modal-content
 
 7. To Network Selection
 
 - bccb-widget-to-network-virtual-list
 - bccb-widget-to-network-list-item
 - bccb-widget-to-network-modal
+- bccb-widget-to-network-modal-content
 
 8. Base Modal
 
