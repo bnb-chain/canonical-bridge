@@ -17,6 +17,23 @@ export function sortTokens({
     const isA = isChainOrTokenCompatible(a);
     const isB = isChainOrTokenCompatible(b);
 
+    const indexA = tokenOrders.indexOf(aSymbol);
+    const indexB = tokenOrders.indexOf(bSymbol);
+
+    const sortWithPredefinedOrders = () => {
+      if (indexA > -1 && indexB === -1) {
+        return -1;
+      }
+      if (indexA === -1 && indexB > -1) {
+        return 1;
+      }
+      if (indexA > -1 && indexB > -1) {
+        return indexA - indexB;
+      }
+
+      return aSymbol < bSymbol ? -1 : 1;
+    };
+
     if (isA && !isB) {
       return -1;
     }
@@ -34,22 +51,19 @@ export function sortTokens({
       if (!a.value && b.value) {
         return 1;
       }
+
+      if (a.balance && b.balance) {
+        return sortWithPredefinedOrders();
+      }
+      if (a.balance && !b.balance) {
+        return -1;
+      }
+      if (!a.balance && b.balance) {
+        return 1;
+      }
     }
 
-    const indexA = tokenOrders.indexOf(aSymbol);
-    const indexB = tokenOrders.indexOf(bSymbol);
-
-    if (indexA > -1 && indexB === -1) {
-      return -1;
-    }
-    if (indexA === -1 && indexB > -1) {
-      return 1;
-    }
-    if (indexA > -1 && indexB > -1) {
-      return indexA - indexB;
-    }
-
-    return a.displaySymbol < b.displaySymbol ? -1 : 1;
+    return sortWithPredefinedOrders();
   });
 
   return sortedTokens;

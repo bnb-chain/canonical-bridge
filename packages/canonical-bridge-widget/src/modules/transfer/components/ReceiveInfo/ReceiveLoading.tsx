@@ -4,9 +4,9 @@ export const ReceiveLoading = () => {
   return (
     <Box className="bccb-widget-received-info-route-loading">
       <Flex flexDir={'column'} gap={'8px'} display={{ base: 'none', lg: 'flex' }}>
-        <Flex gap={'8px'} mb={'12px'}>
-          <Skeleton height={'24px'} width={'160px'} />
-          <Skeleton height={'24px'} width={'80px'} />
+        <Flex gap={'8px'} mb={'8px'}>
+          <Skeleton height={'22px'} width={'160px'} />
+          <Skeleton height={'22px'} width={'80px'} />
         </Flex>
         <Skeleton height={'15px'} maxW={'333px'} width={'100%'} />
         <Skeleton height={'15px'} maxW={'371px'} width={'100%'} />

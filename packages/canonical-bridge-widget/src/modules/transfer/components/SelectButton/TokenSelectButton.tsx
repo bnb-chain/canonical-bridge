@@ -28,7 +28,7 @@ export function TokenSelectButton(props: SelectButtonProps) {
       className="bccb-widget-token-select-button"
       borderRadius={'24px'}
       flexShrink={0}
-      h={'40px'}
+      h={'32px'}
       p={'4px 8px 4px 4px'}
       justifyContent={'space-between'}
       gap={'8px'}
@@ -45,8 +45,8 @@ export function TokenSelectButton(props: SelectButtonProps) {
           <Box>
             <IconImage
               src={token?.icon}
-              w={'32px'}
-              h={'32px'}
+              w={'24px'}
+              h={'24px'}
               fallbackBgColor={theme.colors[colorMode].support.primary[4]}
             />
           </Box>

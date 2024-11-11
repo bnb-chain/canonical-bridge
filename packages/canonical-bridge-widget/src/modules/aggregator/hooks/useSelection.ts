@@ -1,5 +1,6 @@
 import { useChains } from 'wagmi';
 import { useCallback } from 'react';
+import { useConnection } from '@solana/wallet-adapter-react';
 
 import { useAggregator } from '@/modules/aggregator/components/AggregatorProvider';
 import { isChainOrTokenCompatible } from '@/modules/aggregator/shared/isChainOrTokenCompatible';
@@ -204,9 +205,10 @@ function useSortedTokens() {
   const { transferConfig } = useAggregator();
   const chains = useChains();
 
-  const { address } = useCurrentWallet();
+  const { address, walletType } = useCurrentWallet();
   const { getTokenPrice } = useTokenPrice();
   const tronWeb = useTronWeb();
+  const { connection } = useConnection();
 
   const getSortedTokens = useCallback(
     async ({
@@ -219,11 +221,13 @@ function useSortedTokens() {
       tokens: IBridgeToken[];
     }) => {
       const balances = await getTokenBalances({
+        walletType,
         chainType,
         account: address,
         tokens,
         chain: chains.find((e) => e.id === fromChainId),
         tronWeb,
+        connection,
       });
 
       const tmpTokens = tokens.map((item) => {
@@ -247,7 +251,7 @@ function useSortedTokens() {
         orders: transferConfig.order?.tokens,
       });
     },
-    [address, chains, tronWeb, transferConfig.order?.tokens, getTokenPrice],
+    [walletType, address, chains, tronWeb, connection, transferConfig.order?.tokens, getTokenPrice],
   );
 
   return {

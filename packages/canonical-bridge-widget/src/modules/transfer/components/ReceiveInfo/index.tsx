@@ -6,6 +6,7 @@ import {
   useTheme,
   Collapse,
   useBreakpointValue,
+  Typography,
 } from '@bnb-chain/space';
 import { useEffect, useMemo } from 'react';
 
@@ -145,18 +146,18 @@ export const ReceiveInfo = ({ onOpen }: ReceiveInfoProps) => {
   }, [estimatedAmount]);
 
   return (
-    <Box className="bccb-widget-received-info-container" mb={'-24px'}>
+    <Box className="bccb-widget-received-info-container" mb={isHideSection ? '-24px' : 0}>
       <Collapse in={!isHideSection} animateOpacity>
-        <Flex flexDir={'column'} gap={'12px'}>
+        <Flex flexDir={'column'} gap={'8px'}>
           <Flex flexDir={'row'} alignItems={'center'} justifyContent={'space-between'}>
-            <Box
+            <Typography
               className="title"
-              color={theme.colors[colorMode].input.title}
-              fontSize={'14px'}
-              fontWeight={400}
+              variant={'label'}
+              size={'md'}
+              color={theme.colors[colorMode].text.placeholder}
             >
               {formatMessage({ id: 'you.receive.title' })}
-            </Box>
+            </Typography>
             {!isHideRouteButton ? (
               <Box
                 className="bccb-widget-received-info-route-open"
@@ -168,9 +169,9 @@ export const ReceiveInfo = ({ onOpen }: ReceiveInfoProps) => {
           </Flex>
           <Flex
             className="bccb-widget-received-info-route-content"
-            minH={'114px'}
+            minH={'106px'}
             borderRadius={'8px'}
-            p={'16px'}
+            p={'12px'}
             flexDir={'column'}
             gap={'12px'}
             background={theme.colors[colorMode].receive.background}

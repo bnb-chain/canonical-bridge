@@ -14,26 +14,14 @@ export function FromSection() {
   const theme = useTheme();
 
   return (
-    <Flex
-      className="bccb-widget-network-from"
-      flexDir="column"
-      gap={'12px'}
-      w={'100%'}
-      flex={1}
-      h={'64px'}
-    >
+    <Flex className="bccb-widget-network-from" flexDir="column" gap={'8px'} w={'100%'} flex={1} h={'48px'}>
       <Flex
         className="bccb-widget-network-title"
         alignItems="center"
         justifyContent={'space-between'}
         display={{ base: 'flex', md: 'none' }}
       >
-        <Typography
-          variant="body"
-          lineHeight={'16px'}
-          size={'sm'}
-          color={theme.colors[colorMode].text.placeholder}
-        >
+        <Typography variant="label" size={'md'} color={theme.colors[colorMode].text.placeholder}>
           {formatMessage({ id: 'from.section.title' })}
         </Typography>
       </Flex>

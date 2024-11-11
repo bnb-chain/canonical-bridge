@@ -18,26 +18,29 @@ export function useWalletModal() {
 
 export function useUpdateWallets() {
   const fromChain = useAppSelector((state) => state.transfer.fromChain);
-  const { evmConfig, tronConfig, setWallets } = useWalletKit();
+  const { evmConfig, tronConfig, solanaConfig, setWallets } = useWalletKit();
 
-  const { evmWalletIds, tronWalletIds, wallets } = useMemo(() => {
+  const { evmWalletIds, tronWalletIds, solanaWalletIds, wallets } = useMemo(() => {
     const wallets: BaseWallet[] = [];
-    if (evmConfig?.wallets) {
-      wallets.push(...evmConfig.wallets);
-    }
-    if (tronConfig?.wallets) {
-      wallets.push(...tronConfig?.wallets);
-    }
+    if (evmConfig?.wallets) wallets.push(...evmConfig.wallets);
+    if (tronConfig?.wallets) wallets.push(...tronConfig?.wallets);
+    if (solanaConfig?.wallets) wallets.push(...solanaConfig.wallets);
+
     return {
       evmWalletIds: evmConfig?.wallets.map((e) => e.id) ?? [],
       tronWalletIds: tronConfig?.wallets.map((e) => e.id) ?? [],
+      solanaWalletIds: solanaConfig?.wallets.map((e) => e.id) ?? [],
       wallets,
     };
-  }, [evmConfig?.wallets, tronConfig?.wallets]);
+  }, [evmConfig?.wallets, tronConfig?.wallets, solanaConfig?.wallets]);
 
   useEffect(() => {
     const chainType = fromChain?.chainType ?? 'evm';
-    const availableWalletIds = chainType === 'evm' ? evmWalletIds : tronWalletIds;
+
+    let availableWalletIds: string[];
+    if (chainType === 'evm') availableWalletIds = [...evmWalletIds];
+    if (chainType === 'tron') availableWalletIds = [...tronWalletIds];
+    if (chainType === 'solana') availableWalletIds = [...solanaWalletIds];
 
     const newWallets: BaseWallet[] = [];
     wallets.forEach((item) => {
@@ -94,5 +97,5 @@ export function useUpdateWallets() {
     });
 
     setWallets(newWallets);
-  }, [evmWalletIds, fromChain, setWallets, tronWalletIds, wallets]);
+  }, [evmWalletIds, fromChain, setWallets, solanaWalletIds, tronWalletIds, wallets]);
 }

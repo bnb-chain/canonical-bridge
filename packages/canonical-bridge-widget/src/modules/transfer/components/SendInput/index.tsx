@@ -1,4 +1,12 @@
-import { Box, Flex, Input, useColorMode, useDisclosure, useIntl, useTheme } from '@bnb-chain/space';
+import {
+  Flex,
+  Input,
+  Typography,
+  useColorMode,
+  useDisclosure,
+  useIntl,
+  useTheme,
+} from '@bnb-chain/space';
 import { useEffect, useRef, useState } from 'react';
 
 import { useAppDispatch, useAppSelector } from '@/modules/store/StoreProvider';
@@ -94,24 +102,19 @@ export const SendInput: React.FC = () => {
   return (
     <Flex className="bccb-widget-transfer-input-container" flexDir={'column'} position={'relative'}>
       <Flex flexDir={'row'} justifyContent={'space-between'}>
-        <Box
-          color={theme.colors[colorMode].input.title}
-          fontSize={'14px'}
-          fontWeight={400}
-          lineHeight={'16px'}
-        >
+        <Typography color={theme.colors[colorMode].text.placeholder} variant={'label'} size={'md'}>
           {formatMessage({ id: 'you.send.title' })}
-        </Box>
+        </Typography>
         <MaxLink />
       </Flex>
       <Flex
         flex={1}
-        mt={'12px'}
+        mt={'8px'}
         flexDir={'row'}
         justifyContent={'space-between'}
         alignItems={'center'}
-        p={'12px 16px'}
-        h={'64px'}
+        p={'3px 12px'}
+        h={'48px'}
         borderRadius={'8px'}
         border={'1px solid'}
         borderColor={`${

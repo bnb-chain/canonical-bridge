@@ -14,13 +14,13 @@ export function useTronTransferInfo() {
       (!!selectedToken && fromChain?.chainType == 'tron' && !!toChain) ||
       (toChain?.chainType === 'tron' && !!fromChain);
 
-    const isAvailableAccount =
+    const isTronAvailableToAccount =
       (fromChain?.chainType == 'tron' && isEvmAddress(toAccount.address)) ||
       (toChain?.chainType == 'tron' && isTronAddress(toAccount.address));
 
     return {
       isTronTransfer,
-      isAvailableAccount,
+      isTronAvailableToAccount,
     };
   }, [fromChain, selectedToken, toAccount.address, toChain]);
 

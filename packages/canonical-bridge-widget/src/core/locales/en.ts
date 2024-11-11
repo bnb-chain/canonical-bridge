@@ -75,6 +75,9 @@ export const en = {
   'modal.submit.button.view-tx': 'View Transaction',
   'modal.submit.button.close': 'Make Another Transaction',
 
+  'modal.confirm.title': 'Waiting for Confirmation',
+  'modal.confirm.desc': 'Confirm this transaction in your wallet',
+
   'select-modal.tag.incompatible': 'Incompatible',
   'select-modal.search.no-result.title': 'No result found',
   'select-modal.search.no-result.warning':

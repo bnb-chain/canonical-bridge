@@ -21,9 +21,9 @@ export function RoutesModal(props: RoutesModalProps) {
         className="bccb-widget-modal-route-content"
         background={theme.colors[colorMode].background.modal}
         p={0}
-        h={['auto', 'auto', '665px']}
+        h={['100vh', '100vh', '665px']}
         w={['100%', '100%', '558px']}
-        overflow="hidden"
+        overflow={['auto', 'auto', 'auto', 'hidden']}
         margin={0}
       >
         <Flex

@@ -35,11 +35,7 @@ export const TransferButtonGroup = () => {
 
   return (
     <>
-      <Flex
-        className="bccb-widget-transfer-button-container"
-        gap={'4px'}
-        mt={['16px', '16px', '24px', '24px']}
-      >
+      <Flex className="bccb-widget-transfer-button-container" gap={'4px'} mt={{ base: '8px', md: '16px' }}>
         <WalletButtonWrapper>
           <TransferButton
             onOpenSubmittedModal={onOpenSubmittedModal}
