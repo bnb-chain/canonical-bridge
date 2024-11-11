@@ -57,6 +57,7 @@ export function ChooseTokenModal(props: ChooseTokenModalProps) {
 
   return (
     <BaseModal
+      className="bccb-widget-token-modal"
       isOpen={isOpen}
       onClose={onClose}
       title={formatMessage({ id: 'select-modal.token.title' })}
@@ -77,7 +78,7 @@ export function ChooseTokenModal(props: ChooseTokenModalProps) {
         {showBalance && <Text>{formatMessage({ id: 'select-modal.token.column.balance' })}</Text>}
       </Flex>
       <Flex flexDir="column" flex={1}>
-        <VirtualList data={data} itemHeight={64}>
+        <VirtualList className="bccb-widget-token-virtual-list" data={data} itemHeight={64}>
           {(item) => {
             const isDisabled = !isChainOrTokenCompatible(item);
             const isActive =
@@ -86,6 +87,7 @@ export function ChooseTokenModal(props: ChooseTokenModalProps) {
 
             return (
               <ListItem
+                className="bccb-widget-token-list-item"
                 key={item.address}
                 iconUrl={item.icon}
                 isActive={isActive}
@@ -122,7 +124,7 @@ export function ChooseTokenModal(props: ChooseTokenModalProps) {
                     )}
 
                     {!isMobile && (
-                      <Flex h="16px" overflow="hidden">
+                      <Flex className="bccb-widget-token-address-link" h="16px" overflow="hidden">
                         <Flex
                           flexDir="column"
                           className={isNative || isActive ? undefined : 'token-info'}
@@ -155,6 +157,7 @@ export function ChooseTokenModal(props: ChooseTokenModalProps) {
 
                   {!isDisabled && showBalance && (
                     <Flex
+                      className="bccb-widget-token-list-token-balance"
                       flexShrink={0}
                       flexDir="column"
                       alignItems="flex-end"
@@ -198,7 +201,7 @@ function TokenAddress(props: TokenAddressProps) {
   const { isMobile } = useResponsive();
 
   return (
-    <Flex>
+    <Flex className="bccb-widget-token-list-address">
       <Text
         isTruncated
         flexShrink={0}

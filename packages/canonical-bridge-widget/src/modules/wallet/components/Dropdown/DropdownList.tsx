@@ -10,6 +10,7 @@ export function DropdownList(props: DropdownListProps) {
 
   return (
     <MenuList
+      className="bccb-widget-header-menu-list"
       bg={theme.colors[colorMode].popover.background}
       borderRadius={'8px'}
       maxH={'400px'}

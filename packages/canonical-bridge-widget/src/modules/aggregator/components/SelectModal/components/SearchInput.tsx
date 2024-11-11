@@ -61,6 +61,7 @@ export function SearchInput(props: SearchInputProps) {
 
       {value && (
         <InputRightElement
+          className="bccb-widget-modal-search-right-element"
           justifyContent="flex-start"
           pl={'8px'}
           color={theme.colors[colorMode].text.tertiary}

@@ -21,6 +21,7 @@ export const InfoTooltip = (props: InfoTooltipProps) => {
   return (
     <Tooltip
       hasArrow
+      className="bccb-widget-info-tooltip"
       placement="top"
       {...(isBase && {
         isOpen,

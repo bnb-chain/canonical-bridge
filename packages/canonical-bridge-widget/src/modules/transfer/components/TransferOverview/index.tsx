@@ -107,6 +107,7 @@ export function TransferOverview({ routeContentBottom }: { routeContentBottom?: 
   const loading = !options || !options?.length || isGlobalFeeLoading;
   const content = (
     <Box
+      className="bccb-widget-route-container"
       position={'relative'}
       borderRadius={'24px'}
       py={'24px'}

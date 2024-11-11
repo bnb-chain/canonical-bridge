@@ -31,6 +31,7 @@ export const NoRouteFound = ({ onOpen }: NoRouteFoundProps) => {
 
   return (
     <Flex
+      className="bccb-widget-no-route-found-container"
       flexDir={'column'}
       w={'100%'}
       gap={'8px'}
@@ -38,14 +39,21 @@ export const NoRouteFound = ({ onOpen }: NoRouteFoundProps) => {
       borderRadius={'8px'}
       p={[0, 0, 0, '0 16px']}
     >
-      <Flex justifyContent={'center'}>
+      <Flex className="bccb-widget-no-route-found-icon" justifyContent={'center'}>
         <RouteNotFoundIcon w={'40px'} h={'40px'} />
       </Flex>
-      <Typography variant="body" size={'md'} textAlign={'center'} fontWeight={500}>
+      <Typography
+        className="bccb-widget-no-route-found-title"
+        variant="body"
+        size={'md'}
+        textAlign={'center'}
+        fontWeight={500}
+      >
         {formatMessage({ id: !isNoRoute ? 'route.adjust.title' : 'route.no-found.title' })}
       </Typography>
 
       <Typography
+        className="bccb-widget-no-route-found-desc"
         variant="body"
         size={'sm'}
         mt={[0, 0, 0, '-4px']}
@@ -58,6 +66,7 @@ export const NoRouteFound = ({ onOpen }: NoRouteFoundProps) => {
       </Typography>
       {!isNoRoute && (
         <Box
+          className="bccb-widget-no-route-found-link"
           display={{ base: 'block', lg: 'none' }}
           margin={'0 auto'}
           fontSize={'14px'}
