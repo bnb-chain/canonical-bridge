@@ -13,8 +13,16 @@ export function ToSection() {
   const toChain = useAppSelector((state) => state.transfer.toChain);
 
   return (
-    <Flex flexDir="column" gap={'8px'} w={'100%'} flex={1} h={'48px'}>
+    <Flex 
+      flexDir="column"
+      gap={'12px'}
+      w={'100%'}
+      flex={1}
+      h={'64px'}
+    >
+    <Flex className="bccb-widget-network-to" flexDir="column" gap={'8px'} w={'100%'} flex={1} h={'48px'}>
       <Flex
+        className="bccb-widget-network-title"
         alignItems="center"
         justifyContent={'space-between'}
         display={{ base: 'flex', md: 'none' }}

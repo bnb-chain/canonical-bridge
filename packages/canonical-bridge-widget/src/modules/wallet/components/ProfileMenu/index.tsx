@@ -24,6 +24,7 @@ export const ProfileMenu = () => {
       {({ isOpen, onClose }) => (
         <>
           <DropdownButton
+            className="bccb-widget-header-profile-button"
             bgColor={theme.colors[colorMode].layer[3].default}
             isActive={isOpen}
             pl={{ base: '0', md: '12px' }}
@@ -61,7 +62,7 @@ export const ProfileMenu = () => {
             </Box>
           </DropdownButton>
 
-          <DropdownList overflowY="visible">
+          <DropdownList className="bccb-widget-header-profile-list" overflowY="visible">
             <Flex alignItems="center" p="16px 16px 12px">
               <Flex gap="12px">
                 <Center
@@ -89,6 +90,7 @@ export const ProfileMenu = () => {
             </Flex>
 
             <Flex
+              className="bccb-widget-header-profile-disconnect-link"
               borderTop={`1px solid ${theme.colors[colorMode].popover.separator}`}
               py="8px"
               onClick={() => {

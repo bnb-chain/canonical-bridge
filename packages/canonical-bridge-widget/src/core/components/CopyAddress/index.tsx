@@ -27,7 +27,13 @@ export const CopyAddress = ({
     return null;
   }
   return (
-    <Flex justifyContent={'center'} alignItems={'center'} position={'relative'} {...otherProps}>
+    <Flex
+      className="bccb-widget-copy-address"
+      justifyContent={'center'}
+      alignItems={'center'}
+      position={'relative'}
+      {...otherProps}
+    >
       <CopyIcon
         boxSize={'20px'}
         cursor={'pointer'}

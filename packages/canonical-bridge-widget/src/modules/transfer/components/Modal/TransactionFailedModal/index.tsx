@@ -8,6 +8,7 @@ export function TransactionFailedModal(props: Omit<StateModalProps, 'title'>) {
 
   return (
     <StateModal
+      className="bccb-widget-transaction-failed-modal"
       type="error"
       title={formatMessage({ id: 'modal.fail.title' })}
       description={formatMessage({ id: 'modal.fail.desc' })}

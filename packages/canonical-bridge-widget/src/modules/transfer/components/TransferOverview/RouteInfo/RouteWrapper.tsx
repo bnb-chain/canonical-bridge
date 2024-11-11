@@ -18,6 +18,7 @@ export const RouteWrapper = ({
 
   return (
     <Flex
+      className="bccb-widget-route-wrapper"
       flex={1}
       flexDir={'column'}
       gap={'4px'}

@@ -66,6 +66,7 @@ export const RefreshingButton = (props: BoxProps) => {
 
   return transferActionInfo ? (
     <Box
+      className={'bccb-widget-refreshing-button'}
       cursor={!isGlobalFeeLoading && !isRefreshing ? 'pointer' : 'not-allowed'}
       color={theme.colors[colorMode].button.refresh.text}
       _hover={{

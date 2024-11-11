@@ -43,7 +43,7 @@ export const MaxLink: React.FC = () => {
     fromChain?.chainType === walletType && balance !== undefined && !!selectedToken;
 
   return (
-    <Flex alignItems={'center'}>
+    <Flex className="bccb-widget-transfer-max" alignItems={'center'}>
       {showBalance ? (
         <Box
           onClick={setMaxAmount}

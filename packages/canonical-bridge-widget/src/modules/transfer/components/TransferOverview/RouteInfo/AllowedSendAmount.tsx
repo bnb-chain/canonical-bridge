@@ -21,6 +21,7 @@ export const AllowedSendAmount = ({
 
   return allowedSendAmount && isError ? (
     <Flex
+      className="bccb-widget-allowed-send-amount"
       flexDir={'row'}
       alignItems={'center'}
       color={

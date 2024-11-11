@@ -146,11 +146,12 @@ export const ReceiveInfo = ({ onOpen }: ReceiveInfoProps) => {
   }, [estimatedAmount]);
 
   return (
-    <Box mb={isHideSection ? '-24px' : 0}>
+    <Box className="bccb-widget-received-info-container" mb={isHideSection ? '-24px' : 0}>
       <Collapse in={!isHideSection} animateOpacity>
         <Flex flexDir={'column'} gap={'8px'}>
           <Flex flexDir={'row'} alignItems={'center'} justifyContent={'space-between'}>
             <Typography
+              className="title"
               variant={'label'}
               size={'md'}
               color={theme.colors[colorMode].text.placeholder}
@@ -158,12 +159,16 @@ export const ReceiveInfo = ({ onOpen }: ReceiveInfoProps) => {
               {formatMessage({ id: 'you.receive.title' })}
             </Typography>
             {!isHideRouteButton ? (
-              <Box display={{ base: 'block', lg: 'none' }}>
+              <Box
+                className="bccb-widget-received-info-route-open"
+                display={{ base: 'block', lg: 'none' }}
+              >
                 <RouteChangeButton onOpen={onOpen} />
               </Box>
             ) : null}
           </Flex>
           <Flex
+            className="bccb-widget-received-info-route-content"
             minH={'106px'}
             borderRadius={'8px'}
             p={'12px'}

@@ -65,6 +65,7 @@ export const ListItem = React.forwardRef((props: ListItemProps, ref: any) => {
         </Flex>
         {showTag && isDisabled && (
           <Flex
+            className="bccb-widget-select-list-item-tag"
             alignItems="center"
             flexShrink={0}
             fontSize={'12px'}

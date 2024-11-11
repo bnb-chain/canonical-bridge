@@ -11,12 +11,27 @@ export function NoResultFound(props: NoResultFoundProps) {
   const { colorMode } = useColorMode();
 
   return (
-    <Flex alignItems="center" flexDir="column" maxW={347} margin="32px auto" {...restProps}>
+    <Flex
+      className="bccb-widget-modal-no-result-found"
+      alignItems="center"
+      flexDir="column"
+      maxW={347}
+      margin="32px auto"
+      {...restProps}
+    >
       <NoResultIcon />
-      <Box fontWeight={700} fontSize={'20px'} lineHeight={1.4} mt={'16px'} mb={'8px'}>
+      <Box
+        className="title"
+        fontWeight={700}
+        fontSize={'20px'}
+        lineHeight={1.4}
+        mt={'16px'}
+        mb={'8px'}
+      >
         {formatMessage({ id: 'select-modal.search.no-result.title' })}
       </Box>
       <Text
+        className="bccb-widget-modal-no-result-found-text"
         textAlign="center"
         fontSize={'14px'}
         lineHeight={'20px'}

@@ -15,6 +15,7 @@ export const OtherRouteError = ({ bridgeType }: OtherRouteErrorProps) => {
   const routeError = useAppSelector((state) => state.transfer.routeError);
   return routeError && routeError[bridgeType] ? (
     <Box
+      className="bccb-widget-route-error"
       position={'static'}
       color={theme.colors[colorMode].route.warning}
       lineHeight={'16px'}

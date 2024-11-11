@@ -16,8 +16,9 @@ export function RoutesModal(props: RoutesModalProps) {
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} size={{ base: 'full', md: 'lg' }} isCentered>
-      <ModalOverlay w={'100%'} />
+      <ModalOverlay className="bccb-widget-modal-route-overlay" w={'100%'} />
       <ModalContent
+        className="bccb-widget-modal-route-content"
         background={theme.colors[colorMode].background.modal}
         p={0}
         h={['100vh', '100vh', '665px']}
@@ -26,6 +27,7 @@ export function RoutesModal(props: RoutesModalProps) {
         margin={0}
       >
         <Flex
+          className="bccb-widget-modal-route-header"
           h={'64px'}
           px={'20px'}
           py={0}
@@ -50,7 +52,12 @@ export function RoutesModal(props: RoutesModalProps) {
             }}
           />
         </Flex>
-        <Flex flexDir="column" p={['20px', '20px', '24px 20px 16px']} flex={1}>
+        <Flex
+          className="bccb-widget-modal-route-wrapper"
+          flexDir="column"
+          p={['20px', '20px', '24px 20px 16px']}
+          flex={1}
+        >
           <Flex flexDir="column" mt={['0', '0', '0', '24px']} flex={1} overflowY="auto">
             {children}
           </Flex>

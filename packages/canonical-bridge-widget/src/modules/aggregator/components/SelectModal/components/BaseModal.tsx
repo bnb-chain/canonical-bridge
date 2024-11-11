@@ -13,10 +13,11 @@ interface BaseModalProps {
   onSearch: (value: string) => void;
   placeholder: string;
   isNoResult: boolean;
+  className?: string;
 }
 
 export function BaseModal(props: BaseModalProps) {
-  const { isOpen, title, children, onClose, onSearch, placeholder, isNoResult } = props;
+  const { isOpen, title, children, onClose, onSearch, placeholder, isNoResult, className } = props;
 
   const theme = useTheme();
   const { colorMode } = useColorMode();
@@ -42,6 +43,7 @@ export function BaseModal(props: BaseModalProps) {
         marginInline={0}
       >
         <Flex
+          className={className}
           h={'64px'}
           px={'20px'}
           py={0}
@@ -68,7 +70,11 @@ export function BaseModal(props: BaseModalProps) {
         </Flex>
         <Flex flexDir="column" p="20px 0px 16px" flex={1}>
           <Flex px={'20px'} mb={'24px'}>
-            <SearchInput onChange={onSearch} placeholder={placeholder} />
+            <SearchInput
+              className="bccb-widget-modal-search"
+              onChange={onSearch}
+              placeholder={placeholder}
+            />
           </Flex>
           <Flex flexDir="column" flex={1} overflowY="auto">
             {isNoResult ? <NoResultFound /> : <>{children}</>}
