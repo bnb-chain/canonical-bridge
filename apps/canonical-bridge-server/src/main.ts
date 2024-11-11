@@ -38,8 +38,8 @@ async function bootstrap() {
     logger.log('Listening on port', SERVER_PORT);
   });
 
-  server.keepAliveTimeout = 61 * 1000;
-  server.headersTimeout = 62 * 1000;
+  server.keepAliveTimeout = 121 * 1000;
+  server.headersTimeout = 122 * 1000;
 }
 
 bootstrap();
