@@ -11,7 +11,7 @@ export interface ThemeProviderProps {
   colorMode?: ColorMode;
   children: React.ReactNode;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  themeConfig?: { dark?: any; light?: any };
+  themeConfig?: { dark?: any; light?: any; fontFamily?: string };
 }
 
 export const ThemeProvider = ({
@@ -37,7 +37,7 @@ export const ThemeProvider = ({
         global: ({ colorMode }: { colorMode: ColorMode }) => ({
           body: {
             bg: themeConfig?.[colorMode]?.background?.body ?? theme.colors[colorMode].background[3],
-            fontFamily: 'Space Grotesk',
+            fontFamily: themeConfig?.fontFamily ?? 'Space Grotesk',
           },
           ...walletStyles(colorMode),
         }),
