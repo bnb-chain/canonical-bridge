@@ -53,7 +53,9 @@ export function DestinationNetworkModal(props: DestinationNetworkModalProps) {
       <VirtualList className="bccb-widget-to-network-virtual-list" data={result} itemHeight={64}>
         {(item) => (
           <ListItem
-            className="bccb-widget-to-network-list-item"
+            className={
+              'bccb-widget-to-network-list-item' + (toChain?.id === item.id ? '-active' : '')
+            }
             key={item.id}
             iconUrl={item.icon}
             isActive={toChain?.id === item.id}

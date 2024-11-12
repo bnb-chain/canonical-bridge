@@ -43,7 +43,7 @@ export function TransferWidget() {
         justifyContent={'center'}
       >
         <Flex
-          className="bccb-widget-transfer-widget-title"
+          className="bccb-widget-transfer-widget-wrapper"
           flexDir="column"
           background={['none', 'none', theme.colors[colorMode].layer[2].default]}
           color={theme.colors[colorMode].text.primary}
@@ -58,6 +58,7 @@ export function TransferWidget() {
         >
           {appearance.bridgeTitle && (
             <Typography
+              className="bccb-widget-transfer-widget-title"
               variant={'heading'}
               size={{ base: 'xs', md: 'sm' }}
               as="h1"

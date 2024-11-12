@@ -31,8 +31,9 @@ export const ListItem = React.forwardRef((props: ListItemProps, ref: any) => {
   const { formatMessage } = useIntl();
 
   return (
-    <Box ref={ref} p="0 20px 8px">
+    <Box className={`bccb-widget-select-list-wrapper`} ref={ref} p="0 20px 8px">
       <Flex
+        className={`bccb-widget-select-list` + isDisabled ? '-disabled' : ''}
         borderRadius={'8px'}
         px={'12px'}
         py="8px"
@@ -65,7 +66,7 @@ export const ListItem = React.forwardRef((props: ListItemProps, ref: any) => {
         </Flex>
         {showTag && isDisabled && (
           <Flex
-            className="bccb-widget-select-list-item-tag"
+            className={`bccb-widget-select-list-item-tag`}
             alignItems="center"
             flexShrink={0}
             fontSize={'12px'}

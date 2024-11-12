@@ -60,6 +60,7 @@ export function BaseModal(props: BaseModalProps) {
           <Flex boxSize={'24px'}></Flex>
           {title}
           <CloseIcon
+            className={`${className}-close-button`}
             boxSize={'24px'}
             onClick={onClose}
             cursor="pointer"
@@ -72,7 +73,7 @@ export function BaseModal(props: BaseModalProps) {
         <Flex flexDir="column" p="20px 0px 16px" flex={1}>
           <Flex px={'20px'} mb={'24px'}>
             <SearchInput
-              className="bccb-widget-modal-search"
+              className={`${className}-search`}
               onChange={onSearch}
               placeholder={placeholder}
             />

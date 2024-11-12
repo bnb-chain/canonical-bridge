@@ -56,7 +56,13 @@ export const ProfileMenu = () => {
               </Center>
             )}
             <Box display={{ base: 'none', md: 'block' }}>
-              <Typography as={'span'} variant={'label'} size={'md'} fontWeight={500}>
+              <Typography
+                className="profile-address"
+                as={'span'}
+                variant={'label'}
+                size={'md'}
+                fontWeight={500}
+              >
                 {formatAppAddress({ address })}
               </Typography>
             </Box>
@@ -81,7 +87,10 @@ export const ProfileMenu = () => {
                     <CopyAddress boxSize={'20px'} content={address} />
                   </Flex>
                   {!!balance?.formatted && (
-                    <Flex color={theme.colors[colorMode].text.secondary}>
+                    <Flex
+                      className="bccb-widget-header-profile-balance"
+                      color={theme.colors[colorMode].text.secondary}
+                    >
                       {formatNumber(Number(balance?.formatted), 4)} {balance?.symbol}
                     </Flex>
                   )}

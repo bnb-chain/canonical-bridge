@@ -46,6 +46,7 @@ export const MaxLink: React.FC = () => {
     <Flex className="bccb-widget-transfer-max" alignItems={'center'}>
       {showBalance ? (
         <Box
+          className="max-text"
           onClick={setMaxAmount}
           color={theme.colors[colorMode].text.tertiary}
           textDecoration={'underline'}

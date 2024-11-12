@@ -24,6 +24,7 @@ export const bridgeConfig: ICanonicalBridgeConfig = {
     theme: {
       dark: dark,
       light: light,
+      fontFamily: 'Georgia',
     },
   },
   wallet: {
