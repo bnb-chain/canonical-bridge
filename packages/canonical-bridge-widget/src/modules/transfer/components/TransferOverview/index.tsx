@@ -117,7 +117,7 @@ export function TransferOverview({ routeContentBottom }: { routeContentBottom?: 
       w={'100%'}
       overflow={['auto', 'auto', 'auto', 'hidden']}
     >
-      <Flex flexDir={'column'} gap={'12px'}>
+      <Flex className="bccb-widget-route-container-inner" flexDir={'column'} gap={'12px'}>
         <Flex
           className="bccb-widget-route-header"
           display={{ base: 'none', lg: 'flex' }}

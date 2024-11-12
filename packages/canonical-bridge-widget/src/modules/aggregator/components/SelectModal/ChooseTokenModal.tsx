@@ -57,7 +57,7 @@ export function ChooseTokenModal(props: ChooseTokenModalProps) {
 
   return (
     <BaseModal
-      className="bccb-widget-token-modal"
+      className="bccb-widget-token-modal-header"
       isOpen={isOpen}
       onClose={onClose}
       title={formatMessage({ id: 'select-modal.token.title' })}
@@ -66,6 +66,7 @@ export function ChooseTokenModal(props: ChooseTokenModalProps) {
       isNoResult={isNoResult}
     >
       <Flex
+        className="bccb-widget-token-modal-header"
         fontSize={'14px'}
         fontWeight={400}
         lineHeight="16px"
@@ -87,7 +88,7 @@ export function ChooseTokenModal(props: ChooseTokenModalProps) {
 
             return (
               <ListItem
-                className="bccb-widget-token-list-item"
+                className={`bccb-widget-token-list-item` + (isDisabled ? '-disabled' : '')}
                 key={item.address}
                 iconUrl={item.icon}
                 isActive={isActive}
@@ -114,7 +115,9 @@ export function ChooseTokenModal(props: ChooseTokenModalProps) {
               >
                 <Flex alignItems="center" justifyContent="space-between" w="100%" gap={'12px'}>
                   <Flex flex={1} minW={0} flexDir="column" gap={'4px'}>
-                    <Text isTruncated>{item.displaySymbol}</Text>
+                    <Text className="bccb-widget-token-list-symbol" isTruncated>
+                      {item.displaySymbol}
+                    </Text>
 
                     {isMobile && !isNative && (
                       <TokenAddress
@@ -135,6 +138,7 @@ export function ChooseTokenModal(props: ChooseTokenModalProps) {
                         >
                           {(!isActive || isNative) && (
                             <Text
+                              className="token-name"
                               isTruncated
                               flexShrink={0}
                               fontSize="12px"

@@ -54,7 +54,9 @@ export function SourceNetworkModal(props: SourceNetworkModalProps) {
       <VirtualList className="bccb-widget-from-network-virtual-list" data={result} itemHeight={64}>
         {(item) => (
           <ListItem
-            className="bccb-widget-from-network-list-item"
+            className={
+              'bccb-widget-from-network-list-item' + (fromChain?.id === item.id ? '-active' : '')
+            }
             key={item.id}
             iconUrl={item.icon}
             isActive={fromChain?.id === item.id}

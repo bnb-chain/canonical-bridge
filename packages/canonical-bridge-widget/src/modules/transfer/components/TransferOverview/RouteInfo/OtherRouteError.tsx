@@ -25,8 +25,15 @@ export const OtherRouteError = ({ bridgeType }: OtherRouteErrorProps) => {
         },
       }}
     >
-      <InfoCircleIcon display={'inline'} w={'16px'} h={'16px'} />
-      <Box ml={'4px'} display={'inline'} lineHeight={'16px'} fontSize={'14px'} fontWeight={400}>
+      <InfoCircleIcon className="error-icon" display={'inline'} w={'16px'} h={'16px'} />
+      <Box
+        className="error-text"
+        ml={'4px'}
+        display={'inline'}
+        lineHeight={'16px'}
+        fontSize={'14px'}
+        fontWeight={400}
+      >
         {routeError[bridgeType]}
       </Box>
     </Box>

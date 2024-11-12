@@ -58,6 +58,7 @@ export const ThemeProvider = ({ children }: ThemeProviderProps) => {
 1. Widget Main
 
 - bccb-widget-transfer-widget
+- bccb-widget-transfer-widget-wrapper
 - bccb-widget-transfer-widget-title
 - bccb-widget-exchange-chain-icon
 - bccb-widget-copy-address
@@ -80,6 +81,7 @@ export const ThemeProvider = ({ children }: ThemeProviderProps) => {
 - bccb-widget-route-bottom
 - bccb-widget-route-wrapper
 - bccb-widget-route-container
+- bccb-widget-route-container-inner
 - bccb-widget-route-name
 - bccb-widget-route-name-text
 - bccb-widget-route-name-tag-bestTime
@@ -110,11 +112,15 @@ export const ThemeProvider = ({ children }: ThemeProviderProps) => {
 - bccb-widget-header-wallet-connect-button
 - bccb-widget-header-menu-button
 - bccb-widget-header-menu-item
+- bccb-widget-header-profile-balance
 - bccb-widget-header-profile-list
 - bccb-widget-header-profile-disconnect-link
 - bccb-widget-header-profile-button
 - bccb-widget-header-switching-tips-modal
 - bccb-widget-header-preventing-modal
+- bccb-widget-header-network-status
+- bccb-widget-header-network-status-title
+- bccb-widget-header-network-status-network
 
 5. Token Selection Modal
 
@@ -122,8 +128,10 @@ export const ThemeProvider = ({ children }: ThemeProviderProps) => {
 - bccb-widget-token-modal-content
 - bccb-widget-token-virtual-list
 - bccb-widget-token-list-address
+- bccb-widget-token-list-symbol
 - bccb-widget-token-address-link
 - bccb-widget-token-list-item
+- bccb-widget-token-list-item-disabled
 - bccb-widget-token-list-token-balance
 
 6. From Network Selection
@@ -153,6 +161,7 @@ export const ThemeProvider = ({ children }: ThemeProviderProps) => {
 9. Send Amount Input
 
 - bccb-widget-transfer-input-container
+- bccb-widget-transfer-input-wrapper
 - bccb-widget-transfer-input
 - bccb-widget-transfer-max
 - bccb-widget-transfer-input-error

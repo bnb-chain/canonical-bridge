@@ -44,6 +44,7 @@ export function NetworkStatus() {
     <DropdownList className="bccb-widget-header-network-status" maxW={'240px'}>
       <Flex flexDir={'column'} alignItems={'center'} padding={'16px'} gap={'8px'}>
         <Typography
+          className="bccb-widget-header-network-status-title"
           color={theme.colors[colorMode].text.secondary}
           variant={'label'}
           size={'md'}
@@ -57,6 +58,7 @@ export function NetworkStatus() {
         <TransferToIcon w={'24px'} h={'24px'} transform={'rotate(90deg)'} />
 
         <Flex
+          className="bccb-widget-header-network-status-network"
           maxW={'100%'}
           borderRadius={'24px'}
           padding={'4px'}
@@ -101,7 +103,7 @@ export function NetworkStatus() {
           return (
             <>
               <DropdownButton
-                className="bccb-widget-header-dropdown-button"
+                className="bccb-widget-header-dropdown-button-not-connect"
                 bgColor={theme.colors[colorMode].layer[3].default}
                 isActive={isOpen}
                 isWarning={isOpen}
@@ -147,6 +149,7 @@ export function NetworkStatus() {
         return (
           <>
             <DropdownButton
+              className="bccb-widget-header-dropdown-button"
               bgColor={theme.colors[colorMode].layer[3].default}
               isActive={isOpen}
               isWarning={isOpen && isWrongNetwork}
@@ -159,7 +162,13 @@ export function NetworkStatus() {
               ) : (
                 <IconImage src={iconUrl} boxSize="24px" />
               )}
-              <Flex flexDir="column" gap="0" alignItems="flex-start" textAlign="left">
+              <Flex
+                className="chain-name"
+                flexDir="column"
+                gap="0"
+                alignItems="flex-start"
+                textAlign="left"
+              >
                 <Text fontSize="14px" noOfLines={1}>
                   {chain.name}
                 </Text>
@@ -175,6 +184,7 @@ export function NetworkStatus() {
 
                   return (
                     <DropdownItem
+                      className={`bccb-widget-header-menu-item` + (isSelected ? '-selected' : '')}
                       key={item.id}
                       color={
                         isSelected
