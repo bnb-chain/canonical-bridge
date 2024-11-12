@@ -10,7 +10,7 @@ export const NetWorkSection = () => {
   const theme = useTheme();
 
   return (
-    <Flex flexDir={'column'} gap={'8px'} mb={{ base: 0, md: theme.sizes['2'] }}>
+    <Flex flexDir={'column'} gap={'8px'}>
       <Flex flexDir={'row'} display={{ base: 'none', md: 'flex' }}>
         <Flex alignItems="center" justifyContent={'space-between'} flex={1}>
           <Typography variant="label" size={'md'} color={theme.colors[colorMode].text.placeholder}>

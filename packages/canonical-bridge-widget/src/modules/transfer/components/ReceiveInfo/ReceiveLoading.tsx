@@ -8,8 +8,8 @@ export const ReceiveLoading = () => {
           <Skeleton height={'22px'} width={'160px'} />
           <Skeleton height={'22px'} width={'80px'} />
         </Flex>
-        <Skeleton height={'15px'} maxW={'333px'} width={'100%'} />
-        <Skeleton height={'15px'} maxW={'371px'} width={'100%'} />
+        <Skeleton height={'13px'} maxW={'333px'} width={'100%'} />
+        <Skeleton height={'13px'} maxW={'371px'} width={'100%'} />
       </Flex>
       <Flex
         display={{ base: 'flex', lg: 'none' }}

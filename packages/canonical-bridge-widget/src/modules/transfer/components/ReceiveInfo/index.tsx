@@ -164,11 +164,11 @@ export const ReceiveInfo = ({ onOpen }: ReceiveInfoProps) => {
             ) : null}
           </Flex>
           <Flex
-            minH={'106px'}
+            minH={'102px'}
             borderRadius={'8px'}
             p={'12px'}
             flexDir={'column'}
-            gap={'12px'}
+            gap={'8px'}
             background={theme.colors[colorMode].receive.background}
             position={'relative'}
           >
@@ -181,8 +181,17 @@ export const ReceiveInfo = ({ onOpen }: ReceiveInfoProps) => {
                     </Box>
                   }
                   {
-                    <Box display={{ base: 'block', lg: 'none' }} mb={'-12px'}>
-                      <RefreshingButton position={'absolute'} right={'16px'} top={'16px'} />
+                    <Box
+                      display={{ base: 'block', lg: 'none' }}
+                      mb={'-12px'}
+                      sx={{
+                        svg: {
+                          w: '29px',
+                          h: '29px',
+                        },
+                      }}
+                    >
+                      <RefreshingButton position={'absolute'} right={'12px'} top={'10px'} />
                     </Box>
                   }
                   {bridgeType && (

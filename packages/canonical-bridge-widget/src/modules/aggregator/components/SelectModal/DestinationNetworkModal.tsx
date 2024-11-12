@@ -49,7 +49,7 @@ export function DestinationNetworkModal(props: DestinationNetworkModalProps) {
       placeholder={formatMessage({ id: 'select-modal.destination.placeholder' })}
       isNoResult={isNoResult}
     >
-      <VirtualList data={result} itemHeight={64}>
+      <VirtualList data={result} itemHeight={52}>
         {(item) => (
           <ListItem
             key={item.id}

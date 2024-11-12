@@ -64,20 +64,22 @@ export function ChooseTokenModal(props: ChooseTokenModalProps) {
       placeholder={formatMessage({ id: 'select-modal.token.placeholder' })}
       isNoResult={isNoResult}
     >
-      <Flex
-        fontSize={'14px'}
-        fontWeight={400}
-        lineHeight="16px"
-        color={theme.colors[colorMode].text.secondary}
-        pb={'12px'}
-        px={'20px'}
-        justifyContent="space-between"
-      >
-        <Text>{formatMessage({ id: 'select-modal.token.column.name' })}</Text>
-        {showBalance && <Text>{formatMessage({ id: 'select-modal.token.column.balance' })}</Text>}
-      </Flex>
+      {isConnected && (
+        <Flex
+          fontSize={'14px'}
+          fontWeight={400}
+          lineHeight="16px"
+          color={theme.colors[colorMode].text.secondary}
+          pb={'12px'}
+          px={'20px'}
+          justifyContent="space-between"
+        >
+          <Text>{formatMessage({ id: 'select-modal.token.column.name' })}</Text>
+          {showBalance && <Text>{formatMessage({ id: 'select-modal.token.column.balance' })}</Text>}
+        </Flex>
+      )}
       <Flex flexDir="column" flex={1}>
-        <VirtualList data={data} itemHeight={64}>
+        <VirtualList data={data} itemHeight={52}>
           {(item) => {
             const isDisabled = !isChainOrTokenCompatible(item);
             const isActive =
@@ -111,7 +113,7 @@ export function ChooseTokenModal(props: ChooseTokenModalProps) {
                 }}
               >
                 <Flex alignItems="center" justifyContent="space-between" w="100%" gap={'12px'}>
-                  <Flex flex={1} minW={0} flexDir="column" gap={'4px'}>
+                  <Flex flex={1} minW={0} flexDir="column" gap={'0'}>
                     <Text isTruncated>{item.displaySymbol}</Text>
 
                     {isMobile && !isNative && (

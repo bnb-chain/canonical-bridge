@@ -173,11 +173,11 @@ export function TransferOverview({ routeContentBottom }: { routeContentBottom?: 
       transition={'width 0.15s'}
     >
       {cBridgeSupport && <CBridgeSendMaxMin />}
-      <Flex flexDir={'column'} gap={'12px'} ml={{ base: 0, lg: '24px' }} w={'100%'}>
+      <Flex flexDir={'column'} gap={'8px'} ml={{ base: 0, lg: '24px' }} w={'100%'}>
         {!routeContentBottom ? (
           content
         ) : (
-          <Box mb={showRoute ? 0 : '-12px'} borderRadius={'24px'} overflow={'hidden'}>
+          <Box mb={showRoute ? 0 : '-8px'} borderRadius={'24px'} overflow={'hidden'}>
             <Collapse in={showRoute} animateOpacity>
               {content}
             </Collapse>

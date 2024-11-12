@@ -67,7 +67,7 @@ export function BaseModal(props: BaseModalProps) {
           />
         </Flex>
         <Flex flexDir="column" p="20px 0px 16px" flex={1}>
-          <Flex px={'20px'} mb={'24px'}>
+          <Flex px={'20px'} mb={'20px'}>
             <SearchInput onChange={onSearch} placeholder={placeholder} />
           </Flex>
           <Flex flexDir="column" flex={1} overflowY="auto">

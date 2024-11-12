@@ -31,12 +31,12 @@ export const ListItem = React.forwardRef((props: ListItemProps, ref: any) => {
   const { formatMessage } = useIntl();
 
   return (
-    <Box ref={ref} p="0 20px 8px">
+    <Box ref={ref} p="0 20px 4px">
       <Flex
         borderRadius={'8px'}
-        px={'12px'}
-        py="8px"
-        h="56px"
+        px={'11px'}
+        py="7px"
+        h="48px"
         alignItems="center"
         border="1px solid"
         borderColor={isActive ? theme.colors[colorMode].border.brand : 'transparent'}
@@ -47,7 +47,7 @@ export const ListItem = React.forwardRef((props: ListItemProps, ref: any) => {
           ..._hover,
           bg: !isActive && !isDisabled ? theme.colors[colorMode].layer['3'].hover : undefined,
         }}
-        gap={'12px'}
+        gap={'8px'}
         fontSize="14px"
         lineHeight="16px"
         fontWeight={500}
@@ -55,6 +55,7 @@ export const ListItem = React.forwardRef((props: ListItemProps, ref: any) => {
         {...restProps}
       >
         <IconImage
+          boxSize="24px"
           src={iconUrl}
           filter={isDisabled ? 'grayscale(100%)' : undefined}
           opacity={isDisabled ? 0.5 : 1}
