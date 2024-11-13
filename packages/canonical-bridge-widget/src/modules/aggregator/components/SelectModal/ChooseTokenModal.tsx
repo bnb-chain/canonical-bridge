@@ -66,7 +66,7 @@ export function ChooseTokenModal(props: ChooseTokenModalProps) {
       isNoResult={isNoResult}
     >
       <Flex
-        className="bccb-widget-token-modal-header"
+        className="bccb-widget-token-modal-list-header"
         fontSize={'14px'}
         fontWeight={400}
         lineHeight="16px"
