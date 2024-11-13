@@ -99,11 +99,13 @@ export class CanonicalBridgeSDK {
           const adapter = this.options.adapters.find(
             (e) => e.bridgeType === bridgeType
           );
-          if (adapter) return adapter;
-
-          throw Error(
-            `${bridgeType} adapter is not found, you should initialize an adapter before using`
-          );
+          if (adapter) {
+            return adapter;
+          } else {
+            console.warn(
+              `${bridgeType} adapter is not found, you should initialize an adapter before using`
+            );
+          }
         },
       });
     });
@@ -559,4 +561,8 @@ export class CanonicalBridgeSDK {
 
     return Array.from(tokenMap.values());
   }
+
+  public getChainDetail() {}
+
+  public getTokenDetail() {}
 }

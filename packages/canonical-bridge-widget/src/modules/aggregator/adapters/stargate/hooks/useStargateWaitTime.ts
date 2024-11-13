@@ -22,7 +22,7 @@ export const useStargateWaitTime = () => {
         toEndpointId: String(toEndpointId),
       });
     },
-    enabled: !!fromEndpointId && !!toEndpointId && isMainnet,
+    enabled: !!fromEndpointId && !!toEndpointId && isMainnet && !!bridgeSDK.stargate,
     staleTime: 1000 * 30,
   });
 };

@@ -1,7 +1,7 @@
 import { useChains } from 'wagmi';
 import { useCallback } from 'react';
 import { useConnection } from '@solana/wallet-adapter-react';
-import { IBridgeChain, IBridgeToken } from '@bnb-chain/canonical-bridge-sdk';
+import { ChainType, IBridgeChain, IBridgeToken } from '@bnb-chain/canonical-bridge-sdk';
 
 import { useAggregator } from '@/modules/aggregator/components/AggregatorProvider';
 import { IBridgeTokenWithBalance } from '@/modules/aggregator/types';
@@ -35,13 +35,12 @@ export function useSelection() {
     toChainId?: number;
     token?: IBridgeToken;
   }) => {
-    const newToToken = getToToken({
-      fromChainId: fromChainId!,
-      toChainId: toChainId!,
-      token: token!,
-    });
-
-    dispatch(setToToken(newToToken));
+    // const newToToken = getToToken({
+    //   fromChainId: fromChainId!,
+    //   toChainId: toChainId!,
+    //   token: token!,
+    // });
+    // dispatch(setToToken(newToToken));
   };
 
   const updateSelectedInfo = ({
@@ -53,58 +52,58 @@ export function useSelection() {
     tmpToChain?: IBridgeChain;
     tmpToken?: IBridgeToken;
   }) => {
-    const newToken = bridgeSDK
-      .getTokens({
-        fromChainId: tmpFromChain?.id,
-        toChainId: tmpToChain?.id,
-      })
-      .find((t) => t.displaySymbol?.toUpperCase() === tmpToken?.displaySymbol?.toUpperCase());
-
-    const newFromChain = getFromChains({
-      toChainId: tmpToChain?.id,
-      token: newToken,
-    }).find((c) => c.id === tmpFromChain?.id);
-
-    const newToChain = getToChains({
-      fromChainId: tmpFromChain?.id,
-      token: newToken,
-    }).find((c) => c.id === tmpToChain?.id);
-
-    dispatch(setFromChain(newFromChain));
-    dispatch(setToChain(newToChain));
-    dispatch(setSelectedToken(newToken));
-
-    updateToToken({
-      fromChainId: newFromChain?.id,
-      toChainId: newToChain?.id,
-      token: newToken,
-    });
+    // const newToken = bridgeSDK
+    //   .getTokens({
+    //     fromChainId: tmpFromChain?.id,
+    //     toChainId: tmpToChain?.id,
+    //   })
+    //   .find((t) => t.displaySymbol?.toUpperCase() === tmpToken?.displaySymbol?.toUpperCase());
+    // const newFromChain = bridgeSDK
+    //   .getFromChains({
+    //     toChainId: tmpToChain?.id,
+    //     token: newToken,
+    //   })
+    //   .find((c) => c.id === tmpFromChain?.id);
+    // const newToChain = bridgeSDK
+    //   .getToChains({
+    //     fromChainId: tmpFromChain?.id,
+    //     token: newToken,
+    //   })
+    //   .find((c) => c.id === tmpToChain?.id);
+    // dispatch(setFromChain(newFromChain));
+    // dispatch(setToChain(newToChain));
+    // dispatch(setSelectedToken(newToken));
+    // updateToToken({
+    //   fromChainId: newFromChain?.id,
+    //   toChainId: newToChain?.id,
+    //   token: newToken,
+    // });
   };
 
   const selectFromChain = async (tmpFromChain: IBridgeChain) => {
     // After selecting fromChain, if toChain becomes incompatible, reselect the first compatible network in toChain list.
-    const toChains = getToChains({
+    const toChains = bridgeSDK.getToChains({
       fromChainId: tmpFromChain.id,
     });
     const tmpToChain =
-      toChains.find((c) => isChainOrTokenCompatible(c) && c.id === toChain?.id) ??
-      toChains.find((c) => isChainOrTokenCompatible(c) && c.chainType !== 'link');
+      toChains.find((c) => c.isCompatible && c.id === toChain?.id) ??
+      toChains.find((c) => c.isCompatible && c.chainType !== 'link');
 
     const tmpTokens = await getSortedTokens({
       chainType: tmpFromChain.chainType,
       fromChainId: tmpFromChain.id,
-      tokens: getTokens({
+      tokens: bridgeSDK.getTokens({
         fromChainId: tmpFromChain.id,
-        toChainId: tmpToChain?.id,
+        toChainId: tmpToChain!.id,
       }),
     });
 
     const newToken =
       tmpTokens.find(
         (t) =>
-          isChainOrTokenCompatible(t) &&
+          t.isCompatible &&
           t.displaySymbol.toUpperCase() === selectedToken?.displaySymbol.toUpperCase(),
-      ) ?? tmpTokens.find((t) => isChainOrTokenCompatible(t));
+      ) ?? tmpTokens.find((t) => t.isCompatible);
 
     updateSelectedInfo({
       tmpToken: newToken,
@@ -123,13 +122,6 @@ export function useSelection() {
       toChainId: number;
       tokenSymbol: string;
     }) {
-      const { adapters } = bridgeSDK.getSDKOptions();
-      const bridgeTypes = adapters.map((item) => item.bridgeType);
-
-      const token = Object.fromEntries(
-        bridgeTypes.map((item) => [item, { symbol: tokenSymbol }]),
-      ) as any as IBridgeToken;
-
       if (chainId) {
         const fromChains = bridgeSDK.getFromChains();
         const chain = fromChains.find((chain) => chain.id === chainId);
@@ -140,15 +132,11 @@ export function useSelection() {
         if (fromChain?.id) return;
       }
 
-      const fromChains = getFromChains({
-        toChainId,
-        token,
-      });
-      const toChains = getToChains({
+      const fromChains = bridgeSDK.getFromChains();
+      const toChains = bridgeSDK.getToChains({
         fromChainId,
-        token,
       });
-      const tokens = getTokens({
+      const tokens = bridgeSDK.getTokens({
         fromChainId,
         toChainId,
       });
@@ -163,11 +151,11 @@ export function useSelection() {
       dispatch(setToChain(newToChain));
       dispatch(setSelectedToken(newToken));
 
-      updateToToken({
-        fromChainId: newFromChain?.id,
-        toChainId: newToChain?.id,
-        token: newToken,
-      });
+      // updateToToken({
+      //   fromChainId: newFromChain?.id,
+      //   toChainId: newToChain?.id,
+      //   token: newToken,
+      // });
     },
     selectFromChain,
     async selectToChain(tmpToChain: IBridgeChain) {
@@ -175,7 +163,7 @@ export function useSelection() {
 
       const tmpTokens = await getSortedTokens({
         fromChainId,
-        tokens: getTokens({
+        tokens: bridgeSDK.getTokens({
           fromChainId,
           toChainId: tmpToChain?.id,
         }),
@@ -184,9 +172,9 @@ export function useSelection() {
       const newToken =
         tmpTokens.find(
           (t) =>
-            isChainOrTokenCompatible(t) &&
+            t.isCompatible &&
             t.displaySymbol.toUpperCase() === selectedToken?.displaySymbol.toUpperCase(),
-        ) ?? tmpTokens.find((t) => isChainOrTokenCompatible(t));
+        ) ?? tmpTokens.find((t) => t.isCompatible);
 
       updateSelectedInfo({
         tmpToken: newToken,

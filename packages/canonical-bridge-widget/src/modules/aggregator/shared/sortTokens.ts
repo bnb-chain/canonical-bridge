@@ -1,23 +1,15 @@
-import { isSameAddress } from '@bnb-chain/canonical-bridge-sdk';
-
 import { IBridgeTokenWithBalance } from '@/modules/aggregator/types';
 
 export function sortTokens({
   tokens = [],
   orders = [],
-  selectedTokenAddress,
 }: {
   tokens?: IBridgeTokenWithBalance[];
   orders?: string[];
-  selectedTokenAddress?: string;
 }) {
   const tokenOrders = orders.map((item) => item.toUpperCase());
 
   const sortedTokens = [...tokens].sort((a, b) => {
-    if (isSameAddress(a.address, selectedTokenAddress) && a.isCompatible) {
-      return -1;
-    }
-
     const aSymbol = a.displaySymbol.toUpperCase();
     const bSymbol = b.displaySymbol.toUpperCase();
 
