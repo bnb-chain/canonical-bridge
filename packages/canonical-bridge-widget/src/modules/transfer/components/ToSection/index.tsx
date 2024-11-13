@@ -22,7 +22,7 @@ export function ToSection() {
       h={'48px'}
     >
       <Flex
-        className="bccb-widget-network-title"
+        className="bccb-widget-network-to-title"
         alignItems="center"
         justifyContent={'space-between'}
         display={{ base: 'flex', md: 'none' }}
