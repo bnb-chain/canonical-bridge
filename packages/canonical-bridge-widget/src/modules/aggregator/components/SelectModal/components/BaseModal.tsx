@@ -44,7 +44,7 @@ export function BaseModal(props: BaseModalProps) {
         marginInline={0}
       >
         <Flex
-          className={className}
+          className={`${className}-header`}
           h={'64px'}
           px={'20px'}
           py={0}
