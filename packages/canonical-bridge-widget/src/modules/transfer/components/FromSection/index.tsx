@@ -23,7 +23,7 @@ export function FromSection() {
       h={'48px'}
     >
       <Flex
-        className="bccb-widget-network-title"
+        className="bccb-widget-network-from-title"
         alignItems="center"
         justifyContent={'space-between'}
         display={{ base: 'flex', md: 'none' }}

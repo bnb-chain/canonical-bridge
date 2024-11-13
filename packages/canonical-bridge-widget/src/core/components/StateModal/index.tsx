@@ -152,6 +152,7 @@ export function StateModal(props: StateModalProps) {
               closeButton
             ) : (
               <Button
+                className="bccb-widget-modal-second-button"
                 size="lg"
                 w={'100%'}
                 fontSize={'16px'}

@@ -133,6 +133,12 @@ export const ThemeProvider = ({ children }: ThemeProviderProps) => {
               color: 'red',
               borderColor: '#83a6ac',
             },
+          '.bccb-widget-from-network-modal-search, .bccb-widget-token-modal-header-search': {
+            '& svg': {
+              width: '30px',
+              height: '30px',
+            },
+          },
           '.bccb-widget-token-address-link .token-name': {
             color: 'black',
             bg: 'white',

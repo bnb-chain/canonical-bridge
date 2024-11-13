@@ -57,7 +57,7 @@ export function ChooseTokenModal(props: ChooseTokenModalProps) {
 
   return (
     <BaseModal
-      className="bccb-widget-token-modal-header"
+      className="bccb-widget-token-modal"
       isOpen={isOpen}
       onClose={onClose}
       title={formatMessage({ id: 'select-modal.token.title' })}

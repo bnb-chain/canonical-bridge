@@ -19,13 +19,14 @@ export function ConnectButton(props: ConnectButtonProps) {
 
   return (
     <Flex
-      className="bccb-widget-header-wallet-connect-button"
+      className="bccb-widget-header-wallet-connect"
       alignItems="center"
       gap={'16px'}
       {...restProps}
     >
       {!isConnected && (
         <Button
+          className="bccb-widget-header-wallet-connect-button"
           variant="outline"
           h={'40px'}
           px={'16px'}

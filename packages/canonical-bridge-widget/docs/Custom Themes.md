@@ -71,8 +71,10 @@ export const ThemeProvider = ({ children }: ThemeProviderProps) => {
 - bccb-widget-network-title
 - bccb-widget-network-row
 - bccb-widget-network-from
+- bccb-widget-network-from-title
 - bccb-widget-network-button
 - bccb-widget-network-to
+- bccb-widget-network-to-title
 - bccb-widget-network-name
 
 3. Bridge Route Section
@@ -199,6 +201,7 @@ export const ThemeProvider = ({ children }: ThemeProviderProps) => {
 
 - bccb-widget-modal-close-button
 - bccb-widget-modal-main-button
+- bccb-widget-modal-secondary-button
 - bccb-widget-modal-second-button
 - bccb-widget-modal-body
 - bccb-widget-modal-body-icon
