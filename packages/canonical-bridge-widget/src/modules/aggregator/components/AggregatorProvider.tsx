@@ -1,58 +1,28 @@
 import React, { useContext, useMemo } from 'react';
-import { BridgeType } from '@bnb-chain/canonical-bridge-sdk';
-
 import {
-  AdapterConstructorType,
-  AdapterType,
-  IBridgeChain,
-  ITransferConfig,
-  IBridgeToken,
+  BridgeType,
+  CBridgeAdapter,
+  DeBridgeAdapter,
+  LayerZeroAdapter,
+  MesonAdapter,
+  StargateAdapter,
   IChainConfig,
   INativeCurrency,
-} from '@/modules/aggregator/types';
-import { getNativeCurrencies } from '@/modules/aggregator/shared/getNativeCurrencies';
-import { CBridgeAdapter } from '@/modules/aggregator/adapters/cBridge/CBridgeAdapter';
-import { DeBridgeAdapter } from '@/modules/aggregator/adapters/deBridge/DeBridgeAdapter';
-import { LayerZeroAdapter } from '@/modules/aggregator/adapters/layerZero/LayerZeroAdapter';
-import { StargateAdapter } from '@/modules/aggregator/adapters/stargate/StargateAdapter';
-import { MesonAdapter } from '@/modules/aggregator/adapters/meson/MesonAdapter';
-import { IBaseAdapterOptions } from '@/modules/aggregator/shared/BaseAdapter';
-import {
-  aggregateChains,
-  IGetFromChainsParams,
-  IGetToChainsParams,
-} from '@/modules/aggregator/shared/aggregateChains';
-import { aggregateTokens, IGetTokensParams } from '@/modules/aggregator/shared/aggregateTokens';
-import { aggregateToToken, IGetToTokenParams } from '@/modules/aggregator/shared/aggregateToToken';
+} from '@bnb-chain/canonical-bridge-sdk';
+import { CanonicalBridgeSDK } from '@bnb-chain/canonical-bridge-sdk';
+
+import { ITransferConfig } from '@/modules/aggregator/types';
 import { useBridgeConfig } from '@/index';
 
 export interface AggregatorContextProps {
   isReady: boolean;
   transferConfig: ITransferConfig;
-  defaultSelectedInfo: ITransferConfig['defaultSelectedInfo'];
   chainConfigs: IChainConfig[];
   nativeCurrencies: Record<number, INativeCurrency>;
-  adapters: AdapterType[];
-  getFromChains: (params: IGetFromChainsParams) => IBridgeChain[];
-  getToChains: (params: IGetToChainsParams) => IBridgeChain[];
-  getTokens: (params: IGetTokensParams) => IBridgeToken[];
-  getToToken: (params: IGetToTokenParams) => IBridgeToken | undefined;
+  bridgeSDK: CanonicalBridgeSDK;
 }
 
-const DEFAULT_CONTEXT: AggregatorContextProps = {
-  isReady: false,
-  transferConfig: {} as ITransferConfig,
-  defaultSelectedInfo: {} as ITransferConfig['defaultSelectedInfo'],
-  chainConfigs: [],
-  nativeCurrencies: {},
-  adapters: [],
-  getFromChains: () => [],
-  getToChains: () => [],
-  getTokens: () => [],
-  getToToken: () => undefined,
-};
-
-export const AggregatorContext = React.createContext(DEFAULT_CONTEXT);
+export const AggregatorContext = React.createContext({} as AggregatorContextProps);
 
 export interface AggregatorProviderProps {
   transferConfig?: ITransferConfig;
@@ -64,110 +34,92 @@ export function AggregatorProvider(props: AggregatorProviderProps) {
   const { transferConfig, chains, children } = props;
 
   const bridgeConfig = useBridgeConfig();
-  const chainConfigs = useMemo(() => {
-    return chains.map((item) => ({
-      ...item,
-      chainType: item.chainType ? item.chainType : 'evm',
-    }));
-  }, [chains]);
 
   const value = useMemo(() => {
-    if (!transferConfig) {
-      return {
-        ...DEFAULT_CONTEXT,
-        chainConfigs,
-      };
-    }
+    type GetAdapterParams = {
+      config: any;
+      bridgedTokenGroups?: string[][];
+      excludedChains?: number[];
+      excludedTokens?: Record<number, string[]>;
+    };
 
     const bridges: Array<{
       bridgeType: BridgeType;
-      Adapter: AdapterConstructorType;
+      getAdapter: (params: GetAdapterParams) => any;
     }> = [
       {
         bridgeType: 'cBridge',
-        Adapter: CBridgeAdapter,
+        getAdapter(params: GetAdapterParams) {
+          return new CBridgeAdapter({
+            ...params,
+          });
+        },
       },
       {
         bridgeType: 'deBridge',
-        Adapter: DeBridgeAdapter,
+        getAdapter(params: GetAdapterParams) {
+          return new DeBridgeAdapter({
+            ...params,
+          });
+        },
       },
       {
         bridgeType: 'stargate',
-        Adapter: StargateAdapter,
+        getAdapter(params: GetAdapterParams) {
+          return new StargateAdapter({
+            ...params,
+          });
+        },
       },
       {
         bridgeType: 'layerZero',
-        Adapter: LayerZeroAdapter,
+        getAdapter(params: GetAdapterParams) {
+          return new LayerZeroAdapter({
+            ...params,
+          });
+        },
       },
-      { bridgeType: 'meson', Adapter: MesonAdapter },
+      {
+        bridgeType: 'meson',
+        getAdapter(params: GetAdapterParams) {
+          return new MesonAdapter({
+            ...params,
+          });
+        },
+      },
     ];
 
-    const nativeCurrencies = getNativeCurrencies(chainConfigs);
-    const includedChains = chainConfigs.map((item) => item.id);
-    const assetPrefix = bridgeConfig.assetPrefix;
-
     const adapters = bridges
-      .filter((item) => transferConfig[item.bridgeType])
-      .map(({ bridgeType, Adapter }) => {
-        const adapterConfig = transferConfig[bridgeType]!;
+      .map((e) => {
+        const adapterConfig = transferConfig?.[e.bridgeType];
+        if (adapterConfig) {
+          return e.getAdapter({
+            config: adapterConfig.config,
+            bridgedTokenGroups: adapterConfig.bridgedTokenGroups,
+            excludedChains: adapterConfig?.exclude?.chains,
+            excludedTokens: adapterConfig?.exclude?.tokens,
+          });
+        }
+      })
+      .filter(Boolean);
 
-        return new Adapter({
-          config: adapterConfig.config,
-          excludedChains: adapterConfig.exclude?.chains,
-          excludedTokens: adapterConfig.exclude?.tokens,
-          bridgedTokenGroups: adapterConfig.bridgedTokenGroups,
-          includedChains,
-          nativeCurrencies,
-          brandChains: transferConfig.brandChains,
-          externalChains: transferConfig.externalChains,
-          displayTokenSymbols: transferConfig.displayTokenSymbols,
-          assetPrefix,
-        } as IBaseAdapterOptions<any>);
-      });
+    const bridgeSDK = new CanonicalBridgeSDK({
+      chains,
+      assetPrefix: bridgeConfig.assetPrefix,
+      brandChains: transferConfig?.brandChains,
+      externalChains: transferConfig?.externalChains,
+      displayTokenSymbols: transferConfig?.displayTokenSymbols,
+      adapters,
+    });
 
     return {
-      isReady: true,
-      transferConfig,
-
-      defaultSelectedInfo: transferConfig.defaultSelectedInfo,
-      nativeCurrencies,
-      adapters,
-      chainConfigs,
-
-      getFromChains: (params: IGetFromChainsParams) => {
-        return aggregateChains({
-          direction: 'from',
-          transferConfig,
-          chainConfigs,
-          assetPrefix,
-          adapters,
-          params,
-        });
-      },
-      getToChains: (params: IGetToChainsParams) => {
-        return aggregateChains({
-          direction: 'to',
-          transferConfig,
-          chainConfigs,
-          assetPrefix,
-          adapters,
-          params,
-        });
-      },
-      getTokens: (params: IGetTokensParams) => {
-        return aggregateTokens({
-          adapters,
-          params,
-        });
-      },
-      getToToken: (params: IGetToTokenParams) => {
-        return aggregateToToken({
-          adapters,
-          params,
-        });
-      },
+      isReady: !!transferConfig,
+      transferConfig: transferConfig ?? ({} as ITransferConfig),
+      bridgeSDK,
+      chainConfigs: bridgeSDK.getSDKOptions().chains,
+      nativeCurrencies: bridgeSDK.getNativeCurrencies(),
     };
-  }, [transferConfig, chainConfigs, bridgeConfig.assetPrefix]);
+  }, [chains, bridgeConfig.assetPrefix, transferConfig]);
 
   return <AggregatorContext.Provider value={value}>{children}</AggregatorContext.Provider>;
 }

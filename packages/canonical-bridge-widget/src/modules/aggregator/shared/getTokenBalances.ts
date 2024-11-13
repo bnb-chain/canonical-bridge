@@ -4,10 +4,9 @@ import axios from 'axios';
 import * as SPLToken from '@solana/spl-token';
 import { Connection, PublicKey } from '@solana/web3.js';
 import { TOKEN_PROGRAM_ID } from '@solana/spl-token';
+import { ChainType, IBridgeToken } from '@bnb-chain/canonical-bridge-sdk';
 
-import { ChainType, IBridgeToken } from '@/modules/aggregator/types';
 import { ERC20_TOKEN } from '@/core/contract/abi';
-import { isChainOrTokenCompatible } from '@/modules/aggregator/shared/isChainOrTokenCompatible';
 import { isSameAddress } from '@/core/utils/address';
 
 export async function getTokenBalances({
@@ -29,7 +28,7 @@ export async function getTokenBalances({
 }) {
   if (walletType !== chainType) return {};
 
-  const compatibleTokens = tokens?.filter((item) => isChainOrTokenCompatible(item));
+  const compatibleTokens = tokens?.filter((item) => item.isCompatible);
 
   if (chainType === 'solana') {
     return await getSolanaTokenBalances({

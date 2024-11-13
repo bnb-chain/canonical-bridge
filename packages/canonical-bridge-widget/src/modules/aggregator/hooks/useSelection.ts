@@ -1,15 +1,10 @@
 import { useChains } from 'wagmi';
 import { useCallback } from 'react';
 import { useConnection } from '@solana/wallet-adapter-react';
+import { IBridgeChain, IBridgeToken } from '@bnb-chain/canonical-bridge-sdk';
 
 import { useAggregator } from '@/modules/aggregator/components/AggregatorProvider';
-import { isChainOrTokenCompatible } from '@/modules/aggregator/shared/isChainOrTokenCompatible';
-import {
-  ChainType,
-  IBridgeChain,
-  IBridgeToken,
-  IBridgeTokenWithBalance,
-} from '@/modules/aggregator/types';
+import { IBridgeTokenWithBalance } from '@/modules/aggregator/types';
 import { useAppDispatch, useAppSelector } from '@/modules/store/StoreProvider';
 import { setFromChain, setSelectedToken, setToChain, setToToken } from '@/modules/transfer/action';
 import { useTokenPrice } from '@/modules/aggregator/hooks/useTokenPrice';
@@ -17,10 +12,12 @@ import { getTokenBalances } from '@/modules/aggregator/shared/getTokenBalances';
 import { sortTokens } from '@/modules/aggregator/shared/sortTokens';
 import { useTronWeb } from '@/core/hooks/useTronWeb';
 import { useCurrentWallet } from '@/modules/wallet/CurrentWalletProvider';
+import { useBridgeSDK } from '@/core/hooks/useBridgeSDK';
 
 export function useSelection() {
   const { chainId } = useCurrentWallet();
-  const { getFromChains, getToChains, getTokens, getToToken, adapters } = useAggregator();
+
+  const bridgeSDK = useBridgeSDK();
 
   const fromChain = useAppSelector((state) => state.transfer.fromChain);
   const toChain = useAppSelector((state) => state.transfer.toChain);
@@ -43,6 +40,7 @@ export function useSelection() {
       toChainId: toChainId!,
       token: token!,
     });
+
     dispatch(setToToken(newToToken));
   };
 
@@ -55,10 +53,12 @@ export function useSelection() {
     tmpToChain?: IBridgeChain;
     tmpToken?: IBridgeToken;
   }) => {
-    const newToken = getTokens({
-      fromChainId: tmpFromChain?.id,
-      toChainId: tmpToChain?.id,
-    }).find((t) => t.displaySymbol?.toUpperCase() === tmpToken?.displaySymbol?.toUpperCase());
+    const newToken = bridgeSDK
+      .getTokens({
+        fromChainId: tmpFromChain?.id,
+        toChainId: tmpToChain?.id,
+      })
+      .find((t) => t.displaySymbol?.toUpperCase() === tmpToken?.displaySymbol?.toUpperCase());
 
     const newFromChain = getFromChains({
       toChainId: tmpToChain?.id,
@@ -123,13 +123,15 @@ export function useSelection() {
       toChainId: number;
       tokenSymbol: string;
     }) {
+      const { adapters } = bridgeSDK.getSDKOptions();
       const bridgeTypes = adapters.map((item) => item.bridgeType);
+
       const token = Object.fromEntries(
         bridgeTypes.map((item) => [item, { symbol: tokenSymbol }]),
       ) as any as IBridgeToken;
 
       if (chainId) {
-        const fromChains = getFromChains({});
+        const fromChains = bridgeSDK.getFromChains();
         const chain = fromChains.find((chain) => chain.id === chainId);
         if (chain) {
           selectFromChain(chain);

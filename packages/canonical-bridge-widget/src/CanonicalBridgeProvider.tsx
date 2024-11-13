@@ -1,8 +1,9 @@
 import '@node-real/walletkit/styles.css';
 import React, { useContext, useMemo } from 'react';
 import { ColorMode, IntlProvider } from '@bnb-chain/space';
+import { IChainConfig } from '@bnb-chain/canonical-bridge-sdk';
 
-import { IChainConfig, ITransferConfig } from '@/modules/aggregator/types';
+import { ITransferConfig } from '@/modules/aggregator/types';
 import { StoreProvider } from '@/modules/store/StoreProvider';
 import { WalletProvider } from '@/modules/wallet/WalletProvider';
 import { ThemeProvider, ThemeProviderProps } from '@/core/theme/ThemeProvider';

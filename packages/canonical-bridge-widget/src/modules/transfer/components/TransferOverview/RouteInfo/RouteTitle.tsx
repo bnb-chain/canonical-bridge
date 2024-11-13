@@ -1,10 +1,10 @@
 import { Flex, useColorMode, useTheme } from '@bnb-chain/space';
+import { IBridgeTokenBaseInfo } from '@bnb-chain/canonical-bridge-sdk';
 
 import { TokenInfoTooltip } from '@/modules/transfer/components/TransferOverview/RouteInfo/TokenInfoTooltip';
 import { IconImage } from '@/core/components/IconImage';
 import { useAppSelector } from '@/modules/store/StoreProvider';
 import { formatTokenUrl } from '@/core/utils/string';
-import { IBridgeTokenBaseInfo } from '@/modules/aggregator/types';
 
 interface RouteTitleProps {
   receiveAmt?: string;

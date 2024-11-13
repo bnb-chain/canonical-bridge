@@ -1,13 +1,12 @@
 import { useMemo } from 'react';
+import { IBridgeToken } from '@bnb-chain/canonical-bridge-sdk';
 
-import { IBridgeToken, IBridgeTokenWithBalance } from '@/modules/aggregator/types';
+import { IBridgeTokenWithBalance } from '@/modules/aggregator/types';
 import { useTokenPrice } from '@/modules/aggregator/hooks/useTokenPrice';
 import { useAppSelector } from '@/modules/store/StoreProvider';
-import { isSameAddress } from '@/core/utils/address';
 import { useTokenBalance } from '@/modules/aggregator/hooks/useTokenBalance';
 import { sortTokens } from '@/modules/aggregator/shared/sortTokens';
 import { useAggregator } from '@/modules/aggregator/components/AggregatorProvider';
-import { isChainOrTokenCompatible } from '@/modules/aggregator/shared/isChainOrTokenCompatible';
 
 export function useTokenList(tokens: IBridgeToken[] = []) {
   const selectedToken = useAppSelector((state) => state.transfer.selectedToken);
@@ -38,10 +37,7 @@ export function useTokenList(tokens: IBridgeToken[] = []) {
     const sortedTokens = sortTokens({
       tokens: tmpTokens,
       orders: transferConfig.order?.tokens,
-    }).sort((a) => {
-      return isSameAddress(a.address, selectedToken?.address) && isChainOrTokenCompatible(a)
-        ? -1
-        : 0;
+      selectedTokenAddress: selectedToken?.address,
     });
 
     return sortedTokens;

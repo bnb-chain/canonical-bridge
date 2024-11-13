@@ -3,8 +3,8 @@ import { TronWallet, useTronWallet } from '@node-real/walletkit/tron';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { useAccount, useDisconnect } from 'wagmi';
 import { SolanaWallet, useSolanaWallet } from '@node-real/walletkit/solana';
+import { ChainType, IChainConfig } from '@bnb-chain/canonical-bridge-sdk';
 
-import { ChainType, IChainConfig } from '@/modules/aggregator';
 import { useAggregator } from '@/modules/aggregator/components/AggregatorProvider';
 import { FormattedBalance, useEvmBalance } from '@/modules/wallet/hooks/useEvmBalance';
 import { useEvmSwitchChain } from '@/modules/wallet/hooks/useEvmSwitchChain';

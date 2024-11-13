@@ -2,12 +2,12 @@ import { useCallback } from 'react';
 import { useAccount, useBalance, usePublicClient } from 'wagmi';
 import { encodePacked, formatUnits, pad, parseUnits } from 'viem';
 import { useIntl } from '@bnb-chain/space';
+import { CAKE_PROXY_OFT_ABI } from '@bnb-chain/canonical-bridge-sdk';
 
 import { useAppDispatch, useAppSelector } from '@/modules/store/StoreProvider';
 import { useToTokenInfo } from '@/modules/transfer/hooks/useToTokenInfo';
 import { DEFAULT_ADDRESS } from '@/core/constants';
 import { useGetTokenBalance } from '@/core/contract/hooks/useGetTokenBalance';
-import { CAKE_PROXY_OFT_ABI } from '@/modules/aggregator/adapters/layerZero/abi/cakeProxyOFT';
 import { setRouteError, setRouteFees } from '@/modules/transfer/action';
 import { useGetNativeToken } from '@/modules/transfer/hooks/useGetNativeToken';
 import { formatNumber } from '@/core/utils/number';

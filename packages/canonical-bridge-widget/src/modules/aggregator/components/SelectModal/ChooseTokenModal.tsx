@@ -3,7 +3,6 @@ import { Flex, Text, useColorMode, useIntl, useTheme } from '@bnb-chain/space';
 import { useAppSelector } from '@/modules/store/StoreProvider';
 import { useTokens } from '@/modules/aggregator/hooks/useTokens';
 import { VirtualList } from '@/core/components/VirtualList';
-import { isChainOrTokenCompatible } from '@/modules/aggregator/shared/isChainOrTokenCompatible';
 import { useSelection } from '@/modules/aggregator/hooks/useSelection';
 import { formatAppAddress, isNativeToken, isSameAddress } from '@/core/utils/address';
 import { ExLinkIcon } from '@/core/components/icons/ExLinkIcon';
@@ -79,9 +78,9 @@ export function ChooseTokenModal(props: ChooseTokenModalProps) {
       <Flex flexDir="column" flex={1}>
         <VirtualList data={data} itemHeight={64}>
           {(item) => {
-            const isDisabled = !isChainOrTokenCompatible(item);
+            const isDisabled = !item.isCompatible;
             const isActive =
-              isSameAddress(item.address, selectedToken?.address) && isChainOrTokenCompatible(item);
+              isSameAddress(item.address, selectedToken?.address) && item.isCompatible;
             const isNative = isNativeToken(item.address);
 
             return (

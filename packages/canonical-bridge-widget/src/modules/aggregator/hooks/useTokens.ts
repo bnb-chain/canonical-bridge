@@ -1,17 +1,24 @@
 import { useMemo } from 'react';
 
-import { useSavedValue } from '@/core/hooks/useSavedValue';
-import { IGetTokensParams } from '@/modules/aggregator/shared/aggregateTokens';
-import { useAggregator } from '@/modules/aggregator/components/AggregatorProvider';
+import { useBridgeSDK } from '@/core/hooks/useBridgeSDK';
 
-export function useTokens(props: IGetTokensParams) {
-  const { getTokens } = useAggregator();
-
-  const params = useSavedValue(props);
+export function useTokens({
+  fromChainId,
+  toChainId,
+}: {
+  fromChainId?: number;
+  toChainId?: number;
+}) {
+  const bridgeSDK = useBridgeSDK();
 
   const tokens = useMemo(() => {
-    return getTokens(params);
-  }, [params, getTokens]);
+    if (!fromChainId || !toChainId) return [];
+
+    return bridgeSDK.getTokens({
+      fromChainId,
+      toChainId,
+    });
+  }, [bridgeSDK, fromChainId, toChainId]);
 
   return tokens;
 }

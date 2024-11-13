@@ -1,24 +1,3 @@
-export interface IStargateToken {
-  address: string;
-  bridgeAddress: string;
-  decimals: number;
-  type?: string;
-  symbol: string;
-  endpointID: number;
-  name: string;
-}
-
-export interface IStargateTransferConfig {
-  chains: IStargateChain[];
-  tokens: Record<number, IStargateToken[]>;
-}
-
-export interface IStargateChain {
-  chainId: number;
-  chainName: string;
-  network?: string;
-}
-
 export interface IStargateParams {
   dstEid: number;
   to: `0x${string}`;

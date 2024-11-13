@@ -106,7 +106,7 @@ export const useGetStargateFees = () => {
             }
           }
           // native fee
-          const quoteSendResponse = await bridgeSDK.stargate.getQuoteSend({
+          const quoteSendResponse = await bridgeSDK.stargate?.getQuoteSend({
             publicClient: publicClient,
             bridgeAddress,
             endPointId: args.dstEid,

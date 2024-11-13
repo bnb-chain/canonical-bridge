@@ -46,7 +46,7 @@ export const useStargateTransfer = () => {
     try {
       const bridgeAddress = selectedToken.stargate?.raw?.bridgeAddress as `0x${string}`;
 
-      const quoteOFTResponse = await bridgeSDK.stargate.getQuoteOFT({
+      const quoteOFTResponse = await bridgeSDK.stargate?.getQuoteOFT({
         publicClient: publicClient,
         bridgeAddress,
         endPointId: args.dstEid,
@@ -93,7 +93,7 @@ export const useStargateTransfer = () => {
         if (amountReceivedLD) {
           sendParams.minAmountLD = BigInt(amountReceivedLD);
         }
-        const hash = await bridgeSDK.stargate.sendToken({
+        const hash = await bridgeSDK.stargate?.sendToken({
           walletClient: walletClient as any,
           publicClient: publicClient,
           bridgeAddress,

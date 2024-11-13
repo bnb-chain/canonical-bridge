@@ -1,9 +1,9 @@
 import { ButtonProps, Flex, Text, useColorMode, Button, useTheme, Box } from '@bnb-chain/space';
 import { CaretDownIcon } from '@bnb-chain/icons';
 import { useMemo } from 'react';
+import { IBridgeToken } from '@bnb-chain/canonical-bridge-sdk';
 
 import { IconImage } from '@/core/components/IconImage';
-import { IBridgeToken } from '@/modules/aggregator/types';
 import { TokenInfoTooltip } from '@/modules/transfer/components/TransferOverview/RouteInfo/TokenInfoTooltip';
 import { formatTokenUrl } from '@/core/utils/string';
 import { useAppSelector } from '@/modules/store/StoreProvider';

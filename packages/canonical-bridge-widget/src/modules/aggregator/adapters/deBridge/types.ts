@@ -1,24 +1,3 @@
-export interface IDeBridgeChain {
-  chainId: number;
-  chainName: string;
-}
-
-export interface IDeBridgeToken {
-  address: string;
-  symbol: string;
-  decimals: number;
-  name: string;
-  logoURI: string | null;
-  eip2612?: boolean;
-  tags: string[];
-  domainVersion?: string;
-}
-
-export interface IDeBridgeTransferConfig {
-  chains: IDeBridgeChain[];
-  tokens: Record<number, IDeBridgeToken[]>;
-}
-
 // https://deswap.debridge.finance/v1.0/#/DLN
 export type IQuoteResponse = {
   estimation: {

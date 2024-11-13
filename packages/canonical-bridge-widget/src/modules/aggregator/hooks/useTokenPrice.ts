@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
+import { IBridgeToken } from '@bnb-chain/canonical-bridge-sdk';
 
-import { IBridgeToken } from '@/modules/aggregator/types';
 import { useAppSelector } from '@/modules/store/StoreProvider';
 
 export function useTokenPrice() {

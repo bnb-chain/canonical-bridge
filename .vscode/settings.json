@@ -3,17 +3,17 @@
     "*.json": "jsonc"
   },
   "files.exclude": {
-    // "**/.git": true,
+    "**/.git": true,
     "**/.svn": true,
     "**/.hg": true,
     "**/CVS": true,
     "**/.DS_Store": true,
-    // "**/node_modules": true,
-    // "**/.next": true,
+    "**/node_modules": true,
+    "**/.next": true,
     "**/*.log": true,
-    // "**/dist": true,
-    // "**/.rush": true,
-    // "**/temp": true,
+    "**/dist": true,
+    "**/.rush": true,
+    "**/temp": true,
     "**/tsconfig.tsbuildinfo": true
   },
   "[typescript]": {

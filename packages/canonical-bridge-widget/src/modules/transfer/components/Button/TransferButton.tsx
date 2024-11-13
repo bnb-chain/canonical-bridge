@@ -168,7 +168,7 @@ export function TransferButton({
 
       if (transferActionInfo.bridgeType === 'cBridge' && cBridgeArgs && fromChain && address) {
         try {
-          const cBridgeHash = await bridgeSDK.cBridge.sendToken({
+          const cBridgeHash = await bridgeSDK.cBridge?.sendToken({
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             walletClient: walletClient as any,
             publicClient,
@@ -211,7 +211,7 @@ export function TransferButton({
           let deBridgeHash: string | undefined;
 
           if (fromChain?.chainType === 'evm' && transferActionInfo.value && address) {
-            deBridgeHash = await bridgeSDK.deBridge.sendToken({
+            deBridgeHash = await bridgeSDK.deBridge?.sendToken({
               // eslint-disable-next-line @typescript-eslint/no-explicit-any
               walletClient: walletClient as any,
               bridgeAddress: transferActionInfo.bridgeAddress as string,
@@ -255,7 +255,7 @@ export function TransferButton({
           handleFailure(e);
         }
       } else if (transferActionInfo.bridgeType === 'stargate' && address) {
-        const stargateHash = await bridgeSDK.stargate.sendToken({
+        const stargateHash = await bridgeSDK.stargate?.sendToken({
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           walletClient: walletClient as any,
           publicClient,
@@ -282,7 +282,7 @@ export function TransferButton({
           onOpenSubmittedModal();
         }
       } else if (transferActionInfo.bridgeType === 'layerZero' && address) {
-        const layerZeroHash = await bridgeSDK.layerZero.sendToken({
+        const layerZeroHash = await bridgeSDK.layerZero?.sendToken({
           bridgeAddress: transferActionInfo.bridgeAddress as `0x${string}`,
           dstEndpoint: toToken?.layerZero?.raw?.endpointID as number,
           userAddress: address,
@@ -326,7 +326,7 @@ export function TransferButton({
         }
 
         // get unsigned message
-        const unsignedMessage = await bridgeSDK.meson.getUnsignedMessage({
+        const unsignedMessage = await bridgeSDK.meson?.getUnsignedMessage({
           fromToken: `${fromChain?.meson?.raw?.id}:${selectedToken?.meson?.raw?.id}`,
           toToken: `${toChain?.meson?.raw?.id}:${toToken?.meson?.raw?.id}`,
           amount: sendValue,
@@ -359,7 +359,7 @@ export function TransferButton({
             signature = String(await signTransaction(msg as any));
           }
 
-          const swapId = await bridgeSDK.meson.sendToken({
+          const swapId = await bridgeSDK.meson?.sendToken({
             fromAddress: fromAddress,
             recipient: toAddress,
             signature: signature,

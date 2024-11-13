@@ -23,8 +23,8 @@ import {
 } from '@node-real/walletkit/solana';
 import React from 'react';
 import { useDisclosure, useIntl } from '@bnb-chain/space';
+import { IChainConfig } from '@bnb-chain/canonical-bridge-sdk';
 
-import { IChainConfig } from '@/modules/aggregator/types';
 import { useBridgeConfig } from '@/CanonicalBridgeProvider';
 import { useAggregator } from '@/modules/aggregator/components/AggregatorProvider';
 import { CurrentWalletProvider } from '@/modules/wallet/CurrentWalletProvider';

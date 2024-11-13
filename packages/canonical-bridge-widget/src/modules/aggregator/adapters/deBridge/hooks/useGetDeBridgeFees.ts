@@ -1,12 +1,11 @@
 import { useCallback } from 'react';
 import { formatUnits, parseUnits } from 'viem';
-import { DeBridgeCreateQuoteResponse } from '@bnb-chain/canonical-bridge-sdk';
+import { DeBridgeAdapter, IDeBridgeCreateQuoteResponse } from '@bnb-chain/canonical-bridge-sdk';
 import { useAccount, useBalance, usePublicClient } from 'wagmi';
 import { useIntl } from '@bnb-chain/space';
 
 import { formatNumber } from '@/core/utils/number';
 import { useAppDispatch, useAppSelector } from '@/modules/store/StoreProvider';
-import { DeBridgeAdapter } from '@/modules/aggregator/adapters/deBridge/DeBridgeAdapter';
 import { formatFeeAmount } from '@/core/utils/string';
 import { useAdapter } from '@/modules/aggregator/hooks/useAdapter';
 import { setRouteError, setRouteFees } from '@/modules/transfer/action';
@@ -52,7 +51,7 @@ export const useGetDeBridgeFees = () => {
   const publicClient = usePublicClient({ chainId: fromChain?.id }) as any;
 
   const deBridgeFeeSorting = useCallback(
-    async (fees: DeBridgeCreateQuoteResponse) => {
+    async (fees: IDeBridgeCreateQuoteResponse) => {
       const nativeToken = nativeCurrency?.symbol;
       const nativeDecimals = nativeCurrency?.decimals ?? 18;
 

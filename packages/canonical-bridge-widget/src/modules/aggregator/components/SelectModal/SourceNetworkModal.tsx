@@ -23,17 +23,12 @@ export function SourceNetworkModal(props: SourceNetworkModalProps) {
   const dispatch = useAppDispatch();
 
   const fromChain = useAppSelector((state) => state.transfer.fromChain);
-  const toChain = useAppSelector((state) => state.transfer.toChain);
-  const selectedToken = useAppSelector((state) => state.transfer.selectedToken);
 
   const { selectFromChain } = useSelection();
   const theme = useTheme();
   const { colorMode } = useColorMode();
 
-  const fromChains = useFromChains({
-    toChainId: toChain?.id,
-    token: selectedToken,
-  });
+  const fromChains = useFromChains();
 
   const { isNoResult, result, onSearch } = useSearch({
     filter: (item, keyword) => item.name.toLowerCase().includes(keyword),

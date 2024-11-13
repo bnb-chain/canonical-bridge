@@ -1,7 +1,6 @@
 import { Flex, useColorMode, useIntl, useTheme, Text } from '@bnb-chain/space';
 
 import { VirtualList } from '@/core/components/VirtualList';
-import { isChainOrTokenCompatible } from '@/modules/aggregator/shared/isChainOrTokenCompatible';
 import { useAppSelector } from '@/modules/store/StoreProvider';
 import { useToChains } from '@/modules/aggregator/hooks/useToChains';
 import { useSelection } from '@/modules/aggregator/hooks/useSelection';
@@ -23,7 +22,6 @@ export function DestinationNetworkModal(props: DestinationNetworkModalProps) {
 
   const fromChain = useAppSelector((state) => state.transfer.fromChain);
   const toChain = useAppSelector((state) => state.transfer.toChain);
-  const selectedToken = useAppSelector((state) => state.transfer.selectedToken);
 
   const { selectToChain } = useSelection();
   const theme = useTheme();
@@ -31,7 +29,6 @@ export function DestinationNetworkModal(props: DestinationNetworkModalProps) {
 
   const toChains = useToChains({
     fromChainId: fromChain?.id,
-    token: selectedToken,
   });
 
   const { isNoResult, result, onSearch } = useSearch({
@@ -55,7 +52,7 @@ export function DestinationNetworkModal(props: DestinationNetworkModalProps) {
             key={item.id}
             iconUrl={item.icon}
             isActive={toChain?.id === item.id}
-            isDisabled={!isChainOrTokenCompatible(item)}
+            isDisabled={!item.isCompatible}
             incompatibleTooltip={formatMessage({
               id: 'select-modal.destination.incompatible.tooltip',
             })}

@@ -1,111 +1,5 @@
+import { ICBridgeChain, ICBridgePeggedPairConfig } from '@bnb-chain/canonical-bridge-sdk';
 import { type PublicClient, type WalletClient } from 'viem';
-
-export interface ICBridgeChain {
-  id: number;
-  name: string;
-  icon: string;
-  block_delay: number;
-  gas_token_symbol: string;
-  explore_url: string;
-  contract_addr: string;
-  drop_gas_amt: string;
-  drop_gas_cost_amt: string;
-  drop_gas_balance_alert: string;
-  suggested_gas_cost: string;
-  flat_usd_fee: number;
-  farming_reward_contract_addr: string;
-  transfer_agent_contract_addr: string;
-  disabled: boolean;
-}
-
-export interface ICBridgeToken {
-  token: {
-    symbol: string;
-    address: string;
-    decimal: number;
-    xfer_disabled: boolean;
-    display_symbol?: string; /// FOR ETH <=====> WETH
-  };
-  name: string;
-  icon: string;
-  inbound_lmt: string;
-  inbound_epoch_cap: string;
-  transfer_disabled: boolean;
-  liq_add_disabled: boolean;
-  liq_rm_disabled: boolean;
-  liq_agg_rm_src_disabled: boolean;
-  delay_threshold: string;
-  delay_period: number;
-  method?: string;
-  bridgeAddress?: string; //bridge address for transfer
-  weth_address?: string;
-}
-
-export interface ICBridgePeggedPairConfig {
-  org_chain_id: number;
-  org_token: ICBridgeToken;
-  pegged_chain_id: number;
-  pegged_token: ICBridgeToken;
-  pegged_deposit_contract_addr: string;
-  pegged_burn_contract_addr: string;
-  canonical_token_contract_addr: string;
-  vault_version: number;
-  bridge_version: number;
-  migration_peg_burn_contract_addr: string;
-}
-
-export interface ICBridgeBurnConfig {
-  chain_id: number;
-  token: ICBridgeToken;
-  burn_contract_addr: string;
-  canonical_token_contract_addr: string;
-  burn_contract_version: number;
-}
-
-/// burn_config_as_org.bridge_version === 2
-/// burn_config_as_dst.bridge_version is not required
-/// If the bridge_version of burnConfig1 and burnConfig2 are 2,
-/// There should be two MultiBurnPairConfigs
-/// 1: burnConfig1 ----> burnConfig2
-/// 2: burnConfig2 ----> burnConfig1
-export interface ICBridgeBurnPairConfig {
-  burn_config_as_org: ICBridgeBurnConfig; /// Could be used only as from chain
-  burn_config_as_dst: ICBridgeBurnConfig; /// Could be used only as to chain
-}
-
-export interface ICBridgeTransferConfig {
-  chains: ICBridgeChain[];
-  chain_token: {
-    [k: number]: {
-      token: ICBridgeToken[];
-    };
-  };
-  farming_reward_contract_addr: string;
-  pegged_pair_configs: ICBridgePeggedPairConfig[];
-  blocked_bridge_direct: {
-    symbol: string;
-    src_chain_id: string;
-    dst_chain_id: string;
-  }[];
-  redirect_to_aggregators_config: {
-    symbol: string;
-    src_chain_id: string;
-    dst_chain_id: string;
-  }[];
-}
-
-export interface ICBridgeTransferStatusResponse {
-  err: object;
-  status: number;
-  wd_onchain: null;
-  sorted_sigs: string[];
-  signers: string[];
-  powers: string[];
-  refund_reason: number;
-  block_delay: number;
-  src_block_tx_link: string;
-  dst_block_tx_link: string;
-}
 
 export interface ICBridgeTransferInfo {
   chain: any;
@@ -171,15 +65,6 @@ export interface ICBridgeEstimateAmountResponse {
   op_fee_rebate: number;
   op_fee_rebate_portion: number;
   op_fee_rebate_end_time: string;
-}
-
-export interface ICBridgeGetSupportedFuncParams {
-  fromChainId?: number;
-  toChainId?: number;
-  fromTokenSymbol?: string;
-  peggedPairConfigs: ICBridgePeggedPairConfig[];
-  burnPairConfigs: ICBridgeBurnPairConfig[];
-  data: ICBridgeTransferConfig;
 }
 
 export interface ICBridgeSendRangeInput {

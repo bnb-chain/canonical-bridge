@@ -1,17 +1,16 @@
 import { useMemo } from 'react';
 
-import { useSavedValue } from '@/core/hooks/useSavedValue';
-import { useAggregator } from '@/modules/aggregator/components/AggregatorProvider';
-import { IGetToChainsParams } from '@/modules/aggregator/shared/aggregateChains';
+import { useBridgeSDK } from '@/core/hooks/useBridgeSDK';
 
-export function useToChains(props: IGetToChainsParams) {
-  const { getToChains } = useAggregator();
-
-  const params = useSavedValue(props);
+export function useToChains({ fromChainId }: { fromChainId?: number }) {
+  const bridgeSDK = useBridgeSDK();
 
   const toChains = useMemo(() => {
-    return getToChains(params);
-  }, [getToChains, params]);
+    if (!fromChainId) return [];
+    return bridgeSDK.getToChains({
+      fromChainId,
+    });
+  }, [bridgeSDK, fromChainId]);
 
   return toChains;
 }

@@ -17,7 +17,7 @@ export const useStargateWaitTime = () => {
   return useQuery<IStargateBusDriveSettings>({
     queryKey: ['stargate-bus-wait-time', fromEndpointId, toEndpointId],
     queryFn: async () => {
-      return await bridgeSDK.stargate.getBusQueueTime({
+      return await bridgeSDK.stargate!.getBusQueueTime({
         fromEndpointId: String(fromEndpointId),
         toEndpointId: String(toEndpointId),
       });

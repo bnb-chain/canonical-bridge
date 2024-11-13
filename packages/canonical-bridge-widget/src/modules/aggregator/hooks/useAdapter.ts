@@ -1,14 +1,15 @@
 import { BridgeType } from '@bnb-chain/canonical-bridge-sdk';
 import { useMemo } from 'react';
 
-import { useAggregator } from '@/modules/aggregator/components/AggregatorProvider';
+import { useBridgeSDK } from '@/core/hooks/useBridgeSDK';
 
 export function useAdapter<T = unknown>(bridgeType: BridgeType) {
-  const { adapters } = useAggregator();
+  const bridgeSDK = useBridgeSDK();
 
   const adapter = useMemo(() => {
+    const adapters = bridgeSDK.getSDKOptions().adapters;
     return adapters.find((adapter) => adapter.bridgeType === bridgeType);
-  }, [adapters, bridgeType]);
+  }, [bridgeSDK, bridgeType]);
 
   return adapter as T;
 }

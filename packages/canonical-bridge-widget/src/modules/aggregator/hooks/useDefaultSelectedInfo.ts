@@ -7,7 +7,7 @@ import { useAggregator } from '@/modules/aggregator/components/AggregatorProvide
 import { useCurrentWallet } from '@/modules/wallet/CurrentWalletProvider.tsx';
 
 export function useDefaultSelectedInfo() {
-  const { isReady, defaultSelectedInfo } = useAggregator();
+  const { isReady, transferConfig } = useAggregator();
   const { selectDefault } = useSelection();
   const dispatch = useAppDispatch();
   const { chainId } = useCurrentWallet();
@@ -15,8 +15,8 @@ export function useDefaultSelectedInfo() {
 
   useEffect(() => {
     if (isReady) {
-      selectDefault(defaultSelectedInfo);
-      dispatch(setSendValue(sendValue || defaultSelectedInfo.amount));
+      selectDefault(transferConfig.defaultSelectedInfo);
+      dispatch(setSendValue(sendValue || transferConfig.defaultSelectedInfo.amount));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isReady, chainId]);
