@@ -1,5 +1,16 @@
 # @bnb-chain/canonical-bridge-widget
 
+## 0.5.0
+
+### Minor Changes
+
+- a6db440: Support solana
+
+### Patch Changes
+
+- e31ab8f: UI adjustment
+- 6ab36a6: UI adjustment
+
 ## 0.5.0-alpha.2
 
 ### Patch Changes

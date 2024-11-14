@@ -1,5 +1,11 @@
 # @bnb-chain/canonical-bridge-sdk
 
+## 0.4.0
+
+### Minor Changes
+
+- a6db440: Support solana
+
 ## 0.4.0-alpha.0
 
 ### Minor Changes
