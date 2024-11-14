@@ -86,7 +86,7 @@ export function ChooseTokenModal(props: ChooseTokenModalProps) {
             const isDisabled = !isChainOrTokenCompatible(item);
             const isActive =
               isSameAddress(item.address, selectedToken?.address) && isChainOrTokenCompatible(item);
-            const isNative = isNativeToken(item.address);
+            const isNative = isNativeToken(item.address, fromChain?.chainType);
 
             return (
               <ListItem

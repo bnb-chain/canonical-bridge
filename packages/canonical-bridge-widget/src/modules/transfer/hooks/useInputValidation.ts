@@ -5,9 +5,14 @@ import { useCallback } from 'react';
 import { formatNumber } from '@/core/utils/number';
 import { useAppSelector } from '@/modules/store/StoreProvider';
 import { useCurrentWallet } from '@/modules/wallet/CurrentWalletProvider';
+import { useSolanaBalance } from '@/modules/wallet/hooks/useSolanaBalance';
+import { MIN_SOL_TO_ENABLED_TX } from '@/core/constants';
 
 export const useInputValidation = () => {
   const { chain } = useCurrentWallet();
+
+  const { data } = useSolanaBalance();
+  const solBalance = Number(data?.formatted);
 
   const fromChain = useAppSelector((state) => state.transfer.fromChain);
   const validateInput = useCallback(
@@ -49,7 +54,14 @@ export const useInputValidation = () => {
         }
 
         if (!!balance) {
-          return { text: `${formatNumber(balance)}`, isError: false };
+          if (fromChain?.chainType === 'solana' && solBalance < MIN_SOL_TO_ENABLED_TX) {
+            return {
+              text: `You should have at least ${MIN_SOL_TO_ENABLED_TX} SOL in your balance to perform this trade.`,
+              isError: true,
+            };
+          } else {
+            return { text: `${formatNumber(balance)}`, isError: false };
+          }
         } else {
           if (fromChain?.id === chain?.id && chain) {
             return { isError: true, text: 'You have insufficient balance' };
@@ -60,7 +72,7 @@ export const useInputValidation = () => {
         console.log(e);
       }
     },
-    [chain, fromChain?.id],
+    [chain, fromChain?.chainType, fromChain?.id, solBalance],
   );
 
   return {

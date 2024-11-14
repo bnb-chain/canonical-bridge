@@ -14,12 +14,14 @@ import {
 import { useMemo } from 'react';
 
 import { isNativeToken } from '@/core/utils/address.ts';
+import { ChainType } from '@/modules/aggregator';
 
 interface TokenTooltipProps {
   tokenLinkUrl: string;
   tokenAddress: string;
   children: React.ReactNode;
   isReceiveArea?: boolean;
+  chainType?: ChainType;
 }
 
 export const TokenInfoTooltip = ({
@@ -27,9 +29,13 @@ export const TokenInfoTooltip = ({
   tokenAddress,
   tokenLinkUrl,
   isReceiveArea,
+  chainType = 'evm',
 }: TokenTooltipProps) => {
   const theme = useTheme();
-  const nativeToken = useMemo(() => isNativeToken(tokenAddress), [tokenAddress]);
+  const nativeToken = useMemo(
+    () => isNativeToken(tokenAddress, chainType),
+    [chainType, tokenAddress],
+  );
 
   return (
     <Flex className="bccb-widget-route-token-tooltip" display={'inline-block'} w={'auto'}>

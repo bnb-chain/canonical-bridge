@@ -11,6 +11,6 @@ export function useSolanaAccount() {
   return {
     address: publicKey?.toBase58(),
     isConnected: connected,
-    chainId: solana?.id,
+    chainId: connected ? solana?.id : undefined,
   };
 }

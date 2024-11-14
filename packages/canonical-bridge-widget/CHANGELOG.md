@@ -1,5 +1,17 @@
 # @bnb-chain/canonical-bridge-widget
 
+## 0.5.0-alpha.4
+
+### Patch Changes
+
+- Solana requires wallet have at least 0.05SOL to enabled a tx.
+
+## 0.5.0-alpha.3
+
+### Patch Changes
+
+- Fix phantom wallet deelink issue on mobile
+
 ## 0.5.0
 
 ### Minor Changes
@@ -9,7 +21,6 @@
 ### Patch Changes
 
 - e31ab8f: UI adjustment
-- 6ab36a6: UI adjustment
 
 ## 0.5.0-alpha.2
 
