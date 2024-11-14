@@ -2,7 +2,6 @@ export const en = {
   'seo.title': 'BNB Chain Bridge | Cross-Chain Transfer',
   'seo.description':
     'Bridge and transfer your assets between networks (Ethereum, Polygon and etc.) and BNB Chain blockchain ecosystem.',
-  'main.address.link.text': 'Token address:',
   'header.network-status.wrong': 'Wrong network',
 
   'support.stargate.soon': 'We will support Stargate soon',

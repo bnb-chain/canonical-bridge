@@ -23,6 +23,7 @@ export const ListItem = React.forwardRef((props: ListItemProps, ref: any) => {
     incompatibleTooltip,
 
     _hover,
+    className,
     ...restProps
   } = props;
 
@@ -31,8 +32,9 @@ export const ListItem = React.forwardRef((props: ListItemProps, ref: any) => {
   const { formatMessage } = useIntl();
 
   return (
-    <Box ref={ref} p="0 20px 4px">
+    <Box className={`${className}-wrapper`} ref={ref} p="0 20px 4px">
       <Flex
+        className={`${className}` + isDisabled ? '-disabled' : ''}
         borderRadius={'8px'}
         px={'11px'}
         py="7px"
@@ -66,6 +68,7 @@ export const ListItem = React.forwardRef((props: ListItemProps, ref: any) => {
         </Flex>
         {showTag && isDisabled && (
           <Flex
+            className={`${className}-tag`}
             alignItems="center"
             flexShrink={0}
             fontSize={'12px'}

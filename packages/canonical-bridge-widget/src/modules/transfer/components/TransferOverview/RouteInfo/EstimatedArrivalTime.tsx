@@ -44,6 +44,7 @@ export const EstimatedArrivalTime = ({
 
   return (
     <Flex
+      className="bccb-widget-route-estimated-time"
       gap={'4px'}
       flexDir={'row'}
       alignItems={'center'}
@@ -53,11 +54,11 @@ export const EstimatedArrivalTime = ({
       {...otherProps}
     >
       <TimerIcon w={'16px'} h={'16px'} />
-      <Box fontSize={['14px']} fontWeight={400}>
+      <Box className="bccb-widget-route-info-label" fontSize={['14px']} fontWeight={400}>
         {formatMessage({ id: 'route.time.title' })}
       </Box>
       {waitingTime ? (
-        <Box fontSize={'14px'} fontWeight={500}>
+        <Box className="bccb-widget-route-info-text" fontSize={'14px'} fontWeight={500}>
           ~{formatEstimatedTime(waitingTime)}
         </Box>
       ) : (

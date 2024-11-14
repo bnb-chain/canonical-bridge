@@ -66,6 +66,7 @@ export const InputValidationMessage = () => {
 
   return errorMsg ? (
     <Box
+      className="bccb-widget-transfer-input-error"
       color={theme.colors[colorMode].text.danger}
       fontSize={'14px'}
       fontWeight={400}

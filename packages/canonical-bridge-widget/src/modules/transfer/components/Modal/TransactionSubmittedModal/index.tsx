@@ -20,6 +20,7 @@ export function TransactionSubmittedModal(
 
   return (
     <StateModal
+      className="bccb-widget-transaction-submitted-modal"
       title={formatMessage({ id: 'modal.submit.title' })}
       description={formatMessage({ id: 'modal.submit.desc' })}
       onButtonClick={() => {
@@ -49,6 +50,7 @@ export function TransactionSubmittedModal(
       mainButtonText={formatMessage({ id: 'modal.submit.button.view-tx' })}
       closeButton={
         <Button
+          className="bccb-widget-modal-second-button"
           size="lg"
           variant={'outline'}
           w={'100%'}

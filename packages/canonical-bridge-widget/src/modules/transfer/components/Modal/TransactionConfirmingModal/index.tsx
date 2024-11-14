@@ -9,6 +9,7 @@ export function TransactionConfirmingModal(props: Omit<StateModalProps, 'title'>
 
   return (
     <StateModal
+      className="bccb-widget-transaction-confirming-modal"
       type="confirming"
       title={formatMessage({ id: 'modal.confirm.title' })}
       description={formatMessage({ id: 'modal.confirm.desc' })}

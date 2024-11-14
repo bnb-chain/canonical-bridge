@@ -43,6 +43,7 @@ export function SourceNetworkModal(props: SourceNetworkModalProps) {
 
   return (
     <BaseModal
+      className="bccb-widget-from-network-modal"
       isOpen={isOpen}
       onClose={onClose}
       title={formatMessage({ id: 'select-modal.source.title' })}
@@ -50,9 +51,12 @@ export function SourceNetworkModal(props: SourceNetworkModalProps) {
       placeholder={formatMessage({ id: 'select-modal.source.placeholder' })}
       isNoResult={isNoResult}
     >
-      <VirtualList data={result} itemHeight={52}>
+      <VirtualList className="bccb-widget-from-network-virtual-list" data={result} itemHeight={52}>
         {(item) => (
           <ListItem
+            className={
+              'bccb-widget-from-network-list-item' + (fromChain?.id === item.id ? '-active' : '')
+            }
             key={item.id}
             iconUrl={item.icon}
             isActive={fromChain?.id === item.id}

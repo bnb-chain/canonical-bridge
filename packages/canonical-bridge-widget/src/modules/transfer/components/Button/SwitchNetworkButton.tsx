@@ -15,6 +15,7 @@ export const SwitchNetworkButton = (props: ButtonProps) => {
 
   return (
     <Button
+      className="bccb-widget-switch-network-button"
       size="lg"
       h={'56px'}
       w="100%"

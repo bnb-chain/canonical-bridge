@@ -42,6 +42,7 @@ export interface StateModalProps extends Omit<ModalProps, 'children'> {
   bodyProps?: ModalBodyProps;
   mainButtonIsDisabled?: boolean;
   closeButtonIsDisabled?: boolean;
+  className?: string;
 }
 
 export function StateModal(props: StateModalProps) {
@@ -58,6 +59,7 @@ export function StateModal(props: StateModalProps) {
     mainButtonIsDisabled = false,
     closeButtonIsDisabled = false,
     onClose,
+    className,
     mainButtonProps,
     bodyProps,
     footerProps,
@@ -76,8 +78,9 @@ export function StateModal(props: StateModalProps) {
       <LightMode>
         <ModalOverlay />
 
-        <ModalContent borderRadius={'20px'} maxW={'435px'}>
+        <ModalContent className={className} borderRadius={'20px'} maxW={'435px'}>
           <ModalCloseButton
+            className="bccb-widget-modal-close-button"
             top={'24px'}
             right={{ base: '24px', md: '24px' }}
             onClick={onBeforeClose}
@@ -86,6 +89,7 @@ export function StateModal(props: StateModalProps) {
           </ModalCloseButton>
 
           <ModalBody
+            className="bccb-widget-modal-body"
             pt={'48px'}
             px={'40px'}
             pb={'24px'}
@@ -94,8 +98,9 @@ export function StateModal(props: StateModalProps) {
             alignItems="center"
             {...bodyProps}
           >
-            <Flex>{icon}</Flex>
+            <Flex className="bccb-widget-modal-body-icon">{icon}</Flex>
             <Flex
+              className="bccb-widget-modal-body-title"
               mt={'24px'}
               fontSize={'24px'}
               fontWeight={700}
@@ -108,6 +113,7 @@ export function StateModal(props: StateModalProps) {
             </Flex>
             {description && (
               <Flex
+                className="bccb-widget-modal-body-description"
                 mt={'8px'}
                 textAlign="center"
                 color={theme.colors.light.text.tertiary}
@@ -120,6 +126,7 @@ export function StateModal(props: StateModalProps) {
           </ModalBody>
 
           <ModalFooter
+            className="bccb-widget-modal-footer"
             px={'40px'}
             pb={'40px'}
             justifyContent="center"
@@ -129,6 +136,7 @@ export function StateModal(props: StateModalProps) {
           >
             {mainButtonText && (
               <Button
+                className="bccb-widget-modal-main-button"
                 size="lg"
                 w={'100%'}
                 fontSize={'16px'}
@@ -144,6 +152,7 @@ export function StateModal(props: StateModalProps) {
               closeButton
             ) : (
               <Button
+                className="bccb-widget-modal-second-button"
                 size="lg"
                 w={'100%'}
                 fontSize={'16px'}

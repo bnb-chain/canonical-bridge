@@ -10,6 +10,7 @@ export const BestRouteTag = ({ bestMode }: TBestRouteTag) => {
   const { formatMessage } = useIntl();
   return (
     <Box
+      className={`bccb-widget-route-name-tag-${bestMode}`}
       p={'4px 8px'}
       borderRadius={'40px'}
       fontSize={'12px'}

@@ -28,6 +28,7 @@ export const RouteName = React.memo(
 
     return (
       <Flex
+        className="bccb-widget-route-name"
         minH={'24px'}
         flexDir={'row'}
         gap={'8px'}
@@ -78,6 +79,7 @@ export const RouteName = React.memo(
           flex={1}
         >
           <Box
+            className="bccb-widget-route-name-text"
             fontSize={['12px', '12px', '12px', '14px']}
             lineHeight={['16px', '16px', '16px', '20px']}
             fontWeight={500}
