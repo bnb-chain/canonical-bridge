@@ -25,7 +25,6 @@ import { useGetCBridgeFees } from '@/modules/aggregator/adapters/cBridge/hooks/u
 import { useGetDeBridgeFees } from '@/modules/aggregator/adapters/deBridge/hooks/useGetDeBridgeFees';
 import { useGetStargateFees } from '@/modules/aggregator/adapters/stargate/hooks/useGetStarGateFees';
 import { useBridgeSDK } from '@/core/hooks/useBridgeSDK';
-import { useBridgeConfig } from '@/index';
 import { useGetLayerZeroFees } from '@/modules/aggregator/adapters/layerZero/hooks/useGetLayerZeroFees';
 import { usePreSelectRoute } from '@/modules/transfer/hooks/usePreSelectRoute';
 import { useGetNativeToken } from '@/modules/transfer/hooks/useGetNativeToken';
@@ -47,9 +46,6 @@ export const useLoadingBridgeFees = () => {
   const { isSolanaAvailableToAccount } = useSolanaTransferInfo();
 
   const bridgeSDK = useBridgeSDK();
-  const {
-    http: { deBridgeAccessToken },
-  } = useBridgeConfig();
   const nativeToken = useGetNativeToken();
   const { deBridgeFeeSorting: _deBridgeFeeSorting } = useGetDeBridgeFees();
   const deBridgeFeeSorting = useRef(_deBridgeFeeSorting);
@@ -78,7 +74,6 @@ export const useLoadingBridgeFees = () => {
 
   const { formatMessage } = useIntl();
 
-  const toToken = useAppSelector((state) => state.transfer.toToken);
   const selectedToken = useAppSelector((state) => state.transfer.selectedToken);
   const sendValue = useAppSelector((state) => state.transfer.sendValue);
   const fromChain = useAppSelector((state) => state.transfer.fromChain);
@@ -115,80 +110,51 @@ export const useLoadingBridgeFees = () => {
         meson: undefined,
       }),
     );
-    const bridgeTypeList: BridgeType[] = [];
     const valueArr = [];
 
-    const adapters = bridgeSDK.getSDKOptions().adapters;
-    adapters.forEach((adapter) => {
-      if (selectedToken[adapter.bridgeType]) {
-        bridgeTypeList.push(adapter.bridgeType);
-      }
-    });
     try {
       const amount = parseUnits(debouncedSendValue, selectedToken.decimals);
       const now = Date.now();
       lastTime = now;
+
       const response = await bridgeSDK.loadBridgeFees({
-        bridgeType: bridgeTypeList,
-        fromChainId: fromChain.id,
-        fromAccount: address || DEFAULT_ADDRESS,
-        toChainId: toChain?.id,
-        sendValue: amount,
-        fromTokenSymbol: selectedToken.symbol === 'ETH' ? 'WETH' : selectedToken.symbol,
         publicClient,
-        endPointId: {
-          layerZeroV1: toToken?.layerZero?.raw?.endpointID,
-          layerZeroV2: toToken?.stargate?.raw?.endpointID,
-        },
-        bridgeAddress: {
-          stargate: selectedToken?.stargate?.raw?.bridgeAddress as `0x${string}`,
-          layerZero: selectedToken?.layerZero?.raw?.bridgeAddress as `0x${string}`,
-        },
-        isPegged: selectedToken?.isPegged,
+        fromChainId: fromChain.id,
+        toChainId: toChain?.id,
+        tokenAddress: selectedToken.address,
+        amount,
         slippage: max_slippage,
-        mesonOpts: {
-          fromToken: `${fromChain?.meson?.raw?.id}:${selectedToken?.meson?.raw?.id}`,
-          toToken: `${toChain?.meson?.raw?.id}:${toToken?.meson?.raw?.id}`,
-          amount: debouncedSendValue,
-          fromAddr:
-            fromChain?.chainType === 'tron'
-              ? tronAddress ?? DEFAULT_TRON_ADDRESS
-              : address ?? DEFAULT_ADDRESS,
-        },
-        deBridgeOpts: {
-          fromChainId: fromChain.id,
-          fromTokenAddress: selectedToken.address as `0x${string}`,
-          amount,
-          toChainId: toChain?.id,
-          toTokenAddress: toToken?.address as `0x${string}`,
-          accesstoken: deBridgeAccessToken,
-          userAddress:
-            fromChain.chainType === 'solana'
-              ? solanaAddress || DEFAULT_SOLANA_ADDRESS
-              : address || DEFAULT_ADDRESS,
-          toUserAddress:
-            fromChain.chainType === 'solana'
-              ? isSolanaAvailableToAccount
-                ? toAccountRef.current
-                : DEFAULT_ADDRESS
-              : toChain.chainType === 'solana'
-              ? isSolanaAvailableToAccount
-                ? toAccountRef.current
-                : DEFAULT_SOLANA_ADDRESS
-              : undefined,
-        },
+        userAddress:
+          fromChain?.chainType === 'solana'
+            ? solanaAddress ?? DEFAULT_SOLANA_ADDRESS
+            : fromChain?.chainType === 'tron'
+            ? tronAddress ?? DEFAULT_TRON_ADDRESS
+            : address ?? DEFAULT_ADDRESS,
+        toUserAddress:
+          fromChain.chainType === 'solana'
+            ? isSolanaAvailableToAccount
+              ? toAccountRef.current
+              : DEFAULT_ADDRESS
+            : toChain.chainType === 'solana'
+            ? isSolanaAvailableToAccount
+              ? toAccountRef.current
+              : DEFAULT_SOLANA_ADDRESS
+            : undefined,
       });
       // eslint-disable-next-line no-console
-      console.log(
-        'API response deBridge[0], cBridge[1], stargate[2], layerZero[3], meson[4]',
-        response,
-      );
+      console.log('API response', response);
       if (lastTime > now) {
         return;
       }
 
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const [debridgeEst, cbridgeEst, stargateEst, layerZeroEst, mesonEst] = response as any;
+      const {
+        deBridge: debridgeEst,
+        cBridge: cbridgeEst,
+        stargate: stargateEst,
+        layerZero: layerZeroEst,
+        meson: mesonEst,
+      } = response;
+
       // meson
       if (mesonEst.status === 'fulfilled' && mesonEst?.value) {
         if (mesonEst?.value?.error) {
@@ -419,16 +385,11 @@ export const useLoadingBridgeFees = () => {
     toChain,
     debouncedSendValue,
     bridgeSDK,
-    address,
     publicClient,
-    toToken?.layerZero?.raw?.endpointID,
-    toToken?.stargate?.raw?.endpointID,
-    toToken?.meson?.raw?.id,
-    toToken?.address,
     max_slippage,
-    tronAddress,
-    deBridgeAccessToken,
     solanaAddress,
+    tronAddress,
+    address,
     isSolanaAvailableToAccount,
     formatMessage,
     getToDecimals,

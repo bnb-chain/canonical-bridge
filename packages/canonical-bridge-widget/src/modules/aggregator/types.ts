@@ -17,7 +17,7 @@ export interface ITransferConfig {
   defaultSelectedInfo: {
     fromChainId: number;
     toChainId: number;
-    tokenSymbol: string;
+    tokenAddress: string;
     amount: string;
   };
   order?: {

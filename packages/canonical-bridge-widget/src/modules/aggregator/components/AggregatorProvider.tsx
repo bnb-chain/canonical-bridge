@@ -59,6 +59,7 @@ export function AggregatorProvider(props: AggregatorProviderProps) {
         bridgeType: 'deBridge',
         getAdapter(params: GetAdapterParams) {
           return new DeBridgeAdapter({
+            accessToken: bridgeConfig.http.deBridgeAccessToken,
             ...params,
           });
         },
@@ -109,6 +110,8 @@ export function AggregatorProvider(props: AggregatorProviderProps) {
       brandChains: transferConfig?.brandChains,
       externalChains: transferConfig?.externalChains,
       displayTokenSymbols: transferConfig?.displayTokenSymbols,
+      chainOrder: transferConfig?.order?.chains,
+      tokenOrder: transferConfig?.order?.tokens,
       adapters,
     });
 
@@ -119,7 +122,7 @@ export function AggregatorProvider(props: AggregatorProviderProps) {
       chainConfigs: bridgeSDK.getSDKOptions().chains,
       nativeCurrencies: bridgeSDK.getNativeCurrencies(),
     };
-  }, [chains, bridgeConfig.assetPrefix, transferConfig]);
+  }, [chains, bridgeConfig.assetPrefix, bridgeConfig.http.deBridgeAccessToken, transferConfig]);
 
   return <AggregatorContext.Provider value={value}>{children}</AggregatorContext.Provider>;
 }

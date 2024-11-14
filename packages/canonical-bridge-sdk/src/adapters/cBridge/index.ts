@@ -34,6 +34,7 @@ export class CBridgeAdapter extends BaseAdapter<
   ICBridgeChain,
   ICBridgeToken
 > {
+  protected options: ICBridgeAdapterOptions;
   private client: AxiosInstance;
   public bridgeType: BridgeType = 'cBridge';
 
@@ -41,17 +42,18 @@ export class CBridgeAdapter extends BaseAdapter<
   private burnPairConfigs: ICBridgeBurnPairConfig[] = [];
 
   constructor(options: ICBridgeAdapterOptions) {
-    const {
-      timeout = CLIENT_TIME_OUT,
-      endpoint = env.CBRIDGE_ENDPOINT,
-      ...baseOptions
-    } = options;
+    const finalOptions = {
+      timeout: CLIENT_TIME_OUT,
+      endpoint: env.CBRIDGE_ENDPOINT,
+      ...options,
+    };
 
-    super(baseOptions);
+    super(finalOptions);
+    this.options = finalOptions;
 
     this.client = axios.create({
-      timeout,
-      baseURL: endpoint,
+      timeout: this.options.timeout,
+      baseURL: this.options.endpoint,
     });
   }
 
@@ -521,7 +523,7 @@ export class CBridgeAdapter extends BaseAdapter<
             ITransferTokenPair<ICBridgeToken>
           >();
           fromTokens.forEach((fromToken) => {
-            const toToken = this.getToToken({
+            const toToken = this.getTransferToToken({
               fromChainId: fromChain.id,
               toChainId: toChain.id,
               fromTokenSymbol: fromToken.token.symbol?.toUpperCase(),
@@ -706,7 +708,7 @@ export class CBridgeAdapter extends BaseAdapter<
     return chain.id;
   }
 
-  public getTokenInfo({
+  public getTokenBaseInfo({
     chainId,
     token,
   }: {

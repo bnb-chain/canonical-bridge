@@ -10,7 +10,6 @@ import { reportEvent } from '@/core/utils/gtm';
 import { useSearch } from '@/modules/aggregator/components/SelectModal/hooks/useSearch';
 import { BaseModal } from '@/modules/aggregator/components/SelectModal/components/BaseModal';
 import { ListItem } from '@/modules/aggregator/components/SelectModal/components/ListItem';
-import { useChainList } from '@/modules/aggregator/components/SelectModal/hooks/useChainList';
 
 interface DestinationNetworkModalProps {
   isOpen: boolean;
@@ -34,9 +33,9 @@ export function DestinationNetworkModal(props: DestinationNetworkModalProps) {
 
   const { isNoResult, result, onSearch } = useSearch({
     filter: (item, keyword) => item.name.toLowerCase().includes(keyword),
+    sorter: (a) => (a.id === toChain?.id ? -1 : 0),
     data: toChains,
   });
-  const { data } = useChainList('to', result);
 
   return (
     <BaseModal
@@ -47,7 +46,7 @@ export function DestinationNetworkModal(props: DestinationNetworkModalProps) {
       placeholder={formatMessage({ id: 'select-modal.destination.placeholder' })}
       isNoResult={isNoResult}
     >
-      <VirtualList data={data} itemHeight={64}>
+      <VirtualList data={result} itemHeight={64}>
         {(item) => (
           <ListItem
             key={item.id}

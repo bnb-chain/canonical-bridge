@@ -1,12 +1,13 @@
 import { ERC20_TOKEN } from '@/abi/erc20Token';
 import { ITransferTokenPair } from '@/adapters/base/types';
 import { CBridgeAdapter } from '@/adapters/cBridge';
-import { ICBridgePeggedPairConfig } from '@/adapters/cBridge/types';
+import {
+  ICBridgePeggedPairConfig,
+  ICBridgeToken,
+} from '@/adapters/cBridge/types';
 import { DeBridgeAdapter } from '@/adapters/deBridge';
-import { IDeBridgeEstimatedFeesInput } from '@/adapters/deBridge/types';
 import { LayerZeroAdapter } from '@/adapters/layerZero';
 import { MesonAdapter } from '@/adapters/meson';
-import { IGetMesonEstimateFeeInput } from '@/adapters/meson/types';
 import { StargateAdapter } from '@/adapters/stargate';
 import {
   IBridgeChain,
@@ -18,10 +19,10 @@ import {
   IApproveTokenInput,
   IGetAllowanceInput,
   IGetTokenBalanceInput,
-  IBridgeEndpointId,
-  IBridgeAddress,
 } from '@/aggregator/types';
-import { Hash, PublicClient, WalletClient } from 'viem';
+import { sortChains } from '@/aggregator/utils/sortChains';
+import { sortTokens } from '@/aggregator/utils/sortTokens';
+import { formatUnits, Hash, PublicClient } from 'viem';
 
 export interface CanonicalBridgeSDKOptions {
   chains: IChainConfig[];
@@ -90,6 +91,7 @@ export class CanonicalBridgeSDK {
         externalChains: this.options.externalChains,
         displayTokenSymbols: this.options.displayTokenSymbols,
         assetPrefix: this.options.assetPrefix,
+        chainConfigs: this.options.chains,
       });
     });
 
@@ -102,9 +104,10 @@ export class CanonicalBridgeSDK {
           if (adapter) {
             return adapter;
           } else {
-            console.warn(
-              `${bridgeType} adapter is not found, you should initialize an adapter before using`
-            );
+            // TODO
+            // console.warn(
+            //   `${bridgeType} adapter is not found, you should initialize the adapter before using it`
+            // );
           }
         },
       });
@@ -211,234 +214,167 @@ export class CanonicalBridgeSDK {
   }
 
   /**
-   * Load bridge fees and return fee information in the following order
-   * [deBridge, cBridge, stargate, layerZero, meson]
+   * Load bridge fees and return fee information
    */
   async loadBridgeFees({
-    bridgeType,
-    fromChainId,
-    fromAccount,
-    toChainId,
-    sendValue,
-    fromTokenSymbol,
     publicClient,
-    endPointId,
-    bridgeAddress,
-    isPegged,
-    slippage,
-    mesonOpts,
-    deBridgeOpts,
-  }: {
-    bridgeType: BridgeType[];
-    fromChainId: number;
-    fromAccount: `0x${string}`;
-    toChainId: number;
-    sendValue: bigint;
-    fromTokenSymbol: string;
-    publicClient?: PublicClient;
-    endPointId?: IBridgeEndpointId;
-    bridgeAddress?: IBridgeAddress;
-    isPegged?: boolean;
-    slippage?: number;
-    mesonOpts?: IGetMesonEstimateFeeInput;
-    deBridgeOpts?: IDeBridgeEstimatedFeesInput;
-  }) {
-    // deBridge
-    const promiseArr = [];
-    if (this.deBridge && deBridgeOpts && bridgeType.includes('deBridge')) {
-      const debridgeFeeAPICall = this.deBridge.getEstimatedFees(deBridgeOpts);
-      promiseArr.push(debridgeFeeAPICall);
-    } else {
-      promiseArr.push(new Promise((reject) => reject(null)));
-    }
-    // cBridge
-    if (this.cBridge && slippage && bridgeType.includes('cBridge')) {
-      const cBridgeFeeAPICall = this.cBridge.getEstimatedAmount({
-        src_chain_id: fromChainId,
-        dst_chain_id: toChainId,
-        token_symbol: fromTokenSymbol,
-        amt: String(sendValue),
-        user_addr: fromAccount,
-        slippage_tolerance: slippage,
-        is_pegged: isPegged,
-      });
-      promiseArr.push(cBridgeFeeAPICall);
-    } else {
-      promiseArr.push(new Promise((reject) => reject(null)));
-    }
-    // stargate
-    if (
-      this.stargate &&
-      bridgeAddress?.stargate &&
-      endPointId?.layerZeroV2 &&
-      bridgeType.includes('stargate') &&
-      !!publicClient
-    ) {
-      const stargateFeeAPICall = this.stargate.getQuoteOFT({
-        publicClient: publicClient,
-        bridgeAddress: bridgeAddress.stargate,
-        endPointId: endPointId.layerZeroV2,
-        receiver: fromAccount,
-        amount: sendValue,
-      });
-      promiseArr.push(stargateFeeAPICall);
-    } else {
-      promiseArr.push(new Promise((reject) => reject(null)));
-    }
-    // layerZero
-    if (
-      this.layerZero &&
-      bridgeAddress?.layerZero &&
-      endPointId?.layerZeroV1 &&
-      bridgeType.includes('layerZero') &&
-      !!publicClient
-    ) {
-      const layerZeroFeeAPICall = this.layerZero.getEstimateFee({
-        bridgeAddress: bridgeAddress.layerZero,
-        amount: sendValue,
-        dstEndpoint: endPointId.layerZeroV1,
-        userAddress: fromAccount,
-        publicClient,
-      });
-      promiseArr.push(layerZeroFeeAPICall);
-    } else {
-      promiseArr.push(new Promise((reject) => reject(null)));
-    }
-    // meson
-    if (this.meson && mesonOpts && bridgeType.includes('meson')) {
-      const mesonFeeAPICall = this.meson.getEstimatedFees(mesonOpts);
-      promiseArr.push(mesonFeeAPICall);
-    } else {
-      promiseArr.push(new Promise((reject) => reject(null)));
-    }
-    return await Promise.allSettled(promiseArr);
-  }
-
-  /**
-   * Send token through different bridge mode
-   */
-  async sendToken({
-    bridgeType,
     fromChainId,
-    amount,
-    userAddress,
+    toChainId,
     tokenAddress,
-    toChainId,
-    bridgeAddress,
-    walletClient,
-    publicClient,
-    slippage,
-    peggedConfig,
-    bridgeEndPointId,
-    debridgeOpts,
-    cBridgeOpts,
+    userAddress,
+    toUserAddress,
+    amount,
+    slippage = 10000,
   }: {
-    bridgeType: BridgeType;
-    fromChainId: number;
-    amount: bigint;
-    userAddress: `0x${string}`;
-    tokenAddress: `0x${string}`;
-    toChainId: number;
-    bridgeAddress: `0x${string}`;
-    walletClient: WalletClient;
     publicClient: PublicClient;
+    fromChainId: number;
+    toChainId: number;
+    tokenAddress: string;
+    userAddress: string;
+    toUserAddress?: string;
+    amount: bigint;
     slippage?: number;
-    peggedConfig?: ICBridgePeggedPairConfig;
-    deBridgeData?: `0x${string}`;
-    bridgeEndPointId?: IBridgeEndpointId;
-    debridgeOpts?: {
-      data?: `0x${string}`;
-    };
-    cBridgeOpts?: {
-      isPegged?: boolean;
-    };
   }) {
+    const { fromChain, toChain, fromToken, toToken } = this.getParamDetails({
+      fromChainId,
+      toChainId,
+      tokenAddress,
+    });
+
+    if (!fromChain || !toChain || !fromToken || !toToken) {
+      console.log(fromChain, toChain, fromToken, toToken);
+      throw new Error('Missing parameters');
+    }
+
+    const promiseArr: Array<{ bridgeType: BridgeType; apiCall: Promise<any> }> =
+      [];
+
     // deBridge
     if (
       this.deBridge &&
-      bridgeType === 'deBridge' &&
-      debridgeOpts &&
-      debridgeOpts?.data
+      fromToken?.deBridge?.address &&
+      toToken?.deBridge?.address
     ) {
-      if (!debridgeOpts?.data) {
-        throw new Error('Invalid deBridge data');
-      }
-      return await this.deBridge.sendToken({
-        walletClient,
-        bridgeAddress,
-        data: debridgeOpts?.data,
-        amount,
-        address: userAddress,
-      });
-    }
-    // cBridge
-    else if (
-      this.cBridge &&
-      bridgeType === 'cBridge' &&
-      cBridgeOpts &&
-      cBridgeOpts?.isPegged &&
-      slippage
-    ) {
-      const transferType = this.cBridge.getTransferType({
-        peggedConfig,
+      const debridgeFeeAPICall = this.deBridge.getEstimatedFees({
         fromChainId,
-      });
-      const nonce = new Date().getTime();
-      const transferArgs = this.cBridge.getTransferParams({
-        amount,
-        isPegged: cBridgeOpts.isPegged,
         toChainId,
-        tokenAddress,
-        address: userAddress,
-        maxSlippage: slippage,
-        transferType: transferType,
-        peggedConfig: peggedConfig,
-        nonce,
-      });
-      return await this.cBridge.sendToken({
-        walletClient,
-        publicClient,
-        bridgeAddress,
-        fromChainId,
-        address: userAddress,
-        isPegged: cBridgeOpts.isPegged,
-        peggedConfig,
-        args: transferArgs,
-      });
-    }
-    // stargate
-    else if (
-      this.stargate &&
-      bridgeType === 'stargate' &&
-      bridgeEndPointId?.layerZeroV2
-    ) {
-      return await this.stargate.sendToken({
-        walletClient,
-        publicClient,
-        bridgeAddress,
-        tokenAddress,
-        endPointId: bridgeEndPointId?.layerZeroV2,
-        receiver: userAddress,
+        fromTokenAddress: fromToken.deBridge.address as `0x${string}`,
+        toTokenAddress: toToken.deBridge.address as `0x${string}`,
         amount,
-      });
-    }
-    // May implement LayerZero v2 in the future
-    else if (
-      this.layerZero &&
-      bridgeType === 'layerZero' &&
-      bridgeEndPointId?.layerZeroV1
-    ) {
-      return await this.layerZero.sendToken({
         userAddress,
-        bridgeAddress,
-        amount,
-        dstEndpoint: bridgeEndPointId?.layerZeroV1 as number,
-        publicClient,
-        walletClient,
+        toUserAddress: toUserAddress || userAddress,
+      });
+      promiseArr.push({
+        bridgeType: 'deBridge',
+        apiCall: debridgeFeeAPICall,
       });
     } else {
-      throw new Error('Invalid bridge inputs');
+      promiseArr.push({
+        bridgeType: 'deBridge',
+        apiCall: new Promise((reject) => reject(null)),
+      });
     }
+
+    // cBridge
+    if (this.cBridge && fromToken.cBridge?.raw?.token.symbol) {
+      const fromTokenSymbol = fromToken.cBridge?.raw?.token.symbol;
+      const tokenSymbol = fromTokenSymbol === 'ETH' ? 'WETH' : fromTokenSymbol;
+
+      const cBridgeFeeAPICall = this.cBridge.getEstimatedAmount({
+        src_chain_id: fromChainId,
+        dst_chain_id: toChainId,
+        token_symbol: tokenSymbol,
+        amt: String(amount),
+        user_addr: userAddress,
+        slippage_tolerance: slippage,
+        is_pegged: fromToken.isPegged,
+      });
+      promiseArr.push({
+        bridgeType: 'cBridge',
+        apiCall: cBridgeFeeAPICall,
+      });
+    } else {
+      promiseArr.push({
+        bridgeType: 'cBridge',
+        apiCall: new Promise((reject) => reject(null)),
+      });
+    }
+
+    // stargate
+    if (
+      this.stargate &&
+      fromToken?.stargate?.raw?.bridgeAddress &&
+      toToken?.stargate?.raw?.endpointID
+    ) {
+      const stargateFeeAPICall = this.stargate.getQuoteOFT({
+        publicClient: publicClient,
+        bridgeAddress: fromToken.stargate.raw.bridgeAddress as `0x${string}`,
+        endPointId: toToken?.stargate?.raw?.endpointID,
+        receiver: userAddress as `0x${string}`,
+        amount,
+      });
+      promiseArr.push({
+        bridgeType: 'stargate',
+        apiCall: stargateFeeAPICall,
+      });
+    } else {
+      promiseArr.push({
+        bridgeType: 'stargate',
+        apiCall: new Promise((reject) => reject(null)),
+      });
+    }
+
+    // layerZero
+    if (
+      this.layerZero &&
+      fromToken?.layerZero?.raw?.bridgeAddress &&
+      toToken?.layerZero?.raw?.endpointID
+    ) {
+      const layerZeroFeeAPICall = this.layerZero.getEstimateFee({
+        bridgeAddress: fromToken?.layerZero?.raw
+          ?.bridgeAddress as `0x${string}`,
+        amount,
+        dstEndpoint: toToken?.layerZero?.raw?.endpointID,
+        userAddress: userAddress as `0x${string}`,
+        publicClient,
+      });
+      promiseArr.push({
+        bridgeType: 'layerZero',
+        apiCall: layerZeroFeeAPICall,
+      });
+    } else {
+      promiseArr.push({
+        bridgeType: 'layerZero',
+        apiCall: new Promise((reject) => reject(null)),
+      });
+    }
+
+    // meson
+    if (this.meson && fromToken?.meson?.raw?.id && toToken?.meson?.raw?.id) {
+      const mesonAmount = formatUnits(amount, fromToken.meson.raw.decimals);
+      const mesonFeeAPICall = this.meson.getEstimatedFees({
+        fromToken: `${fromChain?.meson?.raw?.id}:${fromToken?.meson?.raw?.id}`,
+        toToken: `${toChain?.meson?.raw?.id}:${toToken?.meson?.raw?.id}`,
+        amount: mesonAmount,
+        fromAddr: userAddress,
+      });
+      promiseArr.push({
+        bridgeType: 'meson',
+        apiCall: mesonFeeAPICall,
+      });
+    } else {
+      promiseArr.push({
+        bridgeType: 'meson',
+        apiCall: new Promise((reject) => reject(null)),
+      });
+    }
+
+    const apiCalls = promiseArr.map((e) => e.apiCall);
+    const results = await Promise.allSettled(apiCalls);
+
+    return Object.fromEntries(
+      promiseArr.map((e, index) => [e.bridgeType, results[index]])
+    ) as Record<BridgeType, PromiseSettledResult<any>>;
   }
 
   public getFromChains() {
@@ -449,25 +385,26 @@ export class CanonicalBridgeSDK {
 
       fromChains.forEach((item: any) => {
         const chainId = adapter.getChainId(item);
-        const chainConfig = this.options.chains.find((e) => e.id === chainId);
 
-        if (chainConfig) {
-          let bridgeChain = chainMap.get(chainId);
-          if (!bridgeChain) {
-            bridgeChain = {
-              isCompatible: true,
-              ...adapter.getChainInfo({
-                chainId,
-                chainConfig,
-              }),
-            };
-            chainMap.set(chainId, bridgeChain);
-          }
+        let bridgeChain = chainMap.get(chainId);
+        if (!bridgeChain) {
+          bridgeChain = {
+            isCompatible: true,
+            ...adapter.getChainBaseInfo({
+              chainId,
+            }),
+          };
+          chainMap.set(chainId, bridgeChain);
         }
       });
     });
 
-    return Array.from(chainMap.values());
+    const chains = Array.from(chainMap.values());
+    return sortChains({
+      direction: 'from',
+      chains,
+      chainOrder: this.options.chainOrder,
+    });
   }
 
   public getToChains({ fromChainId }: { fromChainId: number }) {
@@ -480,36 +417,37 @@ export class CanonicalBridgeSDK {
 
       toChains.forEach((item: any) => {
         const chainId = adapter.getChainId(item);
-        const chainConfig = this.options.chains.find((e) => e.id === chainId);
 
-        if (chainConfig) {
-          const isCompatible = adapter.isToChainCompatible({
-            fromChainId,
-            toChainId: chainId,
-          });
+        const isCompatible = adapter.isToChainCompatible({
+          fromChainId,
+          toChainId: chainId,
+        });
 
-          let bridgeChain = chainMap.get(chainId);
-          if (!bridgeChain) {
-            bridgeChain = {
-              isCompatible,
-              ...adapter.getChainInfo({
-                chainId,
-                chainConfig,
-              }),
-            };
-          } else {
-            bridgeChain = {
-              ...bridgeChain,
-              isCompatible: bridgeChain.isCompatible || isCompatible,
-            };
-          }
-
-          chainMap.set(chainId, bridgeChain);
+        let bridgeChain = chainMap.get(chainId);
+        if (!bridgeChain) {
+          bridgeChain = {
+            isCompatible,
+            ...adapter.getChainBaseInfo({
+              chainId,
+            }),
+          };
+        } else {
+          bridgeChain = {
+            ...bridgeChain,
+            isCompatible: bridgeChain.isCompatible || isCompatible,
+          };
         }
+
+        chainMap.set(chainId, bridgeChain);
       });
     });
 
-    return Array.from(chainMap.values());
+    const chains = Array.from(chainMap.values());
+    return sortChains({
+      direction: 'to',
+      chains,
+      chainOrder: this.options.chainOrder,
+    });
   }
 
   public getTokens({
@@ -528,17 +466,15 @@ export class CanonicalBridgeSDK {
       });
 
       tokenPairs.forEach((item: ITransferTokenPair<any>) => {
-        const { fromToken, fromChainId, toChainId } = item;
-
-        const baseInfo = adapter.getTokenInfo({
+        const baseInfo = adapter.getTokenBaseInfo({
           chainId: fromChainId,
-          token: fromToken,
+          token: item.fromToken,
         });
 
         const isCompatible = adapter.isTokenCompatible({
           fromChainId,
           toChainId,
-          tokenSymbol: baseInfo.displaySymbol,
+          tokenAddress: baseInfo.address,
         });
 
         let bridgeToken = tokenMap.get(baseInfo.displaySymbol.toUpperCase());
@@ -559,10 +495,214 @@ export class CanonicalBridgeSDK {
       });
     });
 
-    return Array.from(tokenMap.values());
+    const tokens = Array.from(tokenMap.values());
+    return sortTokens({
+      tokens,
+      tokenOrder: this.options.tokenOrder,
+    });
   }
 
-  public getChainDetail() {}
+  public getFromChainDetail({
+    fromChainId,
+    toChainId,
+    tokenAddress,
+  }: {
+    fromChainId: number;
+    toChainId: number;
+    tokenAddress: string;
+  }) {
+    let chainDetail: IBridgeChain | undefined;
 
-  public getTokenDetail() {}
+    this.options.adapters.forEach((adapter) => {
+      const tokenPair = adapter.getTokenPair({
+        fromChainId,
+        toChainId,
+        tokenAddress,
+      });
+
+      if (tokenPair) {
+        if (!chainDetail) {
+          chainDetail = {
+            ...adapter.getChainBaseInfo({ chainId: fromChainId }),
+            isCompatible: true,
+          };
+        }
+        chainDetail = {
+          ...chainDetail,
+          [adapter.bridgeType]: {
+            raw: adapter.getChainById(fromChainId),
+          },
+        };
+      }
+    });
+
+    return chainDetail;
+  }
+
+  public getToChainDetail({
+    fromChainId,
+    toChainId,
+    tokenAddress,
+  }: {
+    fromChainId: number;
+    toChainId: number;
+    tokenAddress: string;
+  }) {
+    let chainDetail: IBridgeChain | undefined;
+
+    this.options.adapters.forEach((adapter) => {
+      const tokenPair = adapter.getTokenPair({
+        fromChainId,
+        toChainId,
+        tokenAddress,
+      });
+
+      if (tokenPair) {
+        const isCompatible = adapter.isToChainCompatible({
+          fromChainId,
+          toChainId,
+        });
+
+        if (!chainDetail) {
+          chainDetail = {
+            ...adapter.getChainBaseInfo({ chainId: toChainId }),
+            isCompatible,
+          };
+        }
+        chainDetail = {
+          ...chainDetail,
+          [adapter.bridgeType]: {
+            raw: adapter.getChainById(toChainId),
+          },
+        };
+      }
+    });
+
+    return chainDetail;
+  }
+
+  public getTokenDetail({
+    fromChainId,
+    toChainId,
+    tokenAddress,
+  }: {
+    fromChainId: number;
+    toChainId: number;
+    tokenAddress: string;
+  }) {
+    let tokenDetail: IBridgeToken | undefined;
+
+    this.options.adapters.forEach((adapter) => {
+      const tokenPair = adapter.getTokenPair({
+        fromChainId,
+        toChainId,
+        tokenAddress,
+      });
+
+      if (tokenPair) {
+        const isCompatible = adapter.isTokenCompatible({
+          fromChainId,
+          toChainId,
+          tokenAddress,
+        });
+
+        const baseInfo = adapter.getTokenBaseInfo({
+          chainId: fromChainId,
+          token: tokenPair.fromToken as any,
+        });
+
+        if (!tokenDetail) {
+          tokenDetail = {
+            ...baseInfo,
+            isPegged: !!tokenPair.isPegged,
+            isCompatible,
+          };
+        }
+
+        if (adapter.bridgeType === 'cBridge' && tokenPair.peggedConfig) {
+          tokenDetail.cBridge = {
+            ...baseInfo,
+            peggedConfig: tokenPair.peggedConfig as ICBridgePeggedPairConfig,
+            raw: tokenPair.fromToken as ICBridgeToken,
+          };
+        } else {
+          tokenDetail = {
+            ...tokenDetail,
+            [adapter.bridgeType]: {
+              ...baseInfo,
+              raw: tokenPair.fromToken,
+            },
+          };
+        }
+      }
+    });
+
+    return tokenDetail;
+  }
+
+  public getToTokenDetail({
+    fromChainId,
+    toChainId,
+    tokenAddress,
+  }: {
+    fromChainId: number;
+    toChainId: number;
+    tokenAddress: string;
+  }) {
+    let tokenDetail: IBridgeToken | undefined;
+
+    this.options.adapters.forEach((adapter) => {
+      const tokenPair = adapter.getTokenPair({
+        fromChainId,
+        toChainId,
+        tokenAddress,
+      });
+
+      if (tokenPair) {
+        const baseInfo = adapter.getTokenBaseInfo({
+          chainId: toChainId,
+          token: tokenPair.toToken as any,
+        });
+
+        if (!tokenDetail) {
+          tokenDetail = {
+            ...baseInfo,
+            isPegged: !!tokenPair.isPegged,
+            isCompatible: true,
+          };
+        }
+
+        if (adapter.bridgeType === 'cBridge' && tokenPair.peggedConfig) {
+          tokenDetail.cBridge = {
+            ...baseInfo,
+            peggedConfig: tokenPair.peggedConfig as ICBridgePeggedPairConfig,
+            raw: tokenPair.toToken as ICBridgeToken,
+          };
+        } else {
+          tokenDetail = {
+            ...tokenDetail,
+            [adapter.bridgeType]: {
+              ...baseInfo,
+              raw: tokenPair.toToken,
+            },
+          };
+        }
+      }
+    });
+
+    return tokenDetail;
+  }
+
+  private getParamDetails(params: {
+    fromChainId: number;
+    toChainId: number;
+    tokenAddress: string;
+  }) {
+    return {
+      fromChain: this.getFromChainDetail(params),
+      toChain: this.getToChainDetail(params),
+      fromToken: this.getTokenDetail(params),
+      toToken: this.getToTokenDetail(params),
+    };
+  }
 }

@@ -20,28 +20,30 @@ export class DeBridgeAdapter extends BaseAdapter<
   IDeBridgeChain,
   IDeBridgeToken
 > {
+  protected options: IDeBridgeAdapterOptions;
   private client: AxiosInstance;
   private statsClient: AxiosInstance;
   public bridgeType: BridgeType = 'deBridge';
 
   constructor(options: IDeBridgeAdapterOptions) {
-    const {
-      timeout = CLIENT_TIME_OUT,
-      endpoint = env.DEBRIDGE_ENDPOINT,
-      statsEndpoint = env.DEBRIDGE_STATS_ENDPOINT,
-      ...baseOptions
-    } = options;
+    const finalOptions = {
+      timeout: CLIENT_TIME_OUT,
+      endpoint: env.DEBRIDGE_ENDPOINT,
+      statsEndpoint: env.DEBRIDGE_STATS_ENDPOINT,
+      ...options,
+    };
 
-    super(baseOptions);
+    super(finalOptions);
+    this.options = finalOptions;
 
     this.client = axios.create({
-      timeout,
-      baseURL: endpoint,
+      timeout: this.options.timeout,
+      baseURL: this.options.endpoint,
     });
 
     this.statsClient = axios.create({
-      timeout,
-      baseURL: statsEndpoint,
+      timeout: this.options.timeout,
+      baseURL: this.options.statsEndpoint,
     });
   }
 
@@ -72,7 +74,6 @@ export class DeBridgeAdapter extends BaseAdapter<
     userAddress,
     toUserAddress,
     affiliateFeePercent = 0,
-    accesstoken = '',
     prependOperatingExpenses = false,
   }: IDeBridgeEstimatedFeesInput): Promise<IDeBridgeCreateQuoteResponse> {
     try {
@@ -89,8 +90,8 @@ export class DeBridgeAdapter extends BaseAdapter<
         srcChainOrderAuthorityAddress: userAddress,
       } as any;
 
-      if (accesstoken) {
-        deBridgeParams.accesstoken = accesstoken;
+      if (this.options.accessToken) {
+        deBridgeParams.accesstoken = this.options.accessToken;
       }
       const urlParams = new URLSearchParams(deBridgeParams as any);
       const deBridgeQuote = await this.createTxQuote(urlParams);
@@ -239,7 +240,7 @@ export class DeBridgeAdapter extends BaseAdapter<
             ITransferTokenPair<IDeBridgeToken>
           >();
           fromTokens.forEach((fromToken) => {
-            const toToken = this.getToToken({
+            const toToken = this.getTransferToToken({
               fromChainId: fromChain.chainId,
               toChainId: toChain.chainId,
               fromTokenSymbol: fromToken.symbol?.toUpperCase(),
@@ -286,7 +287,7 @@ export class DeBridgeAdapter extends BaseAdapter<
     return chain.chainId;
   }
 
-  public getTokenInfo({
+  public getTokenBaseInfo({
     chainId,
     token,
   }: {

@@ -12,7 +12,7 @@ import {
   IStarGateBusDriveSettings,
 } from '@/adapters/stargate/types';
 import { BridgeType } from '@/aggregator/types';
-import { CLIENT_TIME_OUT } from '@/constants';
+import { CLIENT_TIME_OUT, env } from '@/constants';
 import axios, { AxiosInstance } from 'axios';
 import { Hash, pad } from 'viem';
 
@@ -21,17 +21,23 @@ export class StargateAdapter extends BaseAdapter<
   IStargateChain,
   IStargateToken
 > {
+  protected options: IStargateAdapterOptions;
   private client: AxiosInstance;
   public bridgeType: BridgeType = 'stargate';
 
   constructor(options: IStargateAdapterOptions) {
-    const { timeout = CLIENT_TIME_OUT, endpoint, ...baseOptions } = options;
+    const finalOptions = {
+      timeout: CLIENT_TIME_OUT,
+      endpoint: env.STARGATE_ENDPOINT,
+      ...options,
+    };
 
-    super(baseOptions);
+    super(finalOptions);
+    this.options = finalOptions;
 
     this.client = axios.create({
-      timeout,
-      baseURL: endpoint,
+      timeout: this.options.timeout,
+      baseURL: this.options.endpoint,
     });
   }
 
@@ -45,7 +51,7 @@ export class StargateAdapter extends BaseAdapter<
   }) {
     return (
       await this.client.get<IStarGateBusDriveSettings>(
-        `${fromEndpointId}/${toEndpointId}`
+        `/buses/bus-drive-settings/${fromEndpointId}/${toEndpointId}`
       )
     ).data;
   }
@@ -251,7 +257,7 @@ export class StargateAdapter extends BaseAdapter<
             ITransferTokenPair<IStargateToken>
           >();
           fromTokens.forEach((fromToken) => {
-            const toToken = this.getToToken({
+            const toToken = this.getTransferToToken({
               fromChainId: fromChain.chainId,
               toChainId: toChain.chainId,
               fromTokenSymbol: fromToken.symbol?.toUpperCase(),
@@ -298,7 +304,7 @@ export class StargateAdapter extends BaseAdapter<
     return chain.chainId;
   }
 
-  public getTokenInfo({
+  public getTokenBaseInfo({
     chainId,
     token,
   }: {

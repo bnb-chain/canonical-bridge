@@ -15,7 +15,13 @@ export const usePreSelectRoute = () => {
   const preSelectRoute = useCallback(
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (response: any, bridgeType: BridgeType) => {
-      const [debridgeEst, cbridgeEst, stargateEst, layerZeroEst, mesonEst] = response;
+      const {
+        deBridge: debridgeEst,
+        cBridge: cbridgeEst,
+        stargate: stargateEst,
+        layerZero: layerZeroEst,
+        meson: mesonEst,
+      } = response;
 
       if (bridgeType === 'deBridge' && debridgeEst.status === 'fulfilled') {
         dispatch(

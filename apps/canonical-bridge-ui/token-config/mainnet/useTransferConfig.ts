@@ -28,7 +28,7 @@ export function useTransferConfig() {
         defaultSelectedInfo: {
           fromChainId: 1,
           toChainId: 56,
-          tokenSymbol: 'USDT', // USDT
+          tokenAddress: '0xdac17f958d2ee523a2206206994597c13d831ec7', // USDT
           amount: '',
         },
         order: {

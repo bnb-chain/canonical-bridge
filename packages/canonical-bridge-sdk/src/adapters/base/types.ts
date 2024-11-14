@@ -1,4 +1,8 @@
-import { INativeCurrency, IExternalChain } from '@/aggregator/types';
+import {
+  INativeCurrency,
+  IExternalChain,
+  IChainConfig,
+} from '@/aggregator/types';
 
 export interface ITransferTokenPair<T, P = unknown> {
   fromChainId: number;
@@ -25,6 +29,7 @@ export interface IInitialOptions {
   brandChains?: number[];
   externalChains?: IExternalChain[];
   displayTokenSymbols?: Record<number, Record<string, string>>;
+  chainConfigs?: IChainConfig[];
 }
 
 export interface IBridgeTokenBaseInfo {

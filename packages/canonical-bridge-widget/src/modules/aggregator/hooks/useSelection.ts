@@ -26,168 +26,121 @@ export function useSelection() {
 
   const { getSortedTokens } = useSortedTokens();
 
-  const updateToToken = ({
-    fromChainId = fromChain?.id,
-    toChainId = toChain?.id,
-    token = selectedToken,
-  }: {
-    fromChainId?: number;
-    toChainId?: number;
-    token?: IBridgeToken;
+  const updateSelectedInfo = (params: {
+    fromChainId: number;
+    toChainId: number;
+    tokenAddress: string;
   }) => {
-    // const newToToken = getToToken({
-    //   fromChainId: fromChainId!,
-    //   toChainId: toChainId!,
-    //   token: token!,
-    // });
-    // dispatch(setToToken(newToToken));
+    const newFromChain = bridgeSDK.getFromChainDetail(params);
+    const newToChain = bridgeSDK.getToChainDetail(params);
+    const newToken = bridgeSDK.getTokenDetail(params);
+    const newToToken = bridgeSDK.getToTokenDetail(params);
+
+    dispatch(setFromChain(newFromChain));
+    dispatch(setToChain(newToChain));
+    dispatch(setSelectedToken(newToken));
+    dispatch(setToToken(newToToken));
   };
 
-  const updateSelectedInfo = ({
-    tmpFromChain = fromChain,
-    tmpToChain = toChain,
-    tmpToken = selectedToken,
+  const selectDefault = async ({
+    fromChainId,
+    toChainId,
+    tokenAddress,
   }: {
-    tmpFromChain?: IBridgeChain;
-    tmpToChain?: IBridgeChain;
-    tmpToken?: IBridgeToken;
+    fromChainId: number;
+    toChainId: number;
+    tokenAddress: string;
   }) => {
-    // const newToken = bridgeSDK
-    //   .getTokens({
-    //     fromChainId: tmpFromChain?.id,
-    //     toChainId: tmpToChain?.id,
-    //   })
-    //   .find((t) => t.displaySymbol?.toUpperCase() === tmpToken?.displaySymbol?.toUpperCase());
-    // const newFromChain = bridgeSDK
-    //   .getFromChains({
-    //     toChainId: tmpToChain?.id,
-    //     token: newToken,
-    //   })
-    //   .find((c) => c.id === tmpFromChain?.id);
-    // const newToChain = bridgeSDK
-    //   .getToChains({
-    //     fromChainId: tmpFromChain?.id,
-    //     token: newToken,
-    //   })
-    //   .find((c) => c.id === tmpToChain?.id);
-    // dispatch(setFromChain(newFromChain));
-    // dispatch(setToChain(newToChain));
-    // dispatch(setSelectedToken(newToken));
-    // updateToToken({
-    //   fromChainId: newFromChain?.id,
-    //   toChainId: newToChain?.id,
-    //   token: newToken,
-    // });
-  };
+    if (chainId) {
+      const fromChains = bridgeSDK.getFromChains();
+      const chain = fromChains.find((chain) => chain.id === chainId);
+      if (chain) {
+        selectFromChain(chain);
+        return;
+      }
+      if (fromChain?.id) return;
+    }
 
-  const selectFromChain = async (tmpFromChain: IBridgeChain) => {
-    // After selecting fromChain, if toChain becomes incompatible, reselect the first compatible network in toChain list.
-    const toChains = bridgeSDK.getToChains({
-      fromChainId: tmpFromChain.id,
+    updateSelectedInfo({
+      fromChainId,
+      toChainId,
+      tokenAddress,
     });
-    const tmpToChain =
+  };
+
+  const selectFromChain = async (newFromChain: IBridgeChain) => {
+    // After selecting fromChain, if toChain becomes incompatible,
+    // reselect the first compatible network in toChain list.
+    const toChains = bridgeSDK.getToChains({
+      fromChainId: newFromChain.id,
+    });
+
+    const newToChain =
       toChains.find((c) => c.isCompatible && c.id === toChain?.id) ??
       toChains.find((c) => c.isCompatible && c.chainType !== 'link');
 
-    const tmpTokens = await getSortedTokens({
-      chainType: tmpFromChain.chainType,
-      fromChainId: tmpFromChain.id,
+    const sortedTokens = await getSortedTokens({
+      chainType: newFromChain.chainType,
+      fromChainId: newFromChain.id,
       tokens: bridgeSDK.getTokens({
-        fromChainId: tmpFromChain.id,
-        toChainId: tmpToChain!.id,
+        fromChainId: newFromChain.id,
+        toChainId: newToChain!.id,
       }),
     });
 
     const newToken =
-      tmpTokens.find(
+      sortedTokens.find(
         (t) =>
           t.isCompatible &&
           t.displaySymbol.toUpperCase() === selectedToken?.displaySymbol.toUpperCase(),
-      ) ?? tmpTokens.find((t) => t.isCompatible);
+      ) ?? sortedTokens.find((t) => t.isCompatible);
 
     updateSelectedInfo({
-      tmpToken: newToken,
-      tmpFromChain,
-      tmpToChain,
+      tokenAddress: newToken!.address,
+      fromChainId: newFromChain.id,
+      toChainId: newToChain!.id,
+    });
+  };
+
+  const selectToChain = async (newToChain: IBridgeChain) => {
+    const fromChainId = fromChain!.id;
+    const toChainId = newToChain.id;
+
+    const sortedTokens = await getSortedTokens({
+      fromChainId,
+      tokens: bridgeSDK.getTokens({
+        fromChainId,
+        toChainId,
+      }),
+    });
+
+    const newToken =
+      sortedTokens.find(
+        (t) =>
+          t.isCompatible &&
+          t.displaySymbol.toUpperCase() === selectedToken?.displaySymbol.toUpperCase(),
+      ) ?? sortedTokens.find((t) => t.isCompatible);
+
+    updateSelectedInfo({
+      tokenAddress: newToken!.address,
+      fromChainId,
+      toChainId,
+    });
+  };
+
+  const selectToken = async (newToken: IBridgeToken) => {
+    updateSelectedInfo({
+      tokenAddress: newToken.address,
+      fromChainId: fromChain!.id,
+      toChainId: toChain!.id,
     });
   };
 
   return {
-    async selectDefault({
-      fromChainId,
-      toChainId,
-      tokenSymbol,
-    }: {
-      fromChainId: number;
-      toChainId: number;
-      tokenSymbol: string;
-    }) {
-      if (chainId) {
-        const fromChains = bridgeSDK.getFromChains();
-        const chain = fromChains.find((chain) => chain.id === chainId);
-        if (chain) {
-          selectFromChain(chain);
-          return;
-        }
-        if (fromChain?.id) return;
-      }
-
-      const fromChains = bridgeSDK.getFromChains();
-      const toChains = bridgeSDK.getToChains({
-        fromChainId,
-      });
-      const tokens = bridgeSDK.getTokens({
-        fromChainId,
-        toChainId,
-      });
-
-      const newFromChain = fromChains.find((item) => item.id === fromChainId);
-      const newToChain = toChains.find((item) => item.id === toChainId);
-      const newToken = tokens.find(
-        (item) => item.displaySymbol.toUpperCase() === tokenSymbol.toUpperCase(),
-      );
-
-      dispatch(setFromChain(newFromChain));
-      dispatch(setToChain(newToChain));
-      dispatch(setSelectedToken(newToken));
-
-      // updateToToken({
-      //   fromChainId: newFromChain?.id,
-      //   toChainId: newToChain?.id,
-      //   token: newToken,
-      // });
-    },
+    selectDefault,
     selectFromChain,
-    async selectToChain(tmpToChain: IBridgeChain) {
-      const fromChainId = fromChain!.id;
-
-      const tmpTokens = await getSortedTokens({
-        fromChainId,
-        tokens: bridgeSDK.getTokens({
-          fromChainId,
-          toChainId: tmpToChain?.id,
-        }),
-      });
-
-      const newToken =
-        tmpTokens.find(
-          (t) =>
-            t.isCompatible &&
-            t.displaySymbol.toUpperCase() === selectedToken?.displaySymbol.toUpperCase(),
-        ) ?? tmpTokens.find((t) => t.isCompatible);
-
-      updateSelectedInfo({
-        tmpToken: newToken,
-        tmpFromChain: fromChain,
-        tmpToChain,
-      });
-    },
-
-    async selectToken(newToken: IBridgeToken) {
-      updateSelectedInfo({
-        tmpToken: newToken,
-      });
-    },
+    selectToChain,
+    selectToken,
   };
 }
 

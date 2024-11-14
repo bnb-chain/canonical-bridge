@@ -212,7 +212,7 @@ export class LayerZeroAdapter extends BaseAdapter<
             ITransferTokenPair<ILayerZeroToken>
           >();
           fromTokens.forEach((fromToken) => {
-            const toToken = this.getToToken({
+            const toToken = this.getTransferToToken({
               fromChainId: fromChain.chainId,
               toChainId: toChain.chainId,
               fromTokenSymbol: fromToken.symbol?.toUpperCase(),
@@ -256,7 +256,7 @@ export class LayerZeroAdapter extends BaseAdapter<
     return chain.chainId;
   }
 
-  public getTokenInfo({
+  public getTokenBaseInfo({
     chainId,
     token,
   }: {

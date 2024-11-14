@@ -6,6 +6,7 @@ export interface IDeBridgeAdapterOptions
   timeout?: number;
   endpoint?: string;
   statsEndpoint?: string;
+  accessToken?: string;
 }
 
 export interface IDeBridgeChain {
@@ -150,7 +151,6 @@ export interface IDeBridgeEstimatedFeesInput {
   toUserAddress?: string;
   affiliateFeePercent?: number;
   prependOperatingExpenses?: boolean;
-  accesstoken?: string;
 }
 
 export interface ISendDebridgeTokenInput {

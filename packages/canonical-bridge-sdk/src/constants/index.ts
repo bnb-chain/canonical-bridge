@@ -3,6 +3,7 @@ export const env = {
   DEBRIDGE_ENDPOINT: 'https://deswap.debridge.finance/v1.0',
   DEBRIDGE_STATS_ENDPOINT: 'https://stats-api.dln.trade/api',
   MESON_ENDPOINT: 'https://relayer.meson.fi/api/v1',
+  STARGATE_ENDPOINT: 'https://mainnet.stargate-api.com/v1',
 };
 
 export const CLIENT_TIME_OUT = 60 * 1000;

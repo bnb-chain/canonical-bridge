@@ -18,21 +18,23 @@ export class MesonAdapter extends BaseAdapter<
   IMesonChain,
   IMesonToken
 > {
+  protected options: IMesonAdapterOptions;
   private client: AxiosInstance;
   public bridgeType: BridgeType = 'meson';
 
   constructor(options: IMesonAdapterOptions) {
-    const {
-      timeout = CLIENT_TIME_OUT,
-      endpoint = env.MESON_ENDPOINT,
-      ...baseOptions
-    } = options;
+    const finalOptions = {
+      timeout: CLIENT_TIME_OUT,
+      endpoint: env.MESON_ENDPOINT,
+      ...options,
+    };
 
-    super(baseOptions);
+    super(finalOptions);
+    this.options = finalOptions;
 
     this.client = axios.create({
-      timeout,
-      baseURL: endpoint,
+      timeout: this.options.timeout,
+      baseURL: this.options.endpoint,
     });
   }
 
@@ -190,7 +192,7 @@ export class MesonAdapter extends BaseAdapter<
             ITransferTokenPair<IMesonToken>
           >();
           fromTokens.forEach((fromToken) => {
-            const toToken = this.getToToken({
+            const toToken = this.getTransferToToken({
               fromChainId: Number(fromChain.chainId),
               toChainId: Number(toChain.chainId),
               fromTokenSymbol: fromToken.id?.toUpperCase(),
@@ -231,7 +233,7 @@ export class MesonAdapter extends BaseAdapter<
     return Number(chain.chainId);
   }
 
-  public getTokenInfo({
+  public getTokenBaseInfo({
     chainId,
     token,
   }: {

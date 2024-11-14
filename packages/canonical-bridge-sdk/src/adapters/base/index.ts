@@ -16,6 +16,8 @@ import { isSameAddress } from '@/shared/address';
 export abstract class BaseAdapter<G extends object, C = unknown, T = unknown> {
   public abstract bridgeType: BridgeType;
 
+  protected options: IBaseAdapterOptions<G>;
+
   protected config: G;
   protected excludedChains: number[] = [];
   protected excludedTokens: Record<number, Array<string>> = {};
@@ -27,6 +29,7 @@ export abstract class BaseAdapter<G extends object, C = unknown, T = unknown> {
   protected brandChains: number[] = [];
   protected externalChains: IExternalChain[] = [];
   protected displayTokenSymbols: Record<number, Record<string, string>> = {};
+  protected chainConfigs: IChainConfig[] = [];
 
   protected chains: C[] = [];
   protected chainMap = new Map<number, C>();
@@ -38,6 +41,7 @@ export abstract class BaseAdapter<G extends object, C = unknown, T = unknown> {
   >();
 
   constructor(options: IBaseAdapterOptions<G>) {
+    this.options = options;
     this.config = options.config ?? {};
     this.excludedChains = options.excludedChains ?? [];
     this.excludedTokens = options.excludedTokens ?? {};
@@ -59,6 +63,7 @@ export abstract class BaseAdapter<G extends object, C = unknown, T = unknown> {
     this.brandChains = initialOptions?.brandChains ?? [];
     this.externalChains = initialOptions?.externalChains ?? [];
     this.displayTokenSymbols = initialOptions?.displayTokenSymbols ?? {};
+    this.chainConfigs = initialOptions?.chainConfigs ?? [];
   }
 
   protected abstract initChains(): void;
@@ -98,7 +103,7 @@ export abstract class BaseAdapter<G extends object, C = unknown, T = unknown> {
 
   public abstract getChainId(chain: C): number;
 
-  public abstract getTokenInfo({
+  public abstract getTokenBaseInfo({
     chainId,
     token,
   }: {
@@ -106,13 +111,9 @@ export abstract class BaseAdapter<G extends object, C = unknown, T = unknown> {
     token: T;
   }): IBridgeTokenBaseInfo;
 
-  public getChainInfo({
-    chainId,
-    chainConfig,
-  }: {
-    chainId: number;
-    chainConfig: IChainConfig;
-  }) {
+  public getChainBaseInfo({ chainId }: { chainId: number }) {
+    const chainConfig = this.chainConfigs.find((e) => e.id === chainId);
+
     const explorerUrl = chainConfig?.explorer.url?.replace(/\/$/, '') ?? '';
     const tmpUrlPattern = explorerUrl ? `${explorerUrl}/token/{0}` : '';
     const tokenUrlPattern =
@@ -183,7 +184,7 @@ export abstract class BaseAdapter<G extends object, C = unknown, T = unknown> {
   // 1. Native currency is ETH -> Native currency is ETH, all transfer to ETH
   // 2. Native currency is ETH -> Native currency is NOT ETH, transfer to ETH first, if not, WETH
   // 3. Native currency is NOT ETH -> Native currency is ETH, all transfer to ETH
-  protected getToToken({
+  protected getTransferToToken({
     fromChainId,
     toChainId,
     fromTokenSymbol,
@@ -228,44 +229,53 @@ export abstract class BaseAdapter<G extends object, C = unknown, T = unknown> {
     return toToken;
   }
 
-  public getRealTokenSymbol({
-    fromChainId,
-    toChainId,
-    tokenSymbol,
+  public getTokenSymbolByTokenAddress({
+    chainId,
+    tokenAddress,
   }: {
-    fromChainId: number;
-    toChainId: number;
-    tokenSymbol: string;
+    chainId: number;
+    tokenAddress: string;
   }) {
-    return tokenSymbol;
+    const tokens = this.tokenMap.get(chainId);
+
+    let baseInfo: IBridgeTokenBaseInfo | undefined;
+    const token = tokens?.find((t) => {
+      baseInfo = this.getTokenBaseInfo({
+        chainId,
+        token: t,
+      });
+      return isSameAddress(baseInfo.address, tokenAddress);
+    });
+
+    if (token) {
+      return baseInfo?.symbol?.toUpperCase();
+    }
   }
 
-  public getChain({ chainId }: { chainId: number }) {
+  public getChainById(chainId: number) {
     return this.chainMap.get(chainId);
   }
 
   public getTokenPair({
     fromChainId,
     toChainId,
-    tokenSymbol,
+    tokenAddress,
   }: {
     fromChainId: number;
     toChainId: number;
-    tokenSymbol: string;
+    tokenAddress: string;
   }) {
-    const realTokenSymbol = this.getRealTokenSymbol({
-      fromChainId,
-      toChainId,
-      tokenSymbol,
+    const tokenSymbol = this.getTokenSymbolByTokenAddress({
+      chainId: fromChainId,
+      tokenAddress,
     });
 
-    const tokenPair = this.transferMap
-      .get(fromChainId)
-      ?.get(toChainId)
-      ?.get(realTokenSymbol);
-    return {
-      tokenPair,
-    };
+    if (tokenSymbol) {
+      return this.transferMap
+        .get(fromChainId)
+        ?.get(toChainId)
+        ?.get(tokenSymbol);
+    }
   }
 
   public getFromChains() {
@@ -291,14 +301,23 @@ export abstract class BaseAdapter<G extends object, C = unknown, T = unknown> {
     fromChainId: number;
     toChainId: number;
   }) {
-    const tokenPairs: ITransferTokenPair<T, unknown>[] = [];
-
-    const tokenPairsMap = this.transferMap.get(fromChainId)?.get(toChainId);
-    tokenPairsMap?.forEach((tokenPair) => {
-      tokenPairs.push(tokenPair);
+    const allMap = new Map<string, ITransferTokenPair<T, unknown>>();
+    this.transferMap.get(fromChainId)?.forEach((toMap) => {
+      toMap.forEach((tokenPair, tokenSymbol) => {
+        allMap.set(tokenSymbol.toUpperCase(), tokenPair);
+      });
     });
 
-    return tokenPairs;
+    // The tokenPairs in `allMap` may not be the `tokenPair` in the toChain,
+    // so it needs to be overwritten
+    this.transferMap
+      .get(fromChainId)
+      ?.get(toChainId)
+      ?.forEach((tokenPair, tokenSymbol) => {
+        allMap.set(tokenSymbol.toUpperCase(), tokenPair);
+      });
+
+    return Array.from(allMap.values());
   }
 
   public isToChainCompatible({
@@ -311,24 +330,11 @@ export abstract class BaseAdapter<G extends object, C = unknown, T = unknown> {
     return !!this.transferMap.get(fromChainId)?.get(toChainId);
   }
 
-  public isTokenCompatible({
-    fromChainId,
-    toChainId,
-    tokenSymbol,
-  }: {
+  public isTokenCompatible(params: {
     fromChainId: number;
     toChainId: number;
-    tokenSymbol: string;
+    tokenAddress: string;
   }) {
-    const realTokenSymbol = this.getRealTokenSymbol({
-      fromChainId,
-      toChainId,
-      tokenSymbol,
-    });
-
-    return !!this.transferMap
-      .get(fromChainId)
-      ?.get(toChainId)
-      ?.get(realTokenSymbol);
+    return !!this.getTokenPair(params);
   }
 }

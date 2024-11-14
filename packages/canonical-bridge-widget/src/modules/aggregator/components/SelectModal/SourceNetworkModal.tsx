@@ -11,7 +11,6 @@ import { useSearch } from '@/modules/aggregator/components/SelectModal/hooks/use
 import { ListItem } from '@/modules/aggregator/components/SelectModal/components/ListItem';
 import { reportEvent } from '@/core/utils/gtm';
 import { setToAccount } from '@/modules/transfer/action';
-import { useChainList } from '@/modules/aggregator/components/SelectModal/hooks/useChainList';
 
 interface SourceNetworkModalProps {
   isOpen: boolean;
@@ -33,9 +32,9 @@ export function SourceNetworkModal(props: SourceNetworkModalProps) {
 
   const { isNoResult, result, onSearch } = useSearch({
     filter: (item, keyword) => item.name.toLowerCase().includes(keyword),
+    sorter: (a) => (a.id === fromChain?.id ? -1 : 0),
     data: fromChains,
   });
-  const { data } = useChainList('from', result);
 
   return (
     <BaseModal
@@ -46,7 +45,7 @@ export function SourceNetworkModal(props: SourceNetworkModalProps) {
       placeholder={formatMessage({ id: 'select-modal.source.placeholder' })}
       isNoResult={isNoResult}
     >
-      <VirtualList data={data} itemHeight={64}>
+      <VirtualList data={result} itemHeight={64}>
         {(item) => (
           <ListItem
             key={item.id}
