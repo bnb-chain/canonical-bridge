@@ -21,10 +21,6 @@
 ### Patch Changes
 
 - e31ab8f: UI adjustment
-- 6ab36a6: UI adjustment <<<<<<< HEAD
-  > > > > > > > # 634d683a (chore: Update versions)
-  > > > > > > >
-  > > > > > > > main
 
 ## 0.5.0-alpha.2
 
