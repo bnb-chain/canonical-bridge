@@ -2,7 +2,7 @@ import { Address, Chain, createPublicClient, formatUnits, http } from 'viem';
 import { TronWeb } from 'tronweb';
 import axios from 'axios';
 import * as SPLToken from '@solana/spl-token';
-import { Connection, PublicKey } from '@solana/web3.js';
+import { Connection, LAMPORTS_PER_SOL, PublicKey } from '@solana/web3.js';
 import { TOKEN_PROGRAM_ID } from '@solana/spl-token';
 import { ChainType, IBridgeToken } from '@bnb-chain/canonical-bridge-sdk';
 
@@ -191,24 +191,33 @@ async function getSolanaTokenBalances({
     if (!account || !tokens?.length || !connection) {
       return {};
     }
-    const balances: Record<string, string | undefined> = {};
 
     // https://stackoverflow.com/questions/69700173/solana-check-all-spl-token-balances-of-a-wallet
-    const res = await connection.getTokenAccountsByOwner(new PublicKey(account), {
-      programId: TOKEN_PROGRAM_ID,
-    });
+    const [splTokensRes, nativeTokenRes] = await Promise.allSettled([
+      connection.getTokenAccountsByOwner(new PublicKey(account), {
+        programId: TOKEN_PROGRAM_ID,
+      }),
+      connection.getBalance(new PublicKey(account!)),
+    ]);
 
-    res?.value?.forEach((e) => {
-      const accountInfo = SPLToken.AccountLayout.decode(e.account.data);
+    const balances: Record<string, string | undefined> = {};
+    if (splTokensRes.status === 'fulfilled') {
+      splTokensRes.value?.value?.forEach((e) => {
+        const accountInfo = SPLToken.AccountLayout.decode(e.account.data);
 
-      const token = tokens.find((t) => isSameAddress(t.address, accountInfo.mint.toBase58()));
-      if (token) {
-        balances[token.displaySymbol.toUpperCase()] = formatUnits(
-          accountInfo.amount,
-          token.decimals,
-        );
-      }
-    });
+        const token = tokens.find((t) => isSameAddress(t.address, accountInfo.mint.toBase58()));
+        if (token) {
+          balances[token.displaySymbol.toUpperCase()] = formatUnits(
+            accountInfo.amount,
+            token.decimals,
+          );
+        }
+      });
+    }
+
+    if (nativeTokenRes.status === 'fulfilled') {
+      balances['SOL'] = String(nativeTokenRes.value / LAMPORTS_PER_SOL);
+    }
 
     tokens.forEach((t) => {
       const key = t.displaySymbol.toUpperCase();

@@ -18,6 +18,7 @@ export const RouteWrapper = ({
 
   return (
     <Flex
+      className="bccb-widget-route-wrapper"
       flex={1}
       flexDir={'column'}
       gap={'4px'}
@@ -30,7 +31,7 @@ export const RouteWrapper = ({
       }
       background={isSelected ? 'rgba(255, 233, 0, 0.06);' : 'none'}
       borderRadius={'8px'}
-      padding={'16px'}
+      padding={'12px'}
       position={'relative'}
       cursor={isError ? 'default' : 'pointer'}
       _hover={{

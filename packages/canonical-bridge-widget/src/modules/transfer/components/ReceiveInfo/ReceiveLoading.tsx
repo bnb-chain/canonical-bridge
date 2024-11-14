@@ -1,15 +1,15 @@
-import { Flex, Skeleton, SkeletonCircle } from '@bnb-chain/space';
+import { Box, Flex, Skeleton, SkeletonCircle } from '@bnb-chain/space';
 
 export const ReceiveLoading = () => {
   return (
-    <>
+    <Box className="bccb-widget-received-info-route-loading">
       <Flex flexDir={'column'} gap={'8px'} display={{ base: 'none', lg: 'flex' }}>
         <Flex gap={'8px'} mb={'8px'}>
           <Skeleton height={'22px'} width={'160px'} />
           <Skeleton height={'22px'} width={'80px'} />
         </Flex>
-        <Skeleton height={'15px'} maxW={'333px'} width={'100%'} />
-        <Skeleton height={'15px'} maxW={'371px'} width={'100%'} />
+        <Skeleton height={'13px'} maxW={'333px'} width={'100%'} />
+        <Skeleton height={'13px'} maxW={'371px'} width={'100%'} />
       </Flex>
       <Flex
         display={{ base: 'flex', lg: 'none' }}
@@ -40,6 +40,6 @@ export const ReceiveLoading = () => {
         </Flex>
         <SkeletonCircle w={'32px'} h={'32px'} />
       </Flex>
-    </>
+    </Box>
   );
 };

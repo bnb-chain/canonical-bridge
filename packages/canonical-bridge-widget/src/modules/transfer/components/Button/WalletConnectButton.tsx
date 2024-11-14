@@ -14,6 +14,7 @@ export const WalletConnectButton = () => {
 
   return (
     <Button
+      className="bccb-widget-wallet-connect-button"
       size="lg"
       h={'56px'}
       w="100%"

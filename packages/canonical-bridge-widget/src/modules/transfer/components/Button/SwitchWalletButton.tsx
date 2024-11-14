@@ -15,6 +15,7 @@ export const SwitchWalletButton = (props: ButtonProps) => {
 
   return (
     <Button
+      className="bccb-widget-switch-wallet-button"
       size="lg"
       h={'56px'}
       w="100%"

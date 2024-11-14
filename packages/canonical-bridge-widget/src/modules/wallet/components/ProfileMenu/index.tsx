@@ -24,6 +24,7 @@ export const ProfileMenu = () => {
       {({ isOpen, onClose }) => (
         <>
           <DropdownButton
+            className="bccb-widget-header-profile-button"
             bgColor={theme.colors[colorMode].layer[3].default}
             isActive={isOpen}
             pl={{ base: '0', md: '12px' }}
@@ -55,13 +56,19 @@ export const ProfileMenu = () => {
               </Center>
             )}
             <Box display={{ base: 'none', md: 'block' }}>
-              <Typography as={'span'} variant={'label'} size={'md'} fontWeight={500}>
+              <Typography
+                className="profile-address"
+                as={'span'}
+                variant={'label'}
+                size={'md'}
+                fontWeight={500}
+              >
                 {formatAppAddress({ address })}
               </Typography>
             </Box>
           </DropdownButton>
 
-          <DropdownList overflowY="visible">
+          <DropdownList className="bccb-widget-header-profile-list" overflowY="visible">
             <Flex alignItems="center" p="16px 16px 12px">
               <Flex gap="12px">
                 <Center
@@ -80,7 +87,10 @@ export const ProfileMenu = () => {
                     <CopyAddress boxSize={'20px'} content={address} />
                   </Flex>
                   {!!balance?.formatted && (
-                    <Flex color={theme.colors[colorMode].text.secondary}>
+                    <Flex
+                      className="bccb-widget-header-profile-balance"
+                      color={theme.colors[colorMode].text.secondary}
+                    >
                       {formatNumber(Number(balance?.formatted), 4)} {balance?.symbol}
                     </Flex>
                   )}
@@ -89,6 +99,7 @@ export const ProfileMenu = () => {
             </Flex>
 
             <Flex
+              className="bccb-widget-header-profile-disconnect-link"
               borderTop={`1px solid ${theme.colors[colorMode].popover.separator}`}
               py="8px"
               onClick={() => {

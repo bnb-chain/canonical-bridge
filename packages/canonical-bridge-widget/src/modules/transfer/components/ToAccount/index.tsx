@@ -7,7 +7,6 @@ import {
   FlexProps,
   useIntl,
   InputGroup,
-  InputRightElement,
 } from '@bnb-chain/space';
 import { ChangeEvent, useMemo, useRef, useState } from 'react';
 import { useEffect } from 'react';
@@ -15,12 +14,10 @@ import { useBytecode } from 'wagmi';
 
 import { setIsToAddressChecked, setToAccount } from '@/modules/transfer/action';
 import { useTronTransferInfo } from '@/modules/transfer/hooks/tron/useTronTransferInfo';
-import { ErrorIcon } from '@/core/components/icons/ErrorIcon';
-import { CorrectIcon } from '@/core/components/icons/CorrectIcon';
 import { useAppDispatch, useAppSelector } from '@/modules/store/StoreProvider';
-import { ConfirmCheckbox } from '@/core/components/ConfirmCheckbox';
 import { useTronContract } from '@/modules/aggregator/adapters/meson/hooks/useTronContract';
 import { useSolanaTransferInfo } from '@/modules/transfer/hooks/solana/useSolanaTransferInfo';
+import { ToAccountCheckBox } from '@/core/components/icons/ConfirmCheckIcon';
 
 export function ToAccount(props: FlexProps) {
   const { colorMode } = useColorMode();
@@ -63,7 +60,7 @@ export function ToAccount(props: FlexProps) {
     if (!toAccount.address) setInputValue('');
   }, [toAccount.address]);
 
-  const { isInvalid, isAvailableAccount } = useMemo(() => {
+  const { isInvalid } = useMemo(() => {
     if (isTronTransfer) {
       return {
         isInvalid:
@@ -99,18 +96,19 @@ export function ToAccount(props: FlexProps) {
     return null;
   }
 
-  const onCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.checked === true) {
-      setIsChecked(true);
-      dispatch(setIsToAddressChecked(true));
-    } else {
+  const toggleChecked = () => {
+    if (isChecked) {
       setIsChecked(false);
       dispatch(setIsToAddressChecked(false));
+    } else {
+      setIsChecked(true);
+      dispatch(setIsToAddressChecked(true));
     }
   };
 
   return (
     <Flex
+      className="bccb-widget-to-account-container"
       flexDirection="column"
       color={theme.colors[colorMode].text.tertiary}
       fontSize={'14px'}
@@ -118,8 +116,11 @@ export function ToAccount(props: FlexProps) {
       fontWeight={400}
       {...props}
     >
-      <Box>{formatMessage({ id: 'to.section.account.label' })}</Box>
+      <Box className="bccb-widget-to-account-title">
+        {formatMessage({ id: 'to.section.account.label' })}
+      </Box>
       <InputGroup
+        className="bccb-widget-to-account-input"
         alignItems="center"
         mt={'12px'}
         _hover={{
@@ -155,30 +156,30 @@ export function ToAccount(props: FlexProps) {
             borderColor: theme.colors[colorMode].text.danger,
           }}
         />
-        {(isInvalid || isAvailableAccount) && (
-          <InputRightElement h="100%" w="auto" pr={'16px'} pl={'8px'}>
-            {isInvalid && <ErrorIcon boxSize={'16px'} />}
-            {isAvailableAccount && !isInvalid && <CorrectIcon boxSize={'16px'} />}
-          </InputRightElement>
-        )}
       </InputGroup>
 
       {isInvalid && (
-        <Flex mt={'8px'} fontSize={'14px'} color={theme.colors[colorMode].text.danger}>
+        <Flex
+          className="bccb-widget-to-account-input-error"
+          mt={'8px'}
+          fontSize={'14px'}
+          color={theme.colors[colorMode].text.danger}
+        >
           {formatMessage({ id: 'to.section.account.invalid' })}
         </Flex>
       )}
 
-      <ConfirmCheckbox
-        isChecked={isChecked}
-        onChange={onCheckboxChange}
-        borderRadius={'2px'}
+      <Flex
+        className="bccb-widget-to-account-confirm"
+        flexDir={'row'}
         mt={'12px'}
         mb={'8px'}
-        justifyItems={'flex-start'}
+        ml={'-6px'}
+        gap={'2px'}
       >
-        {formatMessage({ id: 'to.section.confirm.text' })}
-      </ConfirmCheckbox>
+        <ToAccountCheckBox onClick={toggleChecked} isChecked={isChecked} />
+        <Box>{formatMessage({ id: 'to.section.confirm.text' })}</Box>
+      </Flex>
     </Flex>
   );
 }

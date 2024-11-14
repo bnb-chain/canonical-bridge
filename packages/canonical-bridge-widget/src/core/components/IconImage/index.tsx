@@ -19,6 +19,7 @@ export function IconImage(props: IconImageProps) {
     <>
       {isError ? (
         <Circle
+          className="default-icon"
           size={boxSize}
           {...restProps}
           bg={fallbackBgColor ?? theme.colors[colorMode].support.primary[1]}

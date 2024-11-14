@@ -9,6 +9,8 @@ export interface ISendCakeTokenInput {
   version?: number;
   publicClient: PublicClient;
   walletClient: WalletClient;
+  dstAddress?: `0x${string}`;
+  airDropGas?: bigint;
 }
 
 export interface IGetEstimateFeeInput {
@@ -19,6 +21,8 @@ export interface IGetEstimateFeeInput {
   gasAmount?: bigint;
   version?: number;
   publicClient: PublicClient;
+  dstAddress?: `0x${string}`;
+  airDropGas?: bigint;
 }
 
 export interface ILayerZeroToken {

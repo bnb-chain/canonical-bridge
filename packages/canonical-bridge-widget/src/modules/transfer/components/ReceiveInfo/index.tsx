@@ -146,7 +146,7 @@ export const ReceiveInfo = ({ onOpen }: ReceiveInfoProps) => {
   }, [estimatedAmount]);
 
   return (
-    <Box mb={isHideSection ? '-24px' : 0}>
+    <Box className="bccb-widget-received-info-container" mb={isHideSection ? '-24px' : 0}>
       <Collapse in={!isHideSection} animateOpacity>
         <Flex flexDir={'column'} gap={'8px'}>
           <Flex flexDir={'row'} alignItems={'center'} justifyContent={'space-between'}>
@@ -158,17 +158,21 @@ export const ReceiveInfo = ({ onOpen }: ReceiveInfoProps) => {
               {formatMessage({ id: 'you.receive.title' })}
             </Typography>
             {!isHideRouteButton ? (
-              <Box display={{ base: 'block', lg: 'none' }}>
+              <Box
+                className="bccb-widget-received-info-route-open"
+                display={{ base: 'block', lg: 'none' }}
+              >
                 <RouteChangeButton onOpen={onOpen} />
               </Box>
             ) : null}
           </Flex>
           <Flex
-            minH={'106px'}
+            className="bccb-widget-received-info-route-content"
+            minH={'102px'}
             borderRadius={'8px'}
             p={'12px'}
             flexDir={'column'}
-            gap={'12px'}
+            gap={'8px'}
             background={theme.colors[colorMode].receive.background}
             position={'relative'}
           >
@@ -181,8 +185,17 @@ export const ReceiveInfo = ({ onOpen }: ReceiveInfoProps) => {
                     </Box>
                   }
                   {
-                    <Box display={{ base: 'block', lg: 'none' }} mb={'-12px'}>
-                      <RefreshingButton position={'absolute'} right={'16px'} top={'16px'} />
+                    <Box
+                      display={{ base: 'block', lg: 'none' }}
+                      mb={'-12px'}
+                      sx={{
+                        svg: {
+                          w: '29px',
+                          h: '29px',
+                        },
+                      }}
+                    >
+                      <RefreshingButton position={'absolute'} right={'12px'} top={'10px'} />
                     </Box>
                   }
                   {bridgeType && (

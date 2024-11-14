@@ -14,12 +14,14 @@ import {
 import { useMemo } from 'react';
 
 import { isNativeToken } from '@/core/utils/address.ts';
+import { ChainType } from '@/modules/aggregator';
 
 interface TokenTooltipProps {
   tokenLinkUrl: string;
   tokenAddress: string;
   children: React.ReactNode;
   isReceiveArea?: boolean;
+  chainType?: ChainType;
 }
 
 export const TokenInfoTooltip = ({
@@ -27,25 +29,35 @@ export const TokenInfoTooltip = ({
   tokenAddress,
   tokenLinkUrl,
   isReceiveArea,
+  chainType = 'evm',
 }: TokenTooltipProps) => {
   const theme = useTheme();
-  const nativeToken = useMemo(() => isNativeToken(tokenAddress), [tokenAddress]);
+  const nativeToken = useMemo(
+    () => isNativeToken(tokenAddress, chainType),
+    [chainType, tokenAddress],
+  );
 
   return (
-    <Flex display={'inline-block'} w={'auto'}>
+    <Flex className="bccb-widget-route-token-tooltip" display={'inline-block'} w={'auto'}>
       <LightMode>
         <Popover placement="top-start" trigger={'hover'} strategy={'fixed'} autoFocus={false}>
           <PopoverTrigger>{children}</PopoverTrigger>
           <Portal>
             <PopoverContent
+              className="bccb-widget-route-token-tooltip-content"
               borderRadius={'4px'}
               maxW={'280px'}
               marginLeft={isReceiveArea ? '-36px' : ''}
               marginBottom={isReceiveArea ? '-4px' : ''}
             >
-              <PopoverArrow />
-              <PopoverBody px={'8px'} py={'7px'} onClick={(e) => e.stopPropagation()}>
-                <Box>
+              <PopoverArrow className="tooltip-arrow" />
+              <PopoverBody
+                className="bccb-widget-route-token-tooltip-body"
+                px={'8px'}
+                py={'7px'}
+                onClick={(e) => e.stopPropagation()}
+              >
+                <>
                   <Box color={theme.colors.light.text.primary} fontSize={'12px'} fontWeight={400}>
                     {nativeToken ? 'Native token' : 'Token address:'}
                   </Box>
@@ -72,7 +84,7 @@ export const TokenInfoTooltip = ({
                       )}
                     </Box>
                   )}
-                </Box>
+                </>
               </PopoverBody>
             </PopoverContent>
           </Portal>

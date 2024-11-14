@@ -3,13 +3,14 @@ import { MenuItemProps, MenuItem, useTheme, useColorMode } from '@bnb-chain/spac
 interface DropdownItemProps extends MenuItemProps {}
 
 export function DropdownItem(props: DropdownItemProps) {
-  const { ...restProps } = props;
+  const { className, ...restProps } = props;
 
   const theme = useTheme();
   const { colorMode } = useColorMode();
 
   return (
     <MenuItem
+      className={className}
       px="16px"
       h="40px"
       alignItems="center"

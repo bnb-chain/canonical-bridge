@@ -18,7 +18,6 @@ import * as allChains from 'viem/chains';
 import { defaultTronConfig, tronLink } from '@node-real/walletkit/tron';
 import {
   defaultSolanaConfig,
-  trustWallet as solanaTrustWallet,
   phantomWallet as solanaPhantomWallet,
 } from '@node-real/walletkit/solana';
 import React from 'react';
@@ -53,7 +52,7 @@ export function WalletProvider(props: WalletProviderProps) {
       walletConnect(),
     ];
     const tronWallets = [tronLink()];
-    const solanaWallets = [solanaTrustWallet(), solanaPhantomWallet()];
+    const solanaWallets = [solanaPhantomWallet()];
 
     const tron = chainConfigs.find((e) => e.chainType === 'tron');
     const solana = chainConfigs.find((e) => e.chainType === 'solana');
@@ -119,6 +118,7 @@ export function WalletProvider(props: WalletProviderProps) {
         {children}
 
         <StateModal
+          className="bccb-widget-header-preventing-modal"
           title={formatMessage({ id: 'wallet.preventing-modal.title' })}
           description={formatMessage({ id: 'wallet.preventing-modal.desc' })}
           isOpen={isOpen}

@@ -53,6 +53,7 @@ export function TransactionApproveModal(
 
   return (
     <StateModal
+      className="bccb-widget-transaction-approve-modal"
       type="approve"
       title={formatMessage({ id: 'modal.approve.title' })}
       description={
@@ -109,6 +110,7 @@ export function TransactionApproveModal(
       }}
       closeButton={
         <Button
+          className="bccb-widget-modal-second-button"
           size="lg"
           variant={'outline'}
           w={'100%'}

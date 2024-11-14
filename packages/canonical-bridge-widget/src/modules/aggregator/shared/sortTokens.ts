@@ -51,13 +51,15 @@ export function sortTokens({
         return 1;
       }
 
-      if (a.balance && b.balance) {
+      const aBalance = Number(a.balance);
+      const bBalance = Number(b.balance);
+      if (aBalance && bBalance) {
         return sortWithPredefinedOrders();
       }
-      if (a.balance && !b.balance) {
+      if (aBalance && !bBalance) {
         return -1;
       }
-      if (!a.balance && b.balance) {
+      if (!aBalance && bBalance) {
         return 1;
       }
     }

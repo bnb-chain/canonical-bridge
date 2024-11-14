@@ -18,9 +18,15 @@ export function ConnectButton(props: ConnectButtonProps) {
   const fromChain = useAppSelector((state) => state.transfer.fromChain);
 
   return (
-    <Flex alignItems="center" gap={'16px'} {...restProps}>
+    <Flex
+      className="bccb-widget-header-wallet-connect"
+      alignItems="center"
+      gap={'16px'}
+      {...restProps}
+    >
       {!isConnected && (
         <Button
+          className="bccb-widget-header-wallet-connect-button"
           variant="outline"
           h={'40px'}
           px={'16px'}

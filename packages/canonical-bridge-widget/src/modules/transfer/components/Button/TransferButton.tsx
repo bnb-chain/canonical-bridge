@@ -443,7 +443,7 @@ export function TransferButton({
   ]);
 
   return (
-    <Flex flexDir="column" w={'100%'}>
+    <Flex className="bccb-widget-transfer-button" flexDir="column" w={'100%'}>
       <Button
         bg={theme.colors[colorMode].button.brand.default}
         size={'lg'}

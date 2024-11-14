@@ -24,6 +24,7 @@ export function SwitchingTipsModal() {
 
   return (
     <StateModal
+      className="bccb-widget-header-switching-tips-modal"
       title={formatMessage({ id: 'wallet.switching-modal.title' })}
       description={formatMessage({ id: 'wallet.switching-modal.desc' })}
       isOpen={isOpenSwitchingTipsModal}

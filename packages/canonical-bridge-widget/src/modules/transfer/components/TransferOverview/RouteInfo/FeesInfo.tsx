@@ -18,6 +18,7 @@ export const FeesInfo = ({ summary, breakdown, bridgeType, isError }: FeesInfoPr
   const { formatMessage } = useIntl();
   return (
     <Box
+      className="bccb-widget-route-fee-info"
       color={theme.colors[colorMode].text.tertiary}
       display={'inline-block'}
       lineHeight={'16px'}
@@ -30,6 +31,7 @@ export const FeesInfo = ({ summary, breakdown, bridgeType, isError }: FeesInfoPr
     >
       <FeesIcon w={'16px'} h={'16px'} mr={'4px'} />
       <Box
+        className="bccb-widget-route-info-label"
         mr={'4px'}
         as="span"
         display={'inline'}
@@ -40,6 +42,7 @@ export const FeesInfo = ({ summary, breakdown, bridgeType, isError }: FeesInfoPr
         {formatMessage({ id: 'route.fees.title' })}
       </Box>
       <Box
+        className="bccb-widget-route-info-text"
         mr={'4px'}
         as="span"
         display={'inline'}
