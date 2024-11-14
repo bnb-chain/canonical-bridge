@@ -1,6 +1,5 @@
 # @bnb-chain/canonical-bridge-widget
 
-<<<<<<< HEAD
 ## 0.5.0-alpha.4
 
 ### Patch Changes
@@ -12,7 +11,7 @@
 ### Patch Changes
 
 - Fix phantom wallet deelink issue on mobile
-=======
+
 ## 0.5.0
 
 ### Minor Changes
@@ -22,8 +21,10 @@
 ### Patch Changes
 
 - e31ab8f: UI adjustment
-- 6ab36a6: UI adjustment
->>>>>>> 634d683a (chore: Update versions)
+- 6ab36a6: UI adjustment <<<<<<< HEAD
+  > > > > > > > # 634d683a (chore: Update versions)
+  > > > > > > >
+  > > > > > > > main
 
 ## 0.5.0-alpha.2
 
