@@ -1,5 +1,11 @@
 # @bnb-chain/canonical-bridge-widget
 
+## 0.4.1
+
+### Patch Changes
+
+- 1341167: Add class name into components
+
 ## 0.4.0
 
 ### Minor Changes
