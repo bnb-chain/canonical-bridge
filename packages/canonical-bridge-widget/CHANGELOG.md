@@ -1,5 +1,11 @@
 # @bnb-chain/canonical-bridge-widget
 
+## 0.5.0-alpha.4
+
+### Patch Changes
+
+- Solana requires wallet have at least 0.05SOL to enabled a tx.
+
 ## 0.5.0-alpha.3
 
 ### Patch Changes

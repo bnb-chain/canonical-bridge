@@ -6,6 +6,7 @@
     "@bnb-chain/canonical-bridge-widget": "0.4.0"
   },
   "changesets": [
+    "hip-ladybugs-attend",
     "honest-jeans-greet",
     "mean-falcons-yell",
     "stale-files-kick",
