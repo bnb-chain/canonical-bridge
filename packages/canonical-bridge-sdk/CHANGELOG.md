@@ -1,5 +1,6 @@
 # @bnb-chain/canonical-bridge-sdk
 
+<<<<<<< HEAD
 ## 0.4.0-alpha.2
 
 ### Patch Changes
@@ -11,6 +12,13 @@
 ### Patch Changes
 
 - Fix phantom wallet deelink issue on mobile
+=======
+## 0.4.0
+
+### Minor Changes
+
+- a6db440: Support solana
+>>>>>>> 634d683a (chore: Update versions)
 
 ## 0.4.0-alpha.0
 
