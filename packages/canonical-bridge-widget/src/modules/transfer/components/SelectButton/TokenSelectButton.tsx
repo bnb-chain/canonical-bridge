@@ -41,7 +41,11 @@ export function TokenSelectButton(props: SelectButtonProps) {
       {...restProps}
     >
       <Flex gap={'8px'} alignItems={'center'} position={'relative'} overflow="hidden">
-        <TokenInfoTooltip tokenAddress={token?.address ?? ''} tokenLinkUrl={tokenUrl}>
+        <TokenInfoTooltip
+          chainType={fromChain?.chainType}
+          tokenAddress={token?.address ?? ''}
+          tokenLinkUrl={tokenUrl}
+        >
           <Box>
             <IconImage
               src={token?.icon}

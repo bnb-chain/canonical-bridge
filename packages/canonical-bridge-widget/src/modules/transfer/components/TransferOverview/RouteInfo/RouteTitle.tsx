@@ -41,6 +41,7 @@ export const RouteTitle = ({ receiveAmt, toTokenInfo, isError }: RouteTitleProps
       </Flex>
       {toTokenInfo && (
         <TokenInfoTooltip
+          chainType={toChain?.chainType}
           tokenAddress={toTokenInfo.address}
           tokenLinkUrl={tokenUrl}
           isReceiveArea={true}

@@ -1,5 +1,11 @@
 # @bnb-chain/canonical-bridge-widget
 
+## 0.5.0-alpha.3
+
+### Patch Changes
+
+- Fix phantom wallet deelink issue on mobile
+
 ## 0.5.0-alpha.2
 
 ### Patch Changes
