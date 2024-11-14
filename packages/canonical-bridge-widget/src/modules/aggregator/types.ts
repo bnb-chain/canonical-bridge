@@ -175,7 +175,7 @@ export interface ITransferConfig {
 }
 
 export interface IChainConfig {
-  id: number | string;
+  id: number;
   name: string;
   nativeCurrency: {
     name: string;
@@ -192,7 +192,7 @@ export interface IChainConfig {
   chainType?: ChainType;
 }
 
-export type ChainType = 'link' | 'evm' | 'tron';
+export type ChainType = 'link' | 'evm' | 'tron' | 'solana';
 
 export type AdapterConstructorType =
   | typeof CBridgeAdapter

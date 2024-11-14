@@ -14,7 +14,12 @@ import {
 } from '@/modules/transfer/action';
 import { useToTokenInfo } from '@/modules/transfer/hooks/useToTokenInfo';
 import { useDebounce } from '@/core/hooks/useDebounce';
-import { DEBOUNCE_DELAY, DEFAULT_ADDRESS, DEFAULT_TRON_ADDRESS } from '@/core/constants';
+import {
+  DEBOUNCE_DELAY,
+  DEFAULT_ADDRESS,
+  DEFAULT_SOLANA_ADDRESS,
+  DEFAULT_TRON_ADDRESS,
+} from '@/core/constants';
 import { toObject } from '@/core/utils/string';
 import { useGetCBridgeFees } from '@/modules/aggregator/adapters/cBridge/hooks/useGetCBridgeFees';
 import { useGetDeBridgeFees } from '@/modules/aggregator/adapters/deBridge/hooks/useGetDeBridgeFees';
@@ -26,6 +31,8 @@ import { usePreSelectRoute } from '@/modules/transfer/hooks/usePreSelectRoute';
 import { useGetNativeToken } from '@/modules/transfer/hooks/useGetNativeToken';
 import { useGetMesonFees } from '@/modules/aggregator/adapters/meson/hooks/useGetMesonFees';
 import { formatNumber } from '@/core/utils/number';
+import { useSolanaAccount } from '@/modules/wallet/hooks/useSolanaAccount';
+import { useSolanaTransferInfo } from '@/modules/transfer/hooks/solana/useSolanaTransferInfo';
 
 let lastTime = Date.now();
 
@@ -35,6 +42,10 @@ export const useLoadingBridgeFees = () => {
   const { getToDecimals } = useToTokenInfo();
   const { address } = useAccount();
   const { address: tronAddress } = useTronWallet();
+  const { address: solanaAddress } = useSolanaAccount();
+
+  const { isSolanaAvailableToAccount } = useSolanaTransferInfo();
+
   const bridgeSDK = useBridgeSDK();
   const {
     http: { deBridgeAccessToken },
@@ -73,6 +84,11 @@ export const useLoadingBridgeFees = () => {
   const fromChain = useAppSelector((state) => state.transfer.fromChain);
   const toChain = useAppSelector((state) => state.transfer.toChain);
   const max_slippage = useAppSelector((state) => state.transfer.slippage);
+  const toAccount = useAppSelector((state) => state.transfer.toAccount);
+
+  // Avoid `loadBridgeFees` to be repeatedly executed during toAccount input
+  const toAccountRef = useRef<string | undefined>(toAccount.address);
+  toAccountRef.current = toAccount.address;
 
   // todo ensure nativeBalance updates before loadingBridgeFees
   const { data: nativeBalance } = useBalance({ address, chainId: fromChain?.id });
@@ -145,8 +161,21 @@ export const useLoadingBridgeFees = () => {
           amount,
           toChainId: toChain?.id,
           toTokenAddress: toToken?.address as `0x${string}`,
-          userAddress: address || DEFAULT_ADDRESS,
           accesstoken: deBridgeAccessToken,
+          userAddress:
+            fromChain.chainType === 'solana'
+              ? solanaAddress || DEFAULT_SOLANA_ADDRESS
+              : address || DEFAULT_ADDRESS,
+          toUserAddress:
+            fromChain.chainType === 'solana'
+              ? isSolanaAvailableToAccount
+                ? toAccountRef.current
+                : DEFAULT_ADDRESS
+              : toChain.chainType === 'solana'
+              ? isSolanaAvailableToAccount
+                ? toAccountRef.current
+                : DEFAULT_SOLANA_ADDRESS
+              : undefined,
         },
       });
       // eslint-disable-next-line no-console
@@ -385,21 +414,26 @@ export const useLoadingBridgeFees = () => {
     }
   }, [
     dispatch,
-    getToDecimals,
-    toToken,
-    debouncedSendValue,
-    address,
-    tronAddress,
-
-    publicClient,
+    selectedToken,
     fromChain,
     toChain,
-    selectedToken,
-    max_slippage,
+    debouncedSendValue,
     bridgeSDK,
+    address,
+    publicClient,
+    toToken?.layerZero?.raw?.endpointID,
+    toToken?.stargate?.raw?.endpointID,
+    toToken?.meson?.raw?.id,
+    toToken?.address,
+    max_slippage,
+    tronAddress,
     deBridgeAccessToken,
-    preSelectRoute,
+    solanaAddress,
+    isSolanaAvailableToAccount,
+    formatMessage,
+    getToDecimals,
     nativeToken,
+    preSelectRoute,
   ]);
 
   return {

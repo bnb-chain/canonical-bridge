@@ -16,6 +16,11 @@ import {
 } from '@node-real/walletkit/evm';
 import * as allChains from 'viem/chains';
 import { defaultTronConfig, tronLink } from '@node-real/walletkit/tron';
+import {
+  defaultSolanaConfig,
+  trustWallet as solanaTrustWallet,
+  phantomWallet as solanaPhantomWallet,
+} from '@node-real/walletkit/solana';
 import React from 'react';
 import { useDisclosure, useIntl } from '@bnb-chain/space';
 
@@ -48,6 +53,10 @@ export function WalletProvider(props: WalletProviderProps) {
       walletConnect(),
     ];
     const tronWallets = [tronLink()];
+    const solanaWallets = [solanaTrustWallet(), solanaPhantomWallet()];
+
+    const tron = chainConfigs.find((e) => e.chainType === 'tron');
+    const solana = chainConfigs.find((e) => e.chainType === 'solana');
 
     return {
       options: {
@@ -84,10 +93,19 @@ export function WalletProvider(props: WalletProviderProps) {
         wallets: evmWallets,
         chains: getEvmChains(chainConfigs),
       }),
-      tronConfig: defaultTronConfig({
-        autoConnect: true,
-        wallets: tronWallets,
-      }),
+      tronConfig: tron
+        ? defaultTronConfig({
+            autoConnect: true,
+            wallets: tronWallets,
+          })
+        : undefined,
+      solanaConfig: solana
+        ? defaultSolanaConfig({
+            autoConnect: true,
+            rpcUrl: solana?.rpcUrl,
+            wallets: solanaWallets,
+          })
+        : undefined,
     };
   }, [bridgeConfig.appName, bridgeConfig.wallet.walletConnectProjectId, chainConfigs, onOpen]);
 

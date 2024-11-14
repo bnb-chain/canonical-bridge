@@ -62,7 +62,9 @@ export const InputValidationMessage = () => {
     selectedToken?.displaySymbol,
   ]);
 
-  return error || balanceInputError ? (
+  const errorMsg = balanceInputError ?? error?.text;
+
+  return errorMsg ? (
     <Box
       className="bccb-widget-transfer-input-error"
       color={theme.colors[colorMode].text.danger}
@@ -71,7 +73,7 @@ export const InputValidationMessage = () => {
       lineHeight={'16px'}
       mt={'8px'}
     >
-      {balanceInputError ?? error?.text}
+      {errorMsg}
     </Box>
   ) : null;
 };

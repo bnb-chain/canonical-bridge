@@ -51,7 +51,7 @@ export function SourceNetworkModal(props: SourceNetworkModalProps) {
       placeholder={formatMessage({ id: 'select-modal.source.placeholder' })}
       isNoResult={isNoResult}
     >
-      <VirtualList className="bccb-widget-from-network-virtual-list" data={result} itemHeight={64}>
+      <VirtualList className="bccb-widget-from-network-virtual-list" data={result} itemHeight={52}>
         {(item) => (
           <ListItem
             className={

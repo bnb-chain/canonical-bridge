@@ -50,7 +50,7 @@ export function DestinationNetworkModal(props: DestinationNetworkModalProps) {
       placeholder={formatMessage({ id: 'select-modal.destination.placeholder' })}
       isNoResult={isNoResult}
     >
-      <VirtualList className="bccb-widget-to-network-virtual-list" data={result} itemHeight={64}>
+      <VirtualList className="bccb-widget-to-network-virtual-list" data={result} itemHeight={52}>
         {(item) => (
           <ListItem
             className={

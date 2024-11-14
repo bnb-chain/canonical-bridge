@@ -1,10 +1,22 @@
 # @bnb-chain/canonical-bridge-widget
 
-## 0.4.1
+## 0.5.0-alpha.2
 
 ### Patch Changes
 
-- 1341167: Add class name into components
+- UI adjustment
+
+## 0.5.0-alpha.1
+
+### Patch Changes
+
+- UI adjustment
+
+## 0.5.0-alpha.0
+
+### Minor Changes
+
+- Support solana
 
 ## 0.4.0
 

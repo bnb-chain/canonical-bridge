@@ -7,7 +7,7 @@ export const RouteSkeleton = () => {
   return (
     <Flex
       className="bccb-widget-route-skeleton"
-      p={'16px'}
+      p={'12px'}
       borderRadius={'8px'}
       flexDir={'column'}
       gap={'8px'}
