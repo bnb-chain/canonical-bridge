@@ -42,6 +42,7 @@ export function DestinationNetworkModal(props: DestinationNetworkModalProps) {
 
   return (
     <BaseModal
+      className="bccb-widget-to-network-modal"
       isOpen={isOpen}
       onClose={onClose}
       title={formatMessage({ id: 'select-modal.destination.title' })}
@@ -49,9 +50,12 @@ export function DestinationNetworkModal(props: DestinationNetworkModalProps) {
       placeholder={formatMessage({ id: 'select-modal.destination.placeholder' })}
       isNoResult={isNoResult}
     >
-      <VirtualList data={result} itemHeight={64}>
+      <VirtualList className="bccb-widget-to-network-virtual-list" data={result} itemHeight={64}>
         {(item) => (
           <ListItem
+            className={
+              'bccb-widget-to-network-list-item' + (toChain?.id === item.id ? '-active' : '')
+            }
             key={item.id}
             iconUrl={item.icon}
             isActive={toChain?.id === item.id}

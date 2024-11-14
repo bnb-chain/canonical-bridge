@@ -28,7 +28,12 @@ export const ToAccountCheckBox = (props: { onClick: () => void; isChecked: boole
   const { colorMode } = useColorMode();
 
   return (
-    <Box onClick={onClick} cursor={'pointer'} mt={'-6px'}>
+    <Box
+      className="bccb-widget-to-account-checkbox"
+      onClick={onClick}
+      cursor={'pointer'}
+      mt={'-6px'}
+    >
       {isChecked ? (
         <CheckedIcon height={'32px'} width={'32px'} color={theme.colors[colorMode].text.brand} />
       ) : (

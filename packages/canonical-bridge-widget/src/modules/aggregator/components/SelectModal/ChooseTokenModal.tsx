@@ -57,6 +57,7 @@ export function ChooseTokenModal(props: ChooseTokenModalProps) {
 
   return (
     <BaseModal
+      className="bccb-widget-token-modal"
       isOpen={isOpen}
       onClose={onClose}
       title={formatMessage({ id: 'select-modal.token.title' })}
@@ -65,6 +66,7 @@ export function ChooseTokenModal(props: ChooseTokenModalProps) {
       isNoResult={isNoResult}
     >
       <Flex
+        className="bccb-widget-token-modal-list-header"
         fontSize={'14px'}
         fontWeight={400}
         lineHeight="16px"
@@ -77,7 +79,7 @@ export function ChooseTokenModal(props: ChooseTokenModalProps) {
         {showBalance && <Text>{formatMessage({ id: 'select-modal.token.column.balance' })}</Text>}
       </Flex>
       <Flex flexDir="column" flex={1}>
-        <VirtualList data={data} itemHeight={64}>
+        <VirtualList className="bccb-widget-token-virtual-list" data={data} itemHeight={64}>
           {(item) => {
             const isDisabled = !isChainOrTokenCompatible(item);
             const isActive =
@@ -86,6 +88,7 @@ export function ChooseTokenModal(props: ChooseTokenModalProps) {
 
             return (
               <ListItem
+                className={`bccb-widget-token-list-item` + (isDisabled ? '-disabled' : '')}
                 key={item.address}
                 iconUrl={item.icon}
                 isActive={isActive}
@@ -112,7 +115,9 @@ export function ChooseTokenModal(props: ChooseTokenModalProps) {
               >
                 <Flex alignItems="center" justifyContent="space-between" w="100%" gap={'12px'}>
                   <Flex flex={1} minW={0} flexDir="column" gap={'4px'}>
-                    <Text isTruncated>{item.displaySymbol}</Text>
+                    <Text className="bccb-widget-token-list-symbol" isTruncated>
+                      {item.displaySymbol}
+                    </Text>
 
                     {isMobile && !isNative && (
                       <TokenAddress
@@ -122,7 +127,7 @@ export function ChooseTokenModal(props: ChooseTokenModalProps) {
                     )}
 
                     {!isMobile && (
-                      <Flex h="16px" overflow="hidden">
+                      <Flex className="bccb-widget-token-address-link" h="16px" overflow="hidden">
                         <Flex
                           flexDir="column"
                           className={isNative || isActive ? undefined : 'token-info'}
@@ -133,6 +138,7 @@ export function ChooseTokenModal(props: ChooseTokenModalProps) {
                         >
                           {(!isActive || isNative) && (
                             <Text
+                              className="token-name"
                               isTruncated
                               flexShrink={0}
                               fontSize="12px"
@@ -155,6 +161,7 @@ export function ChooseTokenModal(props: ChooseTokenModalProps) {
 
                   {!isDisabled && showBalance && (
                     <Flex
+                      className="bccb-widget-token-list-token-balance"
                       flexShrink={0}
                       flexDir="column"
                       alignItems="flex-end"
@@ -198,7 +205,7 @@ function TokenAddress(props: TokenAddressProps) {
   const { isMobile } = useResponsive();
 
   return (
-    <Flex>
+    <Flex className="bccb-widget-token-list-address">
       <Text
         isTruncated
         flexShrink={0}

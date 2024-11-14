@@ -8,10 +8,11 @@ export interface VirtualListProps<T> {
   data: T[];
   itemHeight?: number;
   children: (item: T, index: number) => React.ReactNode;
+  className?: string;
 }
 
 export function VirtualList<T>(props: VirtualListProps<T>) {
-  const { data, children } = props;
+  const { data, children, className } = props;
 
   const { isMobile } = useResponsive();
 
@@ -35,7 +36,7 @@ export function VirtualList<T>(props: VirtualListProps<T>) {
   }, [isMobile]);
 
   return (
-    <Flex boxSize="100%" sx={scrollbarStyle}>
+    <Flex className={className} boxSize="100%" sx={scrollbarStyle}>
       <Virtuoso
         style={{
           width: '100%',

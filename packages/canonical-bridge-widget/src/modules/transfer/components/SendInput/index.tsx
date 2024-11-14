@@ -100,14 +100,20 @@ export const SendInput: React.FC = () => {
   }, [isGlobalFeeLoading, debouncedSendValue, sendValue]);
 
   return (
-    <Flex flexDir={'column'} position={'relative'}>
+    <Flex className="bccb-widget-transfer-input-container" flexDir={'column'} position={'relative'}>
       <Flex flexDir={'row'} justifyContent={'space-between'}>
-        <Typography color={theme.colors[colorMode].text.placeholder} variant={'label'} size={'md'}>
+        <Typography
+          className="input-header-label"
+          color={theme.colors[colorMode].text.placeholder}
+          variant={'label'}
+          size={'md'}
+        >
           {formatMessage({ id: 'you.send.title' })}
         </Typography>
         <MaxLink />
       </Flex>
       <Flex
+        className="bccb-widget-transfer-input-wrapper"
         flex={1}
         mt={'8px'}
         flexDir={'row'}
@@ -150,6 +156,7 @@ export const SendInput: React.FC = () => {
         }}
       >
         <Input
+          className="bccb-widget-transfer-input"
           inputMode={'decimal'}
           value={sendValue}
           color={theme.colors[colorMode].text.primary}

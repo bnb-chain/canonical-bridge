@@ -6,6 +6,7 @@ export const ExchangeChain = () => {
   const { colorMode } = useColorMode();
   return (
     <Flex
+      className="bccb-widget-exchange-chain-icon"
       width="100%"
       alignSelf="center"
       justifyContent="center"

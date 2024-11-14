@@ -13,10 +13,11 @@ interface BaseModalProps {
   onSearch: (value: string) => void;
   placeholder: string;
   isNoResult: boolean;
+  className?: string;
 }
 
 export function BaseModal(props: BaseModalProps) {
-  const { isOpen, title, children, onClose, onSearch, placeholder, isNoResult } = props;
+  const { isOpen, title, children, onClose, onSearch, placeholder, isNoResult, className } = props;
 
   const theme = useTheme();
   const { colorMode } = useColorMode();
@@ -30,8 +31,9 @@ export function BaseModal(props: BaseModalProps) {
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} isCentered autoFocus={false}>
-      <ModalOverlay />
+      <ModalOverlay className={`${className}-overlay`} />
       <ModalContent
+        className={`${className}-content`}
         background={theme.colors[colorMode].background.modal}
         borderRadius={{ base: '0', md: '24px' }}
         p={0}
@@ -42,6 +44,7 @@ export function BaseModal(props: BaseModalProps) {
         marginInline={0}
       >
         <Flex
+          className={`${className}-header`}
           h={'64px'}
           px={'20px'}
           py={0}
@@ -57,6 +60,7 @@ export function BaseModal(props: BaseModalProps) {
           <Flex boxSize={'24px'}></Flex>
           {title}
           <CloseIcon
+            className={`${className}-close-button`}
             boxSize={'24px'}
             onClick={onClose}
             cursor="pointer"
@@ -68,7 +72,11 @@ export function BaseModal(props: BaseModalProps) {
         </Flex>
         <Flex flexDir="column" p="20px 0px 16px" flex={1}>
           <Flex px={'20px'} mb={'24px'}>
-            <SearchInput onChange={onSearch} placeholder={placeholder} />
+            <SearchInput
+              className={`${className}-search`}
+              onChange={onSearch}
+              placeholder={placeholder}
+            />
           </Flex>
           <Flex flexDir="column" flex={1} overflowY="auto">
             {isNoResult ? <NoResultFound /> : <>{children}</>}
