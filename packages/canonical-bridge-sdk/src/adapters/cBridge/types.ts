@@ -142,16 +142,6 @@ export interface ICBridgeTransactionResponse {
   error: null | unknown;
 }
 
-export interface ICBridgeEstimateAmountRequest {
-  src_chain_id: number;
-  dst_chain_id: number;
-  token_symbol: string;
-  amt: string;
-  user_addr?: string;
-  slippage_tolerance: number;
-  is_pegged?: boolean;
-}
-
 export interface ICBridgeEstimateAmountResponse {
   err: object;
   eq_value_token_amt: string;
@@ -221,4 +211,14 @@ export interface IGetCBridgeTransferFunction {
 export interface ICBridgeMaxMinSendAmt {
   max: string;
   min: string;
+}
+
+export interface ICBridgeEstimateAmountRequest {
+  src_chain_id: number;
+  dst_chain_id: number;
+  token_symbol: string;
+  amt: string;
+  user_addr?: string;
+  slippage_tolerance: number;
+  is_pegged?: boolean;
 }

@@ -113,7 +113,6 @@ export const useLoadingBridgeFees = () => {
     const valueArr = [];
 
     try {
-      const amount = parseUnits(debouncedSendValue, selectedToken.decimals);
       const now = Date.now();
       lastTime = now;
 
@@ -122,7 +121,7 @@ export const useLoadingBridgeFees = () => {
         fromChainId: fromChain.id,
         toChainId: toChain?.id,
         tokenAddress: selectedToken.address,
-        amount,
+        sendValue: debouncedSendValue,
         slippage: max_slippage,
         userAddress:
           fromChain?.chainType === 'solana'

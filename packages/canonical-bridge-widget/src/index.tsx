@@ -8,3 +8,7 @@ export * from '@/core/utils/gtm';
 
 // locales
 export * from '@/core/locales';
+
+// TODO
+// sdk
+export * from '@bnb-chain/canonical-bridge-sdk';

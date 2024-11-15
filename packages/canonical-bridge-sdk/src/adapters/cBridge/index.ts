@@ -1,4 +1,4 @@
-import { getContract, Hash, isAddress } from 'viem';
+import { getContract, Hash, isAddress, parseUnits } from 'viem';
 import { BaseAdapter } from '@/adapters/base';
 import { IInitialOptions, ITransferTokenPair } from '@/adapters/base/types';
 import {
@@ -18,7 +18,7 @@ import {
   IGetCBridgeTransferParamsInput,
   ISendCBridgeToken,
 } from '@/adapters/cBridge/types';
-import { BridgeType } from '@/aggregator/types';
+import { BridgeType, IBridgeChain, IBridgeToken } from '@/aggregator/types';
 import axios, { AxiosInstance } from 'axios';
 import { CLIENT_TIME_OUT, env } from '@/constants';
 import {
@@ -28,6 +28,7 @@ import {
   PEGGED_TOKEN_BRIDGE,
   PEGGED_TOKEN_BRIDGE_V2,
 } from '@/adapters/cBridge/exports';
+import { isNativeToken } from '@/shared/address';
 
 export class CBridgeAdapter extends BaseAdapter<
   ICBridgeTransferConfig,
@@ -390,6 +391,138 @@ export class CBridgeAdapter extends BaseAdapter<
       account: userAddress as `0x${string}`,
       args: args,
     };
+  }
+
+  public getTransactionParams({
+    userAddress,
+    fromChain,
+    toChain,
+    fromToken,
+    sendValue,
+    slippage,
+  }: {
+    userAddress: string;
+    fromChain: IBridgeChain;
+    toChain: IBridgeChain;
+    fromToken: IBridgeToken;
+    sendValue: string;
+    slippage: number;
+  }) {
+    const isPegged = !!fromToken.isPegged;
+
+    const bridgeAddress = (() => {
+      try {
+        if (
+          !fromChain ||
+          (isPegged && !fromToken?.cBridge?.peggedConfig) ||
+          (!isPegged && !fromChain?.cBridge?.raw)
+        ) {
+          return null;
+        }
+        return this.getTransferAddress({
+          fromChainId: fromChain?.id as number,
+          isPegged,
+          peggedConfig: fromToken?.cBridge?.peggedConfig,
+          chainConfig: fromChain?.cBridge?.raw,
+        });
+      } catch (e: any) {
+        // eslint-disable-next-line no-console
+        console.log(e);
+      }
+    })();
+
+    // Mint/deposit or burn/withdraw
+    const transferType = (() => {
+      if (fromToken?.cBridge?.peggedConfig?.org_chain_id === fromChain?.id) {
+        return 'deposit';
+      }
+      if (fromToken?.cBridge?.peggedConfig?.pegged_chain_id === fromChain?.id) {
+        return 'withdraw';
+      }
+      return '';
+    })();
+
+    const argument = (() => {
+      if (
+        !sendValue ||
+        sendValue === '0' ||
+        !toChain ||
+        !fromToken ||
+        !userAddress
+      ) {
+        return null;
+      }
+      const nonce = new Date().getTime();
+
+      let amount = 0n;
+      try {
+        if (fromToken.isPegged === false) {
+          amount = parseUnits(
+            sendValue,
+            fromToken?.cBridge?.raw?.token.decimal as number
+          ); // Convert to big number
+        } else if (transferType === 'deposit') {
+          amount = parseUnits(
+            sendValue,
+            fromToken?.cBridge?.peggedConfig?.org_token.token.decimal as number
+          );
+        } else if (transferType === 'withdraw') {
+          amount = parseUnits(
+            sendValue,
+            fromToken?.cBridge?.peggedConfig?.pegged_token.token
+              .decimal as number
+          );
+        }
+      } catch (e: any) {
+        // eslint-disable-next-line no-console
+        console.log(e);
+      }
+
+      return this.getTransferParams({
+        amount,
+        isPegged,
+        toChainId: toChain.id,
+        tokenAddress: fromToken?.address as `0x${string}`,
+        address: userAddress as `0x${string}`,
+        maxSlippage: slippage,
+        transferType: transferType ? transferType : undefined,
+        peggedConfig: fromToken.cBridge?.peggedConfig,
+        isNativeToken: isNativeToken(fromToken.address),
+        nonce,
+      });
+    })();
+
+    // Arguments for bridge smart contract
+    const args = (() => {
+      const peggedConfig = fromToken?.cBridge?.peggedConfig;
+      if (
+        !argument ||
+        (isPegged && !transferType) ||
+        !userAddress ||
+        !bridgeAddress ||
+        !fromToken
+      ) {
+        return null;
+      }
+      const abi = this.getABI({
+        isPegged,
+        transferType: transferType || undefined,
+        peggedConfig,
+      });
+      const functionName = this.getTransferFunction({
+        isPegged,
+        isNativeToken: isNativeToken(fromToken?.address),
+        transferType: transferType || undefined,
+      });
+      return {
+        address: bridgeAddress as `0x${string}`,
+        abi: abi,
+        functionName: functionName,
+        account: userAddress as `0x${string}`,
+        args: argument,
+      };
+    })();
+    return { args, bridgeAddress };
   }
 
   public init(initialOptions?: IInitialOptions) {

@@ -41,13 +41,22 @@ export class LayerZeroAdapter extends BaseAdapter<
     walletClient,
     gasAmount = 200000n,
     version = 1,
+    airDropGas = 0n,
+    dstAddress = '0x',
   }: ISendCakeTokenInput): Promise<Hash> {
     try {
       const address32Bytes = pad(userAddress, { size: 32 });
-      const adapterParams = encodePacked(
-        ['uint16', 'uint256'],
-        [version, gasAmount]
-      );
+      /* version 1 - send token
+       * version 2 - send token and air drop native gas on destination chain
+       * https://docs.layerzero.network/v1/developers/evm/evm-guides/advanced/relayer-adapter-parameters#airdrop
+       */
+      const adapterParams =
+        version === 1
+          ? encodePacked(['uint16', 'uint256'], [version, gasAmount])
+          : encodePacked(
+              ['uint16', 'uint', 'uint', 'address'],
+              [2, gasAmount, airDropGas, dstAddress]
+            );
       const fees = await publicClient.readContract({
         address: bridgeAddress,
         abi: CAKE_PROXY_OFT_ABI,
@@ -117,13 +126,18 @@ export class LayerZeroAdapter extends BaseAdapter<
     publicClient,
     gasAmount = 200000n,
     version = 1,
+    airDropGas = 0n,
+    dstAddress = '0x',
   }: IGetEstimateFeeInput) {
     try {
       const address32Bytes = pad(userAddress, { size: 32 });
-      const adapterParams = encodePacked(
-        ['uint16', 'uint256'],
-        [version, gasAmount]
-      );
+      const adapterParams =
+        version === 1
+          ? encodePacked(['uint16', 'uint256'], [version, gasAmount])
+          : encodePacked(
+              ['uint16', 'uint', 'uint', 'address'],
+              [2, gasAmount, airDropGas, dstAddress]
+            );
       const fees = await publicClient.readContract({
         address: bridgeAddress,
         abi: CAKE_PROXY_OFT_ABI,

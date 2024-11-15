@@ -1,5 +1,6 @@
+import { ChainType } from '@bnb-chain/canonical-bridge-sdk';
+
 import { truncateHash } from '@/core/utils/string';
-import { ChainType } from '@/modules/aggregator';
 
 export function formatAppAddress(params: {
   address?: string;

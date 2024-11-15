@@ -1,6 +1,7 @@
+import { ICBridgeMaxMinSendAmt } from '@bnb-chain/canonical-bridge-sdk';
+
 import { createReducer } from '@/modules/store/createReducer';
 import * as actions from '@/modules/aggregator/action';
-import { ICBridgeMaxMinSendAmt } from '@/modules/aggregator/adapters/cBridge/types';
 export interface IAggregatorState {
   tokenPrices: {
     cmcPrices: Record<string, { price: number }>;

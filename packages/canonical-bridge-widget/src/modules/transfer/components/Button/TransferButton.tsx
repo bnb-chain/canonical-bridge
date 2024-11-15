@@ -1,11 +1,10 @@
 import { Button, Flex, useColorMode, useIntl, useTheme } from '@bnb-chain/space';
 import { useCallback, useState } from 'react';
 import { useAccount, useBytecode, usePublicClient, useSignMessage, useWalletClient } from 'wagmi';
-import { formatUnits, parseUnits } from 'viem';
+import { formatUnits } from 'viem';
 import { useTronWallet } from '@node-real/walletkit/tron';
 import { useConnection } from '@solana/wallet-adapter-react';
 import { useSolanaWallet } from '@node-real/walletkit/solana';
-import { VersionedTransaction } from '@solana/web3.js';
 
 import { useAppSelector } from '@/modules/store/StoreProvider';
 import { useGetAllowance } from '@/core/contract/hooks/useGetAllowance';
@@ -15,10 +14,9 @@ import { reportEvent } from '@/core/utils/gtm';
 import { useGetTronAllowance } from '@/modules/aggregator/adapters/meson/hooks/useGetTronAllowance';
 import { useCurrentWallet } from '@/modules/wallet/CurrentWalletProvider';
 import { useTronTransferInfo } from '@/modules/transfer/hooks/tron/useTronTransferInfo';
-import { utf8ToHex } from '@/core/utils/string';
 import { useTronContract } from '@/modules/aggregator/adapters/meson/hooks/useTronContract';
-import { isNativeToken } from '@/core/utils/address';
 import { useSolanaTransferInfo } from '@/modules/transfer/hooks/solana/useSolanaTransferInfo';
+import { useSolanaAccount } from '@/modules/wallet/hooks/useSolanaAccount';
 
 export function TransferButton({
   onOpenSubmittedModal,
@@ -52,13 +50,13 @@ export function TransferButton({
   const { isSolanaTransfer, isSolanaAvailableToAccount } = useSolanaTransferInfo();
   const { connection } = useConnection();
   const { sendTransaction: sendSolanaTransaction } = useSolanaWallet();
+  const { address: solanaAddress } = useSolanaAccount();
 
   const sendValue = useAppSelector((state) => state.transfer.sendValue);
   const transferActionInfo = useAppSelector((state) => state.transfer.transferActionInfo);
   const selectedToken = useAppSelector((state) => state.transfer.selectedToken);
   const isGlobalFeeLoading = useAppSelector((state) => state.transfer.isGlobalFeeLoading);
   const isTransferable = useAppSelector((state) => state.transfer.isTransferable);
-  const toToken = useAppSelector((state) => state.transfer.toToken);
   const fromChain = useAppSelector((state) => state.transfer.fromChain);
   const toChain = useAppSelector((state) => state.transfer.toChain);
   const toAccount = useAppSelector((state) => state.transfer.toAccount);
@@ -167,104 +165,85 @@ export function TransferButton({
       });
 
       if (transferActionInfo.bridgeType === 'cBridge' && cBridgeArgs && fromChain && address) {
-        try {
-          const cBridgeHash = await bridgeSDK.cBridge?.sendToken({
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            walletClient: walletClient as any,
-            publicClient,
-            bridgeAddress: transferActionInfo.bridgeAddress as string,
-            fromChainId: fromChain?.id,
-            isPegged: selectedToken.isPegged,
-            isNativeToken: isNativeToken(selectedToken.address),
-            address,
-            peggedConfig: selectedToken?.cBridge?.peggedConfig,
-            args: cBridgeArgs.args,
+        const { hash: cBridgeHash } = await bridgeSDK.sendToken({
+          bridgeType: 'cBridge',
+          publicClient,
+          walletClient: walletClient as any,
+          fromChainId: fromChain.id,
+          toChainId: toChain!.id,
+          tokenAddress: selectedToken.address,
+          userAddress: address,
+          sendValue,
+        });
+        if (cBridgeHash) {
+          reportEvent({
+            id: 'transaction_bridge_success',
+            params: {
+              item_category: fromChain?.name,
+              item_category2: toChain?.name,
+              token: selectedToken.displaySymbol,
+              value: sendValue,
+              item_variant: 'cBridge',
+            },
           });
-          await publicClient.waitForTransactionReceipt({
-            hash: cBridgeHash,
-          });
-          if (cBridgeHash) {
-            reportEvent({
-              id: 'transaction_bridge_success',
-              params: {
-                item_category: fromChain?.name,
-                item_category2: toChain?.name,
-                token: selectedToken.displaySymbol,
-                value: sendValue,
-                item_variant: 'cBridge',
-              },
-            });
-            onCloseConfirmingModal();
-            setHash(cBridgeHash);
-            setChosenBridge('cBridge');
-            onOpenSubmittedModal();
-          }
-          // eslint-disable-next-line no-console
-          console.log('cBridge tx', cBridgeHash);
-        } catch (e) {
-          // eslint-disable-next-line no-console
-          console.log(e);
-          handleFailure(e);
+          onCloseConfirmingModal();
+          setHash(cBridgeHash);
+          setChosenBridge('cBridge');
+          onOpenSubmittedModal();
         }
+        // eslint-disable-next-line no-console
+        console.log('cBridge tx', cBridgeHash);
       } else if (transferActionInfo.bridgeType === 'deBridge') {
-        try {
-          let deBridgeHash: string | undefined;
+        const userAddress = (fromChain?.chainType === 'solana' ? solanaAddress : address) as string;
+        const toUserAddress =
+          fromChain?.chainType === 'solana' || toChain?.chainType === 'solana'
+            ? toAccount?.address
+            : undefined;
 
-          if (fromChain?.chainType === 'evm' && transferActionInfo.value && address) {
-            deBridgeHash = await bridgeSDK.deBridge?.sendToken({
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              walletClient: walletClient as any,
-              bridgeAddress: transferActionInfo.bridgeAddress as string,
-              data: transferActionInfo.data as `0x${string}`,
-              amount: BigInt(transferActionInfo.value),
-              address,
-            });
-            await publicClient.waitForTransactionReceipt({
-              hash: deBridgeHash,
-            });
-          }
+        const { hash: deBridgeHash } = await bridgeSDK.sendToken({
+          bridgeType: 'deBridge',
+          publicClient,
+          walletClient: walletClient as any,
+          fromChainId: fromChain!.id,
+          toChainId: toChain!.id,
+          tokenAddress: selectedToken.address,
+          userAddress,
+          toUserAddress,
+          sendValue,
+          solanaOpts: {
+            connection,
+            sendTransaction: sendSolanaTransaction,
+          },
+        });
 
-          if (fromChain?.chainType === 'solana') {
-            const { blockhash } = await connection.getLatestBlockhash();
-            const data = (transferActionInfo.data as string)?.slice(2);
-            const tx = VersionedTransaction.deserialize(Buffer.from(data, 'hex'));
-
-            tx.message.recentBlockhash = blockhash;
-            deBridgeHash = await sendSolanaTransaction(tx, connection);
-          }
-
-          if (deBridgeHash) {
-            reportEvent({
-              id: 'transaction_bridge_success',
-              params: {
-                item_category: fromChain?.name,
-                item_category2: toChain?.name,
-                token: selectedToken.displaySymbol,
-                value: sendValue,
-                item_variant: 'deBridge',
-              },
-            });
-            onCloseConfirmingModal();
-            setChosenBridge('deBridge');
-            setHash(deBridgeHash);
-            onOpenSubmittedModal();
-          }
-        } catch (e) {
-          // eslint-disable-next-line no-console
-          console.log(e);
-          handleFailure(e);
+        if (deBridgeHash) {
+          reportEvent({
+            id: 'transaction_bridge_success',
+            params: {
+              item_category: fromChain?.name,
+              item_category2: toChain?.name,
+              token: selectedToken.displaySymbol,
+              value: sendValue,
+              item_variant: 'deBridge',
+            },
+          });
+          onCloseConfirmingModal();
+          setChosenBridge('deBridge');
+          setHash(deBridgeHash);
+          onOpenSubmittedModal();
         }
       } else if (transferActionInfo.bridgeType === 'stargate' && address) {
-        const stargateHash = await bridgeSDK.stargate?.sendToken({
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          walletClient: walletClient as any,
+        const { hash: stargateHash } = await bridgeSDK.sendToken({
+          bridgeType: 'stargate',
           publicClient,
-          bridgeAddress: transferActionInfo.bridgeAddress as `0x${string}`,
-          tokenAddress: selectedToken.address as `0x${string}`,
-          endPointId: toToken?.stargate?.raw?.endpointID as number,
-          receiver: address,
-          amount: parseUnits(sendValue, selectedToken.decimals),
+          walletClient: walletClient as any,
+          fromChainId: fromChain!.id,
+          toChainId: toChain!.id,
+          tokenAddress: selectedToken.address,
+          userAddress: address as string,
+          sendValue,
         });
+
         if (stargateHash) {
           reportEvent({
             id: 'transaction_bridge_success',
@@ -282,14 +261,15 @@ export function TransferButton({
           onOpenSubmittedModal();
         }
       } else if (transferActionInfo.bridgeType === 'layerZero' && address) {
-        const layerZeroHash = await bridgeSDK.layerZero?.sendToken({
-          bridgeAddress: transferActionInfo.bridgeAddress as `0x${string}`,
-          dstEndpoint: toToken?.layerZero?.raw?.endpointID as number,
-          userAddress: address,
-          amount: parseUnits(sendValue, selectedToken.decimals),
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          walletClient: walletClient as any,
+        const { hash: layerZeroHash } = await bridgeSDK.sendToken({
+          bridgeType: 'layerZero',
           publicClient,
+          walletClient: walletClient as any,
+          fromChainId: fromChain!.id,
+          toChainId: toChain!.id,
+          tokenAddress: selectedToken.address,
+          userAddress: address as string,
+          sendValue,
         });
         if (layerZeroHash) {
           reportEvent({
@@ -308,90 +288,68 @@ export function TransferButton({
           onOpenSubmittedModal();
         }
       } else if (transferActionInfo.bridgeType === 'meson') {
-        let fromAddress = '';
-        let toAddress = '';
-        let msg = '';
-        let signature = '';
+        let userAddress = '';
+        let toUserAddress = '';
 
         if (fromChain?.chainType === 'tron' && tronAddress) {
-          fromAddress = tronAddress;
+          userAddress = tronAddress;
         } else if (fromChain?.chainType !== 'tron' && address) {
-          fromAddress = address;
+          userAddress = address;
         }
 
         if (isTronTransfer && isTronAvailableToAccount && toAccount?.address) {
-          toAddress = toAccount.address;
+          toUserAddress = toAccount.address;
         } else if (address) {
-          toAddress = address;
+          toUserAddress = address;
         }
 
-        // get unsigned message
-        const unsignedMessage = await bridgeSDK.meson?.getUnsignedMessage({
-          fromToken: `${fromChain?.meson?.raw?.id}:${selectedToken?.meson?.raw?.id}`,
-          toToken: `${toChain?.meson?.raw?.id}:${toToken?.meson?.raw?.id}`,
-          amount: sendValue,
-          fromAddress: fromAddress,
-          recipient: toAddress,
+        const { swapId } = await bridgeSDK.sendToken({
+          bridgeType: 'meson',
+          publicClient,
+          walletClient: walletClient as any,
+          fromChainId: fromChain!.id,
+          toChainId: toChain!.id,
+          tokenAddress: selectedToken.address,
+          userAddress,
+          toUserAddress,
+          sendValue,
+          mesonOpts: {
+            signTransaction: async (message) => {
+              return String(await signTransaction(message as any));
+            },
+            signMessage: async (message) => {
+              return await signMessageAsync({
+                account: userAddress as `0x${string}`,
+                message: {
+                  raw: message as `0x${string}`,
+                },
+              });
+            },
+          },
+        });
+        // eslint-disable-next-line no-console
+        console.log(swapId);
+        if (swapId?.result?.swapId) {
+          setChosenBridge('meson');
+          setHash(swapId?.result?.swapId);
+        }
+        if (swapId?.error) {
+          throw new Error(swapId?.error.message);
+        }
+
+        reportEvent({
+          id: 'transaction_bridge_success',
+          params: {
+            item_category: fromChain?.name,
+            item_category2: toChain?.name,
+            token: selectedToken.displaySymbol,
+            value: sendValue,
+            item_variant: 'meson',
+          },
         });
 
-        if (unsignedMessage?.result) {
-          const result = unsignedMessage.result;
-          const encodedData = result.encoded;
-          const message = result.signingRequest.message;
-
-          if (fromChain?.chainType === 'tron') {
-            const hexTronHeader = utf8ToHex('\x19TRON Signed Message:\n32');
-            msg = message.replace(hexTronHeader, '');
-          } else {
-            const hexEthHeader = utf8ToHex('\x19Ethereum Signed Message:\n52');
-            msg = message.replace(hexEthHeader, '');
-          }
-
-          if (fromChain?.chainType != 'tron') {
-            signature = await signMessageAsync({
-              account: address,
-              message: {
-                raw: msg as `0x${string}`,
-              },
-            });
-          } else {
-            // TODO
-            signature = String(await signTransaction(msg as any));
-          }
-
-          const swapId = await bridgeSDK.meson?.sendToken({
-            fromAddress: fromAddress,
-            recipient: toAddress,
-            signature: signature,
-            encodedData: encodedData,
-          });
-
-          // eslint-disable-next-line no-console
-          console.log(swapId);
-          if (swapId?.result?.swapId) {
-            setChosenBridge('meson');
-            setHash(swapId?.result?.swapId);
-          }
-          if (swapId?.error) {
-            throw new Error(swapId?.error.message);
-          }
-
-          reportEvent({
-            id: 'transaction_bridge_success',
-            params: {
-              item_category: fromChain?.name,
-              item_category2: toChain?.name,
-              token: selectedToken.displaySymbol,
-              value: sendValue,
-              item_variant: 'meson',
-            },
-          });
-
-          onCloseConfirmingModal();
-          onOpenSubmittedModal();
-        } else {
-          throw new Error(unsignedMessage?.error.message);
-        }
+        onCloseConfirmingModal();
+        onOpenSubmittedModal();
       }
     } catch (e: any) {
       // eslint-disable-next-line no-console
@@ -403,18 +361,18 @@ export function TransferButton({
     }
   }, [
     selectedToken,
-    transferActionInfo,
+    transferActionInfo?.bridgeType,
+    transferActionInfo?.bridgeAddress,
+    fromChain,
     walletClient,
     publicClient,
     address,
     allowance,
     isEvmConnected,
-    fromChain,
     isTronConnected,
     tronAddress,
     tronAllowance,
-    toChain?.name,
-    toChain?.meson?.raw?.id,
+    toChain,
     sendValue,
     onOpenFailedModal,
     setHash,
@@ -423,23 +381,17 @@ export function TransferButton({
     onOpenConfirmingModal,
     cBridgeArgs,
     onOpenApproveModal,
-    bridgeSDK.cBridge,
-    bridgeSDK.deBridge,
-    bridgeSDK.stargate,
-    bridgeSDK.layerZero,
-    bridgeSDK.meson,
+    bridgeSDK,
     onCloseConfirmingModal,
     onOpenSubmittedModal,
+    solanaAddress,
+    toAccount.address,
     connection,
     sendSolanaTransaction,
-    toToken?.stargate?.raw?.endpointID,
-    toToken?.layerZero?.raw?.endpointID,
-    toToken?.meson?.raw?.id,
     isTronTransfer,
     isTronAvailableToAccount,
-    toAccount.address,
-    signMessageAsync,
     signTransaction,
+    signMessageAsync,
   ]);
 
   return (

@@ -22,7 +22,15 @@ import {
 } from '@/aggregator/types';
 import { sortChains } from '@/aggregator/utils/sortChains';
 import { sortTokens } from '@/aggregator/utils/sortTokens';
-import { formatUnits, Hash, PublicClient } from 'viem';
+import { DEFAULT_SLIPPAGE } from '@/constants';
+import { isNativeToken } from '@/shared/address';
+import { utf8ToHex } from '@/shared/string';
+import { Hash, parseUnits, PublicClient, WalletClient } from 'viem';
+import {
+  VersionedTransaction,
+  Connection,
+  TransactionSignature,
+} from '@solana/web3.js';
 
 export interface CanonicalBridgeSDKOptions {
   chains: IChainConfig[];
@@ -223,8 +231,8 @@ export class CanonicalBridgeSDK {
     tokenAddress,
     userAddress,
     toUserAddress,
-    amount,
-    slippage = 10000,
+    sendValue,
+    slippage = DEFAULT_SLIPPAGE,
   }: {
     publicClient: PublicClient;
     fromChainId: number;
@@ -232,7 +240,7 @@ export class CanonicalBridgeSDK {
     tokenAddress: string;
     userAddress: string;
     toUserAddress?: string;
-    amount: bigint;
+    sendValue: string;
     slippage?: number;
   }) {
     const { fromChain, toChain, fromToken, toToken } = this.getParamDetails({
@@ -246,6 +254,7 @@ export class CanonicalBridgeSDK {
       throw new Error('Missing parameters');
     }
 
+    const amount = parseUnits(sendValue, fromToken.decimals);
     const promiseArr: Array<{ bridgeType: BridgeType; apiCall: Promise<any> }> =
       [];
 
@@ -351,11 +360,10 @@ export class CanonicalBridgeSDK {
 
     // meson
     if (this.meson && fromToken?.meson?.raw?.id && toToken?.meson?.raw?.id) {
-      const mesonAmount = formatUnits(amount, fromToken.meson.raw.decimals);
       const mesonFeeAPICall = this.meson.getEstimatedFees({
         fromToken: `${fromChain?.meson?.raw?.id}:${fromToken?.meson?.raw?.id}`,
         toToken: `${toChain?.meson?.raw?.id}:${toToken?.meson?.raw?.id}`,
-        amount: mesonAmount,
+        amount: sendValue,
         fromAddr: userAddress,
       });
       promiseArr.push({
@@ -375,6 +383,223 @@ export class CanonicalBridgeSDK {
     return Object.fromEntries(
       promiseArr.map((e, index) => [e.bridgeType, results[index]])
     ) as Record<BridgeType, PromiseSettledResult<any>>;
+  }
+
+  async sendToken({
+    bridgeType,
+    publicClient,
+    walletClient,
+    fromChainId,
+    toChainId,
+    tokenAddress,
+    userAddress,
+    toUserAddress,
+    sendValue,
+    slippage = DEFAULT_SLIPPAGE,
+    solanaOpts,
+    mesonOpts,
+  }: {
+    bridgeType: BridgeType;
+    publicClient: PublicClient;
+    walletClient: WalletClient;
+    fromChainId: number;
+    toChainId: number;
+    tokenAddress: string;
+    userAddress: string;
+    toUserAddress?: string;
+    sendValue: string;
+    slippage?: number;
+    solanaOpts?: {
+      connection: Connection;
+      sendTransaction: (
+        transaction: VersionedTransaction,
+        connection: Connection
+      ) => Promise<TransactionSignature>;
+    };
+    mesonOpts?: {
+      signMessage: (message: string) => Promise<string>;
+      signTransaction: (message: string) => Promise<string>;
+    };
+  }) {
+    const { fromChain, toChain, fromToken, toToken } = this.getParamDetails({
+      fromChainId,
+      toChainId,
+      tokenAddress,
+    });
+
+    if (!fromChain || !toChain || !fromToken || !toToken) {
+      console.log(fromChain, toChain, fromToken, toToken);
+      throw new Error('Missing parameters');
+    }
+
+    const amount = parseUnits(sendValue, fromToken.decimals);
+
+    if (bridgeType === 'cBridge' && this.cBridge) {
+      const { args, bridgeAddress } = this.cBridge.getTransactionParams({
+        fromChain,
+        toChain,
+        fromToken,
+        userAddress,
+        sendValue,
+        slippage,
+      });
+
+      const hash = await this.cBridge.sendToken({
+        walletClient,
+        publicClient,
+        bridgeAddress: bridgeAddress as string,
+        fromChainId,
+        isPegged: fromToken.isPegged,
+        isNativeToken: isNativeToken(fromToken.address),
+        address: userAddress as `0x${string}`,
+        peggedConfig: fromToken.cBridge?.peggedConfig,
+        args,
+      });
+
+      await publicClient.waitForTransactionReceipt({
+        hash,
+      });
+
+      return {
+        hash,
+      };
+    }
+
+    if (bridgeType === 'deBridge' && this.deBridge) {
+      const txQuote = await this.deBridge.getEstimatedFees({
+        fromChainId,
+        toChainId,
+        fromTokenAddress: fromToken.deBridge?.raw?.address as `0x${string}`,
+        toTokenAddress: toToken.deBridge?.raw?.address as `0x${string}`,
+        amount,
+        userAddress,
+        toUserAddress: toUserAddress || userAddress,
+      });
+
+      if (fromChain.chainType === 'evm') {
+        const hash = await this.deBridge?.sendToken({
+          walletClient,
+          bridgeAddress: txQuote.tx.to as string,
+          data: txQuote.tx.data as `0x${string}`,
+          amount: BigInt(txQuote.tx.value),
+          address: userAddress as `0x${string}`,
+        });
+
+        await publicClient.waitForTransactionReceipt({
+          hash,
+        });
+
+        return {
+          hash,
+        };
+      }
+
+      if (fromChain?.chainType === 'solana') {
+        if (solanaOpts) {
+          const { connection, sendTransaction } = solanaOpts;
+
+          const { blockhash } = await connection.getLatestBlockhash();
+          const data = (txQuote.tx.data as string)?.slice(2);
+          const tx = VersionedTransaction.deserialize(Buffer.from(data, 'hex'));
+
+          tx.message.recentBlockhash = blockhash;
+          const hash = await sendTransaction(tx, connection);
+
+          return {
+            hash,
+          };
+        } else {
+          throw Error('Parameter [solanaOpts] is required');
+        }
+      }
+    }
+
+    if (bridgeType === 'stargate' && this.stargate) {
+      const hash = await this.stargate?.sendToken({
+        walletClient,
+        publicClient,
+        bridgeAddress: fromToken.stargate?.raw?.bridgeAddress as `0x${string}`,
+        tokenAddress: fromToken.stargate?.raw?.address as `0x${string}`,
+        endPointId: toToken.stargate?.raw?.endpointID as number,
+        receiver: userAddress as `0x${string}`,
+        amount,
+      });
+
+      return {
+        hash,
+      };
+    }
+
+    if (bridgeType === 'layerZero' && this.layerZero) {
+      const hash = await this.layerZero?.sendToken({
+        walletClient,
+        publicClient,
+        bridgeAddress: fromToken.layerZero?.raw?.bridgeAddress as `0x${string}`,
+        dstEndpoint: toToken.layerZero?.raw?.endpointID as number,
+        userAddress: userAddress as `0x${string}`,
+        amount,
+      });
+
+      return {
+        hash,
+      };
+    }
+
+    if (bridgeType === 'meson' && this.meson) {
+      if (mesonOpts) {
+        const { signMessage, signTransaction } = mesonOpts;
+
+        let message = '';
+        let signature = '';
+
+        // get unsigned message
+        const unsignedMessage = await this.meson.getUnsignedMessage({
+          fromToken: `${fromChain?.meson?.raw?.id}:${fromToken?.meson?.raw?.id}`,
+          toToken: `${toChain?.meson?.raw?.id}:${toToken?.meson?.raw?.id}`,
+          amount: sendValue,
+          fromAddress: userAddress,
+          recipient: toUserAddress || userAddress,
+        });
+
+        if (unsignedMessage?.result) {
+          const result = unsignedMessage.result;
+          const encodedData = result.encoded;
+          const signingMessage = result.signingRequest.message;
+
+          if (fromChain?.chainType === 'tron') {
+            const hexTronHeader = utf8ToHex('\x19TRON Signed Message:\n32');
+            message = signingMessage.replace(hexTronHeader, '');
+          } else {
+            const hexEthHeader = utf8ToHex('\x19Ethereum Signed Message:\n52');
+            message = signingMessage.replace(hexEthHeader, '');
+          }
+
+          if (fromChain?.chainType != 'tron') {
+            signature = await signMessage(message);
+          } else {
+            // TODO
+            signature = await signTransaction(message);
+          }
+
+          const swapId = await this.meson?.sendToken({
+            fromAddress: userAddress,
+            recipient: toUserAddress || userAddress,
+            signature: signature,
+            encodedData: encodedData,
+          });
+
+          return {
+            swapId,
+          };
+        } else {
+          throw new Error(unsignedMessage?.error.message);
+        }
+      } else {
+        throw Error('Parameter [mesonOpts] is required');
+      }
+    }
+
+    return {};
   }
 
   public getFromChains() {
