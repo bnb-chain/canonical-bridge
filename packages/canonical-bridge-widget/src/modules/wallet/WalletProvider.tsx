@@ -19,6 +19,7 @@ import { defaultTronConfig, tronLink } from '@node-real/walletkit/tron';
 import {
   defaultSolanaConfig,
   phantomWallet as solanaPhantomWallet,
+  trustWallet as solanaTrustWallet,
 } from '@node-real/walletkit/solana';
 import React from 'react';
 import { useDisclosure, useIntl } from '@bnb-chain/space';
@@ -52,7 +53,7 @@ export function WalletProvider(props: WalletProviderProps) {
       walletConnect(),
     ];
     const tronWallets = [tronLink()];
-    const solanaWallets = [solanaPhantomWallet()];
+    const solanaWallets = [solanaTrustWallet(), solanaPhantomWallet()];
 
     const tron = chainConfigs.find((e) => e.chainType === 'tron');
     const solana = chainConfigs.find((e) => e.chainType === 'solana');
