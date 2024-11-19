@@ -1,5 +1,11 @@
 # @bnb-chain/canonical-bridge-widget
 
+## 0.5.2
+
+### Patch Changes
+
+- aee98a5: Adjust style class name
+
 ## 0.5.1
 
 ### Patch Changes
