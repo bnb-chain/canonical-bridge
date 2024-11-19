@@ -149,7 +149,12 @@ export const ReceiveInfo = ({ onOpen }: ReceiveInfoProps) => {
     <Box className="bccb-widget-received-info-container" mb={isHideSection ? '-24px' : 0}>
       <Collapse in={!isHideSection} animateOpacity>
         <Flex flexDir={'column'} gap={'8px'}>
-          <Flex flexDir={'row'} alignItems={'center'} justifyContent={'space-between'}>
+          <Flex
+            className="bccb-widget-received-info-title"
+            flexDir={'row'}
+            alignItems={'center'}
+            justifyContent={'space-between'}
+          >
             <Typography
               variant={'label'}
               size={'md'}

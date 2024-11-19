@@ -34,7 +34,7 @@ export const ListItem = React.forwardRef((props: ListItemProps, ref: any) => {
   return (
     <Box className={`${className}-wrapper`} ref={ref} p="0 20px 4px">
       <Flex
-        className={`${className}` + isDisabled ? '-disabled' : ''}
+        className={className}
         borderRadius={'8px'}
         px={'11px'}
         py="7px"

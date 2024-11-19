@@ -120,7 +120,7 @@ export function ToAccount(props: FlexProps) {
         {formatMessage({ id: 'to.section.account.label' })}
       </Box>
       <InputGroup
-        className="bccb-widget-to-account-input"
+        className={`bccb-widget-to-account-input ${isInvalid ? 'input-error' : ''}`}
         alignItems="center"
         mt={'12px'}
         _hover={{
@@ -130,6 +130,7 @@ export function ToAccount(props: FlexProps) {
         }}
       >
         <Input
+          className={`${isInvalid ? 'input-error' : ''}`}
           isInvalid={isInvalid}
           background={theme.colors[colorMode].input.background}
           borderColor={theme.colors[colorMode].input.border.default}
