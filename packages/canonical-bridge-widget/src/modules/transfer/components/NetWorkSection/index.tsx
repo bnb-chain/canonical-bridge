@@ -18,7 +18,11 @@ export const NetWorkSection = () => {
           justifyContent={'space-between'}
           flex={1}
         >
-          <Typography variant="label" size={'md'} color={theme.colors[colorMode].text.placeholder}>
+          <Typography
+            variant="label"
+            size={'md'}
+            color={theme.colors[colorMode].text.network.title}
+          >
             {formatMessage({ id: 'from.section.title' })}
           </Typography>
         </Flex>
@@ -30,7 +34,11 @@ export const NetWorkSection = () => {
           ml="48px"
           display={{ base: 'none', md: 'flex' }}
         >
-          <Typography variant="label" size={'md'} color={theme.colors[colorMode].text.placeholder}>
+          <Typography
+            variant="label"
+            size={'md'}
+            color={theme.colors[colorMode].text.network.title}
+          >
             {formatMessage({ id: 'to.section.title' })}
           </Typography>
         </Flex>

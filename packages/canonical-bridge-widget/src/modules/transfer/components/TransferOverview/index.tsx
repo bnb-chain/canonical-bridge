@@ -138,7 +138,7 @@ export function TransferOverview({ routeContentBottom }: { routeContentBottom?: 
         >
           {formatMessage({ id: 'route.title' })}
           {!options.length || isGlobalFeeLoading ? (
-            <SkeletonCircle w={'32px'} h={'32px'} />
+            <SkeletonCircle className="skeleton" w={'32px'} h={'32px'} />
           ) : !isBase ? (
             <RefreshingButton />
           ) : null}
