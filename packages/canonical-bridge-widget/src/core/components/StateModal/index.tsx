@@ -76,7 +76,7 @@ export function StateModal(props: StateModalProps) {
   return (
     <Modal isOpen={isOpen} onClose={onClose} isCentered {...restProps}>
       <LightMode>
-        <ModalOverlay />
+        <ModalOverlay className={`${className}-overlay`} />
 
         <ModalContent className={className} borderRadius={'20px'} maxW={'435px'}>
           <ModalCloseButton

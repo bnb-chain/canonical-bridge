@@ -18,7 +18,9 @@ export const RouteWrapper = ({
 
   return (
     <Flex
-      className="bccb-widget-route-wrapper"
+      className={`bccb-widget-route-wrapper${isSelected ? '-selected' : ''} ${
+        isError ? 'route-error' : ''
+      }`}
       flex={1}
       flexDir={'column'}
       gap={'4px'}

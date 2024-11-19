@@ -100,7 +100,10 @@ export function ChooseTokenModal(props: ChooseTokenModalProps) {
 
             return (
               <ListItem
-                className={`bccb-widget-token-list-item` + (isDisabled ? '-disabled' : '')}
+                className={
+                  `bccb-widget-token-list-item` +
+                  (isActive ? '-active' : isDisabled ? '-disabled' : '')
+                }
                 key={item.address}
                 iconUrl={item.icon}
                 isActive={isActive}

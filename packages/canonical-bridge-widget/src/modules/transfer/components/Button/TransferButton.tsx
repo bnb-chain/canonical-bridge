@@ -450,9 +450,27 @@ export function TransferButton({
     signTransaction,
   ]);
 
+  const isDisabled =
+    isLoading ||
+    isGlobalFeeLoading ||
+    !sendValue ||
+    !Number(sendValue) ||
+    !transferActionInfo ||
+    !isTransferable ||
+    (isTronTransfer && (!isToAddressChecked || !toAccount?.address || !isTronAvailableToAccount)) ||
+    isTronContract === true ||
+    !!evmBytecode ||
+    (isSolanaTransfer &&
+      (!isToAddressChecked || !toAccount.address || !isSolanaAvailableToAccount));
+
   return (
-    <Flex className="bccb-widget-transfer-button" flexDir="column" w={'100%'}>
+    <Flex
+      className={`bccb-widget-transfer-button` + `${isDisabled ? ' disabled' : ''}`}
+      flexDir="column"
+      w={'100%'}
+    >
       <Button
+        className={isDisabled ? 'disabled' : ''}
         bg={theme.colors[colorMode].button.brand.default}
         size={'lg'}
         fontWeight={500}
@@ -463,20 +481,7 @@ export function TransferButton({
           _disabled: { bg: theme.colors[colorMode].button.disabled },
         }}
         onClick={sendTx}
-        isDisabled={
-          isLoading ||
-          isGlobalFeeLoading ||
-          !sendValue ||
-          !Number(sendValue) ||
-          !transferActionInfo ||
-          !isTransferable ||
-          (isTronTransfer &&
-            (!isToAddressChecked || !toAccount?.address || !isTronAvailableToAccount)) ||
-          isTronContract === true ||
-          !!evmBytecode ||
-          (isSolanaTransfer &&
-            (!isToAddressChecked || !toAccount.address || !isSolanaAvailableToAccount))
-        }
+        isDisabled={isDisabled}
       >
         {isApproveNeeded
           ? formatMessage({ id: 'transfer.button.approve' })

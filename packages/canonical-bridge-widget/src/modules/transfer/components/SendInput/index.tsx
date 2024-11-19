@@ -101,10 +101,10 @@ export const SendInput: React.FC = () => {
 
   return (
     <Flex className="bccb-widget-transfer-input-container" flexDir={'column'} position={'relative'}>
-      <Flex flexDir={'row'} justifyContent={'space-between'}>
+      <Flex className="bccb-widget-input-title" flexDir={'row'} justifyContent={'space-between'}>
         <Typography
           className="input-header-label"
-          color={theme.colors[colorMode].text.placeholder}
+          color={theme.colors[colorMode].text.network.title}
           variant={'label'}
           size={'md'}
         >
@@ -113,7 +113,9 @@ export const SendInput: React.FC = () => {
         <MaxLink />
       </Flex>
       <Flex
-        className="bccb-widget-transfer-input-wrapper"
+        className={`bccb-widget-transfer-input-wrapper ${
+          !!error?.text ? 'input-error' : isFocused ? 'input-focused' : ''
+        }`}
         flex={1}
         mt={'8px'}
         flexDir={'row'}
