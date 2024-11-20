@@ -2,7 +2,7 @@ import { useCallback, useRef } from 'react';
 import { formatUnits, parseUnits } from 'viem';
 import { useAccount, useBalance, usePublicClient } from 'wagmi';
 import { BridgeType, DeBridgeCreateQuoteResponse } from '@bnb-chain/canonical-bridge-sdk';
-import { useTronWallet } from '@node-real/walletkit/tron';
+import { useWallet as useTronWallet } from '@tronweb3/tronwallet-adapter-react-hooks';
 import { useIntl } from '@bnb-chain/space';
 
 import { useAppDispatch, useAppSelector } from '@/modules/store/StoreProvider';

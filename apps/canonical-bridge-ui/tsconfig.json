@@ -16,6 +16,7 @@
     "incremental": true,
     "baseUrl": ".",
     "outDir": "dist",
+    "allowSyntheticDefaultImports": true,
     "paths": {
       "@/*": ["./*"]
     }

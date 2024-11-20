@@ -2,9 +2,9 @@ import { Button, Flex, useColorMode, useIntl, useTheme } from '@bnb-chain/space'
 import { useCallback, useState } from 'react';
 import { useAccount, useBytecode, usePublicClient, useSignMessage, useWalletClient } from 'wagmi';
 import { formatUnits, parseUnits } from 'viem';
-import { useTronWallet } from '@node-real/walletkit/tron';
+import { useWallet as useTronWallet } from '@tronweb3/tronwallet-adapter-react-hooks';
 import { useConnection } from '@solana/wallet-adapter-react';
-import { useSolanaWallet } from '@node-real/walletkit/solana';
+import { useWallet as useSolanaWallet } from '@solana/wallet-adapter-react';
 import { VersionedTransaction } from '@solana/web3.js';
 
 import { useAppSelector } from '@/modules/store/StoreProvider';
@@ -13,11 +13,11 @@ import { useCBridgeTransferParams } from '@/modules/aggregator/adapters/cBridge/
 import { useBridgeSDK } from '@/core/hooks/useBridgeSDK';
 import { reportEvent } from '@/core/utils/gtm';
 import { useGetTronAllowance } from '@/modules/aggregator/adapters/meson/hooks/useGetTronAllowance';
-import { useCurrentWallet } from '@/modules/wallet/CurrentWalletProvider';
 import { useTronTransferInfo } from '@/modules/transfer/hooks/tron/useTronTransferInfo';
 import { utf8ToHex } from '@/core/utils/string';
 import { useTronContract } from '@/modules/aggregator/adapters/meson/hooks/useTronContract';
 import { useSolanaTransferInfo } from '@/modules/transfer/hooks/solana/useSolanaTransferInfo';
+import { useTronAccount } from '@/modules/wallet/hooks/useTronAccount';
 
 export function TransferButton({
   onOpenSubmittedModal,
@@ -78,7 +78,8 @@ export function TransferButton({
   });
 
   const tronAllowance = useGetTronAllowance();
-  const { isTronConnected, isEvmConnected } = useCurrentWallet();
+  const { isConnected: isEvmConnected } = useAccount();
+  const { isConnected: isTronConnected } = useTronAccount();
 
   const isApproveNeeded =
     (fromChain?.chainType === 'evm' &&

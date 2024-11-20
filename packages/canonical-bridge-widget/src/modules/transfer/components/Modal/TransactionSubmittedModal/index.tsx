@@ -1,12 +1,14 @@
 import { Button, useIntl } from '@bnb-chain/space';
 import { useAccount } from 'wagmi';
+import { useMemo } from 'react';
 
 import { StateModal, StateModalProps } from '@/core/components/StateModal';
-import { useAppDispatch } from '@/modules/store/StoreProvider';
+import { useAppDispatch, useAppSelector } from '@/modules/store/StoreProvider';
 import { EXPLORER_URL } from '@/core/constants';
 import { setEstimatedAmount, setSendValue, setTransferActionInfo } from '@/modules/transfer/action';
 import { ExLinkIcon } from '@/core/components/icons/ExLinkIcon';
-import { useCurrentWallet } from '@/modules/wallet/CurrentWalletProvider';
+import { useTronAccount } from '@/modules/wallet/hooks/useTronAccount';
+import { useSolanaAccount } from '@/modules/wallet/hooks/useSolanaAccount';
 
 export function TransactionSubmittedModal(
   props: Omit<StateModalProps, 'title'> & { hash: string; chosenBridge: string },
@@ -14,9 +16,21 @@ export function TransactionSubmittedModal(
   const { hash, chosenBridge, ...restProps } = props;
   const dispatch = useAppDispatch();
   const { formatMessage } = useIntl();
-  const { chain } = useAccount();
 
-  const { address } = useCurrentWallet();
+  const fromChain = useAppSelector((state) => state.transfer.fromChain);
+  const { chain, address } = useAccount();
+  const { address: tronAddress } = useTronAccount();
+  const { address: solanaAddress } = useSolanaAccount();
+
+  const useAddress = useMemo(() => {
+    if (fromChain?.chainType === 'solana') {
+      return solanaAddress;
+    }
+    if (fromChain?.chainType === 'tron') {
+      return tronAddress;
+    }
+    return address;
+  }, [address, fromChain?.chainType, solanaAddress, tronAddress]);
 
   return (
     <StateModal
@@ -34,7 +48,7 @@ export function TransactionSubmittedModal(
           if (chosenBridge === 'cBridge' || chosenBridge === 'meson') {
             window.open(`${EXPLORER_URL[chosenBridge]}${hash}`);
           } else if (chosenBridge === 'deBridge') {
-            window.open(`${EXPLORER_URL[chosenBridge]}${address}`);
+            window.open(`${EXPLORER_URL[chosenBridge]}${useAddress}`);
           } else if (
             (chosenBridge === 'stargate' || chosenBridge === 'layerZero') &&
             chain?.blockExplorers

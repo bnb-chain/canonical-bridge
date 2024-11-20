@@ -1,7 +1,16 @@
-import { Box, Center, Flex, Typography, useColorMode, useIntl, useTheme } from '@bnb-chain/space';
-import { DisconnectIcon } from '@bnb-chain/icons';
-import { useWalletKit } from '@node-real/walletkit';
-import { useMemo } from 'react';
+import {
+  Box,
+  Center,
+  Circle,
+  Flex,
+  IconButton,
+  Typography,
+  useColorMode,
+  useTheme,
+} from '@bnb-chain/space';
+import { useWallet as useSolanaWallet } from '@solana/wallet-adapter-react';
+import { useWallet as useTronWallet } from '@tronweb3/tronwallet-adapter-react-hooks';
+import { useAccount, useDisconnect } from 'wagmi';
 
 import { CopyAddress } from '@/core/components/CopyAddress';
 import { formatNumber } from '@/core/utils/number';
@@ -9,15 +18,67 @@ import { formatAppAddress } from '@/core/utils/address';
 import { Dropdown } from '@/modules/wallet/components/Dropdown/Dropdown';
 import { DropdownButton } from '@/modules/wallet/components/Dropdown/DropdownButton';
 import { DropdownList } from '@/modules/wallet/components/Dropdown/DropdownList';
-import { useCurrentWallet } from '@/modules/wallet/CurrentWalletProvider';
-import { WalletIcon } from '@/core/components/icons/WalletIcon';
+import { useTronAccount } from '@/modules/wallet/hooks/useTronAccount';
+import { useSolanaAccount } from '@/modules/wallet/hooks/useSolanaAccount';
+import { useEvmBalance } from '@/modules/wallet/hooks/useEvmBalance';
+import { useTronBalance } from '@/modules/wallet/hooks/useTronBalance';
+import { useSolanaBalance } from '@/modules/wallet/hooks/useSolanaBalance';
+import { ChainType } from '@/modules/aggregator';
+import { useAppSelector } from '@/modules/store/StoreProvider';
+import { LogoutIcon } from '@/core/components/icons/LogoutIcon';
 
-export const ProfileMenu = () => {
-  const { formatMessage } = useIntl();
+interface ProfileMenuProps {
+  connectedWalletIcons?: Array<{ walletType: ChainType; icon: React.ReactNode }>;
+}
+
+export const ProfileMenu = (props: ProfileMenuProps) => {
+  const { connectedWalletIcons } = props;
+
   const { colorMode } = useColorMode();
-  const { address, balance, disconnect } = useCurrentWallet();
-  const walletIcon = useWalletIcon();
   const theme = useTheme();
+
+  const fromChain = useAppSelector((state) => state.transfer.fromChain);
+
+  const evmAccount = useAccount();
+  const tronAccount = useTronAccount();
+  const solanaAccount = useSolanaAccount();
+
+  const evmBalance = useEvmBalance();
+  const tronBalance = useTronBalance();
+  const solanaBalance = useSolanaBalance();
+
+  const { disconnect: evmDisconnect } = useDisconnect();
+  const { disconnect: solanaDisconnect } = useSolanaWallet();
+  const { disconnect: tronDisconnect } = useTronWallet();
+
+  const options = [
+    {
+      walletType: 'evm',
+      walletIcon: connectedWalletIcons?.find((e) => e.walletType === 'evm')?.icon,
+      address: evmAccount.address,
+      isConnected: evmAccount.isConnected,
+      balance: evmBalance.data,
+      disconnect: evmDisconnect,
+    },
+    {
+      walletType: 'solana',
+      walletIcon: connectedWalletIcons?.find((e) => e.walletType === 'solana')?.icon,
+      address: solanaAccount.address,
+      isConnected: solanaAccount.isConnected,
+      balance: solanaBalance.data,
+      disconnect: solanaDisconnect,
+    },
+    {
+      walletType: 'tron',
+      walletIcon: connectedWalletIcons?.find((e) => e.walletType === 'tron')?.icon,
+      address: tronAccount.address,
+      isConnected: tronAccount.isConnected,
+      balance: tronBalance.data,
+      disconnect: tronDisconnect,
+    },
+  ].filter((e) => e.isConnected);
+
+  const fromChainWallet = options.find((e) => e.walletType === fromChain?.chainType)!;
 
   return (
     <Dropdown>
@@ -42,18 +103,19 @@ export const ProfileMenu = () => {
                 boxSize: 1,
               }}
             >
-              {walletIcon}
+              {fromChainWallet.walletIcon}
             </Center>
-            {walletIcon && (
-              <Center
+            {fromChainWallet.walletIcon && (
+              <Circle
+                overflow="hidden"
                 sx={{
                   'svg, img': {
                     boxSize: '24px',
                   },
                 }}
               >
-                {walletIcon}
-              </Center>
+                {fromChainWallet.walletIcon}
+              </Circle>
             )}
             <Box display={{ base: 'none', md: 'block' }}>
               <Typography
@@ -63,70 +125,81 @@ export const ProfileMenu = () => {
                 size={'md'}
                 fontWeight={500}
               >
-                {formatAppAddress({ address })}
+                {formatAppAddress({ address: fromChainWallet.address })}
               </Typography>
             </Box>
           </DropdownButton>
 
           <DropdownList className="bccb-widget-header-profile-list" overflowY="visible">
-            <Flex alignItems="center" p="16px 16px 12px">
-              <Flex gap="12px">
-                <Center
-                  sx={{
-                    'svg, img': {
-                      boxSize: '32px',
-                    },
-                  }}
+            <Flex alignItems="flex-start" p="12px" gap="12px" flexDir="column" w="240px">
+              {options.map((item) => (
+                <Flex
+                  key={item.walletType}
+                  gap="8px"
+                  flexDir="column"
+                  w="100%"
+                  fontWeight={500}
+                  fontSize={'12px'}
+                  lineHeight="16px"
                 >
-                  {walletIcon}
-                </Center>
-
-                <Flex flexDir="column" justifyContent="center">
-                  <Flex gap="4px" alignItems="center" fontSize={'16px'} fontWeight={500}>
-                    {formatAppAddress({ address })}
-                    <CopyAddress boxSize={'20px'} content={address} />
-                  </Flex>
-                  {!!balance?.formatted && (
-                    <Flex
-                      className="bccb-widget-header-profile-balance"
-                      color={theme.colors[colorMode].text.secondary}
-                    >
-                      {formatNumber(Number(balance?.formatted), 4)} {balance?.symbol}
+                  <Flex gap="12px" alignItems="center">
+                    <Flex color={theme.colors[colorMode].text.placeholder}>
+                      {item.walletType.toUpperCase()}
                     </Flex>
-                  )}
+                    <Flex
+                      flex={1}
+                      borderTop="1px solid"
+                      borderColor={theme.colors[colorMode].popover.separator}
+                    />
+                  </Flex>
+                  <Flex alignItems="center" mt="8px">
+                    {item.walletIcon && (
+                      <Center
+                        boxSize={'32px'}
+                        mr="8px"
+                        sx={{
+                          'svg, img': {
+                            boxSize: '100%',
+                          },
+                        }}
+                      >
+                        {item.walletIcon}
+                      </Center>
+                    )}
+                    <Flex flexDir="column" flex={1}>
+                      <Flex fontWeight={700} fontSize={'14px'}>
+                        {formatAppAddress({ address: item.address })}
+                      </Flex>
+                      <Flex color={theme.colors[colorMode].text.secondary}>
+                        {formatNumber(Number(item.balance?.formatted), 4)} {item?.balance?.symbol}
+                      </Flex>
+                    </Flex>
+                    <Flex alignItems="center" gap="8px">
+                      <CopyAddress content={item.address} />
+                      <IconButton
+                        className="bccb-widget-header-profile-disconnect-link"
+                        variant="outline"
+                        boxSize={'24px'}
+                        minW={'24px'}
+                        icon={<LogoutIcon />}
+                        cursor={'pointer'}
+                        borderColor={theme.colors[colorMode].button.primary.subtle}
+                        color={theme.colors[colorMode].text.secondary}
+                        borderRadius={'4px'}
+                        _hover={{
+                          color: theme.colors[colorMode].text.inverse,
+                          bg: theme.colors[colorMode].button.primary.hover,
+                        }}
+                        onClick={() => {
+                          item.disconnect();
+                          onClose();
+                        }}
+                        aria-label={''}
+                      ></IconButton>
+                    </Flex>
+                  </Flex>
                 </Flex>
-              </Flex>
-            </Flex>
-
-            <Flex
-              className="bccb-widget-header-profile-disconnect-link"
-              borderTop={`1px solid ${theme.colors[colorMode].popover.separator}`}
-              py="8px"
-              onClick={() => {
-                disconnect();
-                onClose();
-              }}
-            >
-              <Flex
-                h="40px"
-                alignItems="center"
-                w="100%"
-                gap="8px"
-                cursor="pointer"
-                fontSize={'14px'}
-                lineHeight={'16px'}
-                fontWeight={400}
-                color={theme.colors[colorMode].text.danger}
-                transitionDuration="normal"
-                _hover={{
-                  bg: theme.colors[colorMode].popover.selected,
-                  color: theme.colors[colorMode].text.primary,
-                }}
-                px="16px"
-              >
-                <DisconnectIcon boxSize={'16px'} />
-                {formatMessage({ id: 'wallet.popover.disconnect' })}
-              </Flex>
+              ))}
             </Flex>
           </DropdownList>
         </>
@@ -134,24 +207,3 @@ export const ProfileMenu = () => {
     </Dropdown>
   );
 };
-
-function useWalletIcon() {
-  const { walletId } = useCurrentWallet();
-
-  const { colorMode } = useColorMode();
-  const { wallets } = useWalletKit();
-
-  const icon = useMemo(() => {
-    const selectedWallet = wallets.find((item) => item.id === walletId);
-
-    if (selectedWallet) {
-      const { transparent: transparentLogos } = selectedWallet.logos ?? {};
-      const transparentLogo = (transparentLogos as any)?.[colorMode] ?? transparentLogos;
-      return transparentLogo || <WalletIcon />;
-    }
-
-    return null;
-  }, [colorMode, walletId, wallets]);
-
-  return icon;
-}

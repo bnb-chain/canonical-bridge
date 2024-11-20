@@ -1,3 +1,4 @@
+import '@node-real/walletkit/styles.css';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import Head from 'next/head';
 import { AppProps } from 'next/app';

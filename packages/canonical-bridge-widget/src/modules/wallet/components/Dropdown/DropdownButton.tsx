@@ -28,16 +28,17 @@ export function DropdownButton(props: DropdownButtonProps) {
 
   return (
     <MenuButton
-      h={'40px'}
-      minW={'40px'}
-      pl="12px"
-      pr="16px"
+      h={{ base: '32px', md: '40px' }}
+      minW={{ base: '32px', md: '40px' }}
+      pl={{ base: '8px', md: '12px' }}
+      pr={{ base: '12px', md: '16px' }}
       lineHeight="16px"
       outline={isActive ? '2px solid' : '1px solid'}
       outlineColor={isActive ? colors.active : colors.default}
       bg={isActive ? theme.colors[colorMode].button.select.background.hover : undefined}
       borderRadius={'100px'}
       fontWeight={500}
+      fontSize={'14px'}
       transitionDuration="normal"
       justifyContent="center"
       border="none"

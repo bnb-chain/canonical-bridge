@@ -1,4 +1,4 @@
-import { useTronWallet } from '@node-real/walletkit/tron';
+import { useWallet as useTronWallet } from '@tronweb3/tronwallet-adapter-react-hooks';
 
 interface UseTronSwitchChainProps {
   mutation?: {

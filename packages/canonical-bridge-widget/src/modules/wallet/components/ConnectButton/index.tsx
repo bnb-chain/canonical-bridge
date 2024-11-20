@@ -1,21 +1,29 @@
-import { Button, Flex, useTheme, useColorMode, useIntl } from '@bnb-chain/space';
+import { Button, Flex, useTheme, useColorMode, useIntl, FlexProps } from '@bnb-chain/space';
 
+import { useDelay } from '@/core/hooks/useDelay';
 import { NetworkStatus } from '@/modules/wallet/components/NetworkStatus';
-import { ProfileMenu } from '@/modules/wallet/components/ProfileMenu';
-import { useCurrentWallet } from '@/modules/wallet/CurrentWalletProvider';
+import { ChainType, useBridgeConfig } from '@/index';
 import { useAppSelector } from '@/modules/store/StoreProvider';
+import { ProfileMenu } from '@/modules/wallet/components/ProfileMenu';
+import { useIsWalletCompatible } from '@/modules/wallet/hooks/useIsWalletCompatible';
 
-interface ConnectButtonProps {}
+interface ConnectButtonProps extends FlexProps {
+  connectedWalletIcons?: Array<{ walletType: ChainType; icon: React.ReactNode }>;
+}
 
 export function ConnectButton(props: ConnectButtonProps) {
-  const { ...restProps } = props;
+  const { connectedWalletIcons, ...restProps } = props;
 
   const theme = useTheme();
   const { colorMode } = useColorMode();
   const { formatMessage } = useIntl();
-
-  const { isConnected, linkWallet } = useCurrentWallet();
   const fromChain = useAppSelector((state) => state.transfer.fromChain);
+
+  const { onClickConnectWallet } = useBridgeConfig();
+
+  const isReady = useDelay();
+  const isWalletCompatible = useIsWalletCompatible();
+  const isConnected = isReady && isWalletCompatible;
 
   return (
     <Flex
@@ -35,9 +43,9 @@ export function ConnectButton(props: ConnectButtonProps) {
           lineHeight="16px"
           fontWeight={500}
           onClick={() => {
-            linkWallet({
-              targetChainType: fromChain?.chainType,
-              targetChainId: fromChain?.id,
+            onClickConnectWallet({
+              chainType: fromChain!.chainType,
+              chainId: fromChain!.id,
             });
           }}
           sx={{
@@ -57,7 +65,7 @@ export function ConnectButton(props: ConnectButtonProps) {
       {isConnected && (
         <>
           <NetworkStatus />
-          <ProfileMenu />
+          <ProfileMenu connectedWalletIcons={connectedWalletIcons} />
         </>
       )}
     </Flex>

@@ -4,30 +4,24 @@ import {
   TransferWidget,
 } from '@bnb-chain/canonical-bridge-widget';
 
-import { en as messages } from '@/core/locales/en';
 import { useTestnetTransferConfig } from '@/token-config/testnet/useTestnetTransferConfig';
 import { testnetChains } from '@/token-config/testnet/testnetChains';
-import { Layout } from '@/core/components/Layout';
 import { dark } from '@/core/theme/dark';
 import { light } from '@/core/theme/light';
 import { env } from '@/core/env';
+import { WalletProvider } from '@/core/wallet/WalletProvider';
+import { useWalletModal } from '@/core/wallet/hooks/useWalletModal';
+import { Layout } from '@/core/components/Layout';
 
 export const bridgeConfig: ICanonicalBridgeConfig = {
   appName: env.APP_NAME,
   assetPrefix: env.ASSET_PREFIX,
-
   appearance: {
     bridgeTitle: 'BNB Chain Cross-Chain Bridge Testnet',
-    locale: 'en',
-    messages,
-    mode: 'dark',
     theme: {
       dark: dark,
       light: light,
     },
-  },
-  wallet: {
-    walletConnectProjectId: env.WALLET_CONNECT_PROJECT_ID,
   },
   http: {
     refetchingInterval: 30 * 1000, // 30s
@@ -39,13 +33,23 @@ export const bridgeConfig: ICanonicalBridgeConfig = {
 };
 
 export default function TestnetPage() {
+  return (
+    <WalletProvider chainConfigs={testnetChains}>
+      <BridgeWidget />
+    </WalletProvider>
+  );
+}
+
+function BridgeWidget() {
   const testnetTransferConfig = useTestnetTransferConfig();
+  const { onOpen } = useWalletModal();
 
   return (
     <CanonicalBridgeProvider
       config={bridgeConfig}
       transferConfig={testnetTransferConfig}
       chains={testnetChains}
+      onClickConnectWallet={onOpen}
     >
       <Layout>
         <TransferWidget />

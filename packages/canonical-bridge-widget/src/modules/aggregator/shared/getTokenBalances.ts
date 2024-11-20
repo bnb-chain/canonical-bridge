@@ -11,44 +11,47 @@ import { isChainOrTokenCompatible } from '@/modules/aggregator/shared/isChainOrT
 import { isSameAddress } from '@/core/utils/address';
 
 export async function getTokenBalances({
-  walletType,
   chainType,
-  account,
   tokens,
-  chain,
-  tronWeb,
-  connection,
+  evmParams,
+  solanaParams,
+  tronParams,
 }: {
-  walletType?: ChainType;
   chainType?: ChainType;
-  account?: string;
   tokens?: IBridgeToken[];
-  chain?: Chain;
-  tronWeb?: TronWeb;
-  connection?: Connection;
+  evmParams: {
+    account?: string;
+    chain?: Chain;
+  };
+  solanaParams: {
+    account?: string;
+    connection?: Connection;
+  };
+  tronParams: {
+    account?: string;
+    tronWeb?: TronWeb;
+  };
 }) {
-  if (walletType !== chainType) return {};
-
   const compatibleTokens = tokens?.filter((item) => isChainOrTokenCompatible(item));
 
   if (chainType === 'solana') {
     return await getSolanaTokenBalances({
-      account,
+      account: solanaParams.account,
       tokens: compatibleTokens,
-      connection,
+      connection: solanaParams.connection,
     });
   }
 
   if (chainType === 'tron') {
     return await getTronTokenBalances({
-      account,
+      account: tronParams.account,
       tokens: compatibleTokens,
-      tronWeb,
+      tronWeb: tronParams.tronWeb,
     });
   }
   return await getEvmTokenBalances({
-    account,
-    chain,
+    account: evmParams.account,
+    chain: evmParams.chain,
     tokens: compatibleTokens,
   });
 }

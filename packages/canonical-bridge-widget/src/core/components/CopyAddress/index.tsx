@@ -26,17 +26,27 @@ export const CopyAddress = ({
   if (!content) {
     return null;
   }
+
   return (
     <Flex
       className="bccb-widget-copy-address"
       justifyContent={'center'}
       alignItems={'center'}
       position={'relative'}
+      boxSize={'24px'}
+      cursor={'pointer'}
+      color={theme.colors[colorMode].text.secondary}
+      bg={theme.colors[colorMode].button.primary.subtle}
+      borderRadius={'4px'}
+      transitionProperty="colors"
+      transitionDuration="normal"
+      _hover={{
+        color: theme.colors[colorMode].text.inverse,
+        bg: theme.colors[colorMode].button.primary.hover,
+      }}
       {...otherProps}
     >
       <CopyIcon
-        boxSize={'20px'}
-        cursor={'pointer'}
         {...iconStyle}
         onClick={() => {
           onCopy();
