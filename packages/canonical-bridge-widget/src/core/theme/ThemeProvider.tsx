@@ -37,7 +37,7 @@ export const ThemeProvider = ({
         global: ({ colorMode }: { colorMode: ColorMode }) => ({
           body: {
             bg: themeConfig?.[colorMode]?.background?.body ?? theme.colors[colorMode].background[3],
-            fontFamily: themeConfig?.fontFamily ?? 'Space Grotesk',
+            fontFamily: themeConfig?.fontFamily ?? "'Space Grotesk', -apple-system, sans-serif",
           },
           ...walletStyles(colorMode),
         }),
