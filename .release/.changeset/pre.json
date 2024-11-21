@@ -6,6 +6,7 @@
     "@bnb-chain/canonical-bridge-widget": "0.5.1"
   },
   "changesets": [
+    "gorgeous-maps-fly",
     "grumpy-squids-collect",
     "tall-spiders-love"
   ]

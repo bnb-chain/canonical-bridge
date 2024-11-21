@@ -18,6 +18,7 @@ import { utf8ToHex } from '@/core/utils/string';
 import { useTronContract } from '@/modules/aggregator/adapters/meson/hooks/useTronContract';
 import { useSolanaTransferInfo } from '@/modules/transfer/hooks/solana/useSolanaTransferInfo';
 import { useTronAccount } from '@/modules/wallet/hooks/useTronAccount';
+import { useWaitForTxReceipt } from '@/core/hooks/useWaitForTxReceipt';
 
 export function TransferButton({
   onOpenSubmittedModal,
@@ -80,6 +81,7 @@ export function TransferButton({
   const tronAllowance = useGetTronAllowance();
   const { isConnected: isEvmConnected } = useAccount();
   const { isConnected: isTronConnected } = useTronAccount();
+  const { waitForTxReceipt } = useWaitForTxReceipt();
 
   const isApproveNeeded =
     (fromChain?.chainType === 'evm' &&
@@ -179,7 +181,8 @@ export function TransferButton({
             peggedConfig: selectedToken?.cBridge?.peggedConfig,
             args: cBridgeArgs.args,
           });
-          await publicClient.waitForTransactionReceipt({
+          await waitForTxReceipt({
+            publicClient,
             hash: cBridgeHash,
           });
           if (cBridgeHash) {
@@ -218,7 +221,8 @@ export function TransferButton({
               amount: BigInt(transferActionInfo.value),
               address,
             });
-            await publicClient.waitForTransactionReceipt({
+            await waitForTxReceipt({
+              publicClient,
               hash: deBridgeHash,
             });
           }
@@ -404,13 +408,16 @@ export function TransferButton({
     }
   }, [
     selectedToken,
-    transferActionInfo,
+    transferActionInfo?.bridgeType,
+    transferActionInfo?.bridgeAddress,
+    transferActionInfo?.value,
+    transferActionInfo?.data,
+    fromChain,
     walletClient,
     publicClient,
     address,
     allowance,
     isEvmConnected,
-    fromChain,
     isTronConnected,
     tronAddress,
     tronAllowance,

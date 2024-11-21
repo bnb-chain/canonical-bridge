@@ -1,7 +1,7 @@
 import { useContext } from 'react';
 
-import { TronAccountContext } from '@/modules/wallet/TronAccountProvider';
+import { TronAccountContext, TronAccountContextProps } from '@/modules/wallet/TronAccountProvider';
 
-export function useTronAccount() {
+export function useTronAccount(): TronAccountContextProps {
   return useContext(TronAccountContext);
 }

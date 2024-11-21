@@ -2,7 +2,7 @@ import { useWallet as useTronWallet } from '@tronweb3/tronwallet-adapter-react-h
 import React, { useMemo } from 'react';
 import { useEffect, useState } from 'react';
 
-interface TronAccountContextProps {
+export interface TronAccountContextProps {
   address?: string;
   chainId?: number;
   isConnected: boolean;
