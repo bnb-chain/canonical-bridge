@@ -11,6 +11,7 @@ import {
 import { useWallet as useSolanaWallet } from '@solana/wallet-adapter-react';
 import { useWallet as useTronWallet } from '@tronweb3/tronwallet-adapter-react-hooks';
 import { useAccount, useDisconnect } from 'wagmi';
+import React from 'react';
 
 import { CopyAddress } from '@/core/components/CopyAddress';
 import { formatNumber } from '@/core/utils/number';
@@ -18,7 +19,6 @@ import { formatAppAddress } from '@/core/utils/address';
 import { Dropdown } from '@/modules/wallet/components/Dropdown/Dropdown';
 import { DropdownButton } from '@/modules/wallet/components/Dropdown/DropdownButton';
 import { DropdownList } from '@/modules/wallet/components/Dropdown/DropdownList';
-import { useTronAccount } from '@/modules/wallet/hooks/useTronAccount';
 import { useSolanaAccount } from '@/modules/wallet/hooks/useSolanaAccount';
 import { useEvmBalance } from '@/modules/wallet/hooks/useEvmBalance';
 import { useTronBalance } from '@/modules/wallet/hooks/useTronBalance';
@@ -26,13 +26,14 @@ import { useSolanaBalance } from '@/modules/wallet/hooks/useSolanaBalance';
 import { ChainType } from '@/modules/aggregator';
 import { useAppSelector } from '@/modules/store/StoreProvider';
 import { LogoutIcon } from '@/core/components/icons/LogoutIcon';
+import { useTronAccount } from '@/modules/wallet/hooks/useTronAccount';
 
-interface ProfileMenuProps {
-  connectedWalletIcons?: Array<{ walletType: ChainType; icon: React.ReactNode }>;
+export interface ProfileProps {
+  walletIcons?: Array<{ walletType: ChainType; icon: React.ReactNode }>;
 }
 
-export const ProfileMenu = (props: ProfileMenuProps) => {
-  const { connectedWalletIcons } = props;
+export const Profile = (props: ProfileProps) => {
+  const { walletIcons } = props;
 
   const { colorMode } = useColorMode();
   const theme = useTheme();
@@ -54,7 +55,7 @@ export const ProfileMenu = (props: ProfileMenuProps) => {
   const options = [
     {
       walletType: 'evm',
-      walletIcon: connectedWalletIcons?.find((e) => e.walletType === 'evm')?.icon,
+      walletIcon: walletIcons?.find((e) => e.walletType === 'evm')?.icon,
       address: evmAccount.address,
       isConnected: evmAccount.isConnected,
       balance: evmBalance.data,
@@ -62,7 +63,7 @@ export const ProfileMenu = (props: ProfileMenuProps) => {
     },
     {
       walletType: 'solana',
-      walletIcon: connectedWalletIcons?.find((e) => e.walletType === 'solana')?.icon,
+      walletIcon: walletIcons?.find((e) => e.walletType === 'solana')?.icon,
       address: solanaAccount.address,
       isConnected: solanaAccount.isConnected,
       balance: solanaBalance.data,
@@ -70,7 +71,7 @@ export const ProfileMenu = (props: ProfileMenuProps) => {
     },
     {
       walletType: 'tron',
-      walletIcon: connectedWalletIcons?.find((e) => e.walletType === 'tron')?.icon,
+      walletIcon: walletIcons?.find((e) => e.walletType === 'tron')?.icon,
       address: tronAccount.address,
       isConnected: tronAccount.isConnected,
       balance: tronBalance.data,

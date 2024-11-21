@@ -4,16 +4,16 @@ import { SolanaWallet, useSolanaWallet } from '@node-real/walletkit/solana';
 import { TronWallet, useTronWallet } from '@node-real/walletkit/tron';
 import { useAccount } from 'wagmi';
 
-import { MetaMaskIcon } from '@/core/components/icons/MetaMaskIcon';
-import { TrustWalletIcon } from '@/core/components/icons/TrustWalletIcon';
-import { CoinbaseWalletIcon } from '@/core/components/icons/CoinbaseWalletIcon';
-import { MathWalletIcon } from '@/core/components/icons/MathWalletIcon';
-import { BinanceWeb3WalletIcon } from '@/core/components/icons/BinanceWeb3WalletIcon';
-import { OkxWalletIcon } from '@/core/components/icons/OkxWalletIcon';
-import { TokenPocketIcon } from '@/core/components/icons/TokenPocketIcon';
-import { WalletConnectIcon } from '@/core/components/icons/WalletConnectIcon';
-import { PhantomIcon } from '@/core/components/icons/PhantomIcon';
-import { TronLinkIcon } from '@/core/components/icons/TronLinkIcon';
+import { MetaMaskIcon } from '@/core/components/icons/wallets/MetaMaskIcon';
+import { TrustWalletIcon } from '@/core/components/icons/wallets/TrustWalletIcon';
+import { CoinbaseWalletIcon } from '@/core/components/icons/wallets/CoinbaseWalletIcon';
+import { MathWalletIcon } from '@/core/components/icons/wallets/MathWalletIcon';
+import { BinanceWeb3WalletIcon } from '@/core/components/icons/wallets/BinanceWeb3WalletIcon';
+import { OkxWalletIcon } from '@/core/components/icons/wallets/OkxWalletIcon';
+import { TokenPocketIcon } from '@/core/components/icons/wallets/TokenPocketIcon';
+import { WalletConnectIcon } from '@/core/components/icons/wallets/WalletConnectIcon';
+import { PhantomIcon } from '@/core/components/icons/wallets/PhantomIcon';
+import { TronLinkIcon } from '@/core/components/icons/wallets/TronLinkIcon';
 
 const walletIcons: Record<string, React.ReactNode> = {
   binanceWeb3Wallet: <BinanceWeb3WalletIcon />,
@@ -36,7 +36,7 @@ export function ConnectWalletButton() {
 
   return (
     <ConnectButton
-      connectedWalletIcons={[
+      walletIcons={[
         {
           walletType: 'evm',
           icon: evmWalletIcon,

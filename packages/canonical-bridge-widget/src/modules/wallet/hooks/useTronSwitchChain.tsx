@@ -2,7 +2,7 @@ import { useWallet as useTronWallet } from '@tronweb3/tronwallet-adapter-react-h
 
 interface UseTronSwitchChainProps {
   mutation?: {
-    onSuccess?: () => void;
+    onSuccess?: (params: { chainId: number }) => void;
     onError?: (err: any) => void;
   };
 }
@@ -16,7 +16,7 @@ export function useTronSwitchChain(props?: UseTronSwitchChainProps) {
       try {
         const res = await wallet?.adapter?.switchChain(hexChainId);
         if (!res) {
-          props?.mutation?.onSuccess?.();
+          props?.mutation?.onSuccess?.({ chainId });
         }
       } catch (err) {
         props?.mutation?.onError?.(err);

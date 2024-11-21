@@ -1,5 +1,17 @@
 # @bnb-chain/canonical-bridge-widget
 
+## 0.5.2-alpha.1
+
+### Patch Changes
+
+- Fix wallet issues
+
+## 0.5.2-alpha.0
+
+### Patch Changes
+
+- cdf450d: Separate wallet component
+
 ## 0.5.1
 
 ### Patch Changes

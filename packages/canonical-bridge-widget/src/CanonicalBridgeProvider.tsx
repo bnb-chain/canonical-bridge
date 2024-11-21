@@ -8,6 +8,7 @@ import { AggregatorProvider } from '@/modules/aggregator/components/AggregatorPr
 import { TokenBalancesProvider } from '@/modules/aggregator/components/TokenBalancesProvider';
 import { TokenPricesProvider } from '@/modules/aggregator/components/TokenPricesProvider';
 import { locales } from '@/core/locales';
+import { TronAccountProvider } from '@/modules/wallet/TronAccountProvider';
 
 export interface ICanonicalBridgeConfig {
   appName: string;
@@ -32,7 +33,11 @@ export interface ICanonicalBridgeConfig {
 
 interface CanonicalBridgeContextProps extends ICanonicalBridgeConfig {
   routeContentBottom: React.ReactNode;
-  onClickConnectWallet: (params: { chainType: ChainType; chainId: number }) => void;
+  onClickConnectWallet: (params: {
+    chainType: ChainType;
+    chainId: number;
+    onConnected?: (params?: { walletType?: ChainType; chainId?: number }) => void;
+  }) => void;
 }
 
 const CanonicalBridgeContext = React.createContext({} as CanonicalBridgeContextProps);
@@ -90,7 +95,7 @@ export function CanonicalBridgeProvider(props: CanonicalBridgeProviderProps) {
             >
               <TokenBalancesProvider />
               <TokenPricesProvider />
-              {children}
+              <TronAccountProvider>{children}</TronAccountProvider>
             </ThemeProvider>
           </AggregatorProvider>
         </IntlProvider>

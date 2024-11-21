@@ -1,18 +1,17 @@
 import { Button, Flex, useTheme, useColorMode, useIntl, FlexProps } from '@bnb-chain/space';
 
 import { useDelay } from '@/core/hooks/useDelay';
-import { NetworkStatus } from '@/modules/wallet/components/NetworkStatus';
-import { ChainType, useBridgeConfig } from '@/index';
+import { NetworkList, NetworkListProps, Profile, ProfileProps, useBridgeConfig } from '@/index';
 import { useAppSelector } from '@/modules/store/StoreProvider';
-import { ProfileMenu } from '@/modules/wallet/components/ProfileMenu';
 import { useIsWalletCompatible } from '@/modules/wallet/hooks/useIsWalletCompatible';
 
 export interface ConnectButtonProps extends FlexProps {
-  connectedWalletIcons?: Array<{ walletType: ChainType; icon: React.ReactNode }>;
+  walletIcons?: ProfileProps['walletIcons'];
+  onClickNetwork?: NetworkListProps['onClickNetwork'];
 }
 
 export function ConnectButton(props: ConnectButtonProps) {
-  const { connectedWalletIcons, ...restProps } = props;
+  const { walletIcons, onClickNetwork, ...restProps } = props;
 
   const theme = useTheme();
   const { colorMode } = useColorMode();
@@ -64,8 +63,8 @@ export function ConnectButton(props: ConnectButtonProps) {
 
       {isConnected && (
         <>
-          <NetworkStatus />
-          <ProfileMenu connectedWalletIcons={connectedWalletIcons} />
+          <NetworkList onClickNetwork={onClickNetwork} />
+          <Profile walletIcons={walletIcons} />
         </>
       )}
     </Flex>
