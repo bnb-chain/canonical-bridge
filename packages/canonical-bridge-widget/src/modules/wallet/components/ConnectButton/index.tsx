@@ -7,7 +7,7 @@ import { useAppSelector } from '@/modules/store/StoreProvider';
 import { ProfileMenu } from '@/modules/wallet/components/ProfileMenu';
 import { useIsWalletCompatible } from '@/modules/wallet/hooks/useIsWalletCompatible';
 
-interface ConnectButtonProps extends FlexProps {
+export interface ConnectButtonProps extends FlexProps {
   connectedWalletIcons?: Array<{ walletType: ChainType; icon: React.ReactNode }>;
 }
 

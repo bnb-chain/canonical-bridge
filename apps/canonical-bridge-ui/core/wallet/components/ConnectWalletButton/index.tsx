@@ -1,12 +1,33 @@
 import { ConnectButton } from '@bnb-chain/canonical-bridge-widget';
-import { useColorMode } from '@bnb-chain/space';
 import { useWalletKit } from '@node-real/walletkit';
 import { SolanaWallet, useSolanaWallet } from '@node-real/walletkit/solana';
 import { TronWallet, useTronWallet } from '@node-real/walletkit/tron';
-import { useMemo } from 'react';
 import { useAccount } from 'wagmi';
 
-import { WalletIcon } from '@/core/components/icons/WalletIcon';
+import { MetaMaskIcon } from '@/core/components/icons/MetaMaskIcon';
+import { TrustWalletIcon } from '@/core/components/icons/TrustWalletIcon';
+import { CoinbaseWalletIcon } from '@/core/components/icons/CoinbaseWalletIcon';
+import { MathWalletIcon } from '@/core/components/icons/MathWalletIcon';
+import { BinanceWeb3WalletIcon } from '@/core/components/icons/BinanceWeb3WalletIcon';
+import { OkxWalletIcon } from '@/core/components/icons/OkxWalletIcon';
+import { TokenPocketIcon } from '@/core/components/icons/TokenPocketIcon';
+import { WalletConnectIcon } from '@/core/components/icons/WalletConnectIcon';
+import { PhantomIcon } from '@/core/components/icons/PhantomIcon';
+import { TronLinkIcon } from '@/core/components/icons/TronLinkIcon';
+
+const walletIcons: Record<string, React.ReactNode> = {
+  binanceWeb3Wallet: <BinanceWeb3WalletIcon />,
+  coinbaseWallet: <CoinbaseWalletIcon />,
+  mathWallet: <MathWalletIcon />,
+  metaMask: <MetaMaskIcon />,
+  okxWallet: <OkxWalletIcon />,
+  tokenPocket: <TokenPocketIcon />,
+  trust: <TrustWalletIcon />,
+  walletConnect: <WalletConnectIcon />,
+  'solana:trust': <TrustWalletIcon />,
+  'solana:phantom': <PhantomIcon />,
+  'tron:tronLink': <TronLinkIcon />,
+};
 
 export function ConnectWalletButton() {
   const evmWalletIcon = useEvmWalletIcon();
@@ -35,7 +56,7 @@ export function ConnectWalletButton() {
 
 function useEvmWalletIcon() {
   const { connector } = useAccount();
-  return useWalletIcon(connector?.id);
+  return connector?.id ? walletIcons[connector.id] : null;
 }
 
 function useTronWalletIcon() {
@@ -46,7 +67,7 @@ function useTronWalletIcon() {
     (item) => item.adapterName === wallet?.adapter.name,
   );
 
-  return useWalletIcon(target?.id);
+  return target?.id ? walletIcons[target.id] : null;
 }
 
 function useSolanaWalletIcon() {
@@ -57,24 +78,5 @@ function useSolanaWalletIcon() {
     (item) => item.adapterName === wallet?.adapter.name,
   );
 
-  return useWalletIcon(target?.id);
-}
-
-function useWalletIcon(walletId?: string) {
-  const { colorMode } = useColorMode();
-  const { wallets } = useWalletKit();
-
-  const icon = useMemo(() => {
-    const selectedWallet = wallets.find((item) => item.id === walletId);
-
-    if (selectedWallet) {
-      const { default: defaultLogos } = selectedWallet.logos ?? {};
-      const defaultLogo = (defaultLogos as any)?.[colorMode] ?? defaultLogos;
-      return defaultLogo || <WalletIcon />;
-    }
-
-    return null;
-  }, [colorMode, walletId, wallets]);
-
-  return icon;
+  return target?.id ? walletIcons[target.id] : null;
 }

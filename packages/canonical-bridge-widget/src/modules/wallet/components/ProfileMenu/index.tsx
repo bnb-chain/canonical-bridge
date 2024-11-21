@@ -152,11 +152,13 @@ export const ProfileMenu = (props: ProfileMenuProps) => {
                       borderColor={theme.colors[colorMode].popover.separator}
                     />
                   </Flex>
-                  <Flex alignItems="center" mt="8px">
+                  <Flex alignItems="center">
                     {item.walletIcon && (
                       <Center
                         boxSize={'32px'}
                         mr="8px"
+                        borderRadius={'8px'}
+                        overflow="hidden"
                         sx={{
                           'svg, img': {
                             boxSize: '100%',

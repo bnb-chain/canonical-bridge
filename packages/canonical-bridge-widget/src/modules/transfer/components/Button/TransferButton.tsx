@@ -229,7 +229,9 @@ export function TransferButton({
             const tx = VersionedTransaction.deserialize(Buffer.from(data, 'hex'));
 
             tx.message.recentBlockhash = blockhash;
-            deBridgeHash = await sendSolanaTransaction(tx, connection);
+            deBridgeHash = await sendSolanaTransaction(tx, connection, {
+              skipPreflight: true,
+            });
           }
 
           if (deBridgeHash) {
