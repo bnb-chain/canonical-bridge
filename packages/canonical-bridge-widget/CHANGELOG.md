@@ -1,5 +1,11 @@
 # @bnb-chain/canonical-bridge-widget
 
+## 0.5.2-alpha.3
+
+### Patch Changes
+
+- Fix wallet issues
+
 ## 0.5.2-alpha.2
 
 ### Patch Changes
