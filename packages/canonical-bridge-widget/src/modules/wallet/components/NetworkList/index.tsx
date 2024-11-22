@@ -1,7 +1,7 @@
 import { Flex, useColorMode, useIntl, useTheme, Text, Typography, Box } from '@bnb-chain/space';
 import { TickIcon, InfoCircleIcon } from '@bnb-chain/icons';
 import { useAccount } from 'wagmi';
-import { useMemo } from 'react';
+import { useMemo, useRef } from 'react';
 
 import { IconImage } from '@/core/components/IconImage';
 import { useAppSelector } from '@/modules/store/StoreProvider';
@@ -36,7 +36,24 @@ export function NetworkList(props: NetworkListProps) {
 
   const { needSwitchChain } = useNeedSwitchChain();
 
-  const { autoSelectFromChain } = useAutoSelectFromChain();
+  const isPendingRef = useRef(false);
+  const timerRef = useRef<any>();
+  const { autoSelectFromChain } = useAutoSelectFromChain({
+    onPending() {
+      clearTimeout(timerRef.current);
+      isPendingRef.current = true;
+
+      // TODO
+      timerRef.current = setTimeout(() => {
+        isPendingRef.current = false;
+      }, 60 * 1000);
+    },
+    onSettle() {
+      timerRef.current = setTimeout(() => {
+        isPendingRef.current = false;
+      }, 1000);
+    },
+  });
   const { walletChain, hasWalletConnected } = useFromChainConnectedInfo();
 
   const switchDropdown = (onClose: () => void) => (
@@ -141,7 +158,7 @@ export function NetworkList(props: NetworkListProps) {
     );
   }
 
-  const isWrongNetwork = needSwitchChain;
+  const isWrongNetwork = needSwitchChain && !isPendingRef.current;
 
   return (
     <Dropdown>

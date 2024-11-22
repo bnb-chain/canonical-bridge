@@ -93,9 +93,11 @@ export function CanonicalBridgeProvider(props: CanonicalBridgeProviderProps) {
               themeConfig={value.appearance.theme}
               colorMode={value.appearance.colorMode}
             >
-              <TokenBalancesProvider />
-              <TokenPricesProvider />
-              <TronAccountProvider>{children}</TronAccountProvider>
+              <TronAccountProvider>
+                <TokenBalancesProvider />
+                <TokenPricesProvider />
+                {children}
+              </TronAccountProvider>
             </ThemeProvider>
           </AggregatorProvider>
         </IntlProvider>

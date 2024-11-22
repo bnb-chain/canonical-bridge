@@ -9,7 +9,12 @@ import { useTronSwitchChain } from '@/modules/wallet/hooks/useTronSwitchChain';
 import { useBridgeConfig } from '@/CanonicalBridgeProvider';
 import { useTronAccount } from '@/modules/wallet/hooks/useTronAccount';
 
-export function useAutoSelectFromChain() {
+interface UseAutoSelectFromChainProps {
+  onPending?: () => void;
+  onSettle?: () => void;
+}
+
+export function useAutoSelectFromChain(props: UseAutoSelectFromChainProps = {}) {
   const { onClickConnectWallet } = useBridgeConfig();
   const { selectFromChain } = useSelection();
 
@@ -27,6 +32,12 @@ export function useAutoSelectFromChain() {
 
   const { switchChain: evmSwitchChain } = useEvmSwitchChain({
     mutation: {
+      onMutate() {
+        props.onPending?.();
+      },
+      onSettled() {
+        props.onSettle?.();
+      },
       onSuccess(_, { chainId }) {
         selectChain(chainId);
       },
@@ -34,6 +45,12 @@ export function useAutoSelectFromChain() {
   });
   const { switchChain: tronSwitchChain } = useTronSwitchChain({
     mutation: {
+      onMutate() {
+        props.onPending?.();
+      },
+      onSettled() {
+        props.onSettle?.();
+      },
       onSuccess({ chainId }) {
         selectChain(chainId);
       },

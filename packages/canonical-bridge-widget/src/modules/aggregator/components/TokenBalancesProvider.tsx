@@ -31,9 +31,9 @@ export function TokenBalancesProvider() {
   });
 
   const { isLoading, data } = useQuery<Record<string, string | undefined>>({
-    enabled: !!address && !!fromChain?.id && !!toChain?.id,
+    enabled: !!fromChain?.id && !!toChain?.id,
     refetchInterval: REFETCH_INTERVAL,
-    queryKey: ['tokenBalances', fromChain?.id, toChain?.id],
+    queryKey: ['tokenBalances', fromChain?.id, toChain?.id, address, solanaAddress, tronAddress],
     queryFn: async () => {
       const balances = await getTokenBalances({
         chainType: fromChain?.chainType,
