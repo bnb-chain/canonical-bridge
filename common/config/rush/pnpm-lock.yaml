@@ -140,8 +140,8 @@ importers:
         specifier: ~11.13.0
         version: 11.13.0(@emotion/react@11.13.3(@types/react@18.3.12)(react@18.3.1)(supports-color@9.4.0))(@types/react@18.3.12)(react@18.3.1)(supports-color@9.4.0)
       '@node-real/walletkit':
-        specifier: 2.4.1-alpha.7
-        version: 2.4.1-alpha.7(@babel/core@7.26.0(supports-color@9.4.0))(@babel/runtime@7.26.0)(@react-native-async-storage/async-storage@1.24.0)(@tanstack/react-query@5.50.1(react@18.3.1))(bs58@6.0.0)(bufferutil@4.0.8)(encoding@0.1.13)(ioredis@5.4.1(supports-color@9.4.0))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(supports-color@9.4.0)(tslib@2.8.1)(utf-8-validate@5.0.10)(viem@2.21.48(bufferutil@4.0.8)(typescript@5.5.4)(utf-8-validate@5.0.10))(wagmi@2.12.33(@react-native-async-storage/async-storage@1.24.0)(@tanstack/query-core@5.50.1)(@tanstack/react-query@5.50.1(react@18.3.1))(@types/react@18.3.12)(bufferutil@4.0.8)(encoding@0.1.13)(ioredis@5.4.1(supports-color@9.4.0))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(supports-color@9.4.0)(typescript@5.5.4)(utf-8-validate@5.0.10)(viem@2.21.48(bufferutil@4.0.8)(typescript@5.5.4)(utf-8-validate@5.0.10)))
+        specifier: 2.4.1-alpha.8
+        version: 2.4.1-alpha.8(@babel/core@7.26.0(supports-color@9.4.0))(@babel/runtime@7.26.0)(@react-native-async-storage/async-storage@1.24.0)(@tanstack/react-query@5.50.1(react@18.3.1))(bs58@6.0.0)(bufferutil@4.0.8)(encoding@0.1.13)(ioredis@5.4.1(supports-color@9.4.0))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(supports-color@9.4.0)(tslib@2.8.1)(utf-8-validate@5.0.10)(viem@2.21.48(bufferutil@4.0.8)(typescript@5.5.4)(utf-8-validate@5.0.10))(wagmi@2.12.33(@react-native-async-storage/async-storage@1.24.0)(@tanstack/query-core@5.50.1)(@tanstack/react-query@5.50.1(react@18.3.1))(@types/react@18.3.12)(bufferutil@4.0.8)(encoding@0.1.13)(ioredis@5.4.1(supports-color@9.4.0))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(supports-color@9.4.0)(typescript@5.5.4)(utf-8-validate@5.0.10)(viem@2.21.48(bufferutil@4.0.8)(typescript@5.5.4)(utf-8-validate@5.0.10)))
       '@solana/spl-token':
         specifier: ~0.4.9
         version: 0.4.9(@solana/web3.js@1.95.4(bufferutil@4.0.8)(encoding@0.1.13)(utf-8-validate@5.0.10))(bufferutil@4.0.8)(encoding@0.1.13)(typescript@5.5.4)(utf-8-validate@5.0.10)
@@ -2946,8 +2946,8 @@ packages:
     resolution: {integrity: sha512-1j6kQFb7QRru7eKN3ZDvRcP13rugwdxZqCjbiAVZfIJwgj2A65UmT4TgARXGlXgnRkORLTDTrO19ZErt7+QXgA==}
     engines: {node: ^14.21.3 || >=16}
 
-  '@node-real/walletkit@2.4.1-alpha.7':
-    resolution: {integrity: sha512-fEcjin+PEJZv1HC0Eicl9fdU18LMOEpn1VORESE+w6AISfi5qDaZ1bkiBlvcka/Mx2HveUb7Jil+RMExSO0Kpw==}
+  '@node-real/walletkit@2.4.1-alpha.8':
+    resolution: {integrity: sha512-JfmA0yfdhAgeviPZjrgh3iJPXR0msE6XE556dwqyJbYF8d+IVzvvBmOPrJ5no+jl9jc25O/2OdF1mfr4kjuCYw==}
     peerDependencies:
       '@tanstack/react-query': ^5
       react: '>=17'
@@ -15234,7 +15234,7 @@ snapshots:
 
   '@noble/hashes@1.5.0': {}
 
-  '@node-real/walletkit@2.4.1-alpha.7(@babel/core@7.26.0(supports-color@9.4.0))(@babel/runtime@7.26.0)(@react-native-async-storage/async-storage@1.24.0)(@tanstack/react-query@5.50.1(react@18.3.1))(bs58@6.0.0)(bufferutil@4.0.8)(encoding@0.1.13)(ioredis@5.4.1(supports-color@9.4.0))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(supports-color@9.4.0)(tslib@2.8.1)(utf-8-validate@5.0.10)(viem@2.21.48(bufferutil@4.0.8)(typescript@5.5.4)(utf-8-validate@5.0.10))(wagmi@2.12.33(@react-native-async-storage/async-storage@1.24.0)(@tanstack/query-core@5.50.1)(@tanstack/react-query@5.50.1(react@18.3.1))(@types/react@18.3.12)(bufferutil@4.0.8)(encoding@0.1.13)(ioredis@5.4.1(supports-color@9.4.0))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(supports-color@9.4.0)(typescript@5.5.4)(utf-8-validate@5.0.10)(viem@2.21.48(bufferutil@4.0.8)(typescript@5.5.4)(utf-8-validate@5.0.10)))':
+  '@node-real/walletkit@2.4.1-alpha.8(@babel/core@7.26.0(supports-color@9.4.0))(@babel/runtime@7.26.0)(@react-native-async-storage/async-storage@1.24.0)(@tanstack/react-query@5.50.1(react@18.3.1))(bs58@6.0.0)(bufferutil@4.0.8)(encoding@0.1.13)(ioredis@5.4.1(supports-color@9.4.0))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(supports-color@9.4.0)(tslib@2.8.1)(utf-8-validate@5.0.10)(viem@2.21.48(bufferutil@4.0.8)(typescript@5.5.4)(utf-8-validate@5.0.10))(wagmi@2.12.33(@react-native-async-storage/async-storage@1.24.0)(@tanstack/query-core@5.50.1)(@tanstack/react-query@5.50.1(react@18.3.1))(@types/react@18.3.12)(bufferutil@4.0.8)(encoding@0.1.13)(ioredis@5.4.1(supports-color@9.4.0))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(supports-color@9.4.0)(typescript@5.5.4)(utf-8-validate@5.0.10)(viem@2.21.48(bufferutil@4.0.8)(typescript@5.5.4)(utf-8-validate@5.0.10)))':
     dependencies:
       '@metamask/jazzicon': 2.0.0
       '@solana/wallet-adapter-react': 0.15.35(@solana/web3.js@1.95.4(bufferutil@4.0.8)(encoding@0.1.13)(utf-8-validate@5.0.10))(bs58@6.0.0)(react@18.3.1)

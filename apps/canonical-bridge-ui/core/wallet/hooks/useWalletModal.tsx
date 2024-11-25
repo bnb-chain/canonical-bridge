@@ -35,14 +35,29 @@ export function useWalletModal() {
       if (chainType === 'solana') availableWalletIds = [...solanaWalletIds];
 
       const newWallets: BaseWallet[] = [];
-      wallets.forEach((item) => {
-        const count = wallets.filter((e) => e.name === item.name).length;
+      wallets.forEach((curr, index) => {
+        const walletGroups = wallets.filter((e) => e.name === curr.name);
+
+        let isVisible = false;
+        if (walletGroups.length === 1) {
+          isVisible = true;
+        } else if (walletGroups.length > 1) {
+          if (curr.walletType === chainType) {
+            isVisible = true;
+          } else {
+            const isNotSupported = walletGroups.every((e) => e.walletType !== chainType);
+            if (isNotSupported) {
+              const firstWalletIndex = wallets.findIndex((e) => e.id === walletGroups[0].id);
+              isVisible = firstWalletIndex === index;
+            }
+          }
+        }
 
         newWallets.push({
-          ...item,
-          isVisible: count === 1 || (count > 1 && item.walletType === chainType),
+          ...curr,
+          isVisible,
           render: ({ wallet, onClick }) => {
-            const isAvailable = availableWalletIds.includes(wallet.id as any);
+            const isAvailable = availableWalletIds.includes(wallet.id);
 
             return (
               <Flex className="wk-wallet-option" onClick={onClick}>
