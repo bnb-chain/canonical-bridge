@@ -1,5 +1,11 @@
 # @bnb-chain/canonical-bridge-widget
 
+## 0.5.2-alpha.4
+
+### Patch Changes
+
+- Remove delayTime for wallet
+
 ## 0.5.2-alpha.3
 
 ### Patch Changes

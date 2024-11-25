@@ -1,6 +1,6 @@
 import { Button, Flex, useTheme, useColorMode, useIntl, FlexProps } from '@bnb-chain/space';
 
-import { useDelay } from '@/core/hooks/useDelay';
+// import { useDelay } from '@/core/hooks/useDelay';
 import { NetworkList, NetworkListProps, Profile, ProfileProps, useBridgeConfig } from '@/index';
 import { useAppSelector } from '@/modules/store/StoreProvider';
 import { useIsWalletCompatible } from '@/modules/wallet/hooks/useIsWalletCompatible';
@@ -20,7 +20,7 @@ export function ConnectButton(props: ConnectButtonProps) {
 
   const { onClickConnectWallet } = useBridgeConfig();
 
-  const isReady = useDelay();
+  const isReady = true; //useDelay();
   const isWalletCompatible = useIsWalletCompatible();
   const isConnected = isReady && isWalletCompatible;
 

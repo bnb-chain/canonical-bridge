@@ -1,6 +1,6 @@
 {
   "name": "@bnb-chain/canonical-bridge-widget",
-  "version": "0.5.2-alpha.3",
+  "version": "0.5.2-alpha.4",
   "description": "canonical bridge widget",
   "author": "bnb-chain",
   "private": false,
@@ -37,7 +37,7 @@
     "@emotion/react": "^11",
     "@emotion/styled": "^11",
     "@solana/spl-token": "^0",
-    "@solana/wallet-adapter-react": "^1",
+    "@solana/wallet-adapter-react": "^0",
     "@solana/web3.js": "^1",
     "tronweb": "^6",
     "@tronweb3/tronwallet-adapter-react-hooks": "^1"

@@ -6,7 +6,7 @@ interface UseDelayProps {
 }
 
 export function useDelay(props?: UseDelayProps) {
-  const { delay = 2000, callback } = props ?? {};
+  const { delay = 1000, callback } = props ?? {};
 
   const [isReady, setIsReady] = useState(false);
 
