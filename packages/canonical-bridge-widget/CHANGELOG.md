@@ -1,5 +1,11 @@
 # @bnb-chain/canonical-bridge-widget
 
+## 0.5.4-alpha.1
+
+### Patch Changes
+
+- Add log for solana
+
 ## 0.5.4-alpha.0
 
 ### Patch Changes

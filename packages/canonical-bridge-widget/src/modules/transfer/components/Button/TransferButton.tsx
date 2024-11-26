@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { Button, Flex, useColorMode, useIntl, useTheme } from '@bnb-chain/space';
 import { useCallback, useState } from 'react';
 import { useAccount, useBytecode, usePublicClient, useSignMessage, useWalletClient } from 'wagmi';
@@ -233,9 +234,13 @@ export function TransferButton({
             const tx = VersionedTransaction.deserialize(Buffer.from(data, 'hex'));
 
             tx.message.recentBlockhash = blockhash;
-            deBridgeHash = await sendSolanaTransaction(tx, connection, {
-              skipPreflight: true,
-            });
+            deBridgeHash = await sendSolanaTransaction(tx, connection);
+
+            console.log('---solana---');
+            console.log('blockhash: ', blockhash);
+            console.log('data:', data);
+            console.log('tx:', tx);
+            console.log('hash:', deBridgeHash);
           }
 
           if (deBridgeHash) {
