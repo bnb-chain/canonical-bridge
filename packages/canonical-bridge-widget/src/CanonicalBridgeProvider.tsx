@@ -9,6 +9,7 @@ import { TokenBalancesProvider } from '@/modules/aggregator/components/TokenBala
 import { TokenPricesProvider } from '@/modules/aggregator/components/TokenPricesProvider';
 import { locales } from '@/core/locales';
 import { TronAccountProvider } from '@/modules/wallet/TronAccountProvider';
+import { WalletConnectButton } from '@/modules/transfer/components/Button/WalletConnectButton';
 
 export interface ICanonicalBridgeConfig {
   appName: string;
@@ -33,7 +34,8 @@ export interface ICanonicalBridgeConfig {
 
 interface CanonicalBridgeContextProps extends ICanonicalBridgeConfig {
   routeContentBottom: React.ReactNode;
-  onClickConnectWallet: (params: {
+  connectWalletButton: React.ReactNode;
+  onClickConnectWalletButton?: (params: {
     chainType: ChainType;
     chainId: number;
     onConnected?: (params?: { walletType?: ChainType; chainId?: number }) => void;
@@ -51,13 +53,21 @@ export interface CanonicalBridgeProviderProps {
   transferConfig?: ITransferConfig;
   chains: IChainConfig[];
   routeContentBottom?: React.ReactNode;
+  connectWalletButton?: React.ReactNode;
   children: React.ReactNode;
-  onClickConnectWallet: CanonicalBridgeContextProps['onClickConnectWallet'];
+  onClickConnectWalletButton?: CanonicalBridgeContextProps['onClickConnectWalletButton'];
 }
 
 export function CanonicalBridgeProvider(props: CanonicalBridgeProviderProps) {
-  const { config, children, chains, transferConfig, routeContentBottom, onClickConnectWallet } =
-    props;
+  const {
+    config,
+    children,
+    chains,
+    transferConfig,
+    routeContentBottom,
+    connectWalletButton,
+    onClickConnectWalletButton,
+  } = props;
 
   const value = useMemo<CanonicalBridgeContextProps>(() => {
     return {
@@ -80,9 +90,10 @@ export function CanonicalBridgeProvider(props: CanonicalBridgeProviderProps) {
       },
 
       routeContentBottom,
-      onClickConnectWallet,
+      connectWalletButton: connectWalletButton ?? <WalletConnectButton />,
+      onClickConnectWalletButton,
     };
-  }, [config, onClickConnectWallet, routeContentBottom]);
+  }, [config, connectWalletButton, onClickConnectWalletButton, routeContentBottom]);
 
   return (
     <CanonicalBridgeContext.Provider value={value}>

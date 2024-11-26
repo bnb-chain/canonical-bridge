@@ -48,7 +48,7 @@ function BridgeWidget() {
       config={bridgeConfig}
       transferConfig={transferConfig}
       chains={chains}
-      onClickConnectWallet={onOpen}
+      onClickConnectWalletButton={onOpen}
     >
       <Layout>
         <TransferWidget />

@@ -10,7 +10,7 @@ export const WalletConnectButton = (props: ButtonProps) => {
   const theme = useTheme();
 
   const fromChain = useAppSelector((state) => state.transfer.fromChain);
-  const { onClickConnectWallet } = useBridgeConfig();
+  const { onClickConnectWalletButton } = useBridgeConfig();
 
   return (
     <Button
@@ -19,7 +19,7 @@ export const WalletConnectButton = (props: ButtonProps) => {
       h={'56px'}
       w="100%"
       onClick={() => {
-        onClickConnectWallet({ chainType: fromChain!.chainType, chainId: fromChain!.id });
+        onClickConnectWalletButton?.({ chainType: fromChain!.chainType, chainId: fromChain!.id });
 
         reportEvent({
           id: 'click_bridge_goal',

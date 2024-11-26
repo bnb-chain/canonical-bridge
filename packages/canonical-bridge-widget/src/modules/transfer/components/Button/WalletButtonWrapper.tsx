@@ -1,15 +1,17 @@
 import { PropsWithChildren } from 'react';
 
-import { WalletConnectButton } from '@/modules/transfer/components/Button/WalletConnectButton';
 import { SwitchNetworkButton } from '@/modules/transfer/components/Button/SwitchNetworkButton';
 // import { useDelay } from '@/core/hooks/useDelay';
 import { useNeedSwitchChain } from '@/modules/wallet/hooks/useNeedSwitchChain';
 import { useIsWalletCompatible } from '@/modules/wallet/hooks/useIsWalletCompatible';
+import { useBridgeConfig } from '@/index';
 
 export function WalletButtonWrapper(props: PropsWithChildren) {
   const { children } = props;
   const { needSwitchChain } = useNeedSwitchChain();
   const isWalletCompatible = useIsWalletCompatible();
+
+  const { connectWalletButton } = useBridgeConfig();
 
   // const isReady = useDelay();
   // if (!isReady) {
@@ -24,5 +26,5 @@ export function WalletButtonWrapper(props: PropsWithChildren) {
     return <>{children}</>;
   }
 
-  return <WalletConnectButton />;
+  return connectWalletButton;
 }

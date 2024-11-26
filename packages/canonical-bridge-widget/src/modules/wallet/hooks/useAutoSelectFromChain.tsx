@@ -15,7 +15,7 @@ interface UseAutoSelectFromChainProps {
 }
 
 export function useAutoSelectFromChain(props: UseAutoSelectFromChainProps = {}) {
-  const { onClickConnectWallet } = useBridgeConfig();
+  const { onClickConnectWalletButton } = useBridgeConfig();
   const { selectFromChain } = useSelection();
 
   const supportedChains = useFromChains();
@@ -60,7 +60,7 @@ export function useAutoSelectFromChain(props: UseAutoSelectFromChainProps = {}) 
   return {
     async autoSelectFromChain({ chainType, chainId }: { chainType: ChainType; chainId: number }) {
       const connectWallet = () => {
-        onClickConnectWallet({
+        onClickConnectWalletButton?.({
           chainType,
           chainId,
           onConnected({ walletType } = {}) {

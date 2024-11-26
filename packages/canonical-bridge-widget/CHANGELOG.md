@@ -1,6 +1,12 @@
 # @bnb-chain/canonical-bridge-widget
 
-## 0.5.2-alpha.4
+## 0.5.4-alpha.0
+
+### Patch Changes
+
+- Support custom connect wallet button
+
+## 0.5.2
 
 ### Patch Changes
 

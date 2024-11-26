@@ -18,7 +18,7 @@ export function ConnectButton(props: ConnectButtonProps) {
   const { formatMessage } = useIntl();
   const fromChain = useAppSelector((state) => state.transfer.fromChain);
 
-  const { onClickConnectWallet } = useBridgeConfig();
+  const { onClickConnectWalletButton } = useBridgeConfig();
 
   const isReady = true; //useDelay();
   const isWalletCompatible = useIsWalletCompatible();
@@ -42,7 +42,7 @@ export function ConnectButton(props: ConnectButtonProps) {
           lineHeight="16px"
           fontWeight={500}
           onClick={() => {
-            onClickConnectWallet({
+            onClickConnectWalletButton?.({
               chainType: fromChain!.chainType,
               chainId: fromChain!.id,
             });
