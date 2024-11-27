@@ -18,6 +18,7 @@ import { sortTokens } from '@/modules/aggregator/shared/sortTokens';
 import { useTronWeb } from '@/core/hooks/useTronWeb';
 import { useSolanaAccount } from '@/modules/wallet/hooks/useSolanaAccount';
 import { useTronAccount } from '@/modules/wallet/hooks/useTronAccount';
+import { isSameAddress } from '@/core/utils/address';
 
 export function useSelection() {
   const { getFromChains, getToChains, getTokens, getToToken, adapters } = useAggregator();
@@ -58,7 +59,7 @@ export function useSelection() {
     const newToken = getTokens({
       fromChainId: tmpFromChain?.id,
       toChainId: tmpToChain?.id,
-    }).find((t) => t.displaySymbol?.toUpperCase() === tmpToken?.displaySymbol?.toUpperCase());
+    }).find((t) => isSameAddress(t.address, tmpToken?.address));
 
     const newFromChain = getFromChains({
       toChainId: tmpToChain?.id,
@@ -101,9 +102,7 @@ export function useSelection() {
 
     const newToken =
       tmpTokens.find(
-        (t) =>
-          isChainOrTokenCompatible(t) &&
-          t.displaySymbol.toUpperCase() === selectedToken?.displaySymbol.toUpperCase(),
+        (t) => isChainOrTokenCompatible(t) && isSameAddress(t.address, selectedToken?.address),
       ) ?? tmpTokens.find((t) => isChainOrTokenCompatible(t));
 
     updateSelectedInfo({

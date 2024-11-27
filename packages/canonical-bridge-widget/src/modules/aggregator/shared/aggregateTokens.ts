@@ -31,7 +31,7 @@ export function aggregateTokens({ adapters, params }: IAggregateTokensParams) {
         chainId: fromChainId,
         token: fromToken,
       });
-      let bridgeToken = tokenMap.get(baseInfo.displaySymbol.toUpperCase());
+      let bridgeToken = tokenMap.get(baseInfo.address.toLowerCase());
 
       const isMatched = matchedTokens.has(baseInfo.symbol.toUpperCase());
       const isCompatible = compatibleTokens.has(baseInfo.symbol.toUpperCase());
@@ -70,7 +70,7 @@ export function aggregateTokens({ adapters, params }: IAggregateTokensParams) {
         };
       }
 
-      tokenMap.set(baseInfo.displaySymbol.toUpperCase(), bridgeToken);
+      tokenMap.set(baseInfo.address.toLowerCase(), bridgeToken);
     });
   });
 
