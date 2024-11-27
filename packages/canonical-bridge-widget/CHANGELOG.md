@@ -1,5 +1,11 @@
 # @bnb-chain/canonical-bridge-widget
 
+## 0.5.4-alpha.3
+
+### Patch Changes
+
+- Show all tokens in token list with different token address
+
 ## 0.5.4-alpha.2
 
 ### Patch Changes
