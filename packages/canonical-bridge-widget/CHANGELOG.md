@@ -1,5 +1,11 @@
 # @bnb-chain/canonical-bridge-widget
 
+## 0.5.4-alpha.2
+
+### Patch Changes
+
+- Support custom breakpoints
+
 ## 0.5.4-alpha.1
 
 ### Patch Changes

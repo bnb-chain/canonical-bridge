@@ -11,7 +11,12 @@ export interface ThemeProviderProps {
   colorMode?: ColorMode;
   children: React.ReactNode;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  themeConfig?: { dark?: any; light?: any; fontFamily?: string };
+  themeConfig?: {
+    dark?: any;
+    light?: any;
+    fontFamily?: string;
+    breakpoints?: Partial<typeof theme.breakpoints>;
+  };
 }
 
 export const ThemeProvider = ({
@@ -24,7 +29,7 @@ export const ThemeProvider = ({
   const customTheme = useMemo(() => {
     return {
       ...theme,
-      breakpoints: {
+      breakpoints: themeConfig?.breakpoints ?? {
         ...theme.breakpoints,
         lg: '1080px',
       },
