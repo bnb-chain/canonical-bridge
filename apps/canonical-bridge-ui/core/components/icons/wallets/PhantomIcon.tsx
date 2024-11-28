@@ -10,11 +10,6 @@ export function PhantomIcon(props: IconProps) {
           fill="#AB9FF2"
         />
       </g>
-      <defs>
-        <clipPath id="clip0_9685_21608">
-          <rect width="18" height="15" fill="white" transform="translate(3 4)" />
-        </clipPath>
-      </defs>
     </Icon>
   );
 }
