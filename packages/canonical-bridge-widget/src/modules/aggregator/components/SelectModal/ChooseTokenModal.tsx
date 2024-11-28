@@ -1,4 +1,5 @@
 import { Flex, Text, useColorMode, useIntl, useTheme } from '@bnb-chain/space';
+import { useAccount } from 'wagmi';
 
 import { useAppSelector } from '@/modules/store/StoreProvider';
 import { useTokens } from '@/modules/aggregator/hooks/useTokens';
@@ -16,7 +17,8 @@ import { useSearch } from '@/modules/aggregator/components/SelectModal/hooks/use
 import { useTokenList } from '@/modules/aggregator/components/SelectModal/hooks/useTokenList';
 import { ListItem } from '@/modules/aggregator/components/SelectModal/components/ListItem';
 import { openLink } from '@/core/utils/common';
-import { useCurrentWallet } from '@/modules/wallet/CurrentWalletProvider';
+import { useTronAccount } from '@/modules/wallet/hooks/useTronAccount';
+import { useSolanaAccount } from '@/modules/wallet/hooks/useSolanaAccount';
 
 interface ChooseTokenModalProps {
   isOpen: boolean;
@@ -28,7 +30,6 @@ export function ChooseTokenModal(props: ChooseTokenModalProps) {
   const { formatMessage } = useIntl();
   const theme = useTheme();
   const { colorMode } = useColorMode();
-  const { isConnected, walletType } = useCurrentWallet();
 
   const fromChain = useAppSelector((state) => state.transfer.fromChain);
   const toChain = useAppSelector((state) => state.transfer.toChain);
@@ -53,7 +54,16 @@ export function ChooseTokenModal(props: ChooseTokenModalProps) {
   });
 
   const { isLoading, data } = useTokenList(result);
-  const showBalance = isConnected && !isLoading && fromChain?.chainType === walletType;
+
+  const evmAccount = useAccount();
+  const tronAccount = useTronAccount();
+  const solanaAccount = useSolanaAccount();
+
+  const showBalance =
+    !isLoading &&
+    ((fromChain?.chainType === 'evm' && evmAccount.isConnected) ||
+      (fromChain?.chainType === 'tron' && tronAccount.isConnected) ||
+      (fromChain?.chainType === 'solana' && solanaAccount.isConnected));
 
   return (
     <BaseModal
@@ -65,7 +75,7 @@ export function ChooseTokenModal(props: ChooseTokenModalProps) {
       placeholder={formatMessage({ id: 'select-modal.token.placeholder' })}
       isNoResult={isNoResult}
     >
-      {isConnected && (
+      {showBalance && (
         <Flex
           className="bccb-widget-token-modal-list-header"
           fontSize={'14px'}
@@ -77,7 +87,7 @@ export function ChooseTokenModal(props: ChooseTokenModalProps) {
           justifyContent="space-between"
         >
           <Text>{formatMessage({ id: 'select-modal.token.column.name' })}</Text>
-          {showBalance && <Text>{formatMessage({ id: 'select-modal.token.column.balance' })}</Text>}
+          <Text>{formatMessage({ id: 'select-modal.token.column.balance' })}</Text>
         </Flex>
       )}
       <Flex flexDir="column" flex={1}>

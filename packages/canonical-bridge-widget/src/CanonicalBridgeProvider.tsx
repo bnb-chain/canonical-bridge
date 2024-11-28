@@ -1,30 +1,31 @@
-import '@node-real/walletkit/styles.css';
 import React, { useContext, useMemo } from 'react';
-import { ColorMode, IntlProvider } from '@bnb-chain/space';
+import { ColorMode, IntlProvider, theme } from '@bnb-chain/space';
 
-import { IChainConfig, ITransferConfig } from '@/modules/aggregator/types';
+import { ChainType, IChainConfig, ITransferConfig } from '@/modules/aggregator/types';
 import { StoreProvider } from '@/modules/store/StoreProvider';
-import { WalletProvider } from '@/modules/wallet/WalletProvider';
-import { ThemeProvider, ThemeProviderProps } from '@/core/theme/ThemeProvider';
+import { ThemeProvider } from '@/core/theme/ThemeProvider';
 import { AggregatorProvider } from '@/modules/aggregator/components/AggregatorProvider';
 import { TokenBalancesProvider } from '@/modules/aggregator/components/TokenBalancesProvider';
 import { TokenPricesProvider } from '@/modules/aggregator/components/TokenPricesProvider';
 import { locales } from '@/core/locales';
+import { TronAccountProvider } from '@/modules/wallet/TronAccountProvider';
+import { WalletConnectButton } from '@/modules/transfer/components/Button/WalletConnectButton';
 
 export interface ICanonicalBridgeConfig {
   appName: string;
   assetPrefix?: string;
 
   appearance: {
-    mode?: ColorMode;
-    theme?: ThemeProviderProps['themeConfig'];
+    colorMode?: ColorMode;
+    theme?: {
+      dark?: any;
+      light?: any;
+      fontFamily?: string;
+      breakpoints?: Partial<typeof theme.breakpoints>;
+    };
     locale?: string;
     messages?: Record<string, string>;
     bridgeTitle?: string;
-  };
-
-  wallet: {
-    walletConnectProjectId: string;
   };
 
   http: {
@@ -38,6 +39,12 @@ export interface ICanonicalBridgeConfig {
 
 interface CanonicalBridgeContextProps extends ICanonicalBridgeConfig {
   routeContentBottom: React.ReactNode;
+  connectWalletButton: React.ReactNode;
+  onClickConnectWalletButton?: (params: {
+    chainType: ChainType;
+    chainId: number;
+    onConnected?: (params?: { walletType?: ChainType; chainId?: number }) => void;
+  }) => void;
 }
 
 const CanonicalBridgeContext = React.createContext({} as CanonicalBridgeContextProps);
@@ -46,16 +53,26 @@ export function useBridgeConfig() {
   return useContext(CanonicalBridgeContext);
 }
 
-export interface CanonicalBridgeProviderProvider {
+export interface CanonicalBridgeProviderProps {
   config: ICanonicalBridgeConfig;
   transferConfig?: ITransferConfig;
   chains: IChainConfig[];
   routeContentBottom?: React.ReactNode;
+  connectWalletButton?: React.ReactNode;
   children: React.ReactNode;
+  onClickConnectWalletButton?: CanonicalBridgeContextProps['onClickConnectWalletButton'];
 }
 
-export function CanonicalBridgeProvider(props: CanonicalBridgeProviderProvider) {
-  const { config, children, chains, transferConfig, routeContentBottom } = props;
+export function CanonicalBridgeProvider(props: CanonicalBridgeProviderProps) {
+  const {
+    config,
+    children,
+    chains,
+    transferConfig,
+    routeContentBottom,
+    connectWalletButton,
+    onClickConnectWalletButton,
+  } = props;
 
   const value = useMemo<CanonicalBridgeContextProps>(() => {
     return {
@@ -63,14 +80,10 @@ export function CanonicalBridgeProvider(props: CanonicalBridgeProviderProvider) 
 
       appearance: {
         bridgeTitle: 'BNB Chain Cross-Chain Bridge',
-        mode: 'dark',
+        colorMode: 'dark',
         locale: 'en',
         messages: locales.en,
         ...config.appearance,
-      },
-
-      wallet: {
-        ...config.wallet,
       },
 
       http: {
@@ -82,20 +95,22 @@ export function CanonicalBridgeProvider(props: CanonicalBridgeProviderProvider) 
       },
 
       routeContentBottom,
+      connectWalletButton: connectWalletButton ?? <WalletConnectButton />,
+      onClickConnectWalletButton,
     };
-  }, [config, routeContentBottom]);
+  }, [config, connectWalletButton, onClickConnectWalletButton, routeContentBottom]);
 
   return (
     <CanonicalBridgeContext.Provider value={value}>
       <StoreProvider>
         <IntlProvider locale={value.appearance.locale!} messages={value.appearance.messages}>
           <AggregatorProvider transferConfig={transferConfig} chains={chains}>
-            <ThemeProvider themeConfig={value.appearance.theme} colorMode={value.appearance.mode}>
-              <WalletProvider>
+            <ThemeProvider>
+              <TronAccountProvider>
                 <TokenBalancesProvider />
                 <TokenPricesProvider />
                 {children}
-              </WalletProvider>
+              </TronAccountProvider>
             </ThemeProvider>
           </AggregatorProvider>
         </IntlProvider>

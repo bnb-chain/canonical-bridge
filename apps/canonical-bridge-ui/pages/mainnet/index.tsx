@@ -4,30 +4,24 @@ import {
   TransferWidget,
 } from '@bnb-chain/canonical-bridge-widget';
 
-import { en as messages } from '@/core/locales/en';
 import { useTransferConfig } from '@/token-config/mainnet/useTransferConfig';
 import { chains } from '@/token-config/mainnet/chains';
-import { Layout } from '@/core/components/Layout';
 import { env } from '@/core/env';
 import { dark } from '@/core/theme/dark';
 import { light } from '@/core/theme/light';
+import { useWalletModal } from '@/core/wallet/hooks/useWalletModal';
+import { WalletProvider } from '@/core/wallet/WalletProvider';
+import { Layout } from '@/core/components/Layout';
 
 export const bridgeConfig: ICanonicalBridgeConfig = {
   appName: env.APP_NAME,
   assetPrefix: env.ASSET_PREFIX,
-
   appearance: {
     bridgeTitle: 'BNB Chain Cross-Chain Bridge',
-    locale: 'en',
-    messages,
-    mode: 'dark',
     theme: {
       dark: dark,
       light: light,
     },
-  },
-  wallet: {
-    walletConnectProjectId: env.WALLET_CONNECT_PROJECT_ID,
   },
   http: {
     refetchingInterval: 30 * 1000, // 30s
@@ -38,10 +32,24 @@ export const bridgeConfig: ICanonicalBridgeConfig = {
 };
 
 export default function MainnetPage() {
+  return (
+    <WalletProvider chainConfigs={chains}>
+      <BridgeWidget />
+    </WalletProvider>
+  );
+}
+
+function BridgeWidget() {
   const transferConfig = useTransferConfig();
+  const { onOpen } = useWalletModal();
 
   return (
-    <CanonicalBridgeProvider config={bridgeConfig} transferConfig={transferConfig} chains={chains}>
+    <CanonicalBridgeProvider
+      config={bridgeConfig}
+      transferConfig={transferConfig}
+      chains={chains}
+      onClickConnectWalletButton={onOpen}
+    >
       <Layout>
         <TransferWidget />
       </Layout>

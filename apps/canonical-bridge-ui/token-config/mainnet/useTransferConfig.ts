@@ -93,6 +93,10 @@ export function useTransferConfig() {
           137: {
             '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174': 'USDC.e',
           },
+          324: {
+            '0x1d17CBcF0D6D143135aE902365D2E5e2A16538D4': 'USDC',
+            '0x3355df6D4c9C3035724Fd0e3914dE96A5a83aaf4': 'USDC.e',
+          },
           42161: {
             '0xFF970A61A04b1cA14834A43f5dE4533eBDDB5CC8': 'USDC.e',
           },

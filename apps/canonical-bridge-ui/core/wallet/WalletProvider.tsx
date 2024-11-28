@@ -19,29 +19,24 @@ import { defaultTronConfig, tronLink } from '@node-real/walletkit/tron';
 import {
   defaultSolanaConfig,
   phantomWallet as solanaPhantomWallet,
+  trustWallet as solanaTrustWallet,
 } from '@node-real/walletkit/solana';
 import React from 'react';
-import { useDisclosure, useIntl } from '@bnb-chain/space';
+import { useDisclosure } from '@bnb-chain/space';
+import { IChainConfig } from '@bnb-chain/canonical-bridge-widget';
 
-import { IChainConfig } from '@/modules/aggregator/types';
-import { useBridgeConfig } from '@/CanonicalBridgeProvider';
-import { useAggregator } from '@/modules/aggregator/components/AggregatorProvider';
-import { CurrentWalletProvider } from '@/modules/wallet/CurrentWalletProvider';
-import { StateModal } from '@/core/components/StateModal';
-import { SwitchingTipsModal } from '@/modules/wallet/components/SwitchingTipsModal';
+import { env } from '@/core/env';
+import { PreventingModal } from '@/core/wallet/components/PreventingModal';
 
 interface WalletProviderProps {
+  chainConfigs: IChainConfig[];
   children: React.ReactNode;
 }
 
 export function WalletProvider(props: WalletProviderProps) {
-  const { children } = props;
-
-  const bridgeConfig = useBridgeConfig();
-  const { chainConfigs } = useAggregator();
+  const { children, chainConfigs } = props;
 
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const { formatMessage } = useIntl();
 
   const config = useMemo<WalletKitConfig>(() => {
     const evmWallets = [
@@ -51,8 +46,9 @@ export function WalletProvider(props: WalletProviderProps) {
       okxWallet(),
       walletConnect(),
     ];
+
     const tronWallets = [tronLink()];
-    const solanaWallets = [solanaPhantomWallet()];
+    const solanaWallets = [solanaTrustWallet(), solanaPhantomWallet()];
 
     const tron = chainConfigs.find((e) => e.chainType === 'tron');
     const solana = chainConfigs.find((e) => e.chainType === 'solana');
@@ -85,10 +81,7 @@ export function WalletProvider(props: WalletProviderProps) {
       evmConfig: defaultEvmConfig({
         autoConnect: true,
         initialChainId: 1,
-        walletConnectProjectId: bridgeConfig.wallet.walletConnectProjectId,
-        metadata: {
-          name: bridgeConfig.appName,
-        },
+        walletConnectProjectId: env.WALLET_CONNECT_PROJECT_ID,
         wallets: evmWallets,
         chains: getEvmChains(chainConfigs),
       }),
@@ -106,28 +99,13 @@ export function WalletProvider(props: WalletProviderProps) {
           })
         : undefined,
     };
-  }, [bridgeConfig.appName, bridgeConfig.wallet.walletConnectProjectId, chainConfigs, onOpen]);
-
-  if (!config.evmConfig?.chains?.length) {
-    return null;
-  }
+  }, [chainConfigs, onOpen]);
 
   return (
     <WalletKitProvider config={config} mode="light">
-      <CurrentWalletProvider>
-        {children}
+      {children}
 
-        <StateModal
-          className="bccb-widget-header-preventing-modal"
-          title={formatMessage({ id: 'wallet.preventing-modal.title' })}
-          description={formatMessage({ id: 'wallet.preventing-modal.desc' })}
-          isOpen={isOpen}
-          type="error"
-          onClose={onClose}
-        />
-
-        <SwitchingTipsModal />
-      </CurrentWalletProvider>
+      <PreventingModal isOpen={isOpen} onClose={onClose} />
       <ConnectModal />
     </WalletKitProvider>
   );
@@ -135,7 +113,7 @@ export function WalletProvider(props: WalletProviderProps) {
 
 function getEvmChains(chainConfigs: IChainConfig[]) {
   return chainConfigs
-    .filter((e) => e.chainType === 'evm')
+    .filter((e) => !e.chainType || e.chainType === 'evm')
     .map((item) => {
       const evmChain = Object.values(allChains).find((e) => e.id === item.id);
       return {

@@ -3,6 +3,7 @@ import { useCallback, useState } from 'react';
 
 import { useBridgeSDK } from '@/core/hooks/useBridgeSDK';
 import { useAppSelector } from '@/modules/store/StoreProvider';
+import { useWaitForTxReceipt } from '@/core/hooks/useWaitForTxReceipt';
 
 export const useApprove = () => {
   const { address } = useAccount();
@@ -13,6 +14,7 @@ export const useApprove = () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const publicClient = usePublicClient({ chainId: fromChain?.id }) as any;
   const bridgeSDK = useBridgeSDK();
+  const { waitForTxReceipt } = useWaitForTxReceipt();
 
   const approveErc20Token = useCallback(
     async (tokenAddress: string, spender: `0x${string}`, amount: bigint) => {
@@ -27,11 +29,12 @@ export const useApprove = () => {
           address,
           spender,
         });
+
         // TODO: There is a time gap between the transaction is sent and getting the latest allowance.
         // May need to adjust allowance refetching interval period.
-        const transaction = await publicClient.waitForTransactionReceipt({
+        const transaction = await waitForTxReceipt({
+          publicClient,
           hash: hash,
-          timeout: 1000 * 60,
           confirmations: 3,
         });
         // eslint-disable-next-line no-console
@@ -44,7 +47,7 @@ export const useApprove = () => {
         setIsLoadingApprove(false);
       }
     },
-    [walletClient, publicClient, address, bridgeSDK],
+    [address, walletClient, publicClient, bridgeSDK],
   );
   return {
     approveErc20Token,

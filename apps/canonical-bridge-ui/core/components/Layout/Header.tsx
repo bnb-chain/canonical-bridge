@@ -1,8 +1,8 @@
 import { Flex, FlexProps, theme, useColorMode } from '@bnb-chain/space';
 import React from 'react';
-import { ConnectButton } from '@bnb-chain/canonical-bridge-widget';
 
 import { LogoIcon } from '@/core/components/icons/Logo';
+import { ConnectWalletButton } from '@/core/wallet/components/ConnectWalletButton';
 
 export function Header(props: FlexProps) {
   const { colorMode } = useColorMode();
@@ -20,7 +20,7 @@ export function Header(props: FlexProps) {
       {...props}
     >
       <LogoIcon />
-      <ConnectButton />
+      <ConnectWalletButton />
     </Flex>
   );
 }

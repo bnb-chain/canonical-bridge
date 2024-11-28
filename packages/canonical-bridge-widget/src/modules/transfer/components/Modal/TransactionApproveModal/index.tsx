@@ -1,13 +1,14 @@
 import { parseUnits } from 'viem';
 import { Button, theme, Typography, useColorMode, useIntl } from '@bnb-chain/space';
 import { useEffect, useState } from 'react';
+import { useAccount } from 'wagmi';
 
 import { useApprove } from '@/core/contract/hooks';
 import { useAppSelector } from '@/modules/store/StoreProvider';
 import { StateModal, StateModalProps } from '@/core/components/StateModal';
 import { reportEvent } from '@/core/utils/gtm';
-import { useCurrentWallet } from '@/modules/wallet/CurrentWalletProvider';
 import { useTrc20 } from '@/modules/aggregator/adapters/meson/hooks/useTrc20';
+import { useTronAccount } from '@/modules/wallet/hooks/useTronAccount';
 
 export function TransactionApproveModal(
   props: Omit<StateModalProps, 'title'> & {
@@ -20,7 +21,10 @@ export function TransactionApproveModal(
   const [mainButtonIsDisabled, setMainButtonIsDisabled] = useState(false);
   const { approveErc20Token, isLoadingApprove } = useApprove();
   const { formatMessage } = useIntl();
-  const { isEvmConnected, isTronConnected } = useCurrentWallet();
+
+  const { isConnected: isEvmConnected } = useAccount();
+  const { isConnected: isTronConnected } = useTronAccount();
+
   const { approveTrc20 } = useTrc20();
 
   const { colorMode } = useColorMode();

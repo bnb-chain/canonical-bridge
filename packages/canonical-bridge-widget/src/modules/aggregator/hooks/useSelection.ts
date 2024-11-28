@@ -1,4 +1,4 @@
-import { useChains } from 'wagmi';
+import { useAccount, useChains } from 'wagmi';
 import { useCallback } from 'react';
 import { useConnection } from '@solana/wallet-adapter-react';
 
@@ -16,10 +16,11 @@ import { useTokenPrice } from '@/modules/aggregator/hooks/useTokenPrice';
 import { getTokenBalances } from '@/modules/aggregator/shared/getTokenBalances';
 import { sortTokens } from '@/modules/aggregator/shared/sortTokens';
 import { useTronWeb } from '@/core/hooks/useTronWeb';
-import { useCurrentWallet } from '@/modules/wallet/CurrentWalletProvider';
+import { useSolanaAccount } from '@/modules/wallet/hooks/useSolanaAccount';
+import { useTronAccount } from '@/modules/wallet/hooks/useTronAccount';
+import { isSameAddress } from '@/core/utils/address';
 
 export function useSelection() {
-  const { chainId } = useCurrentWallet();
   const { getFromChains, getToChains, getTokens, getToToken, adapters } = useAggregator();
 
   const fromChain = useAppSelector((state) => state.transfer.fromChain);
@@ -58,7 +59,7 @@ export function useSelection() {
     const newToken = getTokens({
       fromChainId: tmpFromChain?.id,
       toChainId: tmpToChain?.id,
-    }).find((t) => t.displaySymbol?.toUpperCase() === tmpToken?.displaySymbol?.toUpperCase());
+    }).find((t) => isSameAddress(t.address, tmpToken?.address));
 
     const newFromChain = getFromChains({
       toChainId: tmpToChain?.id,
@@ -101,9 +102,7 @@ export function useSelection() {
 
     const newToken =
       tmpTokens.find(
-        (t) =>
-          isChainOrTokenCompatible(t) &&
-          t.displaySymbol.toUpperCase() === selectedToken?.displaySymbol.toUpperCase(),
+        (t) => isChainOrTokenCompatible(t) && isSameAddress(t.address, selectedToken?.address),
       ) ?? tmpTokens.find((t) => isChainOrTokenCompatible(t));
 
     updateSelectedInfo({
@@ -115,10 +114,12 @@ export function useSelection() {
 
   return {
     async selectDefault({
+      walletChainId,
       fromChainId,
       toChainId,
       tokenSymbol,
     }: {
+      walletChainId?: number;
       fromChainId: number;
       toChainId: number;
       tokenSymbol: string;
@@ -128,9 +129,9 @@ export function useSelection() {
         bridgeTypes.map((item) => [item, { symbol: tokenSymbol }]),
       ) as any as IBridgeToken;
 
-      if (chainId) {
+      if (walletChainId) {
         const fromChains = getFromChains({});
-        const chain = fromChains.find((chain) => chain.id === chainId);
+        const chain = fromChains.find((chain) => chain.id === walletChainId);
         if (chain) {
           selectFromChain(chain);
           return;
@@ -203,12 +204,15 @@ export function useSelection() {
 
 function useSortedTokens() {
   const { transferConfig } = useAggregator();
-  const chains = useChains();
-
-  const { address, walletType } = useCurrentWallet();
   const { getTokenPrice } = useTokenPrice();
-  const tronWeb = useTronWeb();
+
+  const { address } = useAccount();
+  const { address: solanaAddress } = useSolanaAccount();
+  const { address: tronAddress } = useTronAccount();
+
+  const chains = useChains();
   const { connection } = useConnection();
+  const tronWeb = useTronWeb();
 
   const getSortedTokens = useCallback(
     async ({
@@ -221,13 +225,20 @@ function useSortedTokens() {
       tokens: IBridgeToken[];
     }) => {
       const balances = await getTokenBalances({
-        walletType,
         chainType,
-        account: address,
         tokens,
-        chain: chains.find((e) => e.id === fromChainId),
-        tronWeb,
-        connection,
+        evmParams: {
+          account: address,
+          chain: chains?.find((item) => item.id === fromChainId),
+        },
+        solanaParams: {
+          account: solanaAddress,
+          connection,
+        },
+        tronParams: {
+          account: tronAddress,
+          tronWeb,
+        },
       });
 
       const tmpTokens = tokens.map((item) => {
@@ -251,7 +262,16 @@ function useSortedTokens() {
         orders: transferConfig.order?.tokens,
       });
     },
-    [walletType, address, chains, tronWeb, connection, transferConfig.order?.tokens, getTokenPrice],
+    [
+      address,
+      chains,
+      solanaAddress,
+      connection,
+      tronAddress,
+      tronWeb,
+      transferConfig.order?.tokens,
+      getTokenPrice,
+    ],
   );
 
   return {

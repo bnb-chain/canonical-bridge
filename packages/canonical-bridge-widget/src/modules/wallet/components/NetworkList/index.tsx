@@ -1,6 +1,7 @@
 import { Flex, useColorMode, useIntl, useTheme, Text, Typography, Box } from '@bnb-chain/space';
 import { TickIcon, InfoCircleIcon } from '@bnb-chain/icons';
-import { useEffect, useRef } from 'react';
+import { useAccount } from 'wagmi';
+import { useMemo, useRef } from 'react';
 
 import { IconImage } from '@/core/components/IconImage';
 import { useAppSelector } from '@/modules/store/StoreProvider';
@@ -8,37 +9,52 @@ import { Dropdown } from '@/modules/wallet/components/Dropdown/Dropdown';
 import { DropdownButton } from '@/modules/wallet/components/Dropdown/DropdownButton';
 import { DropdownList } from '@/modules/wallet/components/Dropdown/DropdownList';
 import { DropdownItem } from '@/modules/wallet/components/Dropdown/DropdownItem';
-import { useCurrentWallet } from '@/modules/wallet/CurrentWalletProvider';
 import { useFromChains } from '@/modules/aggregator/hooks/useFromChains';
-import { useAggregator } from '@/modules/aggregator/components/AggregatorProvider';
 import { TransferToIcon } from '@/core/components/icons/TransferToIcon';
 import { SwitchNetworkButton } from '@/modules/transfer/components/Button/SwitchNetworkButton';
 import { WarningIcon } from '@/core/components/icons/WarningIcon.tsx';
-import { SwitchWalletButton } from '@/modules/transfer/components/Button/SwitchWalletButton';
 import { ExLinkIcon } from '@/core/components/icons/ExLinkIcon.tsx';
 import { openLink } from '@/core/utils/common.ts';
+import { WalletConnectButton } from '@/modules/transfer/components/Button/WalletConnectButton';
+import { ChainType, useSolanaAccount, useTronAccount } from '@/index';
+import { useNeedSwitchChain } from '@/modules/wallet/hooks/useNeedSwitchChain';
+import { useAutoSelectFromChain } from '@/modules/wallet/hooks/useAutoSelectFromChain';
 
-export function NetworkStatus() {
+export interface NetworkListProps {
+  onClickNetwork?: (params: { chainType: ChainType; chainId: number }) => void;
+}
+
+export function NetworkList(props: NetworkListProps) {
+  const { onClickNetwork } = props;
+
   const fromChain = useAppSelector((state) => state.transfer.fromChain);
 
   const { formatMessage } = useIntl();
-  const thresholdRef = useRef(false);
   const theme = useTheme();
   const { colorMode } = useColorMode();
+  const supportedChains = useFromChains();
 
-  const { chain, chainId, linkWallet, walletType } = useCurrentWallet();
-  const fromChains = useFromChains();
+  const { needSwitchChain } = useNeedSwitchChain();
 
-  const { chainConfigs } = useAggregator();
-  const supportedChains = fromChains.filter((c) => chainConfigs.find((e) => c.id === e.id));
-  const bridgeChains = useFromChains();
+  const isPendingRef = useRef(false);
+  const timerRef = useRef<any>();
+  const { autoSelectFromChain } = useAutoSelectFromChain({
+    onPending() {
+      clearTimeout(timerRef.current);
+      isPendingRef.current = true;
 
-  useEffect(() => {
-    thresholdRef.current = true;
-    setTimeout(() => {
-      thresholdRef.current = false;
-    }, 1000);
-  }, [chainId]);
+      // TODO
+      timerRef.current = setTimeout(() => {
+        isPendingRef.current = false;
+      }, 60 * 1000);
+    },
+    onSettle() {
+      timerRef.current = setTimeout(() => {
+        isPendingRef.current = false;
+      }, 1000);
+    },
+  });
+  const { walletChain, hasWalletConnected } = useFromChainConnectedInfo();
 
   const switchDropdown = (onClose: () => void) => (
     <DropdownList className="bccb-widget-header-network-status" maxW={'240px'}>
@@ -53,7 +69,9 @@ export function NetworkStatus() {
           gap={'4px'}
         >
           <InfoCircleIcon boxSize={'16px'} color={theme.colors[colorMode].text.tertiary} />
-          {formatMessage({ id: 'wallet.network.switch-network' })}
+          {needSwitchChain
+            ? formatMessage({ id: 'wallet.network.switch-network' })
+            : formatMessage({ id: 'wallet.network.connect-wallet' })}
         </Typography>
         <TransferToIcon w={'24px'} h={'24px'} transform={'rotate(90deg)'} />
 
@@ -84,18 +102,18 @@ export function NetworkStatus() {
         </Flex>
 
         <Box onClick={onClose} w={'100%'}>
-          {walletType !== fromChain?.chainType ? (
-            <SwitchWalletButton h={'40px'} mt={'16px'} fontSize={'14px'} />
-          ) : (
+          {needSwitchChain ? (
             <SwitchNetworkButton h={'40px'} mt={'16px'} fontSize={'14px'} />
+          ) : (
+            <WalletConnectButton h={'40px'} mt={'16px'} fontSize={'14px'} />
           )}
         </Box>
       </Flex>
     </DropdownList>
   );
 
-  if (!chain) {
-    if (!chainId || !fromChain) return null;
+  if (!walletChain) {
+    if (!hasWalletConnected) return null;
 
     return (
       <Dropdown>
@@ -140,8 +158,7 @@ export function NetworkStatus() {
     );
   }
 
-  const isWrongNetwork = !!fromChain && fromChain.id !== chain.id && !thresholdRef.current;
-  const iconUrl = bridgeChains.find((e) => e.id === chain.id)?.icon;
+  const isWrongNetwork = needSwitchChain && !isPendingRef.current;
 
   return (
     <Dropdown>
@@ -160,7 +177,12 @@ export function NetworkStatus() {
                   color={theme.colors[colorMode].support.warning['3']}
                 />
               ) : (
-                <IconImage src={iconUrl} boxSize="24px" />
+                <IconImage
+                  src={walletChain.icon}
+                  boxSize="24px"
+                  overflow="hidden"
+                  borderRadius="100%"
+                />
               )}
               <Flex
                 className="chain-name"
@@ -170,7 +192,7 @@ export function NetworkStatus() {
                 textAlign="left"
               >
                 <Text fontSize="14px" noOfLines={1}>
-                  {chain.name}
+                  {walletChain.name}
                 </Text>
               </Flex>
             </DropdownButton>
@@ -180,7 +202,7 @@ export function NetworkStatus() {
             ) : (
               <DropdownList>
                 {supportedChains.map((item) => {
-                  const isSelected = chainId === item.id;
+                  const isSelected = fromChain?.id === item.id;
 
                   return (
                     <DropdownItem
@@ -197,10 +219,17 @@ export function NetworkStatus() {
                           openLink(item.externalBridgeUrl);
                           return;
                         }
-                        linkWallet({
-                          targetChainType: item.chainType,
-                          targetChainId: item.id,
-                        });
+                        if (onClickNetwork) {
+                          onClickNetwork?.({
+                            chainType: item.chainType,
+                            chainId: item.id,
+                          });
+                        } else {
+                          autoSelectFromChain({
+                            chainType: item.chainType,
+                            chainId: item.id,
+                          });
+                        }
                       }}
                     >
                       <IconImage src={item.icon} boxSize="16px" flexShrink={0} />
@@ -225,4 +254,40 @@ export function NetworkStatus() {
       }}
     </Dropdown>
   );
+}
+
+export function useFromChainConnectedInfo() {
+  const supportedChains = useFromChains();
+  const fromChain = useAppSelector((state) => state.transfer.fromChain);
+  const evmAccount = useAccount();
+  const tronAccount = useTronAccount();
+  const solanaAccount = useSolanaAccount();
+
+  const walletChain = useMemo(() => {
+    const evmChain = supportedChains.find(
+      (e) => e.chainType === 'evm' && e.id === evmAccount.chainId,
+    );
+    const tronChain = supportedChains.find(
+      (e) => e.chainType === 'tron' && e.id === tronAccount.chainId,
+    );
+    const solanaChain = supportedChains.find(
+      (e) => e.chainType === 'solana' && e.id === solanaAccount.chainId,
+    );
+
+    if (fromChain?.chainType === 'evm') return evmChain;
+    if (fromChain?.chainType === 'tron') return tronChain;
+    if (fromChain?.chainType === 'solana') return solanaChain;
+  }, [
+    evmAccount.chainId,
+    fromChain?.chainType,
+    solanaAccount.chainId,
+    supportedChains,
+    tronAccount.chainId,
+  ]);
+
+  return {
+    walletChain,
+    hasWalletConnected:
+      evmAccount.isConnected || tronAccount.isConnected || !!solanaAccount.isConnected,
+  };
 }

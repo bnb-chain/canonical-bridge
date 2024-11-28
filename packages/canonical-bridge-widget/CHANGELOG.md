@@ -1,10 +1,64 @@
 # @bnb-chain/canonical-bridge-widget
 
+## 0.5.4-alpha.4
+
+### Patch Changes
+
+- Fix colorMode does not follow the parameter
+
+## 0.5.4-alpha.3
+
+### Patch Changes
+
+- Show all tokens in token list with different token address
+
+## 0.5.4-alpha.2
+
+### Patch Changes
+
+- Support custom breakpoints
+
+## 0.5.4-alpha.1
+
+### Patch Changes
+
+- Add log for solana
+
+## 0.5.4-alpha.0
+
+### Patch Changes
+
+- Support custom connect wallet button
+
 ## 0.5.2
 
 ### Patch Changes
 
-- aee98a5: Adjust style class name
+- Remove delayTime for wallet
+
+## 0.5.2-alpha.3
+
+### Patch Changes
+
+- Fix wallet issues
+
+## 0.5.2-alpha.2
+
+### Patch Changes
+
+- Fix wallet issues
+
+## 0.5.2-alpha.1
+
+### Patch Changes
+
+- Fix wallet issues
+
+## 0.5.2-alpha.0
+
+### Patch Changes
+
+- cdf450d: Separate wallet component
 
 ## 0.5.1
 

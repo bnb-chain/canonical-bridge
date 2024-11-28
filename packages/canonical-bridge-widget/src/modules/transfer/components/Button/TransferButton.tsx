@@ -1,10 +1,11 @@
+/* eslint-disable no-console */
 import { Button, Flex, useColorMode, useIntl, useTheme } from '@bnb-chain/space';
 import { useCallback, useState } from 'react';
 import { useAccount, useBytecode, usePublicClient, useSignMessage, useWalletClient } from 'wagmi';
 import { formatUnits, parseUnits } from 'viem';
-import { useTronWallet } from '@node-real/walletkit/tron';
+import { useWallet as useTronWallet } from '@tronweb3/tronwallet-adapter-react-hooks';
 import { useConnection } from '@solana/wallet-adapter-react';
-import { useSolanaWallet } from '@node-real/walletkit/solana';
+import { useWallet as useSolanaWallet } from '@solana/wallet-adapter-react';
 import { VersionedTransaction } from '@solana/web3.js';
 
 import { useAppSelector } from '@/modules/store/StoreProvider';
@@ -13,11 +14,12 @@ import { useCBridgeTransferParams } from '@/modules/aggregator/adapters/cBridge/
 import { useBridgeSDK } from '@/core/hooks/useBridgeSDK';
 import { reportEvent } from '@/core/utils/gtm';
 import { useGetTronAllowance } from '@/modules/aggregator/adapters/meson/hooks/useGetTronAllowance';
-import { useCurrentWallet } from '@/modules/wallet/CurrentWalletProvider';
 import { useTronTransferInfo } from '@/modules/transfer/hooks/tron/useTronTransferInfo';
 import { utf8ToHex } from '@/core/utils/string';
 import { useTronContract } from '@/modules/aggregator/adapters/meson/hooks/useTronContract';
 import { useSolanaTransferInfo } from '@/modules/transfer/hooks/solana/useSolanaTransferInfo';
+import { useTronAccount } from '@/modules/wallet/hooks/useTronAccount';
+import { useWaitForTxReceipt } from '@/core/hooks/useWaitForTxReceipt';
 
 export function TransferButton({
   onOpenSubmittedModal,
@@ -78,7 +80,9 @@ export function TransferButton({
   });
 
   const tronAllowance = useGetTronAllowance();
-  const { isTronConnected, isEvmConnected } = useCurrentWallet();
+  const { isConnected: isEvmConnected } = useAccount();
+  const { isConnected: isTronConnected } = useTronAccount();
+  const { waitForTxReceipt } = useWaitForTxReceipt();
 
   const isApproveNeeded =
     (fromChain?.chainType === 'evm' &&
@@ -178,7 +182,8 @@ export function TransferButton({
             peggedConfig: selectedToken?.cBridge?.peggedConfig,
             args: cBridgeArgs.args,
           });
-          await publicClient.waitForTransactionReceipt({
+          await waitForTxReceipt({
+            publicClient,
             hash: cBridgeHash,
           });
           if (cBridgeHash) {
@@ -217,7 +222,8 @@ export function TransferButton({
               amount: BigInt(transferActionInfo.value),
               address,
             });
-            await publicClient.waitForTransactionReceipt({
+            await waitForTxReceipt({
+              publicClient,
               hash: deBridgeHash,
             });
           }
@@ -229,6 +235,12 @@ export function TransferButton({
 
             tx.message.recentBlockhash = blockhash;
             deBridgeHash = await sendSolanaTransaction(tx, connection);
+
+            console.log('---solana---');
+            console.log('blockhash: ', blockhash);
+            console.log('data:', data);
+            console.log('tx:', tx);
+            console.log('hash:', deBridgeHash);
           }
 
           if (deBridgeHash) {
@@ -401,13 +413,16 @@ export function TransferButton({
     }
   }, [
     selectedToken,
-    transferActionInfo,
+    transferActionInfo?.bridgeType,
+    transferActionInfo?.bridgeAddress,
+    transferActionInfo?.value,
+    transferActionInfo?.data,
+    fromChain,
     walletClient,
     publicClient,
     address,
     allowance,
     isEvmConnected,
-    fromChain,
     isTronConnected,
     tronAddress,
     tronAllowance,

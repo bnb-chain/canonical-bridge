@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { useChains } from 'wagmi';
+import { useAccount, useChains } from 'wagmi';
 import { useEffect } from 'react';
 import { useConnection } from '@solana/wallet-adapter-react';
 
@@ -9,13 +9,17 @@ import { getTokenBalances } from '@/modules/aggregator/shared/getTokenBalances';
 import { useAppDispatch, useAppSelector } from '@/modules/store/StoreProvider';
 import { setIsLoadingTokenBalances, setTokenBalances } from '@/modules/aggregator/action';
 import { useTronWeb } from '@/core/hooks/useTronWeb';
-import { useCurrentWallet } from '@/modules/wallet/CurrentWalletProvider';
+import { useSolanaAccount } from '@/modules/wallet/hooks/useSolanaAccount';
+import { useTronAccount } from '@/modules/wallet/hooks/useTronAccount';
 
 export function TokenBalancesProvider() {
-  const { address, walletType } = useCurrentWallet();
+  const { address } = useAccount();
+  const { address: solanaAddress } = useSolanaAccount();
+  const { address: tronAddress } = useTronAccount();
+
   const chains = useChains();
-  const tronWeb = useTronWeb();
   const { connection } = useConnection();
+  const tronWeb = useTronWeb();
 
   const fromChain = useAppSelector((state) => state.transfer.fromChain);
   const toChain = useAppSelector((state) => state.transfer.toChain);
@@ -27,18 +31,25 @@ export function TokenBalancesProvider() {
   });
 
   const { isLoading, data } = useQuery<Record<string, string | undefined>>({
-    enabled: !!address && !!fromChain?.id && !!toChain?.id,
+    enabled: !!fromChain?.id && !!toChain?.id,
     refetchInterval: REFETCH_INTERVAL,
-    queryKey: ['tokenBalances', address, fromChain?.id, toChain?.id],
+    queryKey: ['tokenBalances', fromChain?.id, toChain?.id, address, solanaAddress, tronAddress],
     queryFn: async () => {
       const balances = await getTokenBalances({
-        walletType,
         chainType: fromChain?.chainType,
-        account: address,
         tokens,
-        chain: chains?.find((item) => item.id === fromChain?.id),
-        tronWeb,
-        connection,
+        evmParams: {
+          account: address,
+          chain: chains?.find((item) => item.id === fromChain?.id),
+        },
+        solanaParams: {
+          account: solanaAddress,
+          connection,
+        },
+        tronParams: {
+          account: tronAddress,
+          tronWeb,
+        },
       });
       return balances;
     },

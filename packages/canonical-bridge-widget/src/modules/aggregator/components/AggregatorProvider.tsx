@@ -25,7 +25,6 @@ import {
 import { aggregateTokens, IGetTokensParams } from '@/modules/aggregator/shared/aggregateTokens';
 import { aggregateToToken, IGetToTokenParams } from '@/modules/aggregator/shared/aggregateToToken';
 import { useBridgeConfig } from '@/index';
-
 export interface AggregatorContextProps {
   isReady: boolean;
   transferConfig: ITransferConfig;

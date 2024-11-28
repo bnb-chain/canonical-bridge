@@ -10,12 +10,14 @@ import { DEBOUNCE_DELAY, DEFAULT_ADDRESS } from '@/core/constants';
 import { useToTokenInfo } from '@/modules/transfer/hooks/useToTokenInfo';
 import { useStargateTransferParams } from '@/modules/aggregator/adapters/stargate/hooks/useStargateTransferParams';
 import { useBridgeSDK } from '@/core/hooks/useBridgeSDK';
+import { useWaitForTxReceipt } from '@/core/hooks/useWaitForTxReceipt';
 
 export const useStargateTransfer = () => {
   const { data: walletClient } = useWalletClient();
   const { address } = useAccount();
   const dispatch = useAppDispatch();
   const bridgeSDK = useBridgeSDK();
+  const { waitForTxReceipt } = useWaitForTxReceipt();
 
   const selectedToken = useAppSelector((state) => state.transfer.selectedToken);
   const sendValue = useAppSelector((state) => state.transfer.sendValue);
@@ -102,7 +104,8 @@ export const useStargateTransfer = () => {
           receiver: address,
           amount: parseUnits(sendValue, selectedToken.decimals),
         });
-        const tx = await publicClient.waitForTransactionReceipt({
+        const tx = await waitForTxReceipt({
+          publicClient,
           hash: hash as `0x${string}`,
         });
         // eslint-disable-next-line no-console

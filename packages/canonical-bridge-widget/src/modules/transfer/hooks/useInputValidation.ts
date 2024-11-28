@@ -4,13 +4,10 @@ import { useCallback } from 'react';
 
 import { formatNumber } from '@/core/utils/number';
 import { useAppSelector } from '@/modules/store/StoreProvider';
-import { useCurrentWallet } from '@/modules/wallet/CurrentWalletProvider';
 import { useSolanaBalance } from '@/modules/wallet/hooks/useSolanaBalance';
 import { MIN_SOL_TO_ENABLED_TX } from '@/core/constants';
 
 export const useInputValidation = () => {
-  const { chain } = useCurrentWallet();
-
   const { data } = useSolanaBalance();
   const solBalance = Number(data?.formatted);
 
@@ -40,7 +37,7 @@ export const useInputValidation = () => {
             isError: true,
           };
         }
-        if (!!balance && value > balance && fromChain?.id === chain?.id && chain) {
+        if (!!balance && value > balance) {
           return { text: `You have insufficient balance`, isError: true };
         }
         if (estimatedAmount?.stargate && bridgeType === 'stargate' && value) {
@@ -63,16 +60,14 @@ export const useInputValidation = () => {
             return { text: `${formatNumber(balance)}`, isError: false };
           }
         } else {
-          if (fromChain?.id === chain?.id && chain) {
-            return { isError: true, text: 'You have insufficient balance' };
-          }
+          return { isError: true, text: 'You have insufficient balance' };
         }
       } catch (e: any) {
         // eslint-disable-next-line no-console
         console.log(e);
       }
     },
-    [chain, fromChain?.chainType, fromChain?.id, solBalance],
+    [fromChain?.chainType, solBalance],
   );
 
   return {

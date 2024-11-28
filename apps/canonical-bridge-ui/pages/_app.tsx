@@ -1,8 +1,10 @@
+import '@node-real/walletkit/styles.css';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import Head from 'next/head';
 import { AppProps } from 'next/app';
 
 import { ThemeProvider } from '@/core/components/ThemeProvider';
+import { SvgDefs } from '@/core/components/icons/SvgDefs';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -22,6 +24,7 @@ export default function App({ Component, ...restProps }: AppProps) {
       </Head>
       <ThemeProvider>
         <QueryClientProvider client={queryClient}>
+          <SvgDefs />
           <Component {...restProps.pageProps} />
         </QueryClientProvider>
       </ThemeProvider>
