@@ -1,4 +1,4 @@
-import { ChakraProvider, theme, createLocalStorageManager, ColorMode } from '@bnb-chain/space';
+import { ChakraProvider, ColorMode, theme } from '@bnb-chain/space';
 import { useMemo } from 'react';
 import { merge } from 'lodash';
 
@@ -8,24 +8,13 @@ import { walletStyles } from '@/core/theme/walletStyles';
 import { useBridgeConfig } from '@/CanonicalBridgeProvider';
 
 export interface ThemeProviderProps {
-  colorMode?: ColorMode;
   children: React.ReactNode;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  themeConfig?: {
-    dark?: any;
-    light?: any;
-    fontFamily?: string;
-    breakpoints?: Partial<typeof theme.breakpoints>;
-  };
 }
 
-export const ThemeProvider = ({
-  children,
-  colorMode = 'dark',
-  themeConfig,
-}: ThemeProviderProps) => {
-  const { appName: APP_NAME } = useBridgeConfig();
-  const colorModeManager = createLocalStorageManager(`${APP_NAME}-color-mode`);
+export const ThemeProvider = ({ children }: ThemeProviderProps) => {
+  const { appearance } = useBridgeConfig();
+  const { theme: themeConfig, colorMode } = appearance;
+
   const customTheme = useMemo(() => {
     return {
       ...theme,
@@ -57,7 +46,13 @@ export const ThemeProvider = ({
 
   return (
     <ChakraProvider
-      colorModeManager={colorModeManager}
+      colorModeManager={{
+        type: 'localStorage',
+        get() {
+          return colorMode;
+        },
+        set() {},
+      }}
       theme={customTheme}
       toastOptions={{
         defaultOptions: {

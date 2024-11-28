@@ -1,9 +1,9 @@
 import React, { useContext, useMemo } from 'react';
-import { ColorMode, IntlProvider } from '@bnb-chain/space';
+import { ColorMode, IntlProvider, theme } from '@bnb-chain/space';
 
 import { ChainType, IChainConfig, ITransferConfig } from '@/modules/aggregator/types';
 import { StoreProvider } from '@/modules/store/StoreProvider';
-import { ThemeProvider, ThemeProviderProps } from '@/core/theme/ThemeProvider';
+import { ThemeProvider } from '@/core/theme/ThemeProvider';
 import { AggregatorProvider } from '@/modules/aggregator/components/AggregatorProvider';
 import { TokenBalancesProvider } from '@/modules/aggregator/components/TokenBalancesProvider';
 import { TokenPricesProvider } from '@/modules/aggregator/components/TokenPricesProvider';
@@ -17,7 +17,12 @@ export interface ICanonicalBridgeConfig {
 
   appearance: {
     colorMode?: ColorMode;
-    theme?: ThemeProviderProps['themeConfig'];
+    theme?: {
+      dark?: any;
+      light?: any;
+      fontFamily?: string;
+      breakpoints?: Partial<typeof theme.breakpoints>;
+    };
     locale?: string;
     messages?: Record<string, string>;
     bridgeTitle?: string;
@@ -75,7 +80,7 @@ export function CanonicalBridgeProvider(props: CanonicalBridgeProviderProps) {
 
       appearance: {
         bridgeTitle: 'BNB Chain Cross-Chain Bridge',
-        mode: 'dark',
+        colorMode: 'dark',
         locale: 'en',
         messages: locales.en,
         ...config.appearance,
@@ -100,10 +105,7 @@ export function CanonicalBridgeProvider(props: CanonicalBridgeProviderProps) {
       <StoreProvider>
         <IntlProvider locale={value.appearance.locale!} messages={value.appearance.messages}>
           <AggregatorProvider transferConfig={transferConfig} chains={chains}>
-            <ThemeProvider
-              themeConfig={value.appearance.theme}
-              colorMode={value.appearance.colorMode}
-            >
+            <ThemeProvider>
               <TronAccountProvider>
                 <TokenBalancesProvider />
                 <TokenPricesProvider />

@@ -1,5 +1,11 @@
 # @bnb-chain/canonical-bridge-widget
 
+## 0.5.4-alpha.4
+
+### Patch Changes
+
+- Fix colorMode does not follow the parameter
+
 ## 0.5.4-alpha.3
 
 ### Patch Changes
