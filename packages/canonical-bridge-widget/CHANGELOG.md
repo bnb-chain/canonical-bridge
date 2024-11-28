@@ -1,5 +1,20 @@
 # @bnb-chain/canonical-bridge-widget
 
+## 0.5.4
+
+### Patch Changes
+
+- 8d3b6d1: Support custom breakpoints
+- b95b3ab: Fix wallet issues
+- fb73ca4: Fix wallet issues
+- da03355: Remove delayTime for wallet
+- bcf65ef: Fix colorMode does not follow the parameter
+- 6d78c07: Fix wallet issues
+- 3146b01: Support custom connect wallet button
+- dc0fcac: Show all tokens in token list with different token address
+- cdf450d: Separate wallet component
+- 0f6c74c: Add log for solana
+
 ## 0.5.4-alpha.4
 
 ### Patch Changes
