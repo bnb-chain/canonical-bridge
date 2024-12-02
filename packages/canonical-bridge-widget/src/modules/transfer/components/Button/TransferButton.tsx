@@ -190,7 +190,7 @@ export function TransferButton({
               isPegged: selectedToken.isPegged,
               tokenSymbol: selectedToken.symbol,
               toChainId: toChain?.id,
-              message: `Invalid cBridge token!!`,
+              message: `(Token Validation Failed) - Invalid cBridge token!!`,
             });
             return;
           }
@@ -243,7 +243,7 @@ export function TransferButton({
             });
             if (!isValidToken) {
               handleFailure({
-                message: 'Invalid deBridge token!!',
+                message: '(Token Validation Failed) - Invalid deBridge token!!',
                 fromChainId: fromChain?.id,
                 tokenSymbol: selectedToken.symbol,
                 tokenAddress: selectedToken.address as `0x${string}`,
@@ -309,7 +309,7 @@ export function TransferButton({
         });
         if (!isValidToken) {
           handleFailure({
-            messages: 'Invalid Stargate token!!',
+            messages: '(Token Validation Failed) - Invalid Stargate token!!',
             fromChainId: fromChain?.id,
             tokenAddress: selectedToken.address as `0x${string}`,
             bridgeAddress: transferActionInfo.bridgeAddress as `0x${string}`,
@@ -379,7 +379,7 @@ export function TransferButton({
         });
         if (!isValidToken) {
           handleFailure({
-            message: 'Invalid Meson token!!',
+            message: '(Token Validation Failed) Invalid Meson token!!',
             fromChainId: fromChain?.id,
             tokenAddress: selectedToken.address as `0x${string}`,
             bridgeAddress: transferActionInfo.bridgeAddress as `0x${string}`,
