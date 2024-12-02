@@ -13,3 +13,19 @@ export interface IMesonChain {
   address: string; // bridge address
   tokens: IMesonToken[];
 }
+
+interface IMesonTokenLimits {
+  id: string;
+  decimals: number;
+  addr?: `0x${string}`;
+  min: string;
+  max: string;
+}
+
+export interface IMesonTokenList {
+  id: string;
+  name: string;
+  chainId: `0x${string}`;
+  address: `0x${string}`;
+  tokens: IMesonTokenLimits[];
+}
