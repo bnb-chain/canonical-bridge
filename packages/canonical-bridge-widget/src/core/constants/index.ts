@@ -15,6 +15,11 @@ export const DEFAULT_ADDRESS = '0x6836CbaCbBd1E798cC56802AC7d8BDf6Da0d0980';
 export const DEFAULT_TRON_ADDRESS = 'TTb3A6ASFejJuGcM1UVcRCJA23WGiJKSiY';
 export const DEFAULT_SOLANA_ADDRESS = 'J7JYXS8PMMBgfFKP1bqUu7mGgWyWUDL9xqfYujznc61r';
 
+export const CBRIDGE_ENDPOINT = 'https://cbridge-prod2.celer.app/v2';
+export const DEBRIDGE_ENDPOINT = 'https://deswap.debridge.finance/v1.0';
+export const STARGATE_ENDPOINT = 'https://mainnet.stargate-api.com/v1/metadata?version=v2';
+export const MESON_ENDPOINT = 'https://relayer.meson.fi/api/v1';
+
 export const nativeTokenMap = {
   1: 'ETH',
   10: 'ETH',
