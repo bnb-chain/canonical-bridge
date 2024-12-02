@@ -116,6 +116,7 @@ export function ChooseTokenModal(props: ChooseTokenModalProps) {
                     transform: 'translateY(-100%)',
                   },
                 }}
+                data-address={item.address?.toLowerCase()}
                 onClick={() => {
                   reportEvent({
                     id: 'select_bridge_tokenDropdown',
