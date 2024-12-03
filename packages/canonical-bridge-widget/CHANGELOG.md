@@ -1,5 +1,11 @@
 # @bnb-chain/canonical-bridge-widget
 
+## 0.5.5
+
+### Patch Changes
+
+- 792cae1: Check Layerzero destination gas limit
+
 ## 0.5.4
 
 ### Patch Changes
