@@ -130,7 +130,11 @@ export const useValidateSendToken = () => {
 
       if (!deBridgeConfig?.tokens) return false;
       const tokenInfo = deBridgeConfig.tokens[tokenAddress.toLowerCase()];
-      if (!!tokenInfo && tokenInfo?.address === tokenAddress && tokenInfo?.symbol === tokenSymbol) {
+      if (
+        !!tokenInfo &&
+        tokenInfo?.address.toLowerCase() === tokenAddress.toLowerCase() &&
+        tokenInfo?.symbol === tokenSymbol
+      ) {
         console.log('deBridge token info matched', tokenInfo);
         return true;
       }
@@ -208,7 +212,8 @@ export const useValidateSendToken = () => {
       const chainInfo = mesonConfig.result.filter((chainInfo) => {
         const tokenInfo = chainInfo.tokens.filter(
           (token) =>
-            (token?.addr === tokenAddress && token.id === tokenSymbol.toLowerCase()) ||
+            (token?.addr?.toLowerCase() === tokenAddress.toLowerCase() &&
+              token.id === tokenSymbol.toLowerCase()) ||
             (!token?.addr &&
               tokenAddress === '0x0000000000000000000000000000000000000000' &&
               token.id === tokenSymbol.toLowerCase()),
@@ -218,7 +223,7 @@ export const useValidateSendToken = () => {
         }
         return (
           chainInfo.chainId === `0x${hexNum}` &&
-          chainInfo.address === bridgeAddress &&
+          chainInfo.address.toLowerCase() === bridgeAddress.toLowerCase() &&
           tokenInfo?.length > 0 &&
           !!tokenInfo
         );
