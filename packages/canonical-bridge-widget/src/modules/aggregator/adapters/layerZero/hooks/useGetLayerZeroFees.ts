@@ -52,7 +52,14 @@ export const useGetLayerZeroFees = () => {
       );
 
       const address32Bytes = pad(address || DEFAULT_ADDRESS, { size: 32 });
-      const adapterParams = encodePacked(['uint16', 'uint256'], [1, 200000n]);
+      const dstGasLimit = await publicClient.readContract({
+        address: bridgeAddress,
+        abi: CAKE_PROXY_OFT_ABI,
+        functionName: 'minDstGasLookup',
+        args: [toTokenInfo?.layerZero?.raw?.endpointID, 0],
+      });
+      const gasLimit = dstGasLimit !== 0n && !!dstGasLimit ? dstGasLimit : 200000n;
+      const adapterParams = encodePacked(['uint16', 'uint256'], [1, gasLimit]);
       const callParams = [
         address,
         '0x0000000000000000000000000000000000000000', // zroPaymentAddress
