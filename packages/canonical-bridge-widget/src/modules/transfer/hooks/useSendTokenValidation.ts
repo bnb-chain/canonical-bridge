@@ -207,7 +207,11 @@ export const useValidateSendToken = () => {
       const hexNum = fromChainId?.toString(16);
       const chainInfo = mesonConfig.result.filter((chainInfo) => {
         const tokenInfo = chainInfo.tokens.filter(
-          (token) => token?.addr === tokenAddress && token.id === tokenSymbol.toLowerCase(),
+          (token) =>
+            (token?.addr === tokenAddress && token.id === tokenSymbol.toLowerCase()) ||
+            (!token?.addr &&
+              tokenAddress === '0x0000000000000000000000000000000000000000' &&
+              token.id === tokenSymbol.toLowerCase()),
         );
         if (!!tokenInfo && tokenInfo.length > 0) {
           console.log('Meson token info', tokenInfo);
