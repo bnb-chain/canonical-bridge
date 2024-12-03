@@ -38,16 +38,25 @@ export class LayerZero {
   }: ISendCakeTokenInput): Promise<Hash> {
     try {
       const address32Bytes = pad(userAddress, { size: 32 });
+      // check destination chain gas limit
+      const dstGasLimit = await publicClient.readContract({
+        address: bridgeAddress,
+        abi: CAKE_PROXY_OFT_ABI,
+        functionName: 'minDstGasLookup',
+        args: [dstEndpoint, 0],
+      });
+      const gasLimit =
+        dstGasLimit !== 0n && !!dstGasLimit ? dstGasLimit : gasAmount;
       /* version 1 - send token
        * version 2 - send token and air drop native gas on destination chain
        * https://docs.layerzero.network/v1/developers/evm/evm-guides/advanced/relayer-adapter-parameters#airdrop
        */
       const adapterParams =
         version === 1
-          ? encodePacked(['uint16', 'uint256'], [version, gasAmount])
+          ? encodePacked(['uint16', 'uint256'], [version, gasLimit])
           : encodePacked(
               ['uint16', 'uint', 'uint', 'address'],
-              [2, gasAmount, airDropGas, dstAddress]
+              [2, gasLimit, airDropGas, dstAddress]
             );
       const fees = await publicClient.readContract({
         address: bridgeAddress,
@@ -122,13 +131,22 @@ export class LayerZero {
     dstAddress = '0x',
   }: IGetEstimateFeeInput) {
     try {
+      // check destination chain gas limit
+      const dstGasLimit = await publicClient.readContract({
+        address: bridgeAddress,
+        abi: CAKE_PROXY_OFT_ABI,
+        functionName: 'minDstGasLookup',
+        args: [dstEndpoint, 0],
+      });
+      const gasLimit =
+        dstGasLimit !== 0n && !!dstGasLimit ? dstGasLimit : gasAmount;
       const address32Bytes = pad(userAddress, { size: 32 });
       const adapterParams =
         version === 1
-          ? encodePacked(['uint16', 'uint256'], [version, gasAmount])
+          ? encodePacked(['uint16', 'uint256'], [version, gasLimit])
           : encodePacked(
               ['uint16', 'uint', 'uint', 'address'],
-              [2, gasAmount, airDropGas, dstAddress]
+              [2, gasLimit, airDropGas, dstAddress]
             );
       const fees = await publicClient.readContract({
         address: bridgeAddress,
