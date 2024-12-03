@@ -6,11 +6,12 @@ import { formatNumber } from '@/core/utils/number';
 import { useAppSelector } from '@/modules/store/StoreProvider';
 import { useSolanaBalance } from '@/modules/wallet/hooks/useSolanaBalance';
 import { MIN_SOL_TO_ENABLED_TX } from '@/core/constants';
+import { useIsWalletCompatible } from '@/modules/wallet/hooks/useIsWalletCompatible';
 
 export const useInputValidation = () => {
   const { data } = useSolanaBalance();
+  const isWalletCompatible = useIsWalletCompatible();
   const solBalance = Number(data?.formatted);
-
   const fromChain = useAppSelector((state) => state.transfer.fromChain);
   const validateInput = useCallback(
     ({
@@ -59,7 +60,7 @@ export const useInputValidation = () => {
           } else {
             return { text: `${formatNumber(balance)}`, isError: false };
           }
-        } else {
+        } else if (isWalletCompatible) {
           return { isError: true, text: 'You have insufficient balance' };
         }
       } catch (e: any) {
@@ -67,7 +68,7 @@ export const useInputValidation = () => {
         console.log(e);
       }
     },
-    [fromChain?.chainType, solBalance],
+    [fromChain?.chainType, solBalance, isWalletCompatible],
   );
 
   return {
