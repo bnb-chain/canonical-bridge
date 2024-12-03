@@ -1,5 +1,11 @@
 # @bnb-chain/canonical-bridge-widget
 
+## 0.5.6
+
+### Patch Changes
+
+- 601fb21: Show input error message when wallet is connected
+
 ## 0.5.5
 
 ### Patch Changes
