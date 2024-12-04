@@ -74,10 +74,12 @@ export const useGetDeBridgeFees = () => {
           value: `${formatNumber(Number(protocolFee), 8)} ${nativeToken}`,
         });
         // Make sure native token can cover the protocol fee
-        const totalNativeAmount =
-          selectedToken?.deBridge?.raw?.address === '0x0000000000000000000000000000000000000000'
-            ? BigInt(fees?.fixFee) + parseUnits(sendValue, 18)
-            : BigInt(fees?.fixFee);
+        const totalNativeAmount = isNativeToken(
+          selectedToken?.deBridge?.raw?.address,
+          fromChain?.chainType,
+        )
+          ? BigInt(fees?.fixFee) + parseUnits(sendValue, nativeDecimals)
+          : BigInt(fees?.fixFee);
         if (nativeTokenBalance && nativeTokenBalance?.value < totalNativeAmount) {
           dispatch(
             setRouteError({
@@ -222,26 +224,6 @@ export const useGetDeBridgeFees = () => {
         acc[symbol] += value;
         return acc;
       }, {} as { [key: string]: number });
-
-      if (
-        fromChain?.chainType === 'solana' &&
-        isNativeToken(selectedToken?.deBridge?.raw?.address, fromChain?.chainType) &&
-        nativeToken &&
-        nativeTokenBalance
-      ) {
-        const totalNativeTokenCost = Number(result[nativeToken]) + Number(sendValue);
-        const userNativeTokenBalance = Number(nativeTokenBalance.formatted);
-
-        if (userNativeTokenBalance < totalNativeTokenCost) {
-          dispatch(
-            setRouteError({
-              deBridge: `Insufficient ${nativeToken} to cover protocol fee and market maker gas costs`,
-            }),
-          );
-          isDisplayError = true;
-        }
-      }
-
       const resultString = Object.keys(result)
         .map((symbol) => {
           return `${formatFeeAmount(result[symbol])} ${symbol}`;
