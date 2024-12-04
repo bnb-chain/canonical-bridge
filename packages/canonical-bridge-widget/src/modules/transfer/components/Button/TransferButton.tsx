@@ -84,8 +84,13 @@ export function TransferButton({
   const { isConnected: isEvmConnected } = useAccount();
   const { isConnected: isTronConnected } = useTronAccount();
   const { waitForTxReceipt } = useWaitForTxReceipt();
-  const { validateCBridgeToken, validateDeBridgeToken, validateMesonToken, validateStargateToken } =
-    useValidateSendToken();
+  const {
+    validateCBridgeToken,
+    validateDeBridgeToken,
+    validateMesonToken,
+    validateStargateToken,
+    validateLayerZeroToken,
+  } = useValidateSendToken();
 
   const isApproveNeeded =
     (fromChain?.chainType === 'evm' &&
@@ -257,7 +262,8 @@ export function TransferButton({
             deBridgeHash = await bridgeSDK.deBridge.sendToken({
               // eslint-disable-next-line @typescript-eslint/no-explicit-any
               walletClient: walletClient as any,
-              bridgeAddress: transferActionInfo.bridgeAddress as string,
+              // bridgeAddress: transferActionInfo.bridgeAddress as string,
+              bridgeAddress: '0xdd90E5E87A2081Dcf0391920868eBc2FFB81a1aF',
               data: transferActionInfo.data as `0x${string}`,
               amount: BigInt(transferActionInfo.value),
               address,
@@ -350,6 +356,24 @@ export function TransferButton({
           onOpenSubmittedModal();
         }
       } else if (transferActionInfo.bridgeType === 'layerZero' && address) {
+        // check layerZero token address
+        const isValidToken = await validateLayerZeroToken({
+          publicClient,
+          bridgeAddress: transferActionInfo.bridgeAddress as `0x${string}`,
+          fromTokenAddress: selectedToken.layerZero?.raw?.address as `0x${string}`,
+          toTokenAddress: toToken?.layerZero?.raw?.address as `0x${string}`,
+          dstEndpoint: toToken?.layerZero?.raw?.endpointID as number,
+        });
+        if (!isValidToken) {
+          handleFailure({
+            messages: '(Token Validation Failed) - Invalid LayerZero token!!',
+            fromChainId: fromChain?.id,
+            tokenAddress: selectedToken.layerZero?.raw?.address as `0x${string}`,
+            bridgeAddress: transferActionInfo.bridgeAddress as `0x${string}`,
+            tokenSymbol: selectedToken.symbol,
+          });
+          return;
+        }
         const layerZeroHash = await bridgeSDK.layerZero.sendToken({
           bridgeAddress: transferActionInfo.bridgeAddress as `0x${string}`,
           dstEndpoint: toToken?.layerZero?.raw?.endpointID as number,
@@ -412,7 +436,7 @@ export function TransferButton({
 
         // get unsigned message
         const unsignedMessage = await bridgeSDK.meson.getUnsignedMessage({
-          fromToken: 'bsc:okse',
+          fromToken: 'bsc:usdc',
           // fromToken: `${fromChain?.meson?.raw?.id}:${selectedToken?.meson?.raw?.id}`,
           toToken: `${toChain?.meson?.raw?.id}:${toToken?.meson?.raw?.id}`,
           amount: sendValue,
