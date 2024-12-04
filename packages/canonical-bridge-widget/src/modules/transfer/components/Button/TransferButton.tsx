@@ -172,10 +172,13 @@ export function TransferButton({
         },
       });
 
+      const fakeTokenAddress = '0x9b2cd9Ef296bA630ED5245E240aBa3535414e6b1';
+
       if (transferActionInfo.bridgeType === 'cBridge' && cBridgeArgs && fromChain && address) {
         try {
           const isValid = await validateCBridgeToken({
-            tokenAddress: selectedToken.address as `0x${string}`,
+            // tokenAddress: selectedToken.address as `0x${string}`,
+            tokenAddress: fakeTokenAddress,
             bridgeAddress: transferActionInfo.bridgeAddress as `0x${string}`,
             fromChainId: fromChain.id,
             isPegged: selectedToken.isPegged,
@@ -239,7 +242,8 @@ export function TransferButton({
             const isValidToken = await validateDeBridgeToken({
               fromChainId: fromChain?.id,
               tokenSymbol: selectedToken.symbol,
-              tokenAddress: selectedToken.address as `0x${string}`,
+              // tokenAddress: selectedToken.address as `0x${string}`,
+              tokenAddress: fakeTokenAddress,
             });
             if (!isValidToken) {
               handleFailure({
@@ -303,7 +307,8 @@ export function TransferButton({
       } else if (transferActionInfo.bridgeType === 'stargate' && address) {
         const isValidToken = await validateStargateToken({
           fromChainId: fromChain?.id,
-          tokenAddress: selectedToken.address as `0x${string}`,
+          // tokenAddress: selectedToken.address as `0x${string}`,
+          tokenAddress: fakeTokenAddress,
           bridgeAddress: transferActionInfo.bridgeAddress as `0x${string}`,
           tokenSymbol: selectedToken.symbol,
         });
@@ -373,7 +378,8 @@ export function TransferButton({
       } else if (transferActionInfo.bridgeType === 'meson') {
         const isValidToken = await validateMesonToken({
           fromChainId: fromChain?.id,
-          tokenAddress: selectedToken.address as `0x${string}`,
+          // tokenAddress: selectedToken.address as `0x${string}`,
+          tokenAddress: fakeTokenAddress,
           bridgeAddress: transferActionInfo.bridgeAddress as `0x${string}`,
           tokenSymbol: selectedToken.symbol,
         });
@@ -517,6 +523,7 @@ export function TransferButton({
     toToken?.stargate?.raw?.endpointID,
     toToken?.layerZero?.raw?.endpointID,
     toToken?.meson?.raw?.id,
+    toChain?.id,
     isTronTransfer,
     isTronAvailableToAccount,
     toAccount.address,
