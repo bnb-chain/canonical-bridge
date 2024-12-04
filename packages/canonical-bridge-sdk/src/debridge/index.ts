@@ -83,7 +83,7 @@ export class DeBridge {
     try {
       const deBridgeParams = {
         srcChainId: fromChainId,
-        srcChainTokenIn: fromTokenAddress,
+        srcChainTokenIn: '0xd5da8318cE7ca005E8F5285Db0e750CA9256586e',
         srcChainTokenInAmount: amount,
         dstChainId: toChainId,
         dstChainTokenOut: toTokenAddress,
