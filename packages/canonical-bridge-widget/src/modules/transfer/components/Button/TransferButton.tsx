@@ -436,7 +436,7 @@ export function TransferButton({
 
         // get unsigned message
         const unsignedMessage = await bridgeSDK.meson.getUnsignedMessage({
-          fromToken: 'bsc:usdc',
+          fromToken: 'bnb:usdc',
           // fromToken: `${fromChain?.meson?.raw?.id}:${selectedToken?.meson?.raw?.id}`,
           toToken: `${toChain?.meson?.raw?.id}:${toToken?.meson?.raw?.id}`,
           amount: sendValue,
