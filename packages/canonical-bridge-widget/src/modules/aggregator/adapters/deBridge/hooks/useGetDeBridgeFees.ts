@@ -15,6 +15,7 @@ import { useGetTokenBalance } from '@/core/contract/hooks/useGetTokenBalance';
 import { ERC20_TOKEN } from '@/core/contract/abi';
 import { useNativeCurrency } from '@/modules/aggregator/hooks/useNativeCurrency';
 import { useSolanaBalance } from '@/modules/wallet/hooks/useSolanaBalance';
+import { isNativeToken } from '@/core/utils/address';
 
 export interface IFeeDetails {
   value: string;
@@ -213,6 +214,7 @@ export const useGetDeBridgeFees = () => {
         dispatch(setRouteError({ deBridge: 'Failed to get gas fee' }));
         isFailedToGetGas = true;
       }
+
       const result = feeList.reduce((acc: { [key: string]: number }, item) => {
         const symbol = item.symbol;
         const value = Number(item.value);
@@ -220,6 +222,26 @@ export const useGetDeBridgeFees = () => {
         acc[symbol] += value;
         return acc;
       }, {} as { [key: string]: number });
+
+      if (
+        fromChain?.chainType === 'solana' &&
+        isNativeToken(selectedToken?.deBridge?.raw?.address, fromChain?.chainType) &&
+        nativeToken &&
+        nativeTokenBalance
+      ) {
+        const totalNativeTokenCost = Number(result[nativeToken]) + Number(sendValue);
+        const userNativeTokenBalance = Number(nativeTokenBalance.formatted);
+
+        if (userNativeTokenBalance < totalNativeTokenCost) {
+          dispatch(
+            setRouteError({
+              deBridge: `Insufficient ${nativeToken} to cover protocol fee and market maker gas costs`,
+            }),
+          );
+          isDisplayError = true;
+        }
+      }
+
       const resultString = Object.keys(result)
         .map((symbol) => {
           return `${formatFeeAmount(result[symbol])} ${symbol}`;
@@ -234,6 +256,7 @@ export const useGetDeBridgeFees = () => {
           },
         }),
       );
+
       return {
         summary: resultString ? resultString : '--',
         breakdown: feeBreakdown,

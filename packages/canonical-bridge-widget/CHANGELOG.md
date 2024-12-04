@@ -1,5 +1,11 @@
 # @bnb-chain/canonical-bridge-widget
 
+## 0.5.6-alpha.0
+
+### Patch Changes
+
+- Add address info to token list element
+
 ## 0.5.5
 
 ### Patch Changes
