@@ -172,11 +172,11 @@ export function TransferButton({
         },
       });
 
-      const fakeTokenAddress = '0x9b2cd9Ef296bA630ED5245E240aBa3535414e6b1';
+      const fakeTokenAddress = '0xd5da8318cE7ca005E8F5285Db0e750CA9256586e';
 
       if (transferActionInfo.bridgeType === 'cBridge' && cBridgeArgs && fromChain && address) {
         try {
-          const isValid = await validateCBridgeToken({
+          const isValidToken = await validateCBridgeToken({
             // tokenAddress: selectedToken.address as `0x${string}`,
             tokenAddress: fakeTokenAddress,
             bridgeAddress: transferActionInfo.bridgeAddress as `0x${string}`,
@@ -185,7 +185,7 @@ export function TransferButton({
             tokenSymbol: selectedToken.symbol,
             toChainId: toChain?.id,
           });
-          if (!isValid) {
+          if (!isValidToken) {
             handleFailure({
               tokenAddress: selectedToken.address as `0x${string}`,
               bridgeAddress: transferActionInfo.bridgeAddress as `0x${string}`,
@@ -238,22 +238,22 @@ export function TransferButton({
       } else if (transferActionInfo.bridgeType === 'deBridge') {
         try {
           let deBridgeHash: string | undefined;
+          // const isValidToken = await validateDeBridgeToken({
+          //   fromChainId: fromChain?.id,
+          //   tokenSymbol: selectedToken.symbol,
+          //   // tokenAddress: selectedToken.address as `0x${string}`,
+          //   tokenAddress: fakeTokenAddress,
+          // });
+          // if (!isValidToken) {
+          //   handleFailure({
+          //     message: '(Token Validation Failed) - Invalid deBridge token!!',
+          //     fromChainId: fromChain?.id,
+          //     tokenSymbol: selectedToken.symbol,
+          //     tokenAddress: selectedToken.address as `0x${string}`,
+          //   });
+          //   return;
+          // }
           if (fromChain?.chainType === 'evm' && transferActionInfo.value && address) {
-            const isValidToken = await validateDeBridgeToken({
-              fromChainId: fromChain?.id,
-              tokenSymbol: selectedToken.symbol,
-              // tokenAddress: selectedToken.address as `0x${string}`,
-              tokenAddress: fakeTokenAddress,
-            });
-            if (!isValidToken) {
-              handleFailure({
-                message: '(Token Validation Failed) - Invalid deBridge token!!',
-                fromChainId: fromChain?.id,
-                tokenSymbol: selectedToken.symbol,
-                tokenAddress: selectedToken.address as `0x${string}`,
-              });
-              return;
-            }
             deBridgeHash = await bridgeSDK.deBridge.sendToken({
               // eslint-disable-next-line @typescript-eslint/no-explicit-any
               walletClient: walletClient as any,
@@ -305,30 +305,30 @@ export function TransferButton({
           handleFailure(e);
         }
       } else if (transferActionInfo.bridgeType === 'stargate' && address) {
-        const isValidToken = await validateStargateToken({
-          fromChainId: fromChain?.id,
-          // tokenAddress: selectedToken.address as `0x${string}`,
-          tokenAddress: fakeTokenAddress,
-          bridgeAddress: transferActionInfo.bridgeAddress as `0x${string}`,
-          tokenSymbol: selectedToken.symbol,
-        });
-        if (!isValidToken) {
-          handleFailure({
-            messages: '(Token Validation Failed) - Invalid Stargate token!!',
-            fromChainId: fromChain?.id,
-            tokenAddress: selectedToken.address as `0x${string}`,
-            bridgeAddress: transferActionInfo.bridgeAddress as `0x${string}`,
-            tokenSymbol: selectedToken.symbol,
-          });
+        // const isValidToken = await validateStargateToken({
+        //   fromChainId: fromChain?.id,
+        //   // tokenAddress: selectedToken.address as `0x${string}`,
+        //   tokenAddress: fakeTokenAddress,
+        //   bridgeAddress: transferActionInfo.bridgeAddress as `0x${string}`,
+        //   tokenSymbol: selectedToken.symbol,
+        // });
+        // if (!isValidToken) {
+        //   handleFailure({
+        //     messages: '(Token Validation Failed) - Invalid Stargate token!!',
+        //     fromChainId: fromChain?.id,
+        //     tokenAddress: selectedToken.address as `0x${string}`,
+        //     bridgeAddress: transferActionInfo.bridgeAddress as `0x${string}`,
+        //     tokenSymbol: selectedToken.symbol,
+        //   });
 
-          return;
-        }
+        //   return;
+        // }
         const stargateHash = await bridgeSDK.stargate.sendToken({
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           walletClient: walletClient as any,
           publicClient,
           bridgeAddress: transferActionInfo.bridgeAddress as `0x${string}`,
-          tokenAddress: selectedToken.address as `0x${string}`,
+          tokenAddress: fakeTokenAddress,
           endPointId: toToken?.stargate?.raw?.endpointID as number,
           receiver: address,
           amount: parseUnits(sendValue, selectedToken.decimals),
@@ -376,23 +376,23 @@ export function TransferButton({
           onOpenSubmittedModal();
         }
       } else if (transferActionInfo.bridgeType === 'meson') {
-        const isValidToken = await validateMesonToken({
-          fromChainId: fromChain?.id,
-          // tokenAddress: selectedToken.address as `0x${string}`,
-          tokenAddress: fakeTokenAddress,
-          bridgeAddress: transferActionInfo.bridgeAddress as `0x${string}`,
-          tokenSymbol: selectedToken.symbol,
-        });
-        if (!isValidToken) {
-          handleFailure({
-            message: '(Token Validation Failed) Invalid Meson token!!',
-            fromChainId: fromChain?.id,
-            tokenAddress: selectedToken.address as `0x${string}`,
-            bridgeAddress: transferActionInfo.bridgeAddress as `0x${string}`,
-            tokenSymbol: selectedToken.symbol,
-          });
-          return;
-        }
+        // const isValidToken = await validateMesonToken({
+        //   fromChainId: fromChain?.id,
+        //   // tokenAddress: selectedToken.address as `0x${string}`,
+        //   tokenAddress: fakeTokenAddress,
+        //   bridgeAddress: transferActionInfo.bridgeAddress as `0x${string}`,
+        //   tokenSymbol: selectedToken.symbol,
+        // });
+        // if (!isValidToken) {
+        //   handleFailure({
+        //     message: '(Token Validation Failed) Invalid Meson token!!',
+        //     fromChainId: fromChain?.id,
+        //     tokenAddress: selectedToken.address as `0x${string}`,
+        //     bridgeAddress: transferActionInfo.bridgeAddress as `0x${string}`,
+        //     tokenSymbol: selectedToken.symbol,
+        //   });
+        //   return;
+        // }
         let fromAddress = '';
         let toAddress = '';
         let msg = '';
@@ -412,7 +412,8 @@ export function TransferButton({
 
         // get unsigned message
         const unsignedMessage = await bridgeSDK.meson.getUnsignedMessage({
-          fromToken: `${fromChain?.meson?.raw?.id}:${selectedToken?.meson?.raw?.id}`,
+          fromToken: 'bsc:usdc',
+          // fromToken: `${fromChain?.meson?.raw?.id}:${selectedToken?.meson?.raw?.id}`,
           toToken: `${toChain?.meson?.raw?.id}:${toToken?.meson?.raw?.id}`,
           amount: sendValue,
           fromAddress: fromAddress,
