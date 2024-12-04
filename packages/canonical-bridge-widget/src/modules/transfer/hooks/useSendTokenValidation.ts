@@ -1,5 +1,6 @@
 /* eslint-disable no-console */
 import axios from 'axios';
+import { type PublicClient } from 'viem';
 
 import {
   CBRIDGE_ENDPOINT,
@@ -10,6 +11,8 @@ import {
 import { ICBridgeTransferConfig, IDeBridgeToken, IStargateTokenList } from '@/modules/aggregator';
 import { IMesonTokenList } from '@/modules/aggregator/adapters/meson/types';
 import { stargateChainKey } from '@/modules/aggregator/adapters/stargate/const';
+import { isEvmAddress } from '@/core/utils/address';
+import { CAKE_PROXY_OFT_ABI } from '@/modules/aggregator/adapters/layerZero/abi/cakeProxyOFT';
 
 interface ICBridgeTokenValidateParams {
   isPegged: boolean;
@@ -25,6 +28,7 @@ interface IDeBridgeTokenValidateParams {
   tokenAddress: `0x${string}`;
   tokenSymbol: string;
   fromChainId?: number;
+  toChainId?: number;
 }
 
 interface IStargateTokenValidateParams {
@@ -59,6 +63,7 @@ export const useValidateSendToken = () => {
         `${CBRIDGE_ENDPOINT}/getTransferConfigsForAll`,
       );
       if (!cBridgeConfig) return false;
+      if (!isEvmAddress(tokenAddress) || !isEvmAddress(bridgeAddress)) return false;
       if (isPegged === true) {
         // pegged token
         const peggedToken = cBridgeConfig.pegged_pair_configs.filter((pair) => {
@@ -119,11 +124,13 @@ export const useValidateSendToken = () => {
   // deBridge
   const validateDeBridgeToken = async ({
     fromChainId,
+    toChainId,
     tokenSymbol,
     tokenAddress,
   }: IDeBridgeTokenValidateParams) => {
     try {
-      if (!fromChainId || !tokenAddress || !tokenSymbol) return false;
+      if (!fromChainId || !tokenAddress || !tokenSymbol || !toChainId) return false;
+      if (!isEvmAddress(tokenAddress)) return false;
       const { data: deBridgeConfig } = await axios.get<{
         tokens: { [key: string]: IDeBridgeToken };
       }>(`${DEBRIDGE_ENDPOINT}/token-list?chainId=${fromChainId}`);
@@ -159,6 +166,7 @@ export const useValidateSendToken = () => {
   }: IStargateTokenValidateParams) => {
     try {
       if (!fromChainId || !tokenAddress || !bridgeAddress || !tokenSymbol) return false;
+      if (!isEvmAddress(tokenAddress) || !isEvmAddress(bridgeAddress)) return false;
       const { data: stargateConfig } = await axios.get<{ data: IStargateTokenList }>(
         `${STARGATE_ENDPOINT}`,
       );
@@ -195,6 +203,36 @@ export const useValidateSendToken = () => {
     }
   };
 
+  // layerZero
+  const validateLayerZeroToken = async ({
+    publicClient,
+    bridgeAddress,
+    fromTokenAddress,
+    toTokenAddress,
+    dstEndpoint,
+  }: {
+    publicClient: PublicClient;
+    bridgeAddress: `0x${string}`;
+    fromTokenAddress: `0x${string}`;
+    toTokenAddress: `0x${string}`;
+    dstEndpoint?: number;
+  }) => {
+    if (!publicClient || !bridgeAddress || !fromTokenAddress || !dstEndpoint || !toTokenAddress) {
+      return false;
+    }
+    const supportedToken = await publicClient.readContract({
+      address: bridgeAddress as `0x${string}`,
+      abi: CAKE_PROXY_OFT_ABI,
+      functionName: 'token',
+    });
+
+    console.log('supportedToken', supportedToken);
+    if (supportedToken.toLowerCase() === fromTokenAddress.toLowerCase()) {
+      return true;
+    }
+    return false;
+  };
+
   // Meson
   const validateMesonToken = async ({
     fromChainId,
@@ -204,6 +242,7 @@ export const useValidateSendToken = () => {
   }: IMesonTokenValidateParams) => {
     try {
       if (!fromChainId || !tokenAddress || !tokenSymbol || !bridgeAddress) return false;
+      if (!isEvmAddress(tokenAddress) || !isEvmAddress(bridgeAddress)) return false;
       const { data: mesonConfig } = await axios.get<{ result: IMesonTokenList[] }>(
         `${MESON_ENDPOINT}/limits`,
       );
@@ -244,5 +283,11 @@ export const useValidateSendToken = () => {
     }
   };
 
-  return { validateCBridgeToken, validateDeBridgeToken, validateStargateToken, validateMesonToken };
+  return {
+    validateCBridgeToken,
+    validateDeBridgeToken,
+    validateStargateToken,
+    validateMesonToken,
+    validateLayerZeroToken,
+  };
 };
