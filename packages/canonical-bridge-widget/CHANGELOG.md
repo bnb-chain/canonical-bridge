@@ -1,5 +1,12 @@
 # @bnb-chain/canonical-bridge-widget
 
+## 0.5.7
+
+### Patch Changes
+
+- 034cc4f: Fix token balance issue
+- 034cc4f: Add token address to token element
+
 ## 0.5.7-alpha.1
 
 ### Patch Changes
