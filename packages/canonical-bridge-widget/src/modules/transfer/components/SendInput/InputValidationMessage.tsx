@@ -27,7 +27,7 @@ export const InputValidationMessage = () => {
 
   useEffect(() => {
     const balance = getTokenBalance({
-      symbol: selectedToken?.displaySymbol,
+      address: selectedToken?.address?.toLowerCase(),
     });
 
     const balanceResult = validateInput({
@@ -52,14 +52,14 @@ export const InputValidationMessage = () => {
     sendValue,
     dispatch,
     estimatedAmount,
-    minMaxSendAmt?.min,
-    minMaxSendAmt?.max,
+    minMaxSendAmt.min,
+    minMaxSendAmt.max,
     selectedToken?.decimals,
     selectedToken?.isPegged,
     transferActionInfo,
     validateInput,
     getTokenBalance,
-    selectedToken?.displaySymbol,
+    selectedToken?.address,
   ]);
 
   const errorMsg = balanceInputError ?? error?.text;

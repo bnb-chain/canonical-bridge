@@ -7,11 +7,11 @@ export function useTokenBalance() {
   const tokenBalances = useAppSelector((state) => state.aggregator.tokenBalances);
 
   const getTokenBalance = useCallback(
-    (params: IBridgeToken | { symbol?: string } = {}) => {
-      const tokenSymbol = (params as IBridgeToken).displaySymbol ?? params.symbol;
+    (params: IBridgeToken | { address?: string } = {}) => {
+      const tokenAddress = (params as IBridgeToken).address ?? params.address;
 
-      if (tokenSymbol) {
-        return tokenBalances[tokenSymbol.toUpperCase()];
+      if (tokenAddress) {
+        return tokenBalances[tokenAddress.toLowerCase()];
       }
     },
     [tokenBalances],

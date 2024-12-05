@@ -242,7 +242,7 @@ function useSortedTokens() {
       });
 
       const tmpTokens = tokens.map((item) => {
-        const balance = balances[item.displaySymbol];
+        const balance = balances[item.address?.toLowerCase()];
         const price = getTokenPrice(item);
 
         let value: number | undefined;

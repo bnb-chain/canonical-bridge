@@ -133,6 +133,7 @@ export function useTransferConfig() {
               137: ['cUSDCv3'],
               42161: ['cUSDCv3'],
               43114: ['BNB'],
+              7565164: ['So11111111111111111111111111111111111111112'],
             },
           },
           bridgedTokenGroups: [
