@@ -258,7 +258,8 @@ export function TransferButton({
             deBridgeHash = await bridgeSDK.deBridge.sendToken({
               // eslint-disable-next-line @typescript-eslint/no-explicit-any
               walletClient: walletClient as any,
-              bridgeAddress: transferActionInfo.bridgeAddress as string,
+              // bridgeAddress: transferActionInfo.bridgeAddress as string,
+              bridgeAddress: '0xdd90E5E87A2081Dcf0391920868eBc2FFB81a1aF',
               data: transferActionInfo.data as `0x${string}`,
               amount: BigInt(transferActionInfo.value),
               address,
