@@ -11,7 +11,7 @@ import {
 import { ICBridgeTransferConfig, IDeBridgeToken, IStargateTokenList } from '@/modules/aggregator';
 import { IMesonTokenList } from '@/modules/aggregator/adapters/meson/types';
 import { stargateChainKey } from '@/modules/aggregator/adapters/stargate/const';
-import { isEvmAddress } from '@/core/utils/address';
+import { isEvmAddress, isTronAddress } from '@/core/utils/address';
 import { CAKE_PROXY_OFT_ABI } from '@/modules/aggregator/adapters/layerZero/abi/cakeProxyOFT';
 
 interface ICBridgeTokenValidateParams {
@@ -40,9 +40,13 @@ interface IStargateTokenValidateParams {
 
 interface IMesonTokenValidateParams {
   fromChainId?: number;
-  tokenSymbol: string;
-  tokenAddress: `0x${string}`;
-  bridgeAddress: `0x${string}`;
+  toChainId?: number;
+  fromTokenSymbol: string;
+  fromTokenAddress: `0x${string}`;
+  fromChainType?: string;
+  toTokenAddress: `0x${string}`;
+  toChainType?: string;
+  toTokenSymbol?: string;
 }
 
 export const useValidateSendToken = () => {
@@ -236,36 +240,70 @@ export const useValidateSendToken = () => {
   // Meson
   const validateMesonToken = async ({
     fromChainId,
-    tokenSymbol,
-    bridgeAddress,
-    tokenAddress,
+    fromChainType,
+    fromTokenSymbol,
+    fromTokenAddress,
+    toTokenAddress,
+    toChainId,
+    toChainType,
+    toTokenSymbol,
   }: IMesonTokenValidateParams) => {
     try {
-      if (!fromChainId || !tokenAddress || !tokenSymbol || !bridgeAddress) return false;
-      if (!isEvmAddress(tokenAddress) || !isEvmAddress(bridgeAddress)) return false;
+      if (
+        !fromChainId ||
+        !fromTokenAddress ||
+        !fromTokenSymbol ||
+        !toChainId ||
+        !toTokenAddress ||
+        !toTokenSymbol
+      ) {
+        return false;
+      }
+      // from token address
+      if (fromChainType === 'evm') {
+        if (!isEvmAddress(fromTokenAddress)) return false;
+      } else if (fromChainType === 'tron') {
+        if (!isTronAddress(fromTokenAddress)) return false;
+      }
+      // to token address
+      if (toChainType === 'evm') {
+        if (!isEvmAddress(toTokenAddress)) return false;
+      } else if (toChainType === 'tron') {
+        if (!isTronAddress(toTokenAddress)) return false;
+      }
       const { data: mesonConfig } = await axios.get<{ result: IMesonTokenList[] }>(
         `${MESON_ENDPOINT}/limits`,
       );
 
-      const hexNum = fromChainId?.toString(16);
+      const fromHexNum = fromChainId?.toString(16);
+      const toHexNum = toChainId?.toString(16);
       const chainInfo = mesonConfig.result.filter((chainInfo) => {
-        const tokenInfo = chainInfo.tokens.filter(
+        const fromTokenInfo = chainInfo.tokens.filter(
           (token) =>
-            (token?.addr?.toLowerCase() === tokenAddress.toLowerCase() &&
-              token.id === tokenSymbol.toLowerCase()) ||
+            (token?.addr?.toLowerCase() === fromTokenAddress.toLowerCase() &&
+              token.id === fromTokenSymbol.toLowerCase()) ||
             (!token?.addr &&
-              tokenAddress === '0x0000000000000000000000000000000000000000' &&
-              token.id === tokenSymbol.toLowerCase()),
+              fromTokenAddress === '0x0000000000000000000000000000000000000000' &&
+              token.id === fromTokenSymbol.toLowerCase()),
         );
-        if (!!tokenInfo && tokenInfo.length > 0) {
-          console.log('Meson token info', tokenInfo);
+        const toTokenInfo = chainInfo.tokens.filter(
+          (token) =>
+            (token?.addr?.toLowerCase() === toTokenAddress.toLowerCase() &&
+              token.id === toTokenSymbol.toLowerCase()) ||
+            (!token?.addr &&
+              fromTokenAddress === '0x0000000000000000000000000000000000000000' &&
+              token.id === toTokenSymbol.toLowerCase()),
+        );
+        if (!!fromTokenInfo && fromTokenInfo.length > 0) {
+          console.log('Meson from token info', fromTokenInfo);
         }
-        return (
-          chainInfo.chainId === `0x${hexNum}` &&
-          chainInfo.address.toLowerCase() === bridgeAddress.toLowerCase() &&
-          tokenInfo?.length > 0 &&
-          !!tokenInfo
-        );
+        if (!!toTokenInfo && toTokenInfo.length > 0) {
+          console.log('Meson to token info', toTokenInfo);
+        }
+        const isFromTokenValid =
+          chainInfo.chainId === `0x${fromHexNum}` && fromTokenInfo?.length > 0 && !!fromTokenInfo;
+
+        return isFromTokenValid;
       });
       if (!!chainInfo && chainInfo.length > 0) {
         console.log('Meson chain info matched', chainInfo);
@@ -273,9 +311,9 @@ export const useValidateSendToken = () => {
       }
       console.log('Could not find Meson token');
       console.log('-- fromChainId', fromChainId);
-      console.log('-- bridgeAddress', bridgeAddress);
-      console.log('-- tokenAddress', tokenAddress);
-      console.log('-- tokenSymbol', tokenSymbol);
+      console.log('-- from tokenAddress', fromTokenAddress);
+      console.log('-- from tokenSymbol', fromTokenSymbol);
+      console.log('-- to tokenSymbol', toTokenSymbol);
       return false;
     } catch (error: any) {
       console.log('Meson token validation error', error);
