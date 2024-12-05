@@ -240,20 +240,20 @@ export function TransferButton({
       } else if (transferActionInfo.bridgeType === 'deBridge') {
         try {
           let deBridgeHash: string | undefined;
-          // const isValidToken = await validateDeBridgeToken({
-          //   fromChainId: fromChain?.id,
-          //   tokenSymbol: selectedToken.symbol,
-          //   tokenAddress: selectedToken.address as `0x${string}`,
-          // });
-          // if (!isValidToken) {
-          //   handleFailure({
-          //     message: '(Token Validation Failed) - Invalid deBridge token!!',
-          //     fromChainId: fromChain?.id,
-          //     tokenSymbol: selectedToken.symbol,
-          //     tokenAddress: selectedToken.address as `0x${string}`,
-          //   });
-          //   return;
-          // }
+          const isValidToken = await validateDeBridgeToken({
+            fromChainId: fromChain?.id,
+            tokenSymbol: selectedToken.symbol,
+            tokenAddress: selectedToken.address as `0x${string}`,
+          });
+          if (!isValidToken) {
+            handleFailure({
+              message: '(Token Validation Failed) - Invalid deBridge token!!',
+              fromChainId: fromChain?.id,
+              tokenSymbol: selectedToken.symbol,
+              tokenAddress: selectedToken.address as `0x${string}`,
+            });
+            return;
+          }
           if (fromChain?.chainType === 'evm' && transferActionInfo.value && address) {
             deBridgeHash = await bridgeSDK.deBridge.sendToken({
               // eslint-disable-next-line @typescript-eslint/no-explicit-any
