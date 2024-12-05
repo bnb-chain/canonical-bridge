@@ -9,6 +9,7 @@ import { ChainType, IBridgeToken } from '@/modules/aggregator/types';
 import { ERC20_TOKEN } from '@/core/contract/abi';
 import { isChainOrTokenCompatible } from '@/modules/aggregator/shared/isChainOrTokenCompatible';
 import { isSameAddress } from '@/core/utils/address';
+import { EVM_NATIVE_TOKEN_ADDRESS, SOLANA_NATIVE_TOKEN_ADDRESS } from '@/core/constants';
 
 export async function getTokenBalances({
   chainType,
@@ -99,15 +100,17 @@ async function getEvmTokenBalances({
       values.map((value, index) => {
         const token = tokens[index];
 
-        const symbol = token.displaySymbol?.toUpperCase();
-        balances[symbol] =
+        const address = token.address?.toLowerCase();
+        balances[address] =
           typeof value === 'undefined' ? undefined : formatUnits(BigInt(value), token.decimals);
       });
     }
 
     if (nativeTokenRes.status === 'fulfilled') {
-      const symbol = chain.nativeCurrency.symbol?.toUpperCase();
-      balances[symbol] = formatUnits(BigInt(nativeTokenRes.value), chain.nativeCurrency.decimals);
+      balances[EVM_NATIVE_TOKEN_ADDRESS] = formatUnits(
+        BigInt(nativeTokenRes.value),
+        chain.nativeCurrency.decimals,
+      );
     }
 
     return balances;
@@ -162,7 +165,7 @@ async function getTronTokenBalances({
       );
 
       if (token) {
-        balances[token.displaySymbol.toUpperCase()] = formatUnits(
+        balances[token.address?.toLowerCase()] = formatUnits(
           BigInt(tokenInfo.balance),
           token.decimals,
         );
@@ -170,7 +173,7 @@ async function getTronTokenBalances({
     });
 
     tokens.forEach((t) => {
-      const key = t.displaySymbol.toUpperCase();
+      const key = t.address.toLowerCase();
       balances[key] = balances[key] ?? '0';
     });
 
@@ -211,20 +214,17 @@ async function getSolanaTokenBalances({
 
         const token = tokens.find((t) => isSameAddress(t.address, accountInfo.mint.toBase58()));
         if (token) {
-          balances[token.displaySymbol.toUpperCase()] = formatUnits(
-            accountInfo.amount,
-            token.decimals,
-          );
+          balances[token.address?.toLowerCase()] = formatUnits(accountInfo.amount, token.decimals);
         }
       });
     }
 
     if (nativeTokenRes.status === 'fulfilled') {
-      balances['SOL'] = String(nativeTokenRes.value / LAMPORTS_PER_SOL);
+      balances[SOLANA_NATIVE_TOKEN_ADDRESS] = String(nativeTokenRes.value / LAMPORTS_PER_SOL);
     }
 
     tokens.forEach((t) => {
-      const key = t.displaySymbol.toUpperCase();
+      const key = t.address?.toLowerCase();
       balances[key] = balances[key] ?? '0';
     });
 
