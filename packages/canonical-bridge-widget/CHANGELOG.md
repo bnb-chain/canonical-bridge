@@ -1,5 +1,14 @@
 # @bnb-chain/canonical-bridge-widget
 
+## 0.5.8
+
+### Patch Changes
+
+- 49e31fc: Update token list sort rules
+- f86dcd0: Show token address on `You Receive`
+- f86dcd0: Support searching token by address
+- f86dcd0: Show token address on `You Receive`
+
 ## 0.5.8-alpha.5
 
 ### Patch Changes
