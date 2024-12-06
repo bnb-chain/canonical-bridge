@@ -38,28 +38,11 @@ export function useTokenList(tokens: IBridgeToken[] = [], keyword?: string) {
     const sortedTokens = sortTokens({
       tokens: tmpTokens,
       orders: transferConfig.order?.tokens,
-    })
-      .sort((a, b) => {
-        if (keyword) {
-          const isA = isChainOrTokenCompatible(a);
-          const isB = isChainOrTokenCompatible(b);
-          const findA = a.displaySymbol?.toLowerCase()?.includes(keyword?.toLowerCase());
-          const findB = b.displaySymbol?.toLowerCase()?.includes(keyword?.toLowerCase());
-
-          if (findA && isA) {
-            return -1;
-          }
-          if (findB && isB) {
-            return 1;
-          }
-        }
-        return 0;
-      })
-      .sort((a) => {
-        return isSameAddress(a.address, selectedToken?.address) && isChainOrTokenCompatible(a)
-          ? -1
-          : 0;
-      });
+    }).sort((a) => {
+      return isSameAddress(a.address, selectedToken?.address) && isChainOrTokenCompatible(a)
+        ? -1
+        : 0;
+    });
 
     return sortedTokens;
   }, [
@@ -68,7 +51,6 @@ export function useTokenList(tokens: IBridgeToken[] = [], keyword?: string) {
     getTokenBalance,
     getTokenPrice,
     selectedToken?.address,
-    keyword,
   ]);
 
   return { data: sortedTokens, isLoading: isLoadingTokenBalances || isLoadingTokenPrices };

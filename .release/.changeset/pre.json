@@ -6,6 +6,7 @@
     "@bnb-chain/canonical-bridge-widget": "0.5.7"
   },
   "changesets": [
+    "eighty-clouds-jog",
     "light-emus-switch",
     "sharp-dryers-hear",
     "slimy-crabs-know"

@@ -1,5 +1,11 @@
 # @bnb-chain/canonical-bridge-widget
 
+## 0.5.8-alpha.5
+
+### Patch Changes
+
+- Update token list sort rules
+
 ## 0.5.8-alpha.4
 
 ### Patch Changes
