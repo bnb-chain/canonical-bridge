@@ -44,7 +44,7 @@ export const RouteName = React.memo(
             w={['16px', '16px', '16px', '20px']}
             h={['16px', '16px', '16px', '20px']}
             borderRadius={'100%'}
-            mb={['4px', '4px', '4px', '0']}
+            mb={['0', '0', '4px', '0']}
           />
         ) : bridgeType === 'stargate' ? (
           <StarGateLogo w={['16px', '16px', '16px', '20px']} h={['16px', '16px', '16px', '20px']} />
@@ -63,7 +63,7 @@ export const RouteName = React.memo(
             w={['16px', '16px', '16px', '20px']}
             h={['16px', '16px', '16px', '20px']}
             borderRadius={'100%'}
-            mb={['4px', '4px', '4px', '0']}
+            mb={['0', '0', '4px', '0']}
           />
         ) : null}
 

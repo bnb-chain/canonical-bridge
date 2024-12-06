@@ -22,7 +22,7 @@ export function IconImage(props: IconImageProps) {
           className="default-icon"
           size={boxSize}
           {...restProps}
-          bg={fallbackBgColor ?? theme.colors[colorMode].support.primary[1]}
+          bg={fallbackBgColor ?? theme.colors[colorMode].support.primary[4]}
         />
       ) : (
         <Image

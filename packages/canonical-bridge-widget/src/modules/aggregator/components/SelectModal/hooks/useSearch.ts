@@ -15,7 +15,7 @@ export function useSearch<T>(props: UseSearchProps<T>) {
   };
 
   const result = useMemo(() => {
-    return data.filter((item) => filter(item, keyword.toLowerCase())).sort(sorter);
+    return data.filter((item) => filter(item, keyword)).sort(sorter);
   }, [data, filter, keyword, sorter]);
 
   const isNoResult = keyword.length > 0 && !result.length;
@@ -24,5 +24,6 @@ export function useSearch<T>(props: UseSearchProps<T>) {
     onSearch,
     isNoResult,
     result,
+    keyword,
   };
 }

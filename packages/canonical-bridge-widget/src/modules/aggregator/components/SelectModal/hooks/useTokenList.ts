@@ -9,7 +9,7 @@ import { sortTokens } from '@/modules/aggregator/shared/sortTokens';
 import { useAggregator } from '@/modules/aggregator/components/AggregatorProvider';
 import { isChainOrTokenCompatible } from '@/modules/aggregator/shared/isChainOrTokenCompatible';
 
-export function useTokenList(tokens: IBridgeToken[] = []) {
+export function useTokenList(tokens: IBridgeToken[] = [], keyword?: string) {
   const selectedToken = useAppSelector((state) => state.transfer.selectedToken);
   const isLoadingTokenBalances = useAppSelector((state) => state.aggregator.isLoadingTokenBalances);
   const isLoadingTokenPrices = useAppSelector((state) => state.aggregator.isLoadingTokenPrices);
@@ -38,19 +38,37 @@ export function useTokenList(tokens: IBridgeToken[] = []) {
     const sortedTokens = sortTokens({
       tokens: tmpTokens,
       orders: transferConfig.order?.tokens,
-    }).sort((a) => {
-      return isSameAddress(a.address, selectedToken?.address) && isChainOrTokenCompatible(a)
-        ? -1
-        : 0;
-    });
+    })
+      .sort((a, b) => {
+        if (keyword) {
+          const isA = isChainOrTokenCompatible(a);
+          const isB = isChainOrTokenCompatible(b);
+          const findA = a.displaySymbol?.toLowerCase()?.includes(keyword?.toLowerCase());
+          const findB = b.displaySymbol?.toLowerCase()?.includes(keyword?.toLowerCase());
+
+          if (findA && isA) {
+            return -1;
+          }
+          if (findB && isB) {
+            return 1;
+          }
+        }
+        return 0;
+      })
+      .sort((a) => {
+        return isSameAddress(a.address, selectedToken?.address) && isChainOrTokenCompatible(a)
+          ? -1
+          : 0;
+      });
 
     return sortedTokens;
   }, [
+    tokens,
     transferConfig.order?.tokens,
     getTokenBalance,
     getTokenPrice,
     selectedToken?.address,
-    tokens,
+    keyword,
   ]);
 
   return { data: sortedTokens, isLoading: isLoadingTokenBalances || isLoadingTokenPrices };
