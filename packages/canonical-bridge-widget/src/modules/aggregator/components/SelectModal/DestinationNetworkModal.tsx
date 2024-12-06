@@ -35,7 +35,7 @@ export function DestinationNetworkModal(props: DestinationNetworkModalProps) {
   });
 
   const { isNoResult, result, onSearch } = useSearch({
-    filter: (item, keyword) => item.name.toLowerCase().includes(keyword),
+    filter: (item, keyword) => item.name.toLowerCase().includes(keyword?.toLowerCase()),
     sorter: (a) => (toChain?.id === a.id ? -1 : 0),
     data: toChains,
   });

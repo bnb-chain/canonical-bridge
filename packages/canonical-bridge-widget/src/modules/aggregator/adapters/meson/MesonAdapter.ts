@@ -126,7 +126,7 @@ export class MesonAdapter extends BaseAdapter<IMesonChain[], IMesonChain, IMeson
 
   public getTokenInfo({ chainId, token }: { chainId: number; token: IMesonToken }) {
     return {
-      name: (token as any).id, // TODO
+      name: (token as any).id?.toUpperCase(), // TODO
       symbol: token.id.toUpperCase(),
       address: token.addr ?? '0x0000000000000000000000000000000000000000',
       decimals: token.decimals,
