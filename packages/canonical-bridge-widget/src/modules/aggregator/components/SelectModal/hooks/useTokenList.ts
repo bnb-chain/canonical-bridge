@@ -9,7 +9,7 @@ import { sortTokens } from '@/modules/aggregator/shared/sortTokens';
 import { useAggregator } from '@/modules/aggregator/components/AggregatorProvider';
 import { isChainOrTokenCompatible } from '@/modules/aggregator/shared/isChainOrTokenCompatible';
 
-export function useTokenList(tokens: IBridgeToken[] = []) {
+export function useTokenList(tokens: IBridgeToken[] = [], keyword?: string) {
   const selectedToken = useAppSelector((state) => state.transfer.selectedToken);
   const isLoadingTokenBalances = useAppSelector((state) => state.aggregator.isLoadingTokenBalances);
   const isLoadingTokenPrices = useAppSelector((state) => state.aggregator.isLoadingTokenPrices);
@@ -46,11 +46,11 @@ export function useTokenList(tokens: IBridgeToken[] = []) {
 
     return sortedTokens;
   }, [
+    tokens,
     transferConfig.order?.tokens,
     getTokenBalance,
     getTokenPrice,
     selectedToken?.address,
-    tokens,
   ]);
 
   return { data: sortedTokens, isLoading: isLoadingTokenBalances || isLoadingTokenPrices };

@@ -209,6 +209,7 @@ export const ReceiveInfo = ({ onOpen }: ReceiveInfoProps) => {
                         receiveAmt ? formatNumber(Number(Number(receiveAmt)), 8) : undefined
                       }
                       toTokenInfo={toTokenInfo?.[bridgeType]}
+                      hoverToShowTokenAddress={false}
                     />
                   )}
                   <Flex flexDir={'column'} gap={'4px'}>

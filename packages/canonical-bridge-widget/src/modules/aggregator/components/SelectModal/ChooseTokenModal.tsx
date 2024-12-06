@@ -43,17 +43,18 @@ export function ChooseTokenModal(props: ChooseTokenModalProps) {
     toChainId: toChain?.id,
   });
 
-  const { isNoResult, result, onSearch } = useSearch({
+  const { isNoResult, result, keyword, onSearch } = useSearch({
     data: tokens,
     filter: (item, keyword) => {
       return (
-        item.displaySymbol?.toLowerCase().includes(keyword) ||
-        item.name?.toLowerCase().includes(keyword)
+        item.displaySymbol?.toLowerCase().includes(keyword?.toLowerCase()) ||
+        item.name?.toLowerCase().includes(keyword?.toLowerCase()) ||
+        isSameAddress(item.address, keyword)
       );
     },
   });
 
-  const { isLoading, data } = useTokenList(result);
+  const { isLoading, data } = useTokenList(result, keyword);
 
   const evmAccount = useAccount();
   const tronAccount = useTronAccount();
@@ -108,7 +109,7 @@ export function ChooseTokenModal(props: ChooseTokenModalProps) {
                 iconUrl={item.icon}
                 isActive={isActive}
                 isDisabled={isDisabled}
-                data-address={item.address?.toLowerCase()}
+                data-address={item.address}
                 incompatibleTooltip={formatMessage({
                   id: 'select-modal.token.incompatible.tooltip',
                 })}
@@ -146,24 +147,22 @@ export function ChooseTokenModal(props: ChooseTokenModalProps) {
                       <Flex className="bccb-widget-token-address-link" h="16px" overflow="hidden">
                         <Flex
                           flexDir="column"
-                          className={isNative || isActive ? undefined : 'token-info'}
+                          className={isNative ? undefined : 'token-info'}
                           transitionDuration="normal"
                           whiteSpace="nowrap"
                           w="100%"
                           color={theme.colors[colorMode].text.secondary}
                         >
-                          {(!isActive || isNative) && (
-                            <Text
-                              className="token-name"
-                              isTruncated
-                              flexShrink={0}
-                              fontSize="12px"
-                              fontWeight={500}
-                              lineHeight="16px"
-                            >
-                              {item.name}
-                            </Text>
-                          )}
+                          <Text
+                            className="token-name"
+                            isTruncated
+                            flexShrink={0}
+                            fontSize="12px"
+                            fontWeight={500}
+                            lineHeight="16px"
+                          >
+                            {item.name}
+                          </Text>
                           {!isNative && (
                             <TokenAddress
                               tokenUrlPattern={fromChain?.tokenUrlPattern}

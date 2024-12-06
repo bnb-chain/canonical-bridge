@@ -50,7 +50,7 @@ export function isEvmAddress(address?: string) {
   return !!address && /^0x[a-f0-9]{40}$/i.test(address);
 }
 
-export function isNativeToken(tokenAddress: string, chainType: ChainType = 'evm') {
+export function isNativeToken(tokenAddress?: string, chainType: ChainType = 'evm') {
   if (chainType === 'solana') {
     return tokenAddress === '11111111111111111111111111111111';
   }

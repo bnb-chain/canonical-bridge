@@ -2,6 +2,20 @@ import { IChainConfig } from '@bnb-chain/canonical-bridge-widget';
 
 export const chains: IChainConfig[] = [
   {
+    id: 56,
+    name: 'BNB Smart Chain',
+    nativeCurrency: {
+      name: 'BNB Chain Native Token',
+      symbol: 'BNB',
+      decimals: 18,
+    },
+    rpcUrl: 'https://bsc-dataseed.bnbchain.org',
+    explorer: {
+      name: 'bscscan',
+      url: 'https://bscscan.com',
+    },
+  },
+  {
     id: 1,
     name: 'Ethereum',
     nativeCurrency: {
@@ -69,20 +83,6 @@ export const chains: IChainConfig[] = [
     explorer: {
       name: 'Crab explorer',
       url: 'https://crab-scan.darwinia.network',
-    },
-  },
-  {
-    id: 56,
-    name: 'BNB Smart Chain',
-    nativeCurrency: {
-      name: 'BNB Chain Native Token',
-      symbol: 'BNB',
-      decimals: 18,
-    },
-    rpcUrl: 'https://bsc-dataseed.bnbchain.org',
-    explorer: {
-      name: 'bscscan',
-      url: 'https://bscscan.com',
     },
   },
   {
