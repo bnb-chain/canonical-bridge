@@ -24,6 +24,8 @@ export const en = {
   'route.fees.title': 'Fees:',
   'route.time.title': 'Time:',
   'route.allowed-send-amount': 'Your send amount should be between {min} to {max} {symbol}',
+  'route.token-address.tips':
+    'Please double check the received token address before making the transaction.',
 
   'route.no-found.title': 'No Available Routes',
   'route.no-found.desc': `Low liquidity, small input, or incompatible network/token. Adjust and retry.`,
@@ -84,7 +86,7 @@ export const en = {
     'Try adjusting your search request to find what you’re looking for',
 
   'select-modal.token.title': 'Choose Token',
-  'select-modal.token.placeholder': 'Search token by name',
+  'select-modal.token.placeholder': 'Search token by name or address',
   'select-modal.token.column.name': 'Name',
   'select-modal.token.column.balance': 'Wallet Balance',
   'select-modal.token.incompatible.tooltip':

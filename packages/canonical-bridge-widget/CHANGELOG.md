@@ -1,5 +1,36 @@
 # @bnb-chain/canonical-bridge-widget
 
+## 0.5.8-alpha.4
+
+### Patch Changes
+
+- Show token address on `You Receive`
+
+## 0.5.8-alpha.3
+
+### Patch Changes
+
+- Show token address on `You Receive`
+
+## 0.5.8-alpha.2
+
+### Patch Changes
+
+- Support searching token by address
+
+## 0.5.8-alpha.1
+
+### Patch Changes
+
+- Show token address on `You Receive`
+- Show token address on `You Receive`
+
+## 0.5.8-alpha.0
+
+### Patch Changes
+
+- Show token address on `You Recivce`
+
 ## 0.5.7
 
 ### Patch Changes

@@ -125,7 +125,7 @@ export function useTransferConfig() {
           exclude: {
             chains: [],
             tokens: {
-              1: ['cUSDCv3'],
+              1: ['cUSDCv3', '0x5e21d1ee5cf0077b314c381720273ae82378d613'],
               56: [
                 '0x67d66e8ec1fd25d98b3ccd3b19b7dc4b4b7fc493',
                 '0x0000000000000000000000000000000000000000',

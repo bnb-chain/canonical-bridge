@@ -48,7 +48,8 @@ export function ChooseTokenModal(props: ChooseTokenModalProps) {
     filter: (item, keyword) => {
       return (
         item.displaySymbol?.toLowerCase().includes(keyword) ||
-        item.name?.toLowerCase().includes(keyword)
+        item.name?.toLowerCase().includes(keyword) ||
+        isSameAddress(item.address, keyword)
       );
     },
   });
@@ -146,24 +147,22 @@ export function ChooseTokenModal(props: ChooseTokenModalProps) {
                       <Flex className="bccb-widget-token-address-link" h="16px" overflow="hidden">
                         <Flex
                           flexDir="column"
-                          className={isNative || isActive ? undefined : 'token-info'}
+                          className={isNative ? undefined : 'token-info'}
                           transitionDuration="normal"
                           whiteSpace="nowrap"
                           w="100%"
                           color={theme.colors[colorMode].text.secondary}
                         >
-                          {(!isActive || isNative) && (
-                            <Text
-                              className="token-name"
-                              isTruncated
-                              flexShrink={0}
-                              fontSize="12px"
-                              fontWeight={500}
-                              lineHeight="16px"
-                            >
-                              {item.name}
-                            </Text>
-                          )}
+                          <Text
+                            className="token-name"
+                            isTruncated
+                            flexShrink={0}
+                            fontSize="12px"
+                            fontWeight={500}
+                            lineHeight="16px"
+                          >
+                            {item.name}
+                          </Text>
                           {!isNative && (
                             <TokenAddress
                               tokenUrlPattern={fromChain?.tokenUrlPattern}
