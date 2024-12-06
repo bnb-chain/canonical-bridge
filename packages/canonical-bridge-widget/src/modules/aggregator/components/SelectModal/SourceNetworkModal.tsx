@@ -36,7 +36,7 @@ export function SourceNetworkModal(props: SourceNetworkModalProps) {
   });
 
   const { isNoResult, result, onSearch } = useSearch({
-    filter: (item, keyword) => item.name.toLowerCase().includes(keyword),
+    filter: (item, keyword) => item.name.toLowerCase().includes(keyword?.toLowerCase()),
     sorter: (a) => (fromChain?.id === a.id ? -1 : 0),
     data: fromChains,
   });
