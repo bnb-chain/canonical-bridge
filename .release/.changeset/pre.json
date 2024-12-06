@@ -6,6 +6,7 @@
     "@bnb-chain/canonical-bridge-widget": "0.5.8"
   },
   "changesets": [
+    "healthy-wombats-applaud",
     "nice-worms-turn"
   ]
 }
