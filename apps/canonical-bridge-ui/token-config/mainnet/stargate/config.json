@@ -99,7 +99,7 @@
     ],
     "56": [
       {
-        "address": "0x55d398326f99059fF775485246999027B3197955",
+        "address": "0x55d398326f99059fF775485246999027B3197955xxx",
         "bridgeAddress": "0x138EB30f73BC423c6455C53df6D89CB01d9eBc63",
         "decimals": 18,
         "symbol": "USDT",
