@@ -1,5 +1,17 @@
 # @bnb-chain/canonical-bridge-widget
 
+## 0.5.9-alpha.1
+
+### Patch Changes
+
+- Use own token address for deBridge
+
+## 0.5.9-alpha.0
+
+### Patch Changes
+
+- Fix from & to chain search
+
 ## 0.5.8
 
 ### Patch Changes
