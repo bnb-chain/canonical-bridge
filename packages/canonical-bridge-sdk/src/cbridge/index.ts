@@ -370,9 +370,6 @@ export class CBridge {
 
   /**
    * validate token and contract information
-   *
-   * @param isPegged
-   * @returns string
    */
   validateCBridgeToken = async ({
     isPegged,

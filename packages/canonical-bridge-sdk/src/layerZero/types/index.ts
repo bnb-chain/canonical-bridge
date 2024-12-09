@@ -46,3 +46,13 @@ export interface LayerZeroTransferConfigs {
   chains: LayerZeroChain[];
   tokens: Record<number, LayerZeroToken[]>;
 }
+
+export interface LayerZeroTokenValidateParams {
+  publicClient: PublicClient;
+  bridgeAddress: `0x${string}`;
+  fromTokenAddress: `0x${string}`;
+  toTokenAddress: `0x${string}`;
+  toBridgeAddress: `0x${string}`;
+  dstEndpoint?: number;
+  amount: number;
+}
