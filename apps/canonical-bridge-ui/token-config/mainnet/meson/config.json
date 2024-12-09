@@ -949,7 +949,7 @@
       "tokens": [
         {
           "id": "usdt",
-          "addr": "TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6txxx",
+          "addr": "TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t",
           "decimals": 6,
           "min": "6.5",
           "max": "20000"

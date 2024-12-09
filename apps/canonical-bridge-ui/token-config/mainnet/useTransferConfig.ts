@@ -1,30 +1,28 @@
 import { useEffect, useState } from 'react';
 import {
-  // ICBridgeTransferConfig,
+  ICBridgeTransferConfig,
   IDeBridgeTransferConfig,
   ITransferConfig,
 } from '@bnb-chain/canonical-bridge-widget';
-// import axios from 'axios';
+import axios from 'axios';
 
-// import { env } from '@/core/env';
+import { env } from '@/core/env';
 import stargateConfig from '@/token-config/mainnet/stargate/config.json';
 import layerZeroConfig from '@/token-config/mainnet/layerZero/config.json';
 import mesonConfig from '@/token-config/mainnet/meson/config.json';
-import cBridgeConfig from '@/token-config/mainnet/cBridge/config.json';
-import deBridgeRes from '@/token-config/mainnet/deBridge/config.json';
 
 export function useTransferConfig() {
   const [transferConfig, setTransferConfig] = useState<ITransferConfig>();
 
   useEffect(() => {
     const initConfig = async () => {
-      // const [cBridgeRes, deBridgeRes] = await Promise.all([
-      //   axios.get<{ data: ICBridgeTransferConfig }>(`${env.SERVER_ENDPOINT}/api/bridge/cbridge`),
-      //   axios.get<{ data: IDeBridgeTransferConfig }>(`${env.SERVER_ENDPOINT}/api/bridge/debridge`),
-      // ]);
+      const [cBridgeRes, deBridgeRes] = await Promise.all([
+        axios.get<{ data: ICBridgeTransferConfig }>(`${env.SERVER_ENDPOINT}/api/bridge/cbridge`),
+        axios.get<{ data: IDeBridgeTransferConfig }>(`${env.SERVER_ENDPOINT}/api/bridge/debridge`),
+      ]);
 
-      // const cBridgeConfig = cBridgeRes.data.data;
-      const deBridgeConfig = handleDeBridgeConfig(deBridgeRes as any);
+      const cBridgeConfig = cBridgeRes.data.data;
+      const deBridgeConfig = handleDeBridgeConfig(deBridgeRes.data.data);
 
       const transferConfig: ITransferConfig = {
         defaultSelectedInfo: {
