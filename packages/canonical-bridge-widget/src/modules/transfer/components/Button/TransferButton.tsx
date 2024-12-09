@@ -21,7 +21,7 @@ import { useSolanaTransferInfo } from '@/modules/transfer/hooks/solana/useSolana
 import { useTronAccount } from '@/modules/wallet/hooks/useTronAccount';
 import { useWaitForTxReceipt } from '@/core/hooks/useWaitForTxReceipt';
 import { useValidateSendToken } from '@/modules/transfer/hooks/useSendTokenValidation';
-import { CBRIDGE_ENDPOINT } from '@/core/constants';
+import { CBRIDGE_ENDPOINT, DEBRIDGE_ENDPOINT } from '@/core/constants';
 
 export function TransferButton({
   onOpenSubmittedModal,
@@ -85,13 +85,7 @@ export function TransferButton({
   const { isConnected: isEvmConnected } = useAccount();
   const { isConnected: isTronConnected } = useTronAccount();
   const { waitForTxReceipt } = useWaitForTxReceipt();
-  const {
-    validateCBridgeToken,
-    validateDeBridgeToken,
-    validateMesonToken,
-    validateStargateToken,
-    validateLayerZeroToken,
-  } = useValidateSendToken();
+  const { validateLayerZeroToken } = useValidateSendToken();
 
   const isApproveNeeded =
     (fromChain?.chainType === 'evm' &&
@@ -251,16 +245,20 @@ export function TransferButton({
       } else if (transferActionInfo.bridgeType === 'deBridge') {
         try {
           let deBridgeHash: string | undefined;
-          const isValidToken = await validateDeBridgeToken({
+          const isValidToken = await await bridgeSDK.deBridge.validateDeBridgeToken({
             fromChainId: fromChain?.id,
             toChainId: toChain?.id,
             fromTokenSymbol: selectedToken.symbol,
             fromTokenAddress: selectedToken.deBridge?.raw?.address as `0x${string}`,
+            fromTokenDecimals: selectedToken.deBridge?.raw?.decimals as number,
             toTokenSymbol: toToken?.symbol,
             toTokenAddress: toToken?.address as `0x${string}`,
             tokenAddress: selectedToken.address as `0x${string}`,
+            toTokenDecimals: toToken?.deBridge?.raw?.decimals as number,
             amount: Number(sendValue),
-            decimals: selectedToken.deBridge?.raw?.decimals as number,
+            fromChainType: fromChain?.chainType,
+            toChainType: toChain?.chainType,
+            deBridgeEndpoint: DEBRIDGE_ENDPOINT,
           });
           if (!isValidToken) {
             handleFailure({

@@ -2,44 +2,12 @@
 import axios from 'axios';
 import { type PublicClient } from 'viem';
 
-import {
-  CBRIDGE_ENDPOINT,
-  DEBRIDGE_ENDPOINT,
-  MESON_ENDPOINT,
-  STARGATE_ENDPOINT,
-} from '@/core/constants';
-import { IDeBridgeToken, IStargateTokenList } from '@/modules/aggregator';
+import { MESON_ENDPOINT, STARGATE_ENDPOINT } from '@/core/constants';
+import { IStargateTokenList } from '@/modules/aggregator';
 import { IMesonTokenList } from '@/modules/aggregator/adapters/meson/types';
 import { stargateChainKey } from '@/modules/aggregator/adapters/stargate/const';
 import { isEvmAddress, isTronAddress } from '@/core/utils/address';
 import { CAKE_PROXY_OFT_ABI } from '@/modules/aggregator/adapters/layerZero/abi/cakeProxyOFT';
-import { useBridgeSDK } from '@/core/hooks/useBridgeSDK';
-
-interface ICBridgeTokenValidateParams {
-  isPegged: boolean;
-  fromChainId?: number;
-  fromTokenAddress: `0x${string}`;
-  fromTokenSymbol: string;
-  bridgeAddress: `0x${string}`;
-  toChainId?: number;
-  toTokenAddress?: `0x${string}`;
-  toTokenSymbol?: string;
-  amount: number;
-  decimals: number;
-}
-
-// deBridge only needs to check token address
-interface IDeBridgeTokenValidateParams {
-  tokenAddress: `0x${string}`;
-  fromTokenSymbol: string;
-  fromChainId?: number;
-  fromTokenAddress: `0x${string}`;
-  toTokenSymbol?: string;
-  toChainId?: number;
-  toTokenAddress: `0x${string}`;
-  amount: number;
-  decimals: number;
-}
 
 interface IStargateTokenValidateParams {
   bridgeAddress: `0x${string}`;
@@ -64,98 +32,6 @@ interface IMesonTokenValidateParams {
 }
 
 export const useValidateSendToken = () => {
-  const bridgeSDK = useBridgeSDK();
-
-  // cBridge
-  const validateCBridgeToken = async ({
-    isPegged,
-    fromChainId,
-    fromTokenAddress,
-    fromTokenSymbol,
-    bridgeAddress,
-    toChainId,
-    toTokenAddress,
-    toTokenSymbol,
-    amount,
-    decimals,
-  }: ICBridgeTokenValidateParams) => {
-    await bridgeSDK.cBridge.validateCBridgeToken({
-      isPegged,
-      fromChainId,
-      fromTokenAddress,
-      fromTokenSymbol,
-      bridgeAddress,
-      toChainId,
-      toTokenAddress,
-      toTokenSymbol,
-      amount,
-      decimals,
-      cBridgeEndpoint: `${CBRIDGE_ENDPOINT}/getTransferConfigsForAll`,
-    });
-  };
-
-  // deBridge
-  const validateDeBridgeToken = async ({
-    fromChainId,
-    toChainId,
-    fromTokenSymbol,
-    toTokenSymbol,
-    fromTokenAddress,
-    toTokenAddress,
-    amount,
-    decimals,
-  }: IDeBridgeTokenValidateParams) => {
-    try {
-      if (
-        !fromChainId ||
-        !fromTokenAddress ||
-        !toTokenAddress ||
-        !fromTokenSymbol ||
-        !toTokenSymbol ||
-        !toChainId
-      ) {
-        return false;
-      }
-      if (!isEvmAddress(toTokenAddress) || !isEvmAddress(toTokenAddress)) return false;
-      const fromRequest = axios.get<{
-        tokens: { [key: string]: IDeBridgeToken };
-      }>(`${DEBRIDGE_ENDPOINT}/token-list?chainId=${fromChainId}`);
-      const toRequest = axios.get<{
-        tokens: { [key: string]: IDeBridgeToken };
-      }>(`${DEBRIDGE_ENDPOINT}/token-list?chainId=${toChainId}`);
-      const [fromTokenList, toTokenList] = await Promise.allSettled([fromRequest, toRequest]);
-      console.log('fromTokenList', fromTokenList);
-      console.log('toTokenList', toTokenList);
-      if (fromTokenList.status === 'fulfilled' && toTokenList.status === 'fulfilled') {
-        const fromToken = fromTokenList?.value?.data.tokens[fromTokenAddress.toLowerCase()];
-        const toToken = toTokenList?.value?.data.tokens[toTokenAddress.toLowerCase()];
-        if (
-          !!fromToken &&
-          fromToken?.address.toLowerCase() === fromTokenAddress.toLowerCase() &&
-          fromToken?.symbol === fromTokenSymbol &&
-          !!toToken &&
-          toToken?.address.toLowerCase() === toTokenAddress.toLowerCase() &&
-          toToken?.symbol === toTokenSymbol
-        ) {
-          console.log('deBridge token info matched', fromToken);
-          return true;
-        }
-      }
-      console.log('Could not find deBridge token info');
-      console.log('-- fromChainId', fromChainId);
-      console.log('-- from tokenSymbol', fromTokenSymbol);
-      console.log('-- from tokenAddress', fromTokenAddress);
-      console.log('-- toChainId', toChainId);
-      console.log('-- to tokenSymbol', toTokenSymbol);
-      console.log('-- to tokenAddress', toTokenAddress);
-      return false;
-    } catch (error: any) {
-      // eslint-disable-next-line no-console
-      console.log('deBridge token validation error', error);
-      return false;
-    }
-  };
-
   // Stargate
   const validateStargateToken = async ({
     bridgeAddress,
@@ -377,8 +253,6 @@ export const useValidateSendToken = () => {
   };
 
   return {
-    validateCBridgeToken,
-    validateDeBridgeToken,
     validateStargateToken,
     validateMesonToken,
     validateLayerZeroToken,
