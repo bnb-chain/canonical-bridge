@@ -4,12 +4,16 @@ import {
   BaseBridgeConfigOptions,
   CreateAdapterParameters,
 } from '@/core/types';
+import { isEvmAddress } from '@/core/utils/address';
 import { STARGATE_POOL } from '@/stargate/abi/stargatePool';
+import { stargateChainKey } from '@/stargate/const';
 import {
   ISendTokenInput,
   IStarGateBusDriveSettings,
   IStargateOFTQuote,
   IStargateQuoteOFT,
+  IStargateTokenList,
+  IStargateTokenValidateParams,
   StarGateTransferConfigs,
 } from '@/stargate/types';
 import { createAdapter } from '@/stargate/utils/createAdapter';
@@ -183,6 +187,192 @@ export class Stargate {
       return hash;
     } catch (error: any) {
       throw new Error(`Failed to send token: ${error}`);
+    }
+  }
+
+  /**
+   * Validate token information
+   * @param {fromBridgeAddress} from chain bridge contract address
+   * @param {fromTokenAddress}  from token address
+   * @param {fromTokenSymbol}   from token symbol
+   * @param {fromChainId}       from chain id
+   * @param {toTokenAddress}    to token address
+   * @param {toTokenSymbol}     to token symbol
+   * @param {toChainId}         to chain id
+   * @param {toBridgeAddress}   to chain bridge contract address
+   * @param {amount}            send token amount
+   * @param {toPublicClient}    to chain public client
+   * @param {fromPublicClient}  from chain public client
+   * @param {dstEndpointId}     Stargate destination endpoint id
+   * @param {stargateEndpoint}  Stargate API endpoint
+   * @returns {boolean}         is token information valid or not
+   */
+  async validateStargateToken({
+    fromBridgeAddress,
+    fromTokenAddress,
+    fromTokenSymbol,
+    fromChainId,
+    toTokenAddress,
+    toTokenSymbol,
+    toChainId,
+    toBridgeAddress,
+    amount,
+    toPublicClient,
+    fromPublicClient,
+    dstEndpointId,
+    stargateEndpoint,
+  }: IStargateTokenValidateParams) {
+    try {
+      // Check params exist
+      if (
+        !fromChainId ||
+        !fromTokenAddress ||
+        !fromBridgeAddress ||
+        !toBridgeAddress ||
+        !fromTokenSymbol ||
+        !toTokenAddress ||
+        !toTokenSymbol ||
+        !toChainId ||
+        !amount ||
+        !toPublicClient ||
+        !fromPublicClient ||
+        !dstEndpointId
+      ) {
+        console.log('Missing Stargate params');
+        console.log('-- from ChainId', fromChainId);
+        console.log('-- from TokenAddress', fromTokenAddress);
+        console.log('-- from TokenSymbol', fromTokenSymbol);
+        console.log('-- from bridgeAddress', fromBridgeAddress);
+        console.log('-- to ChainId', toChainId);
+        console.log('-- to TokenAddress', toTokenAddress);
+        console.log('-- to bridgeAddress', toBridgeAddress);
+        console.log('-- to TokenSymbol', toTokenSymbol);
+        console.log('-- amount', amount);
+        console.log('-- to PublicClient', toPublicClient);
+        console.log('-- from PublicClient', fromPublicClient);
+        console.log('-- dstEndpointId', dstEndpointId);
+        console.log('-- stargateEndpoint', stargateEndpoint);
+        return false;
+      }
+      // Check token address and bridge address
+      if (
+        !isEvmAddress(fromTokenAddress) ||
+        !isEvmAddress(fromBridgeAddress) ||
+        !isEvmAddress(toBridgeAddress) ||
+        !isEvmAddress(toTokenAddress)
+      ) {
+        console.log(
+          'Invalid Stargate Evm Address',
+          fromTokenAddress,
+          fromBridgeAddress,
+          toBridgeAddress,
+          toTokenAddress
+        );
+        return false;
+      }
+      // Check token information from API
+      const { data: stargateConfig } = await axios.get<{
+        data: IStargateTokenList;
+      }>(`${stargateEndpoint}`);
+
+      const fromChainKey = stargateChainKey[fromChainId] ?? '';
+      const toChainKey = stargateChainKey[toChainId] ?? '';
+
+      if (!fromChainKey || !toChainKey) {
+        console.log('Failed to get chain key');
+        console.log('From chain key', fromChainKey, fromChainId);
+        console.log('To chain key', toChainKey, toChainId);
+        return false;
+      }
+      if (!stargateConfig) {
+        console.log('Failed to get Stargate API config');
+        return false;
+      }
+      // Check Stargate from chain information
+      const fromApiTokenAddr = await fromPublicClient.readContract({
+        address: fromBridgeAddress as `0x${string}`,
+        abi: STARGATE_POOL,
+        functionName: 'token',
+      });
+      if (fromApiTokenAddr.toLowerCase() !== fromTokenAddress.toLowerCase()) {
+        console.log(
+          'Stargate from token address not matched',
+          fromApiTokenAddr,
+          fromTokenAddress
+        );
+        return false;
+      }
+      // Check Stargate to chain information
+      const dstId = await toPublicClient.readContract({
+        address: toBridgeAddress as `0x${string}`,
+        abi: STARGATE_POOL,
+        functionName: 'localEid',
+      });
+      if (dstId !== dstEndpointId) {
+        console.log('Stargate endpoint Id not matched', dstId, dstEndpointId);
+        return false;
+      }
+      const toApiTokenAddr = await toPublicClient.readContract({
+        address: toBridgeAddress as `0x${string}`,
+        abi: STARGATE_POOL,
+        functionName: 'token',
+      });
+      if (toApiTokenAddr.toLowerCase() !== toTokenAddress.toLowerCase()) {
+        console.log(
+          'Stargate to token address not matched',
+          toApiTokenAddr,
+          toTokenAddress
+        );
+        return false;
+      }
+      // From token info
+      const fromTokenInfo = stargateConfig.data?.v2?.filter((fromToken) => {
+        return (
+          fromToken.chainKey.toLowerCase() === fromChainKey.toLowerCase() &&
+          fromToken.address.toLowerCase() === fromBridgeAddress.toLowerCase() &&
+          fromToken.token.symbol === fromTokenSymbol &&
+          fromToken.token.address.toLowerCase() ===
+            fromTokenAddress.toLowerCase()
+        );
+      });
+      // To token info
+      const toTokenInfo = stargateConfig.data?.v2?.filter((toToken) => {
+        return (
+          toToken.chainKey.toLowerCase() === toChainKey.toLowerCase() &&
+          toToken.address.toLowerCase() === toBridgeAddress.toLowerCase() &&
+          toToken.token.symbol === toTokenSymbol &&
+          toToken.token.address.toLowerCase() === toTokenAddress.toLowerCase()
+        );
+      });
+
+      if (
+        !!fromTokenInfo &&
+        fromTokenInfo.length > 0 &&
+        !!toTokenInfo &&
+        toTokenInfo.length > 0
+      ) {
+        console.log('Stargate token info matched');
+        console.log('fromTokenInfo', fromTokenInfo);
+        console.log('toTokenInfo', toTokenInfo);
+        return true;
+      }
+      console.log('Could not find Stargate token info');
+      console.log('-- from ChainId', fromChainId);
+      console.log('-- from TokenAddress', fromTokenAddress);
+      console.log('-- from TokenSymbol', fromTokenSymbol);
+      console.log('-- from bridgeAddress', fromBridgeAddress);
+      console.log('-- to ChainId', toChainId);
+      console.log('-- to TokenAddress', toTokenAddress);
+      console.log('-- to TokenSymbol', toTokenSymbol);
+      console.log('-- to PublicClient', toPublicClient);
+      console.log('-- to bridgeAddress', toBridgeAddress);
+      console.log('-- amount', amount);
+      console.log('-- dstEndpointId', dstEndpointId);
+      return false;
+      // eslint-disable-next-line
+    } catch (error: any) {
+      console.log('Stargate token validation error', error);
+      return false;
     }
   }
 

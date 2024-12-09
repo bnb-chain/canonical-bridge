@@ -14,6 +14,10 @@ export function isSolanaAddress(address?: string) {
   return !!address && /^[1-9A-HJ-NP-Za-km-z]{32,44}$/.test(address);
 }
 
+export function isTronAddress(address?: string) {
+  return !!address && /^T[a-zA-Z0-9]{33}$/.test(address);
+}
+
 export const isValidTokenAddress = ({
   tokenAddress,
   chainType,
