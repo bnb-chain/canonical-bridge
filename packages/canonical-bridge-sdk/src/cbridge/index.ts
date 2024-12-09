@@ -417,7 +417,10 @@ export class CBridge {
       const { data: cBridgeConfig } = await axios.get<ICBridgeTransferConfig>(
         `${cBridgeEndpoint}`
       );
-      if (!cBridgeConfig) return false;
+      if (!cBridgeConfig) {
+        console.log('failed to get cBridge API config');
+        return false;
+      }
       if (!isEvmAddress(fromTokenAddress) || !isEvmAddress(bridgeAddress))
         return false;
       if (isPegged === true) {
@@ -462,7 +465,8 @@ export class CBridge {
         // bridge address
         const addressInfo = cBridgeConfig.chains.filter((chain) => {
           return (
-            chain.id === fromChainId && chain.contract_addr === bridgeAddress
+            chain.id === fromChainId &&
+            chain.contract_addr.toLowerCase() === bridgeAddress.toLowerCase()
           );
         });
         // token info
