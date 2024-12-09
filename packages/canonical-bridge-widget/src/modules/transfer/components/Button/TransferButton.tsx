@@ -20,8 +20,12 @@ import { useTronContract } from '@/modules/aggregator/adapters/meson/hooks/useTr
 import { useSolanaTransferInfo } from '@/modules/transfer/hooks/solana/useSolanaTransferInfo';
 import { useTronAccount } from '@/modules/wallet/hooks/useTronAccount';
 import { useWaitForTxReceipt } from '@/core/hooks/useWaitForTxReceipt';
-import { useValidateSendToken } from '@/modules/transfer/hooks/useSendTokenValidation';
-import { CBRIDGE_ENDPOINT, DEBRIDGE_ENDPOINT, STARGATE_ENDPOINT } from '@/core/constants';
+import {
+  CBRIDGE_ENDPOINT,
+  DEBRIDGE_ENDPOINT,
+  MESON_ENDPOINT,
+  STARGATE_ENDPOINT,
+} from '@/core/constants';
 
 export function TransferButton({
   onOpenSubmittedModal,
@@ -86,7 +90,6 @@ export function TransferButton({
   const { isConnected: isEvmConnected } = useAccount();
   const { isConnected: isTronConnected } = useTronAccount();
   const { waitForTxReceipt } = useWaitForTxReceipt();
-  const { validateMesonToken } = useValidateSendToken();
 
   const isApproveNeeded =
     (fromChain?.chainType === 'evm' &&
@@ -258,6 +261,7 @@ export function TransferButton({
             toTokenDecimals: toToken?.deBridge?.raw?.decimals as number,
             amount: Number(sendValue),
             fromChainType: fromChain?.chainType,
+            fromBridgeAddress: transferActionInfo.bridgeAddress as `0x${string}`,
             toChainType: toChain?.chainType,
             deBridgeEndpoint: DEBRIDGE_ENDPOINT,
           });
@@ -420,24 +424,27 @@ export function TransferButton({
           onOpenSubmittedModal();
         }
       } else if (transferActionInfo.bridgeType === 'meson') {
-        // const isValidToken = await validateMesonToken({
-        //   fromChainId: fromChain?.id,
-        //   toChainId: toChain?.id,
-        //   fromTokenAddress: selectedToken.meson?.raw?.addr as `0x${string}`,
-        //   fromTokenSymbol: selectedToken.symbol,
-        //   fromChainType: fromChain?.chainType,
-        //   toTokenAddress: toToken?.meson?.raw?.addr as `0x${string}`,
-        //   toTokenSymbol: toToken?.symbol,
-        // });
-        // if (!isValidToken) {
-        //   handleFailure({
-        //     message: '(Token Validation Failed) Invalid Meson token!!',
-        //     fromChainId: fromChain?.id,
-        //     tokenAddress: selectedToken.address as `0x${string}`,
-        //     tokenSymbol: selectedToken.symbol,
-        //   });
-        //   return;
-        // }
+        const isValidToken = await bridgeSDK.meson.validateMesonToken({
+          fromChainId: fromChain?.id,
+          toChainId: toChain?.id,
+          fromTokenAddress: selectedToken.meson?.raw?.addr as `0x${string}`,
+          fromTokenSymbol: selectedToken.symbol,
+          fromChainType: fromChain?.chainType,
+          toChainType: toChain?.chainType,
+          toTokenAddress: toToken?.meson?.raw?.addr as `0x${string}`,
+          toTokenSymbol: toToken?.meson?.raw?.id,
+          amount: Number(sendValue),
+          mesonEndpoint: MESON_ENDPOINT,
+        });
+        if (!isValidToken) {
+          handleFailure({
+            message: '(Token Validation Failed) Invalid Meson token!!',
+            fromChainId: fromChain?.id,
+            tokenAddress: selectedToken.address as `0x${string}`,
+            tokenSymbol: selectedToken.symbol,
+          });
+          return;
+        }
         let fromAddress = '';
         let toAddress = '';
         let msg = '';

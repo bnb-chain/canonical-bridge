@@ -1,4 +1,5 @@
 import { CreateAdapterParameters } from '@/core';
+import { isEvmAddress } from '@/core/utils/address';
 import { formatNumber } from '@/core/utils/number';
 import { CAKE_PROXY_OFT_ABI } from '@/layerZero/abi/cakeProxyOFT';
 import {
@@ -194,10 +195,22 @@ export class LayerZero {
       console.log('-- amount', amount);
       return false;
     }
+    // Check amount
     if (Number(amount) <= 0) {
       console.log('Invalid send amount');
       return false;
     }
+    // Check evm contract address
+    if (
+      !isEvmAddress(fromTokenAddress) ||
+      !isEvmAddress(toTokenAddress) ||
+      !isEvmAddress(toBridgeAddress) ||
+      !isEvmAddress(bridgeAddress)
+    ) {
+      console.log('Invalid token address');
+      return false;
+    }
+
     // Remote contract address validation
     const trustedRemoteAddress = await publicClient.readContract({
       address: bridgeAddress as `0x${string}`,
