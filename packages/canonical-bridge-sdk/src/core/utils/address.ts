@@ -19,35 +19,35 @@ export function isTronAddress(address?: string) {
 }
 
 export const isValidTokenAddress = ({
-  tokenAddress,
+  contractAddress,
   chainType,
   isSourceChain,
 }: {
-  tokenAddress: string;
+  contractAddress: string;
   chainType: string;
   isSourceChain: boolean;
 }) => {
   const fromOrTo = isSourceChain ? 'from' : 'to';
   if (chainType === 'evm') {
-    if (!isEvmAddress(tokenAddress)) {
+    if (!isEvmAddress(contractAddress)) {
       console.log(
-        `Invalid evm ${fromOrTo} token address`,
+        `Invalid evm ${fromOrTo} contract address`,
         chainType,
-        tokenAddress
+        contractAddress
       );
       return false;
     }
   } else if (chainType === 'solana') {
-    if (!isSolanaAddress(tokenAddress)) {
+    if (!isSolanaAddress(contractAddress)) {
       console.log(
-        `Invalid solana ${fromOrTo} token address`,
+        `Invalid solana ${fromOrTo} contract address`,
         chainType,
-        tokenAddress
+        contractAddress
       );
       return false;
     }
   } else {
-    console.log(`Invalid ${fromOrTo} chain type`, chainType, tokenAddress);
+    console.log(`Invalid ${fromOrTo} chain type`, chainType, contractAddress);
     return false;
   }
   return true;

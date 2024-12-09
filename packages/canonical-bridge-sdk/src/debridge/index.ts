@@ -188,6 +188,7 @@ export class DeBridge {
     fromTokenAddress,
     fromTokenSymbol,
     fromTokenDecimals,
+    fromBridgeAddress,
     toTokenAddress,
     toTokenSymbol,
     toTokenDecimals,
@@ -206,6 +207,7 @@ export class DeBridge {
         !toChainType ||
         !amount ||
         !fromTokenDecimals ||
+        !fromBridgeAddress ||
         !toTokenDecimals ||
         !deBridgeEndpoint
       ) {
@@ -218,18 +220,38 @@ export class DeBridge {
       }
       // Check from token address
       const isValidFromToken = isValidTokenAddress({
-        tokenAddress: fromTokenAddress,
+        contractAddress: fromTokenAddress,
         chainType: fromChainType,
         isSourceChain: true,
       });
       // Check to token address
       const isValidToToken = isValidTokenAddress({
-        tokenAddress: fromTokenAddress,
+        contractAddress: fromTokenAddress,
         chainType: fromChainType,
         isSourceChain: true,
       });
       if (!isValidFromToken || !isValidToToken) {
+        console.log(
+          'Invalid deBridge bridge token address',
+          fromTokenAddress,
+          toTokenAddress
+        );
         return false;
+      }
+      // Check bridge contract address
+      if (fromChainType !== 'solana') {
+        const isValidBridgeContractAddress = isValidTokenAddress({
+          contractAddress: fromBridgeAddress,
+          chainType: fromChainType,
+          isSourceChain: true,
+        });
+        if (!isValidBridgeContractAddress) {
+          console.log(
+            'Invalid deBridge bridge contract address',
+            fromBridgeAddress
+          );
+          return false;
+        }
       }
       // Check token info on API
       const fromRequest = axios.get<{

@@ -114,6 +114,7 @@ export interface IDeBridgeToken {
 export interface IDeBridgeTokenValidateParams {
   tokenAddress: `0x${string}`;
   fromTokenAddress: `0x${string}`;
+  fromBridgeAddress: `0x${string}`;
   fromTokenSymbol: string;
   fromChainId?: number;
   fromChainType?: string;
