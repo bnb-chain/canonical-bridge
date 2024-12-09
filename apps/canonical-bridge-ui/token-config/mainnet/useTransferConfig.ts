@@ -10,8 +10,8 @@ import {
 import stargateConfig from '@/token-config/mainnet/stargate/config.json';
 import layerZeroConfig from '@/token-config/mainnet/layerZero/config.json';
 import mesonConfig from '@/token-config/mainnet/meson/config.json';
-import cBridgeConfig from '@/token-config/mainnet/cbridge/config.json';
-import deBridgeRes from '@/token-config/mainnet/debridge/config.json';
+import cBridgeConfig from '@/token-config/mainnet/cBridge/config.json';
+import deBridgeRes from '@/token-config/mainnet/deBridge/config.json';
 
 export function useTransferConfig() {
   const [transferConfig, setTransferConfig] = useState<ITransferConfig>();
