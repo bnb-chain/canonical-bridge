@@ -20,6 +20,12 @@ import { useTronContract } from '@/modules/aggregator/adapters/meson/hooks/useTr
 import { useSolanaTransferInfo } from '@/modules/transfer/hooks/solana/useSolanaTransferInfo';
 import { useTronAccount } from '@/modules/wallet/hooks/useTronAccount';
 import { useWaitForTxReceipt } from '@/core/hooks/useWaitForTxReceipt';
+import {
+  CBRIDGE_ENDPOINT,
+  DEBRIDGE_ENDPOINT,
+  MESON_ENDPOINT,
+  STARGATE_ENDPOINT,
+} from '@/core/constants';
 
 export function TransferButton({
   onOpenSubmittedModal,
@@ -67,6 +73,7 @@ export function TransferButton({
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const publicClient = usePublicClient({ chainId: fromChain?.id }) as any;
+  const toPublicClient = usePublicClient({ chainId: toChain?.id }) as any;
   const [isLoading, setIsLoading] = useState(false);
 
   const { allowance } = useGetAllowance({
@@ -171,6 +178,36 @@ export function TransferButton({
 
       if (transferActionInfo.bridgeType === 'cBridge' && cBridgeArgs && fromChain && address) {
         try {
+          const isValidToken = await bridgeSDK.cBridge.validateCBridgeToken({
+            isPegged: selectedToken.isPegged,
+            fromChainId: fromChain.id,
+            fromTokenAddress: selectedToken.address as `0x${string}`,
+            fromTokenSymbol: selectedToken.symbol,
+            bridgeAddress: transferActionInfo.bridgeAddress as `0x${string}`,
+            toChainId: toChain?.id,
+            toTokenAddress: toToken?.cBridge?.raw?.token.address as `0x${string}`,
+            toTokenSymbol: toToken?.cBridge?.raw?.token.symbol,
+            amount: Number(sendValue),
+            decimals: selectedToken.cBridge?.raw?.token.decimal as number,
+            cBridgeEndpoint: `${CBRIDGE_ENDPOINT}/getTransferConfigsForAll`,
+          });
+
+          if (!isValidToken) {
+            handleFailure({
+              fromTokenAddress: selectedToken.address as `0x${string}`,
+              bridgeAddress: transferActionInfo.bridgeAddress as `0x${string}`,
+              fromChainId: fromChain.id,
+              isPegged: selectedToken.isPegged,
+              fromTokenSymbol: selectedToken.symbol,
+              toChainId: toChain?.id,
+              toTokenAddress: toToken?.cBridge?.raw?.token.address as `0x${string}`,
+              toTokenSymbol: toToken?.cBridge?.raw?.token.symbol,
+              decimals: selectedToken.decimals,
+              amount: Number(sendValue),
+              message: `(Token Validation Failed) - Invalid cBridge token!!`,
+            });
+            return;
+          }
           const cBridgeHash = await bridgeSDK.cBridge.sendToken({
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             walletClient: walletClient as any,
@@ -212,7 +249,31 @@ export function TransferButton({
       } else if (transferActionInfo.bridgeType === 'deBridge') {
         try {
           let deBridgeHash: string | undefined;
-
+          const isValidToken = await await bridgeSDK.deBridge.validateDeBridgeToken({
+            fromChainId: fromChain?.id,
+            toChainId: toChain?.id,
+            fromTokenSymbol: selectedToken.symbol,
+            fromTokenAddress: selectedToken.deBridge?.raw?.address as `0x${string}`,
+            fromTokenDecimals: selectedToken.deBridge?.raw?.decimals as number,
+            toTokenSymbol: toToken?.deBridge?.raw?.symbol,
+            toTokenAddress: toToken?.deBridge?.raw?.address as `0x${string}`,
+            tokenAddress: selectedToken.address as `0x${string}`,
+            toTokenDecimals: toToken?.deBridge?.raw?.decimals as number,
+            amount: Number(sendValue),
+            fromChainType: fromChain?.chainType,
+            fromBridgeAddress: transferActionInfo.bridgeAddress as `0x${string}`,
+            toChainType: toChain?.chainType,
+            deBridgeEndpoint: DEBRIDGE_ENDPOINT,
+          });
+          if (!isValidToken) {
+            handleFailure({
+              message: '(Token Validation Failed) - Invalid deBridge token!!',
+              fromChainId: fromChain?.id,
+              tokenSymbol: selectedToken.symbol,
+              tokenAddress: selectedToken.address as `0x${string}`,
+            });
+            return;
+          }
           if (fromChain?.chainType === 'evm' && transferActionInfo.value && address) {
             deBridgeHash = await bridgeSDK.deBridge.sendToken({
               // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -265,6 +326,31 @@ export function TransferButton({
           handleFailure(e);
         }
       } else if (transferActionInfo.bridgeType === 'stargate' && address) {
+        const isValidToken = await bridgeSDK.stargate.validateStargateToken({
+          fromBridgeAddress: transferActionInfo.bridgeAddress as `0x${string}`,
+          toBridgeAddress: toToken?.stargate?.raw?.bridgeAddress as `0x${string}`,
+          fromTokenAddress: selectedToken?.stargate?.raw?.address as `0x${string}`,
+          fromTokenSymbol: selectedToken?.stargate?.raw?.symbol as string,
+          fromChainId: fromChain?.id,
+          toTokenAddress: toToken?.stargate?.raw?.address as `0x${string}`,
+          toTokenSymbol: toToken?.stargate?.raw?.symbol as string,
+          toChainId: toChain?.id,
+          amount: Number(sendValue),
+          dstEndpointId: toToken?.stargate?.raw?.endpointID as number,
+          toPublicClient,
+          fromPublicClient: publicClient,
+          stargateEndpoint: STARGATE_ENDPOINT,
+        });
+        if (!isValidToken) {
+          handleFailure({
+            messages: '(Token Validation Failed) - Invalid Stargate token!!',
+            fromChainId: fromChain?.id,
+            tokenAddress: selectedToken.address as `0x${string}`,
+            bridgeAddress: transferActionInfo.bridgeAddress as `0x${string}`,
+            tokenSymbol: selectedToken.symbol,
+          });
+          return;
+        }
         const stargateHash = await bridgeSDK.stargate.sendToken({
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           walletClient: walletClient as any,
@@ -292,6 +378,26 @@ export function TransferButton({
           onOpenSubmittedModal();
         }
       } else if (transferActionInfo.bridgeType === 'layerZero' && address) {
+        // check layerZero token address
+        const isValidToken = await bridgeSDK.layerZero.validateLayerZeroToken({
+          publicClient,
+          bridgeAddress: transferActionInfo.bridgeAddress as `0x${string}`,
+          fromTokenAddress: selectedToken.layerZero?.raw?.address as `0x${string}`,
+          toTokenAddress: toToken?.layerZero?.raw?.address as `0x${string}`,
+          toBridgeAddress: toToken?.layerZero?.raw?.bridgeAddress as `0x${string}`,
+          dstEndpoint: toToken?.layerZero?.raw?.endpointID as number,
+          amount: Number(sendValue),
+        });
+        if (!isValidToken) {
+          handleFailure({
+            messages: '(Token Validation Failed) - Invalid LayerZero token!!',
+            fromChainId: fromChain?.id,
+            tokenAddress: selectedToken.layerZero?.raw?.address as `0x${string}`,
+            bridgeAddress: transferActionInfo.bridgeAddress as `0x${string}`,
+            tokenSymbol: selectedToken.symbol,
+          });
+          return;
+        }
         const layerZeroHash = await bridgeSDK.layerZero.sendToken({
           bridgeAddress: transferActionInfo.bridgeAddress as `0x${string}`,
           dstEndpoint: toToken?.layerZero?.raw?.endpointID as number,
@@ -318,6 +424,27 @@ export function TransferButton({
           onOpenSubmittedModal();
         }
       } else if (transferActionInfo.bridgeType === 'meson') {
+        const isValidToken = await bridgeSDK.meson.validateMesonToken({
+          fromChainId: fromChain?.id,
+          toChainId: toChain?.id,
+          fromTokenAddress: selectedToken.meson?.raw?.addr as `0x${string}`,
+          fromTokenSymbol: selectedToken.symbol,
+          fromChainType: fromChain?.chainType,
+          toChainType: toChain?.chainType,
+          toTokenAddress: toToken?.meson?.raw?.addr as `0x${string}`,
+          toTokenSymbol: toToken?.meson?.raw?.id,
+          amount: Number(sendValue),
+          mesonEndpoint: MESON_ENDPOINT,
+        });
+        if (!isValidToken) {
+          handleFailure({
+            message: '(Token Validation Failed) Invalid Meson token!!',
+            fromChainId: fromChain?.id,
+            tokenAddress: selectedToken.address as `0x${string}`,
+            tokenSymbol: selectedToken.symbol,
+          });
+          return;
+        }
         let fromAddress = '';
         let toAddress = '';
         let msg = '';
@@ -377,7 +504,7 @@ export function TransferButton({
           });
 
           // eslint-disable-next-line no-console
-          console.log(swapId);
+          console.log('Meson swap id', swapId);
           if (swapId?.result?.swapId) {
             setChosenBridge('meson');
             setHash(swapId?.result?.swapId);
@@ -420,6 +547,7 @@ export function TransferButton({
     fromChain,
     walletClient,
     publicClient,
+    toPublicClient,
     address,
     allowance,
     isEvmConnected,
@@ -445,9 +573,13 @@ export function TransferButton({
     onOpenSubmittedModal,
     connection,
     sendSolanaTransaction,
-    toToken?.stargate?.raw?.endpointID,
-    toToken?.layerZero?.raw?.endpointID,
-    toToken?.meson?.raw?.id,
+    toToken?.stargate?.raw,
+    toToken?.layerZero?.raw,
+    toToken?.meson?.raw,
+    toToken?.cBridge?.raw,
+    toToken?.deBridge?.raw,
+    toChain?.id,
+    toChain?.chainType,
     isTronTransfer,
     isTronAvailableToAccount,
     toAccount.address,

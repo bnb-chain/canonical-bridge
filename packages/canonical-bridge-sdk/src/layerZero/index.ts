@@ -1,9 +1,11 @@
 import { CreateAdapterParameters } from '@/core';
+import { isEvmAddress } from '@/core/utils/address';
 import { formatNumber } from '@/core/utils/number';
 import { CAKE_PROXY_OFT_ABI } from '@/layerZero/abi/cakeProxyOFT';
 import {
   IGetEstimateFeeInput,
   ISendCakeTokenInput,
+  LayerZeroTokenValidateParams,
   LayerZeroTransferConfigs,
 } from '@/layerZero/types';
 import { createAdapter } from '@/layerZero/utils/createAdapter';
@@ -165,6 +167,88 @@ export class LayerZero {
       throw new Error(`Failed to get estimate fee ${error}`);
     }
   }
+
+  validateLayerZeroToken = async ({
+    publicClient,
+    bridgeAddress,
+    fromTokenAddress,
+    toTokenAddress,
+    toBridgeAddress,
+    dstEndpoint,
+    amount,
+  }: LayerZeroTokenValidateParams) => {
+    if (
+      !publicClient ||
+      !bridgeAddress ||
+      !fromTokenAddress ||
+      !dstEndpoint ||
+      !toTokenAddress ||
+      !toBridgeAddress
+    ) {
+      console.log('Missing required parameters');
+      console.log('-- publicClient', publicClient);
+      console.log('-- bridgeAddress', bridgeAddress);
+      console.log('-- fromTokenAddress', fromTokenAddress);
+      console.log('-- toTokenAddress', toTokenAddress);
+      console.log('-- toBridgeAddress', toBridgeAddress);
+      console.log('-- dstEndpoint', dstEndpoint);
+      console.log('-- amount', amount);
+      return false;
+    }
+    // Check amount
+    if (Number(amount) <= 0) {
+      console.log('Invalid send amount');
+      return false;
+    }
+    // Check evm contract address
+    if (
+      !isEvmAddress(fromTokenAddress) ||
+      !isEvmAddress(toTokenAddress) ||
+      !isEvmAddress(toBridgeAddress) ||
+      !isEvmAddress(bridgeAddress)
+    ) {
+      console.log('Invalid token address');
+      return false;
+    }
+
+    // Remote contract address validation
+    const trustedRemoteAddress = await publicClient.readContract({
+      address: bridgeAddress as `0x${string}`,
+      abi: CAKE_PROXY_OFT_ABI,
+      functionName: 'getTrustedRemoteAddress',
+      args: [dstEndpoint],
+    });
+    if (trustedRemoteAddress.toLowerCase() !== toBridgeAddress.toLowerCase()) {
+      console.log(
+        'Failed to match layerZero remote contract address',
+        trustedRemoteAddress,
+        toBridgeAddress
+      );
+      return false;
+    }
+    // Supported token validation
+    const supportedToken = await publicClient.readContract({
+      address: bridgeAddress as `0x${string}`,
+      abi: CAKE_PROXY_OFT_ABI,
+      functionName: 'token',
+    });
+    if (supportedToken.toLowerCase() === fromTokenAddress.toLowerCase()) {
+      console.log(
+        'LayerZero token information matched',
+        supportedToken,
+        fromTokenAddress
+      );
+      return true;
+    }
+    console.log('Failed to match layerZero token information');
+    console.log('-- publicClient', publicClient);
+    console.log('-- bridgeAddress', bridgeAddress);
+    console.log('-- fromTokenAddress', fromTokenAddress);
+    console.log('-- toTokenAddress', toTokenAddress);
+    console.log('-- toBridgeAddress', toBridgeAddress);
+    console.log('-- dstEndpoint', dstEndpoint);
+    return false;
+  };
 
   /** @see createAdapter for implementation details */
   createAdapter(params: CreateAdapterParameters<LayerZeroTransferConfigs>) {

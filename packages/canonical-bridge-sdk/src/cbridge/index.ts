@@ -13,6 +13,8 @@ import {
   CBridgeSendRangeInput,
   CBridgeTransferConfigs,
   CBridgeTransferEstimatedTime,
+  ICBridgeTokenValidateParams,
+  ICBridgeTransferConfig,
   IGetCBridgeABI,
   IGetCBridgeTransferAddressInput,
   IGetCBridgeTransferFunction,
@@ -26,6 +28,7 @@ import { ORIGINAL_TOKEN_VAULT_V2 } from '@/cbridge/abi/originalTokenVaultV2';
 import { PEGGED_TOKEN_BRIDGE } from '@/cbridge/abi/peggedTokenBridge';
 import { PEGGED_TOKEN_BRIDGE_V2 } from '@/cbridge/abi/peggedTokenBridgeV2';
 import { createAdapter } from '@/cbridge/utils/createAdapter';
+import { isEvmAddress } from '@/core/utils/address';
 
 export * from './types';
 
@@ -364,4 +367,151 @@ export class CBridge {
       args: args,
     };
   }
+
+  /**
+   * validate token and contract information
+   */
+  validateCBridgeToken = async ({
+    isPegged,
+    fromChainId,
+    fromTokenAddress,
+    fromTokenSymbol,
+    bridgeAddress,
+    toChainId,
+    toTokenAddress,
+    toTokenSymbol,
+    amount,
+    decimals,
+    cBridgeEndpoint,
+  }: ICBridgeTokenValidateParams) => {
+    try {
+      if (
+        !fromChainId ||
+        !toChainId ||
+        !fromTokenAddress ||
+        !bridgeAddress ||
+        !fromTokenSymbol ||
+        !toTokenAddress ||
+        !toTokenSymbol ||
+        !amount ||
+        !decimals ||
+        !cBridgeEndpoint
+      ) {
+        console.log('Failed to get cBridge token address validation params');
+        console.log('isPegged', isPegged);
+        console.log('fromChainId', fromChainId);
+        console.log('fromTokenAddress', fromTokenAddress);
+        console.log('fromTokenSymbol', fromTokenSymbol);
+        console.log('bridgeAddress', bridgeAddress);
+        console.log('toChainId', toChainId);
+        console.log('toTokenAddress', toTokenAddress);
+        console.log('toTokenSymbol', toTokenSymbol);
+        console.log('amount', amount);
+        console.log('decimals', decimals);
+        console.log('cBridgeEndpoint', cBridgeEndpoint);
+        return false;
+      }
+      const { data: cBridgeConfig } = await axios.get<ICBridgeTransferConfig>(
+        `${cBridgeEndpoint}`
+      );
+      if (!cBridgeConfig) {
+        console.log('failed to get cBridge API config');
+        return false;
+      }
+      if (!isEvmAddress(fromTokenAddress) || !isEvmAddress(bridgeAddress))
+        return false;
+      if (isPegged === true) {
+        // pegged token
+        const peggedToken = cBridgeConfig.pegged_pair_configs.filter((pair) => {
+          const orgToken = pair.org_token.token;
+          const peggedToken = pair.pegged_token.token;
+          return (
+            (pair.pegged_deposit_contract_addr === bridgeAddress &&
+              pair.org_chain_id === fromChainId &&
+              orgToken.address === fromTokenAddress &&
+              orgToken.symbol === fromTokenSymbol &&
+              orgToken.decimal === decimals &&
+              peggedToken.address === toTokenAddress &&
+              peggedToken.symbol === toTokenSymbol &&
+              pair.pegged_chain_id === toChainId) ||
+            (pair.pegged_burn_contract_addr === bridgeAddress &&
+              pair.pegged_chain_id === fromChainId &&
+              peggedToken.address === fromTokenAddress &&
+              peggedToken.symbol === fromTokenSymbol &&
+              peggedToken.decimal === decimals &&
+              orgToken.address === toTokenAddress &&
+              orgToken.symbol === toTokenSymbol &&
+              pair.org_chain_id === toChainId)
+          );
+        });
+        if (!!peggedToken && peggedToken.length > 0) {
+          console.log('cBridge pegged token info matched', peggedToken);
+          return true;
+        }
+        console.log('Can not find cBridge pegged info');
+        console.log('-- isPegged', isPegged);
+        console.log('-- fromChainId', fromChainId);
+        console.log('-- fromTokenAddress', fromTokenAddress);
+        console.log('-- fromTokenSymbol', fromTokenSymbol);
+        console.log('-- toChainId', toChainId);
+        console.log('-- toTokenAddress', toTokenAddress);
+        console.log('-- toTokenSymbol', toTokenSymbol);
+        console.log('-- bridgeAddress', bridgeAddress);
+        return false;
+      } else {
+        // bridge address
+        const addressInfo = cBridgeConfig.chains.filter((chain) => {
+          return (
+            chain.id === fromChainId &&
+            chain.contract_addr.toLowerCase() === bridgeAddress.toLowerCase()
+          );
+        });
+        // token info
+        const fromTokenInfo = cBridgeConfig.chain_token[
+          fromChainId
+        ].token.filter((t) => {
+          return (
+            t.token.address.toLowerCase() === fromTokenAddress.toLowerCase() &&
+            t.token.symbol === fromTokenSymbol
+          );
+        });
+        const toTokenInfo = cBridgeConfig.chain_token[toChainId].token.filter(
+          (t) => {
+            return (
+              t.token.address.toLowerCase() === toTokenAddress.toLowerCase() &&
+              t.token.symbol === toTokenSymbol
+            );
+          }
+        );
+        if (
+          addressInfo?.length > 0 &&
+          fromTokenInfo?.length > 0 &&
+          toTokenInfo?.length > 0
+        ) {
+          console.log(
+            'cBridge pool info matched',
+            addressInfo,
+            fromTokenInfo,
+            toTokenInfo
+          );
+          return true;
+        } else {
+          console.log('Can not find cBridge pool info');
+          console.log('-- isPegged', isPegged);
+          console.log('-- fromChainId', fromChainId);
+          console.log('-- fromTokenAddress', fromTokenAddress);
+          console.log('-- fromTokenSymbol', fromTokenSymbol);
+          console.log('-- toChainId', toChainId);
+          console.log('-- toTokenAddress', toTokenAddress);
+          console.log('-- toTokenSymbol', toTokenSymbol);
+          console.log('-- bridgeAddress', bridgeAddress);
+          return false;
+        }
+      }
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.log('cBridge token address validation error', error);
+      return false;
+    }
+  };
 }
