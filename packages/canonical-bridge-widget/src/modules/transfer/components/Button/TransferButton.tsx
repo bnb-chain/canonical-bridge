@@ -194,7 +194,6 @@ export function TransferButton({
             cBridgeEndpoint: `${CBRIDGE_ENDPOINT}/getTransferConfigsForAll`,
           });
 
-          console.log('toChain', toChain);
           if (!isValidToken) {
             handleFailure({
               fromTokenAddress: selectedToken.address as `0x${string}`,
