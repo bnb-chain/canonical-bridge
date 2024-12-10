@@ -73,9 +73,11 @@ export interface IStargateTokenValidateParams {
   toBridgeAddress: `0x${string}`;
   fromTokenAddress: `0x${string}`;
   fromTokenSymbol: string;
+  fromTokenDecimals: number;
   fromChainId?: number;
   toTokenAddress: `0x${string}`;
   toTokenSymbol: string;
+  toTokenDecimals: number;
   toChainId?: number;
   amount: number;
   toPublicClient: PublicClient;

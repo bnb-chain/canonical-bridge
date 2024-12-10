@@ -109,10 +109,12 @@ export class Meson {
     fromChainType,
     fromTokenSymbol,
     fromTokenAddress,
+    fromTokenDecimals,
     toTokenAddress,
     toChainId,
     toChainType,
     toTokenSymbol,
+    toTokenDecimals,
     amount,
     mesonEndpoint,
   }: IMesonTokenValidateParams) => {
@@ -121,9 +123,11 @@ export class Meson {
         !fromChainId ||
         !fromTokenAddress ||
         !fromTokenSymbol ||
+        !fromTokenDecimals ||
         !fromChainType ||
         !toChainId ||
         !toTokenAddress ||
+        !toTokenDecimals ||
         !toChainType ||
         !toTokenSymbol ||
         !amount ||
@@ -133,9 +137,11 @@ export class Meson {
         console.log('-- fromChainId', fromChainId);
         console.log('-- fromTokenAddress', fromTokenAddress);
         console.log('-- fromTokenSymbol', fromTokenSymbol);
+        console.log('-- fromTokenDecimals', fromTokenDecimals);
         console.log('-- fromChainType', fromChainType);
         console.log('-- toChainId', toChainId);
         console.log('-- toTokenAddress', toTokenAddress);
+        console.log('-- toTokenDecimals', toTokenDecimals);
         console.log('-- toChainType', toChainType);
         console.log('-- toTokenSymbol', toTokenSymbol);
         console.log('-- amount', amount);
@@ -187,10 +193,12 @@ export class Meson {
         const fromTokenInfo = chainInfo.tokens.filter(
           (token) =>
             (token?.addr?.toLowerCase() === fromTokenAddress.toLowerCase() &&
+              token.decimals === fromTokenDecimals &&
               token.id === fromTokenSymbol.toLowerCase()) ||
             (!token?.addr &&
               fromTokenAddress ===
                 '0x0000000000000000000000000000000000000000' &&
+              token.decimals === fromTokenDecimals &&
               token.id === fromTokenSymbol.toLowerCase())
         );
         if (!!fromTokenInfo && fromTokenInfo.length > 0) {
@@ -207,9 +215,11 @@ export class Meson {
         const toTokenInfo = chainInfo.tokens.filter(
           (token) =>
             (token?.addr?.toLowerCase() === toTokenAddress.toLowerCase() &&
+              token.decimals === toTokenDecimals &&
               token.id === toTokenSymbol.toLowerCase()) ||
             (!token?.addr &&
               toTokenAddress === '0x0000000000000000000000000000000000000000' &&
+              token.decimals === toTokenDecimals &&
               token.id === toTokenSymbol.toLowerCase())
         );
         if (!!toTokenInfo && toTokenInfo.length > 0) {
