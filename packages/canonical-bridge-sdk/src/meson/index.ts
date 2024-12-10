@@ -189,7 +189,7 @@ export class Meson {
       const fromHexNum = fromChainId?.toString(16);
       const toHexNum = toChainId?.toString(16);
       // from token validation
-      const isValidFromToken = mesonConfig.result.filter((chainInfo) => {
+      const validFromToken = mesonConfig.result.filter((chainInfo) => {
         const fromTokenInfo = chainInfo.tokens.filter(
           (token) =>
             (token?.addr?.toLowerCase() === fromTokenAddress.toLowerCase() &&
@@ -211,7 +211,7 @@ export class Meson {
         );
       });
       // to token validation
-      const isValidToToken = mesonConfig.result.filter((chainInfo) => {
+      const validToToken = mesonConfig.result.filter((chainInfo) => {
         const toTokenInfo = chainInfo.tokens.filter(
           (token) =>
             (token?.addr?.toLowerCase() === toTokenAddress.toLowerCase() &&
@@ -231,8 +231,8 @@ export class Meson {
           !!toTokenInfo
         );
       });
-      if (!!isValidToToken && !!isValidFromToken) {
-        console.log('Meson token info matched', isValidToToken);
+      if (validToToken?.length > 0 && validFromToken?.length > 0) {
+        console.log('Meson token info matched', validToToken, validFromToken);
         return true;
       }
       console.log('Could not find Meson token');
