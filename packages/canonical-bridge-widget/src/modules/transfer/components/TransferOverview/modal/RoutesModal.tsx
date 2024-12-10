@@ -1,5 +1,8 @@
 import { CloseIcon } from '@bnb-chain/icons';
 import { Flex, Modal, ModalContent, ModalOverlay, useColorMode, useTheme } from '@bnb-chain/space';
+import { useEffect } from 'react';
+
+import { useAppSelector } from '@/modules/store/StoreProvider';
 
 interface RoutesModalProps {
   title: React.ReactNode;
@@ -14,6 +17,14 @@ export function RoutesModal(props: RoutesModalProps) {
   const theme = useTheme();
   const { colorMode } = useColorMode();
 
+  const transferActionInfo = useAppSelector((state) => state.transfer.transferActionInfo);
+
+  useEffect(() => {
+    if (transferActionInfo?.bridgeType) {
+      onClose();
+    }
+  }, [onClose, transferActionInfo?.bridgeType]);
+
   return (
     <Modal isOpen={isOpen} onClose={onClose} size={{ base: 'full', md: 'lg' }} isCentered>
       <ModalOverlay className="bccb-widget-modal-route-overlay" w={'100%'} />
@@ -21,7 +32,7 @@ export function RoutesModal(props: RoutesModalProps) {
         className="bccb-widget-modal-route-content"
         background={theme.colors[colorMode].background.modal}
         p={0}
-        h={['100vh', '100vh', '665px']}
+        h={['100vh', '80vh', '665px']}
         w={['100%', '100%', '558px']}
         overflow={['auto', 'auto', 'auto', 'hidden']}
         margin={0}

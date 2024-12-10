@@ -10,6 +10,7 @@ import { TokenPricesProvider } from '@/modules/aggregator/components/TokenPrices
 import { locales } from '@/core/locales';
 import { TronAccountProvider } from '@/modules/wallet/TronAccountProvider';
 import { WalletConnectButton } from '@/modules/transfer/components/Button/WalletConnectButton';
+import { ExportsProvider } from '@/ExportsProvider';
 
 export interface ICanonicalBridgeConfig {
   appName: string;
@@ -40,6 +41,8 @@ export interface ICanonicalBridgeConfig {
 interface CanonicalBridgeContextProps extends ICanonicalBridgeConfig {
   routeContentBottom: React.ReactNode;
   connectWalletButton: React.ReactNode;
+  refreshingIcon?: React.ReactNode;
+  bridgeBottom?: React.ReactNode;
   onClickConnectWalletButton?: (params: {
     chainType: ChainType;
     chainId: number;
@@ -61,6 +64,8 @@ export interface CanonicalBridgeProviderProps {
   connectWalletButton?: React.ReactNode;
   children: React.ReactNode;
   onClickConnectWalletButton?: CanonicalBridgeContextProps['onClickConnectWalletButton'];
+  refreshingIcon?: React.ReactNode;
+  bridgeBottom?: React.ReactNode;
 }
 
 export function CanonicalBridgeProvider(props: CanonicalBridgeProviderProps) {
@@ -71,6 +76,8 @@ export function CanonicalBridgeProvider(props: CanonicalBridgeProviderProps) {
     transferConfig,
     routeContentBottom,
     connectWalletButton,
+    refreshingIcon,
+    bridgeBottom,
     onClickConnectWalletButton,
   } = props;
 
@@ -97,8 +104,17 @@ export function CanonicalBridgeProvider(props: CanonicalBridgeProviderProps) {
       routeContentBottom,
       connectWalletButton: connectWalletButton ?? <WalletConnectButton />,
       onClickConnectWalletButton,
+      refreshingIcon,
+      bridgeBottom,
     };
-  }, [config, connectWalletButton, onClickConnectWalletButton, routeContentBottom]);
+  }, [
+    bridgeBottom,
+    config,
+    connectWalletButton,
+    onClickConnectWalletButton,
+    refreshingIcon,
+    routeContentBottom,
+  ]);
 
   return (
     <CanonicalBridgeContext.Provider value={value}>
@@ -109,7 +125,7 @@ export function CanonicalBridgeProvider(props: CanonicalBridgeProviderProps) {
               <TronAccountProvider>
                 <TokenBalancesProvider />
                 <TokenPricesProvider />
-                {children}
+                <ExportsProvider>{children}</ExportsProvider>
               </TronAccountProvider>
             </ThemeProvider>
           </AggregatorProvider>

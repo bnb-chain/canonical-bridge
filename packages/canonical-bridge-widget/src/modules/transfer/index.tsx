@@ -29,7 +29,7 @@ export function TransferWidget() {
   useDefaultSelectedInfo();
 
   const { isOpen, onClose, onOpen } = useDisclosure();
-  const { appearance, routeContentBottom } = useBridgeConfig();
+  const { appearance, routeContentBottom, bridgeBottom } = useBridgeConfig();
 
   return (
     <>
@@ -42,43 +42,46 @@ export function TransferWidget() {
         alignItems={['flex-start', 'flex-start', 'center', 'flex-start']}
         justifyContent={'center'}
       >
-        <Flex
-          className="bccb-widget-transfer-widget-wrapper"
-          flexDir="column"
-          background={['none', 'none', theme.colors[colorMode].layer[2].default]}
-          color={theme.colors[colorMode].text.primary}
-          boxShadow={['none', 'none', `0 ${'24px'} ${'64px'} 0 rgba(0, 0, 0, 0.48)`]}
-          borderRadius={'24px'}
-          px={['0', '0', '24px']}
-          py={['0', '0', '32px']}
-          w={'100%'}
-          maxW={['100%', '100%', '588px']}
-          gap={'24px'}
-          position="relative"
-        >
-          {appearance.bridgeTitle && (
-            <Typography
-              className="bccb-widget-transfer-widget-title"
-              variant={'heading'}
-              size={{ base: 'xs', md: 'sm' }}
-              as="h1"
-              fontWeight={700}
-              textAlign={'center'}
-              mb={'-4px'}
-            >
-              {appearance.bridgeTitle}
-            </Typography>
-          )}
+        <Box>
+          <Flex
+            className="bccb-widget-transfer-widget-wrapper"
+            flexDir="column"
+            background={['none', 'none', theme.colors[colorMode].layer[2].default]}
+            color={theme.colors[colorMode].text.primary}
+            boxShadow={['none', 'none', `0 ${'24px'} ${'64px'} 0 rgba(0, 0, 0, 0.48)`]}
+            borderRadius={'24px'}
+            px={['0', '0', '24px']}
+            py={['0', '0', '32px']}
+            w={'100%'}
+            maxW={['100%', '100%', '588px']}
+            gap={'24px'}
+            position="relative"
+          >
+            {appearance.bridgeTitle && (
+              <Typography
+                className="bccb-widget-transfer-widget-title"
+                variant={'heading'}
+                size={{ base: 'xs', md: 'sm' }}
+                as="h1"
+                fontWeight={700}
+                textAlign={'center'}
+                mb={'-4px'}
+              >
+                {appearance.bridgeTitle}
+              </Typography>
+            )}
 
-          <NetWorkSection />
-          <SendInput />
-          <ToAccount />
-          <ReceiveInfo onOpen={onOpen} />
-          <Flex flexDir="column">
-            <TransferButtonGroup />
+            <NetWorkSection />
+            <SendInput />
+            <ToAccount />
+            <ReceiveInfo onOpen={onOpen} />
+            <Flex flexDir="column">
+              <TransferButtonGroup />
+            </Flex>
+            <Box display={{ base: 'block', lg: 'none' }}>{routeContentBottom}</Box>
           </Flex>
-          <Box display={{ base: 'block', lg: 'none' }}>{routeContentBottom}</Box>
-        </Flex>
+          <>{bridgeBottom}</>
+        </Box>
         <Box display={{ base: 'none', lg: 'flex' }}>
           <TransferOverview routeContentBottom={routeContentBottom} />
         </Box>

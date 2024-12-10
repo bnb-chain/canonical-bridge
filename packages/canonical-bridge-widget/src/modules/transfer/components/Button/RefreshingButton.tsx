@@ -64,6 +64,8 @@ export const RefreshingButton = (props: BoxProps) => {
     bridgeConfig.http.refetchingInterval,
   ]);
 
+  const { refreshingIcon } = useBridgeConfig();
+
   return transferActionInfo ? (
     <Box
       className={'bccb-widget-refreshing-button'}
@@ -81,7 +83,7 @@ export const RefreshingButton = (props: BoxProps) => {
       }}
       {...props}
     >
-      <RefreshingIcon />
+      {refreshingIcon ?? <RefreshingIcon />}
     </Box>
   ) : null;
 };

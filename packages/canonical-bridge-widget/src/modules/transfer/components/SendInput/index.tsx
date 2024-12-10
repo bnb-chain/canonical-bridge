@@ -125,6 +125,7 @@ export const SendInput: React.FC = () => {
         h={'48px'}
         borderRadius={'8px'}
         border={'1px solid'}
+        gap="8px"
         borderColor={`${
           !!error?.text
             ? theme.colors[colorMode].text.danger

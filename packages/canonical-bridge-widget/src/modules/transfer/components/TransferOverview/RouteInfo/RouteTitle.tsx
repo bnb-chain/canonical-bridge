@@ -146,7 +146,7 @@ export const ToTokenInfo = React.forwardRef(
             <InfoTooltip
               label={formatMessage({ id: 'route.token-address.tips' })}
               maxW={'250px'}
-              placement="top-start"
+              placement="top"
               hasArrow
             >
               <Center>

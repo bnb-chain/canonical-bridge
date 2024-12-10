@@ -169,10 +169,13 @@ export function TransferOverview({ routeContentBottom }: { routeContentBottom?: 
   );
 
   const cBridgeSupport = 'cBridge' in transferConfig;
+  const showOverview = showRoute || !!routeContentBottom;
 
   return (
     <Flex
-      w={{ base: 'auto', lg: showRoute || !!routeContentBottom ? '408px' : 0 }}
+      className="bccb-widget-overview"
+      w={{ base: 'auto', lg: showOverview ? '408px' : 0 }}
+      data-show={showOverview ? true : undefined}
       transition={'width 0.15s'}
     >
       {cBridgeSupport && <CBridgeSendMaxMin />}

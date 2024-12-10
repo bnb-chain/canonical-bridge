@@ -1,6 +1,7 @@
 export * from '@/modules/aggregator';
 export * from '@/CanonicalBridgeProvider';
 export * from '@/modules/transfer';
+export { useBridge } from '@/ExportsProvider';
 
 // gtm
 export * from '@/core/utils/gtm';
