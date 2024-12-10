@@ -336,7 +336,8 @@ export class Stargate {
           fromToken.chainKey.toLowerCase() === fromChainKey.toLowerCase() &&
           fromToken.address.toLowerCase() === fromBridgeAddress.toLowerCase() && // bridge contract address
           fromToken.token.decimals === fromTokenDecimals &&
-          fromToken.token.symbol === fromTokenSymbol &&
+          fromToken.token.symbol.toLowerCase() ===
+            fromTokenSymbol.toLowerCase() &&
           fromToken.token.address.toLowerCase() ===
             fromTokenAddress.toLowerCase()
         );
@@ -346,7 +347,7 @@ export class Stargate {
         return (
           toToken.chainKey.toLowerCase() === toChainKey.toLowerCase() &&
           toToken.address.toLowerCase() === toBridgeAddress.toLowerCase() &&
-          toToken.token.symbol === toTokenSymbol &&
+          toToken.token.symbol.toLowerCase() === toTokenSymbol.toLowerCase() &&
           toToken.token.decimals === toTokenDecimals &&
           toToken.token.address.toLowerCase() === toTokenAddress.toLowerCase()
         );
