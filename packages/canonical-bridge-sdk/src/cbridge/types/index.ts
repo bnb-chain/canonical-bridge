@@ -308,11 +308,12 @@ export interface ICBridgeTokenValidateParams {
   fromChainId?: number;
   fromTokenAddress: `0x${string}`;
   fromTokenSymbol: string;
+  fromTokenDecimals: number;
   bridgeAddress: `0x${string}`;
   toChainId?: number;
   toTokenAddress?: `0x${string}`;
   toTokenSymbol?: string;
+  toTokenDecimals: number;
   amount: number;
-  decimals: number;
   cBridgeEndpoint: string;
 }
