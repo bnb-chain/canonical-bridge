@@ -439,7 +439,7 @@ export function TransferButton({
           // fromTokenAddress: selectedToken.meson?.raw?.addr as `0x${string}`,
           fromTokenAddress: fakeFromToken as `0x${string}`,
           fromTokenSymbol: selectedToken.meson?.raw?.id as string,
-          fromTokenDecimals: selectedToken.meson?.raw?.decimals,
+          fromTokenDecimals: selectedToken.meson?.raw?.decimals as number,
           fromChainType: fromChain?.chainType,
           toChainType: toChain?.chainType,
           toTokenAddress: toToken?.meson?.raw?.addr as `0x${string}`,
