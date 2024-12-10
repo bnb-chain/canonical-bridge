@@ -207,10 +207,24 @@ export class DeBridge {
         !toChainType ||
         !amount ||
         !fromTokenDecimals ||
-        !fromBridgeAddress ||
+        (!fromBridgeAddress && fromChainType === 'evm') ||
         !toTokenDecimals ||
         !deBridgeEndpoint
       ) {
+        console.log('Invalid deBridge token validation params');
+        console.log('-- fromChainId', !fromChainId);
+        console.log('-- fromChainType', !fromChainType);
+        console.log('-- fromTokenSymbol', !fromTokenSymbol);
+        console.log('-- fromTokenAddress', !fromTokenAddress);
+        console.log('-- fromTokenDecimals', !fromTokenDecimals);
+        console.log('-- fromBridgeAddress', fromBridgeAddress);
+        console.log('-- toChainId', !toChainId);
+        console.log('-- toChainType', !toChainType);
+        console.log('-- toTokenSymbol', !toTokenSymbol);
+        console.log('-- toTokenAddress', !toTokenAddress);
+        console.log('-- toTokenDecimals', !toTokenDecimals);
+        console.log('-- amount', !amount);
+        console.log('-- deBridgeEndpoint', !deBridgeEndpoint);
         return false;
       }
       // Check amount
