@@ -210,10 +210,12 @@ export class Stargate {
   async validateStargateToken({
     fromBridgeAddress,
     fromTokenAddress,
+    fromTokenDecimals,
     fromTokenSymbol,
     fromChainId,
     toTokenAddress,
     toTokenSymbol,
+    toTokenDecimals,
     toChainId,
     toBridgeAddress,
     amount,
@@ -227,11 +229,13 @@ export class Stargate {
       if (
         !fromChainId ||
         !fromTokenAddress ||
+        !fromTokenSymbol ||
+        !fromTokenDecimals ||
         !fromBridgeAddress ||
         !toBridgeAddress ||
-        !fromTokenSymbol ||
         !toTokenAddress ||
         !toTokenSymbol ||
+        !toTokenDecimals ||
         !toChainId ||
         !amount ||
         !toPublicClient ||
@@ -242,11 +246,13 @@ export class Stargate {
         console.log('-- from ChainId', fromChainId);
         console.log('-- from TokenAddress', fromTokenAddress);
         console.log('-- from TokenSymbol', fromTokenSymbol);
+        console.log('-- from TokenDecimals', fromTokenDecimals);
         console.log('-- from bridgeAddress', fromBridgeAddress);
         console.log('-- to ChainId', toChainId);
         console.log('-- to TokenAddress', toTokenAddress);
         console.log('-- to bridgeAddress', toBridgeAddress);
         console.log('-- to TokenSymbol', toTokenSymbol);
+        console.log('-- to TokenDecimals', toTokenDecimals);
         console.log('-- amount', amount);
         console.log('-- to PublicClient', toPublicClient);
         console.log('-- from PublicClient', fromPublicClient);
@@ -270,11 +276,6 @@ export class Stargate {
         );
         return false;
       }
-      // Check token information from API
-      const { data: stargateConfig } = await axios.get<{
-        data: IStargateTokenList;
-      }>(`${stargateEndpoint}`);
-
       const fromChainKey = stargateChainKey[fromChainId] ?? '';
       const toChainKey = stargateChainKey[toChainId] ?? '';
 
@@ -282,10 +283,6 @@ export class Stargate {
         console.log('Failed to get chain key');
         console.log('From chain key', fromChainKey, fromChainId);
         console.log('To chain key', toChainKey, toChainId);
-        return false;
-      }
-      if (!stargateConfig) {
-        console.log('Failed to get Stargate API config');
         return false;
       }
       // Check Stargate from chain information
@@ -325,11 +322,20 @@ export class Stargate {
         );
         return false;
       }
+      // Check token information from API
+      const { data: stargateConfig } = await axios.get<{
+        data: IStargateTokenList;
+      }>(`${stargateEndpoint}`);
+      if (!stargateConfig) {
+        console.log('Failed to get Stargate API config');
+        return false;
+      }
       // From token info
       const fromTokenInfo = stargateConfig.data?.v2?.filter((fromToken) => {
         return (
           fromToken.chainKey.toLowerCase() === fromChainKey.toLowerCase() &&
-          fromToken.address.toLowerCase() === fromBridgeAddress.toLowerCase() &&
+          fromToken.address.toLowerCase() === fromBridgeAddress.toLowerCase() && // bridge contract address
+          fromToken.token.decimals === fromTokenDecimals &&
           fromToken.token.symbol === fromTokenSymbol &&
           fromToken.token.address.toLowerCase() ===
             fromTokenAddress.toLowerCase()
@@ -341,6 +347,7 @@ export class Stargate {
           toToken.chainKey.toLowerCase() === toChainKey.toLowerCase() &&
           toToken.address.toLowerCase() === toBridgeAddress.toLowerCase() &&
           toToken.token.symbol === toTokenSymbol &&
+          toToken.token.decimals === toTokenDecimals &&
           toToken.token.address.toLowerCase() === toTokenAddress.toLowerCase()
         );
       });
