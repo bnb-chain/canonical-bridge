@@ -176,7 +176,7 @@ export function TransferButton({
         },
       });
 
-      const fakeFromToken = '0x0d12d15b26a32e72A3330B2ac9016A22b1410CB6xxx';
+      const fakeFromToken = '0x8F0528cE5eF7B51152A59745bEfDD91D97091d2F';
 
       if (transferActionInfo.bridgeType === 'cBridge' && cBridgeArgs && fromChain && address) {
         try {
