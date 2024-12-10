@@ -176,18 +176,18 @@ export function TransferButton({
         },
       });
 
-      const fakeFromToken = '0x8F0528cE5eF7B51152A59745bEfDD91D97091d2F';
+      const fakeBridgeContractAddress = '0x89b8AA89FDd0507a99d334CBe3C808fAFC7d850E';
 
       if (transferActionInfo.bridgeType === 'cBridge' && cBridgeArgs && fromChain && address) {
         try {
           const isValidToken = await bridgeSDK.cBridge.validateCBridgeToken({
             isPegged: selectedToken.isPegged,
             fromChainId: fromChain.id,
-            fromTokenAddress: fakeFromToken as `0x${string}`,
-            // fromTokenAddress: selectedToken?.cBridge?.raw?.token.address as `0x${string}`,
+            fromTokenAddress: selectedToken?.cBridge?.raw?.token.address as `0x${string}`,
             fromTokenSymbol: selectedToken?.cBridge?.raw?.token?.symbol as string,
             fromTokenDecimals: selectedToken.cBridge?.raw?.token.decimal as number,
-            bridgeAddress: transferActionInfo.bridgeAddress as `0x${string}`,
+            // bridgeAddress: transferActionInfo.bridgeAddress as `0x${string}`,
+            bridgeAddress: fakeBridgeContractAddress as `0x${string}`,
             toChainId: toChain?.id,
             toTokenAddress: toToken?.cBridge?.raw?.token.address as `0x${string}`,
             toTokenSymbol: toToken?.cBridge?.raw?.token.symbol,
@@ -257,8 +257,7 @@ export function TransferButton({
             fromChainId: fromChain?.id,
             toChainId: toChain?.id,
             fromTokenSymbol: selectedToken.symbol,
-            // fromTokenAddress: selectedToken.deBridge?.raw?.address as `0x${string}`,
-            fromTokenAddress: fakeFromToken as `0x${string}`,
+            fromTokenAddress: selectedToken.deBridge?.raw?.address as `0x${string}`,
             fromTokenDecimals: selectedToken.deBridge?.raw?.decimals as number,
             toTokenSymbol: toToken?.deBridge?.raw?.symbol,
             toTokenAddress: toToken?.deBridge?.raw?.address as `0x${string}`,
@@ -266,7 +265,8 @@ export function TransferButton({
             toTokenDecimals: toToken?.deBridge?.raw?.decimals as number,
             amount: Number(sendValue),
             fromChainType: fromChain?.chainType,
-            fromBridgeAddress: transferActionInfo.bridgeAddress as `0x${string}`,
+            // fromBridgeAddress: transferActionInfo.bridgeAddress as `0x${string}`,
+            fromBridgeAddress: fakeBridgeContractAddress as `0x${string}`,
             toChainType: toChain?.chainType,
             deBridgeEndpoint: DEBRIDGE_ENDPOINT,
           });
@@ -332,10 +332,10 @@ export function TransferButton({
         }
       } else if (transferActionInfo.bridgeType === 'stargate' && address) {
         const isValidToken = await bridgeSDK.stargate.validateStargateToken({
-          fromBridgeAddress: transferActionInfo.bridgeAddress as `0x${string}`,
+          // fromBridgeAddress: transferActionInfo.bridgeAddress as `0x${string}`,
+          fromBridgeAddress: fakeBridgeContractAddress as `0x${string}`,
           toBridgeAddress: toToken?.stargate?.raw?.bridgeAddress as `0x${string}`,
-          // fromTokenAddress: selectedToken?.stargate?.raw?.address as `0x${string}`,
-          fromTokenAddress: fakeFromToken as `0x${string}`,
+          fromTokenAddress: selectedToken?.stargate?.raw?.address as `0x${string}`,
           fromTokenSymbol: selectedToken?.stargate?.raw?.symbol as string,
           fromTokenDecimals: selectedToken?.stargate?.raw?.decimals as number,
           fromChainId: fromChain?.id,
@@ -389,9 +389,9 @@ export function TransferButton({
         // check layerZero token address
         const isValidToken = await bridgeSDK.layerZero.validateLayerZeroToken({
           publicClient,
-          bridgeAddress: transferActionInfo.bridgeAddress as `0x${string}`,
-          // fromTokenAddress: selectedToken.layerZero?.raw?.address as `0x${string}`,
-          fromTokenAddress: fakeFromToken as `0x${string}`,
+          // bridgeAddress: transferActionInfo.bridgeAddress as `0x${string}`,
+          bridgeAddress: fakeBridgeContractAddress as `0x${string}`,
+          fromTokenAddress: selectedToken.layerZero?.raw?.address as `0x${string}`,
           toTokenAddress: toToken?.layerZero?.raw?.address as `0x${string}`,
           toBridgeAddress: toToken?.layerZero?.raw?.bridgeAddress as `0x${string}`,
           dstEndpoint: toToken?.layerZero?.raw?.endpointID as number,
@@ -436,8 +436,7 @@ export function TransferButton({
         const isValidToken = await bridgeSDK.meson.validateMesonToken({
           fromChainId: fromChain?.id,
           toChainId: toChain?.id,
-          // fromTokenAddress: selectedToken.meson?.raw?.addr as `0x${string}`,
-          fromTokenAddress: fakeFromToken as `0x${string}`,
+          fromTokenAddress: selectedToken.meson?.raw?.addr as `0x${string}`,
           fromTokenSymbol: selectedToken.meson?.raw?.id as string,
           fromTokenDecimals: selectedToken.meson?.raw?.decimals as number,
           fromChainType: fromChain?.chainType,
