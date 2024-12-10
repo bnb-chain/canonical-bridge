@@ -256,10 +256,10 @@ export class DeBridge {
       // Check token info on API
       const fromRequest = axios.get<{
         tokens: { [key: string]: IDeBridgeToken };
-      }>(`${deBridgeEndpoint}/token-list?chainId=${fromChainId}dd`);
+      }>(`${deBridgeEndpoint}/token-list?chainId=${fromChainId}`);
       const toRequest = axios.get<{
         tokens: { [key: string]: IDeBridgeToken };
-      }>(`${deBridgeEndpoint}/token-list?chainId=${toChainId}cc`);
+      }>(`${deBridgeEndpoint}/token-list?chainId=${toChainId}`);
       const [fromTokenList, toTokenList] = await Promise.allSettled([
         fromRequest,
         toRequest,
