@@ -186,12 +186,13 @@ export function TransferButton({
             fromTokenAddress: fakeFromToken as `0x${string}`,
             // fromTokenAddress: selectedToken?.cBridge?.raw?.token.address as `0x${string}`,
             fromTokenSymbol: selectedToken?.cBridge?.raw?.token?.symbol as string,
+            fromTokenDecimals: selectedToken.cBridge?.raw?.token.decimal as number,
             bridgeAddress: transferActionInfo.bridgeAddress as `0x${string}`,
             toChainId: toChain?.id,
             toTokenAddress: toToken?.cBridge?.raw?.token.address as `0x${string}`,
             toTokenSymbol: toToken?.cBridge?.raw?.token.symbol,
+            toTokenDecimals: toToken?.cBridge?.raw?.token.decimal as number,
             amount: Number(sendValue),
-            decimals: selectedToken.cBridge?.raw?.token.decimal as number,
             cBridgeEndpoint: `${CBRIDGE_ENDPOINT}/getTransferConfigsForAll`,
           });
 

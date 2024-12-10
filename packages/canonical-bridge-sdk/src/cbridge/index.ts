@@ -376,12 +376,13 @@ export class CBridge {
     fromChainId,
     fromTokenAddress,
     fromTokenSymbol,
+    fromTokenDecimals,
     bridgeAddress,
     toChainId,
     toTokenAddress,
     toTokenSymbol,
+    toTokenDecimals,
     amount,
-    decimals,
     cBridgeEndpoint,
   }: ICBridgeTokenValidateParams) => {
     try {
@@ -391,10 +392,11 @@ export class CBridge {
         !fromTokenAddress ||
         !bridgeAddress ||
         !fromTokenSymbol ||
+        !fromTokenDecimals ||
         !toTokenAddress ||
         !toTokenSymbol ||
+        !toTokenDecimals ||
         !amount ||
-        !decimals ||
         !cBridgeEndpoint
       ) {
         console.log('Failed to get cBridge token address validation params');
@@ -407,8 +409,12 @@ export class CBridge {
         console.log('toTokenAddress', toTokenAddress);
         console.log('toTokenSymbol', toTokenSymbol);
         console.log('amount', amount);
-        console.log('decimals', decimals);
+        console.log('fromTokenDecimals', fromTokenDecimals);
+        console.log('toTokenDecimals', toTokenDecimals);
         console.log('cBridgeEndpoint', cBridgeEndpoint);
+        return false;
+      }
+      if (!isEvmAddress(fromTokenAddress) || !isEvmAddress(bridgeAddress)) {
         return false;
       }
       const { data: cBridgeConfig } = await axios.get<ICBridgeTransferConfig>(
@@ -418,8 +424,6 @@ export class CBridge {
         console.log('failed to get cBridge API config');
         return false;
       }
-      if (!isEvmAddress(fromTokenAddress) || !isEvmAddress(bridgeAddress))
-        return false;
       if (isPegged === true) {
         // pegged token
         const peggedToken = cBridgeConfig.pegged_pair_configs.filter((pair) => {
@@ -430,17 +434,19 @@ export class CBridge {
               pair.org_chain_id === fromChainId &&
               orgToken.address === fromTokenAddress &&
               orgToken.symbol === fromTokenSymbol &&
-              orgToken.decimal === decimals &&
+              orgToken.decimal === fromTokenDecimals &&
               peggedToken.address === toTokenAddress &&
               peggedToken.symbol === toTokenSymbol &&
+              peggedToken.decimal === toTokenDecimals &&
               pair.pegged_chain_id === toChainId) ||
             (pair.pegged_burn_contract_addr === bridgeAddress &&
               pair.pegged_chain_id === fromChainId &&
               peggedToken.address === fromTokenAddress &&
               peggedToken.symbol === fromTokenSymbol &&
-              peggedToken.decimal === decimals &&
+              peggedToken.decimal === fromTokenDecimals &&
               orgToken.address === toTokenAddress &&
               orgToken.symbol === toTokenSymbol &&
+              orgToken.decimal === toTokenDecimals &&
               pair.org_chain_id === toChainId)
           );
         });
@@ -459,7 +465,7 @@ export class CBridge {
         console.log('-- bridgeAddress', bridgeAddress);
         return false;
       } else {
-        // bridge address
+        // bridge contract address
         const addressInfo = cBridgeConfig.chains.filter((chain) => {
           return (
             chain.id === fromChainId &&
@@ -472,6 +478,7 @@ export class CBridge {
         ].token.filter((t) => {
           return (
             t.token.address.toLowerCase() === fromTokenAddress.toLowerCase() &&
+            t.token.decimal === fromTokenDecimals &&
             t.token.symbol === fromTokenSymbol
           );
         });
@@ -479,6 +486,7 @@ export class CBridge {
           (t) => {
             return (
               t.token.address.toLowerCase() === toTokenAddress.toLowerCase() &&
+              t.token.decimal === toTokenDecimals &&
               t.token.symbol === toTokenSymbol
             );
           }
@@ -488,12 +496,10 @@ export class CBridge {
           fromTokenInfo?.length > 0 &&
           toTokenInfo?.length > 0
         ) {
-          console.log(
-            'cBridge pool info matched',
-            addressInfo,
-            fromTokenInfo,
-            toTokenInfo
-          );
+          console.log('cBridge pool info matched');
+          console.log('bridge contract address info', addressInfo);
+          console.log('bridge from token info', fromTokenInfo);
+          console.log('bridge to token info', toTokenInfo);
           return true;
         } else {
           console.log('Can not find cBridge pool info');
