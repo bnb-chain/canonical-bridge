@@ -157,7 +157,7 @@ export const useLoadingBridgeFees = () => {
         },
         deBridgeOpts: {
           fromChainId: fromChain.id,
-          fromTokenAddress: selectedToken.address as `0x${string}`,
+          fromTokenAddress: selectedToken.deBridge?.raw?.address as `0x${string}`,
           amount,
           toChainId: toChain?.id,
           toTokenAddress: toToken?.address as `0x${string}`,
