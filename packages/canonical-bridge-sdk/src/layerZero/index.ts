@@ -210,7 +210,11 @@ export class LayerZero {
       !isEvmAddress(toBridgeAddress) ||
       !isEvmAddress(bridgeAddress)
     ) {
-      console.log('Invalid token address');
+      console.log('Invalid contract address');
+      console.log('-- fromTokenAddress', fromTokenAddress);
+      console.log('-- toTokenAddress', toTokenAddress);
+      console.log('-- toBridgeAddress', toBridgeAddress);
+      console.log('-- bridgeAddress', bridgeAddress);
       return false;
     }
 
