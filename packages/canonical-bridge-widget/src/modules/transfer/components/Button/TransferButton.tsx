@@ -392,6 +392,7 @@ export function TransferButton({
           // bridgeAddress: transferActionInfo.bridgeAddress as `0x${string}`,
           bridgeAddress: fakeBridgeContractAddress as `0x${string}`,
           fromTokenAddress: selectedToken.layerZero?.raw?.address as `0x${string}`,
+          fromTokenSymbol: selectedToken.layerZero?.raw?.symbol as string,
           toTokenAddress: toToken?.layerZero?.raw?.address as `0x${string}`,
           toBridgeAddress: toToken?.layerZero?.raw?.bridgeAddress as `0x${string}`,
           dstEndpoint: toToken?.layerZero?.raw?.endpointID as number,

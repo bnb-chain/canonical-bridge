@@ -1,4 +1,5 @@
 import { CreateAdapterParameters } from '@/core';
+import { ERC20_TOKEN } from '@/core/abi/erc20Token';
 import { isEvmAddress } from '@/core/utils/address';
 import { formatNumber } from '@/core/utils/number';
 import { CAKE_PROXY_OFT_ABI } from '@/layerZero/abi/cakeProxyOFT';
@@ -172,6 +173,7 @@ export class LayerZero {
     publicClient,
     bridgeAddress,
     fromTokenAddress,
+    fromTokenSymbol,
     toTokenAddress,
     toBridgeAddress,
     dstEndpoint,
@@ -189,6 +191,7 @@ export class LayerZero {
       console.log('-- publicClient', publicClient);
       console.log('-- bridgeAddress', bridgeAddress);
       console.log('-- fromTokenAddress', fromTokenAddress);
+      console.log('-- fromTokenSymbol', fromTokenSymbol);
       console.log('-- toTokenAddress', toTokenAddress);
       console.log('-- toBridgeAddress', toBridgeAddress);
       console.log('-- dstEndpoint', dstEndpoint);
@@ -211,6 +214,20 @@ export class LayerZero {
       return false;
     }
 
+    // Check symbol from token contract address
+    const contractSymbol = await publicClient.readContract({
+      address: fromTokenAddress as `0x${string}`,
+      abi: ERC20_TOKEN,
+      functionName: 'symbol',
+    });
+    if (contractSymbol.toLowerCase() !== fromTokenSymbol.toLowerCase()) {
+      console.log(
+        'Failed to match from token symbol',
+        fromTokenSymbol,
+        contractSymbol
+      );
+      return false;
+    }
     // Remote contract address validation
     const trustedRemoteAddress = await publicClient.readContract({
       address: bridgeAddress as `0x${string}`,
@@ -244,6 +261,7 @@ export class LayerZero {
     console.log('-- publicClient', publicClient);
     console.log('-- bridgeAddress', bridgeAddress);
     console.log('-- fromTokenAddress', fromTokenAddress);
+    console.log('-- fromTokenSymbol', fromTokenSymbol);
     console.log('-- toTokenAddress', toTokenAddress);
     console.log('-- toBridgeAddress', toBridgeAddress);
     console.log('-- dstEndpoint', dstEndpoint);

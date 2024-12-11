@@ -51,6 +51,7 @@ export interface LayerZeroTokenValidateParams {
   publicClient: PublicClient;
   bridgeAddress: `0x${string}`;
   fromTokenAddress: `0x${string}`;
+  fromTokenSymbol: string;
   toTokenAddress: `0x${string}`;
   toBridgeAddress: `0x${string}`;
   dstEndpoint?: number;

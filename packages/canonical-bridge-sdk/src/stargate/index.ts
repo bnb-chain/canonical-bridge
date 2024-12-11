@@ -292,11 +292,9 @@ export class Stargate {
         functionName: 'token',
       });
       if (fromApiTokenAddr.toLowerCase() !== fromTokenAddress.toLowerCase()) {
-        console.log(
-          'Stargate from token address not matched',
-          fromApiTokenAddr,
-          fromTokenAddress
-        );
+        console.log('Stargate from token address not matched');
+        console.log('fromBridgeAddress', fromBridgeAddress);
+        console.log('from token address in API', fromApiTokenAddr);
         return false;
       }
       // Check Stargate to chain information
