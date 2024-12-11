@@ -43,110 +43,110 @@ describe('LayerZero test cases', () => {
     transport: http(),
   });
 
-  // it('Test 1: LayerZero validation with invalid from token address', async () => {
-  //   expect(
-  //     await bridge.validateLayerZeroToken({
-  //       publicClient: viemClient,
-  //       bridgeAddress: '0xb274202daBA6AE180c665B4fbE59857b7c3a8091',
-  //       fromTokenAddress: '0x0e09fabb73bd3ade0a17ecc321fd13a19e81cexx',
-  //       fromTokenSymbol: 'CAKE',
-  //       toTokenAddress: '0x1b896893dfc86bb67Cf57767298b9073D2c1bA2c',
-  //       toBridgeAddress: '0x1b896893dfc86bb67Cf57767298b9073D2c1bA2c',
-  //       dstEndpoint: 110,
-  //       amount: 1,
-  //     })
-  //   ).toBe(false);
-  // });
+  it('Test 1: LayerZero validation with invalid from token address', async () => {
+    expect(
+      await bridge.validateLayerZeroToken({
+        publicClient: viemClient,
+        bridgeAddress: '0xb274202daBA6AE180c665B4fbE59857b7c3a8091',
+        fromTokenAddress: '0x0e09fabb73bd3ade0a17ecc321fd13a19e81cexx',
+        fromTokenSymbol: 'CAKE',
+        toTokenAddress: '0x1b896893dfc86bb67Cf57767298b9073D2c1bA2c',
+        toBridgeAddress: '0x1b896893dfc86bb67Cf57767298b9073D2c1bA2c',
+        dstEndpoint: 110,
+        amount: 1,
+      })
+    ).toBe(false);
+  });
 
-  // it('Test 2: LayerZero validation with wrong bridge address', async () => {
-  //   expect(
-  //     await bridge.validateLayerZeroToken({
-  //       publicClient: viemClient,
-  //       bridgeAddress: '0xb274202daBA6AE180c665B4fbE59857b7c3a80x4',
-  //       fromTokenAddress: '0x0e09fabb73bd3ade0a17ecc321fd13a19e81ce82',
-  //       fromTokenSymbol: 'CAKE',
-  //       toTokenAddress: '0x1b896893dfc86bb67Cf57767298b9073D2c1bA2c',
-  //       toBridgeAddress: '0x1b896893dfc86bb67Cf57767298b9073D2c1bA2c',
-  //       dstEndpoint: 110,
-  //       amount: 1,
-  //     })
-  //   ).toBe(false);
-  // });
+  it('Test 2: LayerZero validation with wrong bridge address', async () => {
+    expect(
+      await bridge.validateLayerZeroToken({
+        publicClient: viemClient,
+        bridgeAddress: '0xb274202daBA6AE180c665B4fbE59857b7c3a80x4',
+        fromTokenAddress: '0x0e09fabb73bd3ade0a17ecc321fd13a19e81ce82',
+        fromTokenSymbol: 'CAKE',
+        toTokenAddress: '0x1b896893dfc86bb67Cf57767298b9073D2c1bA2c',
+        toBridgeAddress: '0x1b896893dfc86bb67Cf57767298b9073D2c1bA2c',
+        dstEndpoint: 110,
+        amount: 1,
+      })
+    ).toBe(false);
+  });
 
-  // it('Test 3: LayerZero validation with wrong from token symbol', async () => {
-  //   expect(
-  //     await bridge.validateLayerZeroToken({
-  //       publicClient: viemClient,
-  //       bridgeAddress: '0xb274202daBA6AE180c665B4fbE59857b7c3a8091',
-  //       fromTokenAddress: '0x0e09fabb73bd3ade0a17ecc321fd13a19e81ce82',
-  //       fromTokenSymbol: 'LOL',
-  //       toTokenAddress: '0x1b896893dfc86bb67Cf57767298b9073D2c1bA2c',
-  //       toBridgeAddress: '0x1b896893dfc86bb67Cf57767298b9073D2c1bA2c',
-  //       dstEndpoint: 110,
-  //       amount: 1,
-  //     })
-  //   ).toBe(false);
-  // });
+  it('Test 3: LayerZero validation with wrong from token symbol', async () => {
+    expect(
+      await bridge.validateLayerZeroToken({
+        publicClient: viemClient,
+        bridgeAddress: '0xb274202daBA6AE180c665B4fbE59857b7c3a8091',
+        fromTokenAddress: '0x0e09fabb73bd3ade0a17ecc321fd13a19e81ce82',
+        fromTokenSymbol: 'LOL',
+        toTokenAddress: '0x1b896893dfc86bb67Cf57767298b9073D2c1bA2c',
+        toBridgeAddress: '0x1b896893dfc86bb67Cf57767298b9073D2c1bA2c',
+        dstEndpoint: 110,
+        amount: 1,
+      })
+    ).toBe(false);
+  });
 
-  // it('Test 4: LayerZero sendToken with invalid to token address', async () => {
-  //   expect(
-  //     await bridge.validateLayerZeroToken({
-  //       publicClient: viemClient,
-  //       bridgeAddress: '0xb274202daBA6AE180c665B4fbE59857b7c3a8091',
-  //       fromTokenAddress: '0x0e09fabb73bd3ade0a17ecc321fd13a19e81ce82',
-  //       fromTokenSymbol: 'CAKE',
-  //       toTokenAddress: '0x1b896893dfc86bb67Cf57767298b9073D2c1bAxx',
-  //       toBridgeAddress: '0x1b896893dfc86bb67Cf57767298b9073D2c1bA2c',
-  //       dstEndpoint: 110,
-  //       amount: 1,
-  //     })
-  //   ).toBe(false);
-  // });
+  it('Test 4: LayerZero sendToken with invalid to token address', async () => {
+    expect(
+      await bridge.validateLayerZeroToken({
+        publicClient: viemClient,
+        bridgeAddress: '0xb274202daBA6AE180c665B4fbE59857b7c3a8091',
+        fromTokenAddress: '0x0e09fabb73bd3ade0a17ecc321fd13a19e81ce82',
+        fromTokenSymbol: 'CAKE',
+        toTokenAddress: '0x1b896893dfc86bb67Cf57767298b9073D2c1bAxx',
+        toBridgeAddress: '0x1b896893dfc86bb67Cf57767298b9073D2c1bA2c',
+        dstEndpoint: 110,
+        amount: 1,
+      })
+    ).toBe(false);
+  });
 
-  // it('Test 5: LayerZero sendToken with wrong to bridge address', async () => {
-  //   expect(
-  //     await bridge.validateLayerZeroToken({
-  //       publicClient: viemClient,
-  //       bridgeAddress: '0xb274202daBA6AE180c665B4fbE59857b7c3a8091',
-  //       fromTokenAddress: '0x0e09fabb73bd3ade0a17ecc321fd13a19e81ce82',
-  //       fromTokenSymbol: 'CAKE',
-  //       toTokenAddress: '0x1b896893dfc86bb67Cf57767298b9073D2c1bA2c',
-  //       toBridgeAddress: '0x1b896893dfc86bb67Cf57767298b9073D2c1bAxx',
-  //       dstEndpoint: 110,
-  //       amount: 1,
-  //     })
-  //   ).toBe(false);
-  // });
+  it('Test 5: LayerZero sendToken with wrong to bridge address', async () => {
+    expect(
+      await bridge.validateLayerZeroToken({
+        publicClient: viemClient,
+        bridgeAddress: '0xb274202daBA6AE180c665B4fbE59857b7c3a8091',
+        fromTokenAddress: '0x0e09fabb73bd3ade0a17ecc321fd13a19e81ce82',
+        fromTokenSymbol: 'CAKE',
+        toTokenAddress: '0x1b896893dfc86bb67Cf57767298b9073D2c1bA2c',
+        toBridgeAddress: '0x1b896893dfc86bb67Cf57767298b9073D2c1bAxx',
+        dstEndpoint: 110,
+        amount: 1,
+      })
+    ).toBe(false);
+  });
 
-  // it('Test 6: LayerZero sendToken with invalid destination endpoint', async () => {
-  //   expect(
-  //     await bridge.validateLayerZeroToken({
-  //       publicClient: viemClient,
-  //       bridgeAddress: '0xb274202daBA6AE180c665B4fbE59857b7c3a8091',
-  //       fromTokenAddress: '0x0e09fabb73bd3ade0a17ecc321fd13a19e81ce82',
-  //       fromTokenSymbol: 'CAKE',
-  //       toTokenAddress: '0x1b896893dfc86bb67Cf57767298b9073D2c1bA2c',
-  //       toBridgeAddress: '0x1b896893dfc86bb67Cf57767298b9073D2c1bA2c',
-  //       dstEndpoint: 202,
-  //       amount: 1,
-  //     })
-  //   ).toBe(false);
-  // });
+  it('Test 6: LayerZero sendToken with invalid destination endpoint', async () => {
+    expect(
+      await bridge.validateLayerZeroToken({
+        publicClient: viemClient,
+        bridgeAddress: '0xb274202daBA6AE180c665B4fbE59857b7c3a8091',
+        fromTokenAddress: '0x0e09fabb73bd3ade0a17ecc321fd13a19e81ce82',
+        fromTokenSymbol: 'CAKE',
+        toTokenAddress: '0x1b896893dfc86bb67Cf57767298b9073D2c1bA2c',
+        toBridgeAddress: '0x1b896893dfc86bb67Cf57767298b9073D2c1bA2c',
+        dstEndpoint: 202,
+        amount: 1,
+      })
+    ).toBe(false);
+  });
 
-  // it('Test 7: LayerZero sendToken with invalid amount', async () => {
-  //   expect(
-  //     await bridge.validateLayerZeroToken({
-  //       publicClient: viemClient,
-  //       bridgeAddress: '0xb274202daBA6AE180c665B4fbE59857b7c3a8091',
-  //       fromTokenAddress: '0x0e09fabb73bd3ade0a17ecc321fd13a19e81ce82',
-  //       fromTokenSymbol: 'CAKE',
-  //       toTokenAddress: '0x1b896893dfc86bb67Cf57767298b9073D2c1bA2c',
-  //       toBridgeAddress: '0x1b896893dfc86bb67Cf57767298b9073D2c1bA2c',
-  //       dstEndpoint: 110,
-  //       amount: -100,
-  //     })
-  //   ).toBe(false);
-  // });
+  it('Test 7: LayerZero sendToken with invalid amount', async () => {
+    expect(
+      await bridge.validateLayerZeroToken({
+        publicClient: viemClient,
+        bridgeAddress: '0xb274202daBA6AE180c665B4fbE59857b7c3a8091',
+        fromTokenAddress: '0x0e09fabb73bd3ade0a17ecc321fd13a19e81ce82',
+        fromTokenSymbol: 'CAKE',
+        toTokenAddress: '0x1b896893dfc86bb67Cf57767298b9073D2c1bA2c',
+        toBridgeAddress: '0x1b896893dfc86bb67Cf57767298b9073D2c1bA2c',
+        dstEndpoint: 110,
+        amount: -100,
+      })
+    ).toBe(false);
+  });
 
   it('Test 8: LayerZero sendToken with correct information', async () => {
     expect(
