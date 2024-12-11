@@ -261,7 +261,6 @@ export function TransferButton({
             fromTokenDecimals: selectedToken.deBridge?.raw?.decimals as number,
             toTokenSymbol: toToken?.deBridge?.raw?.symbol,
             toTokenAddress: toToken?.deBridge?.raw?.address as `0x${string}`,
-            tokenAddress: selectedToken.address as `0x${string}`,
             toTokenDecimals: toToken?.deBridge?.raw?.decimals as number,
             amount: Number(sendValue),
             fromChainType: fromChain?.chainType,
