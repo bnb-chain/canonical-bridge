@@ -225,6 +225,10 @@ export class Stargate {
     stargateEndpoint,
   }: IStargateTokenValidateParams) {
     try {
+      if (amount <= 0) {
+        console.log('Invalid amount', amount);
+        return false;
+      }
       // Check params exist
       if (
         !fromChainId ||
@@ -258,10 +262,6 @@ export class Stargate {
         console.log('-- from PublicClient', fromPublicClient);
         console.log('-- dstEndpointId', dstEndpointId);
         console.log('-- stargateEndpoint', stargateEndpoint);
-        return false;
-      }
-      if (amount <= 0) {
-        console.log('Invalid amount', amount);
         return false;
       }
       // Check token address and bridge address

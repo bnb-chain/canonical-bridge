@@ -386,6 +386,10 @@ export class CBridge {
     cBridgeEndpoint,
   }: ICBridgeTokenValidateParams) => {
     try {
+      if (amount <= 0) {
+        console.log('Invalid amount', amount);
+        return false;
+      }
       if (
         !fromChainId ||
         !toChainId ||

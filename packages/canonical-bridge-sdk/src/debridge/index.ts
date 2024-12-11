@@ -196,6 +196,11 @@ export class DeBridge {
     deBridgeEndpoint,
   }: IDeBridgeTokenValidateParams) => {
     try {
+      // Check amount
+      if (Number(amount) <= 0) {
+        console.log('Invalid deBridge amount', amount);
+        return false;
+      }
       if (
         !fromChainId ||
         !fromChainType ||
@@ -225,11 +230,6 @@ export class DeBridge {
         console.log('-- toTokenDecimals', toTokenDecimals);
         console.log('-- amount', amount);
         console.log('-- deBridgeEndpoint', deBridgeEndpoint);
-        return false;
-      }
-      // Check amount
-      if (Number(amount) <= 0) {
-        console.log('Invalid deBridge amount', amount);
         return false;
       }
       // Check from token address
