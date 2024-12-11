@@ -59,7 +59,7 @@ export const LayerZeroOption = () => {
 
   return (
     <RouteWrapper
-      isSelected={transferActionInfo?.bridgeType === 'stargate'}
+      isSelected={transferActionInfo?.bridgeType === 'layerZero'}
       isError={isError}
       onSelectBridge={onSelectBridge}
     >
