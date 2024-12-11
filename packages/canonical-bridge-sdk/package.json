@@ -27,13 +27,16 @@
     "dev": "vite __dev__ --config vite.config.ts --port 3333 --host 0.0.0.0 --open",
     "watch": "vite build --watch --emptyOutDir=false",
     "build": "vite build",
-    "test": "jest"
+    "test": "jest test --silent=true",
+    "test:console": "jest test",
+    "test:watch": "jest --watch"
   },
   "peerDependencies": {
     "axios": "^0",
     "viem": "^2"
   },
   "devDependencies": {
+    "@types/jest": "~29.5.14",
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "@vitejs/plugin-react": "^4.2.0",

@@ -429,27 +429,27 @@ export class CBridge {
       if (isPegged === true) {
         // pegged token
         const peggedToken = cBridgeConfig.pegged_pair_configs.filter((pair) => {
-          const orgToken = pair.org_token.token;
-          const peggedToken = pair.pegged_token.token;
+          const orgToken = pair.org_token?.token;
+          const peggedToken = pair.pegged_token?.token;
           return (
             (pair.pegged_deposit_contract_addr === bridgeAddress &&
-              pair.org_chain_id === fromChainId &&
-              orgToken.address === fromTokenAddress &&
-              orgToken.symbol === fromTokenSymbol &&
-              orgToken.decimal === fromTokenDecimals &&
-              peggedToken.address === toTokenAddress &&
-              peggedToken.symbol === toTokenSymbol &&
-              peggedToken.decimal === toTokenDecimals &&
-              pair.pegged_chain_id === toChainId) ||
-            (pair.pegged_burn_contract_addr === bridgeAddress &&
-              pair.pegged_chain_id === fromChainId &&
-              peggedToken.address === fromTokenAddress &&
-              peggedToken.symbol === fromTokenSymbol &&
-              peggedToken.decimal === fromTokenDecimals &&
-              orgToken.address === toTokenAddress &&
-              orgToken.symbol === toTokenSymbol &&
-              orgToken.decimal === toTokenDecimals &&
-              pair.org_chain_id === toChainId)
+              pair?.org_chain_id === fromChainId &&
+              orgToken?.address === fromTokenAddress &&
+              orgToken?.symbol === fromTokenSymbol &&
+              orgToken?.decimal === fromTokenDecimals &&
+              peggedToken?.address === toTokenAddress &&
+              peggedToken?.symbol === toTokenSymbol &&
+              peggedToken?.decimal === toTokenDecimals &&
+              pair?.pegged_chain_id === toChainId) ||
+            (pair?.pegged_burn_contract_addr === bridgeAddress &&
+              pair?.pegged_chain_id === fromChainId &&
+              peggedToken?.address === fromTokenAddress &&
+              peggedToken?.symbol === fromTokenSymbol &&
+              peggedToken?.decimal === fromTokenDecimals &&
+              orgToken?.address === toTokenAddress &&
+              orgToken?.symbol === toTokenSymbol &&
+              orgToken?.decimal === toTokenDecimals &&
+              pair?.org_chain_id === toChainId)
           );
         });
         if (!!peggedToken && peggedToken.length > 0) {
@@ -477,19 +477,19 @@ export class CBridge {
         // token info
         const fromTokenInfo = cBridgeConfig.chain_token[
           fromChainId
-        ].token.filter((t) => {
+        ]?.token.filter((t) => {
           return (
-            t.token.address.toLowerCase() === fromTokenAddress.toLowerCase() &&
-            t.token.decimal === fromTokenDecimals &&
-            t.token.symbol === fromTokenSymbol
+            t?.token.address.toLowerCase() === fromTokenAddress.toLowerCase() &&
+            t?.token.decimal === fromTokenDecimals &&
+            t?.token.symbol === fromTokenSymbol
           );
         });
-        const toTokenInfo = cBridgeConfig.chain_token[toChainId].token.filter(
+        const toTokenInfo = cBridgeConfig.chain_token[toChainId]?.token.filter(
           (t) => {
             return (
-              t.token.address.toLowerCase() === toTokenAddress.toLowerCase() &&
-              t.token.decimal === toTokenDecimals &&
-              t.token.symbol === toTokenSymbol
+              t?.token.address.toLowerCase() === toTokenAddress.toLowerCase() &&
+              t?.token.decimal === toTokenDecimals &&
+              t?.token.symbol === toTokenSymbol
             );
           }
         );
