@@ -120,6 +120,10 @@ export class Meson {
     mesonEndpoint,
   }: IMesonTokenValidateParams) => {
     try {
+      if (Number(amount) <= 0) {
+        console.log('Invalid token amount');
+        return false;
+      }
       if (
         !fromChainId ||
         !fromTokenAddress ||
@@ -147,11 +151,6 @@ export class Meson {
         console.log('-- toTokenSymbol', toTokenSymbol);
         console.log('-- amount', amount);
         console.log('-- mesonEndpoint', mesonEndpoint);
-        return false;
-      }
-      // Check amount
-      if (Number(amount) <= 0) {
-        console.log('Invalid token amount');
         return false;
       }
       if (fromTokenSymbol.toLowerCase() !== toTokenSymbol.toLowerCase()) {

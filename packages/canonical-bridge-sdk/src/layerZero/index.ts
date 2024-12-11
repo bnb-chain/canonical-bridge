@@ -179,6 +179,11 @@ export class LayerZero {
     dstEndpoint,
     amount,
   }: LayerZeroTokenValidateParams) => {
+    // Check amount
+    if (Number(amount) <= 0) {
+      console.log('Invalid send amount');
+      return false;
+    }
     if (
       !publicClient ||
       !bridgeAddress ||
@@ -196,11 +201,6 @@ export class LayerZero {
       console.log('-- toBridgeAddress', toBridgeAddress);
       console.log('-- dstEndpoint', dstEndpoint);
       console.log('-- amount', amount);
-      return false;
-    }
-    // Check amount
-    if (Number(amount) <= 0) {
-      console.log('Invalid send amount');
       return false;
     }
     // Check evm contract address
