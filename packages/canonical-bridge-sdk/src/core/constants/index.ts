@@ -9,4 +9,4 @@ export const EXPLORER_URL: Record<(typeof ExplorerList)[number], string> = {
   deBridge: 'https://app.debridge.finance/orders?s=',
 };
 
-export const VALIDATION_API_TIMEOUT = 5 * 1000;
+export const VALIDATION_API_TIMEOUT = 10 * 1000;
