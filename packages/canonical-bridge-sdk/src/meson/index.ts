@@ -10,6 +10,7 @@ import {
   IMesonTokenList,
   IMesonTokenValidateParams,
 } from '@/meson/types/index';
+import { VALIDATION_API_TIMEOUT } from '@/core/constants';
 
 export class Meson {
   private client?: AxiosInstance;
@@ -185,7 +186,7 @@ export class Meson {
       // Check token information from Meson API
       const { data: mesonConfig } = await axios.get<{
         result: IMesonTokenList[];
-      }>(`${mesonEndpoint}/limits`);
+      }>(`${mesonEndpoint}/limits`, { timeout: VALIDATION_API_TIMEOUT });
       const fromHexNum = fromChainId?.toString(16);
       const toHexNum = toChainId?.toString(16);
       // from token validation

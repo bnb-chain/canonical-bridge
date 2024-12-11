@@ -3,7 +3,7 @@ import {
   BaseBridgeConfigOptions,
   CreateAdapterParameters,
 } from '@/core/types';
-import { CLIENT_TIME_OUT } from '@/core/constants';
+import { CLIENT_TIME_OUT, VALIDATION_API_TIMEOUT } from '@/core/constants';
 import axios, { AxiosInstance } from 'axios';
 import {
   CBridgeChain,
@@ -419,7 +419,8 @@ export class CBridge {
         return false;
       }
       const { data: cBridgeConfig } = await axios.get<ICBridgeTransferConfig>(
-        `${cBridgeEndpoint}`
+        `${cBridgeEndpoint}`,
+        { timeout: VALIDATION_API_TIMEOUT }
       );
       if (!cBridgeConfig) {
         console.log('failed to get cBridge API config');
