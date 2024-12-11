@@ -415,6 +415,7 @@ export class CBridge {
         return false;
       }
       if (!isEvmAddress(fromTokenAddress) || !isEvmAddress(bridgeAddress)) {
+        console.log('Invalid evm address', fromTokenAddress, bridgeAddress);
         return false;
       }
       const { data: cBridgeConfig } = await axios.get<ICBridgeTransferConfig>(
