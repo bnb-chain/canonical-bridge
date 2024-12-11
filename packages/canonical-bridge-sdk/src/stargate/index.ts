@@ -260,6 +260,10 @@ export class Stargate {
         console.log('-- stargateEndpoint', stargateEndpoint);
         return false;
       }
+      if (amount <= 0) {
+        console.log('Invalid amount', amount);
+        return false;
+      }
       // Check token address and bridge address
       if (
         !isEvmAddress(fromTokenAddress) ||
