@@ -1,5 +1,5 @@
 import { createAdapter } from '@/debridge/utils/createAdapter';
-import { CLIENT_TIME_OUT } from '@/core/constants';
+import { CLIENT_TIME_OUT, VALIDATION_API_TIMEOUT } from '@/core/constants';
 import {
   BaseBridgeConfigOptions,
   BaseBridgeConfig,
@@ -270,10 +270,14 @@ export class DeBridge {
       // Check token info on API
       const fromRequest = axios.get<{
         tokens: { [key: string]: IDeBridgeToken };
-      }>(`${deBridgeEndpoint}/token-list?chainId=${fromChainId}`);
+      }>(`${deBridgeEndpoint}/token-list?chainId=${fromChainId}`, {
+        timeout: VALIDATION_API_TIMEOUT,
+      });
       const toRequest = axios.get<{
         tokens: { [key: string]: IDeBridgeToken };
-      }>(`${deBridgeEndpoint}/token-list?chainId=${toChainId}`);
+      }>(`${deBridgeEndpoint}/token-list?chainId=${toChainId}`, {
+        timeout: VALIDATION_API_TIMEOUT,
+      });
       const [fromTokenList, toTokenList] = await Promise.allSettled([
         fromRequest,
         toRequest,

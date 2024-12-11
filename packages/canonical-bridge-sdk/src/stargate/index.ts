@@ -1,4 +1,4 @@
-import { CLIENT_TIME_OUT } from '@/core/constants';
+import { CLIENT_TIME_OUT, VALIDATION_API_TIMEOUT } from '@/core/constants';
 import {
   BaseBridgeConfig,
   BaseBridgeConfigOptions,
@@ -323,7 +323,7 @@ export class Stargate {
       // Check token information from API
       const { data: stargateConfig } = await axios.get<{
         data: IStargateTokenList;
-      }>(`${stargateEndpoint}`);
+      }>(`${stargateEndpoint}`, { timeout: VALIDATION_API_TIMEOUT });
       if (!stargateConfig) {
         console.log('Failed to get Stargate API config');
         return false;
