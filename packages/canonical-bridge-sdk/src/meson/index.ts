@@ -170,6 +170,9 @@ export class Meson {
           console.log('Invalid from token address', fromTokenAddress);
           return false;
         }
+      } else {
+        console.log('Invalid from chain type', fromChainType);
+        return false;
       }
       // to token address
       if (toChainType === 'evm') {
@@ -182,6 +185,9 @@ export class Meson {
           console.log('Invalid to token address', toTokenAddress);
           return false;
         }
+      } else {
+        console.log('Invalid to chain type', toChainType);
+        return false;
       }
       // Check token information from Meson API
       const { data: mesonConfig } = await axios.get<{
