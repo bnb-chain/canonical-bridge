@@ -33,7 +33,7 @@ import {
   setIsRefreshing,
   setTransferActionInfo,
 } from '@/modules/transfer/action';
-import { useLoadingBridgeFees } from '@/modules/transfer/hooks/useLoadingBridgeFees';
+import { TriggerType, useLoadingBridgeFees } from '@/modules/transfer/hooks/useLoadingBridgeFees';
 
 interface ReceiveInfoProps {
   onOpen: () => void;

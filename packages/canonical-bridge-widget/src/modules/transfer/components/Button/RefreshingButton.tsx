@@ -3,7 +3,7 @@ import { Box, BoxProps, useColorMode, useTheme } from '@bnb-chain/space';
 
 import { useAppDispatch, useAppSelector } from '@/modules/store/StoreProvider';
 import { setIsGlobalFeeLoading, setIsRefreshing } from '@/modules/transfer/action';
-import { useLoadingBridgeFees } from '@/modules/transfer/hooks/useLoadingBridgeFees';
+import { TriggerType, useLoadingBridgeFees } from '@/modules/transfer/hooks/useLoadingBridgeFees';
 import { RefreshingIcon } from '@/modules/transfer/components/LoadingImg/RefreshingIcon';
 import { useBridgeConfig } from '@/index';
 
@@ -24,9 +24,13 @@ export const RefreshingButton = (props: BoxProps) => {
     let mount = true;
     if (!mount) return;
     if (transferActionInfo) {
+      const params = {
+        triggerType: 'refresh' as TriggerType,
+      };
+
       let interval = setInterval(() => {
         dispatch(setIsGlobalFeeLoading(true));
-        loadingBridgeFees();
+        loadingBridgeFees(params);
       }, bridgeConfig.http.refetchingInterval ?? 30000);
 
       // Stop and restart fee loading
@@ -35,11 +39,11 @@ export const RefreshingButton = (props: BoxProps) => {
         if (interval) {
           clearInterval(interval);
           dispatch(setIsGlobalFeeLoading(true));
-          loadingBridgeFees();
+          loadingBridgeFees(params);
           dispatch(setIsRefreshing(false));
           interval = setInterval(() => {
             dispatch(setIsGlobalFeeLoading(true));
-            loadingBridgeFees();
+            loadingBridgeFees(params);
           }, bridgeConfig.http?.refetchingInterval ?? 30000);
         }
         setIsButtonPressed(false);

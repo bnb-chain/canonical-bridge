@@ -7,6 +7,7 @@ import {
   useIntl,
   useTheme,
   Collapse,
+  FlexProps,
 } from '@bnb-chain/space';
 import { ReactNode, useEffect, useMemo } from 'react';
 
@@ -31,7 +32,13 @@ import { MesonOption } from '@/modules/aggregator/adapters/meson/components/Meso
 import { useAggregator } from '@/modules/aggregator/components/AggregatorProvider';
 import { CBridgeSendMaxMin } from '@/modules/aggregator/adapters/cBridge/components/CBridgeSendMaxMin';
 
-export function TransferOverview({ routeContentBottom }: { routeContentBottom?: ReactNode }) {
+export interface TransferOverviewProps extends FlexProps {
+  routeContentBottom?: ReactNode;
+}
+
+export function TransferOverview(props: TransferOverviewProps) {
+  const { routeContentBottom, ...restProps } = props;
+
   const dispatch = useAppDispatch();
   const { formatMessage } = useIntl();
   const { colorMode } = useColorMode();
@@ -177,6 +184,7 @@ export function TransferOverview({ routeContentBottom }: { routeContentBottom?: 
       w={{ base: 'auto', lg: showOverview ? '408px' : 0 }}
       data-show={showOverview ? true : undefined}
       transition={'width 0.15s'}
+      {...restProps}
     >
       {cBridgeSupport && <CBridgeSendMaxMin />}
       <Flex

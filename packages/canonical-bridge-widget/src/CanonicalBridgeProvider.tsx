@@ -42,7 +42,6 @@ interface CanonicalBridgeContextProps extends ICanonicalBridgeConfig {
   routeContentBottom: React.ReactNode;
   connectWalletButton: React.ReactNode;
   refreshingIcon?: React.ReactNode;
-  bridgeBottom?: React.ReactNode;
   onClickConnectWalletButton?: (params: {
     chainType: ChainType;
     chainId: number;
@@ -65,7 +64,6 @@ export interface CanonicalBridgeProviderProps {
   children: React.ReactNode;
   onClickConnectWalletButton?: CanonicalBridgeContextProps['onClickConnectWalletButton'];
   refreshingIcon?: React.ReactNode;
-  bridgeBottom?: React.ReactNode;
 }
 
 export function CanonicalBridgeProvider(props: CanonicalBridgeProviderProps) {
@@ -77,7 +75,6 @@ export function CanonicalBridgeProvider(props: CanonicalBridgeProviderProps) {
     routeContentBottom,
     connectWalletButton,
     refreshingIcon,
-    bridgeBottom,
     onClickConnectWalletButton,
   } = props;
 
@@ -105,16 +102,8 @@ export function CanonicalBridgeProvider(props: CanonicalBridgeProviderProps) {
       connectWalletButton: connectWalletButton ?? <WalletConnectButton />,
       onClickConnectWalletButton,
       refreshingIcon,
-      bridgeBottom,
     };
-  }, [
-    bridgeBottom,
-    config,
-    connectWalletButton,
-    onClickConnectWalletButton,
-    refreshingIcon,
-    routeContentBottom,
-  ]);
+  }, [config, connectWalletButton, onClickConnectWalletButton, refreshingIcon, routeContentBottom]);
 
   return (
     <CanonicalBridgeContext.Provider value={value}>

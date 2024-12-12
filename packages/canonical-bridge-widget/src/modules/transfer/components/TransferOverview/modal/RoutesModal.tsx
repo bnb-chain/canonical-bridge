@@ -23,7 +23,8 @@ export function RoutesModal(props: RoutesModalProps) {
     if (transferActionInfo?.bridgeType) {
       onClose();
     }
-  }, [onClose, transferActionInfo?.bridgeType]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [transferActionInfo?.bridgeType]);
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} size={{ base: 'full', md: 'lg' }} isCentered>
