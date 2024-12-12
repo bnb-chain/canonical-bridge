@@ -170,11 +170,15 @@ export class LayerZero {
   }
 
   validateLayerZeroToken = async ({
-    publicClient,
+    fromPublicClient,
+    toPublicClient,
     bridgeAddress,
     fromTokenAddress,
     fromTokenSymbol,
+    fromTokenDecimals,
     toTokenAddress,
+    toTokenSymbol,
+    toTokenDecimals,
     toBridgeAddress,
     dstEndpoint,
     amount,
@@ -185,20 +189,28 @@ export class LayerZero {
       return false;
     }
     if (
-      !publicClient ||
+      !fromPublicClient ||
       !bridgeAddress ||
       !fromTokenAddress ||
+      !fromTokenDecimals ||
       !dstEndpoint ||
       !toTokenAddress ||
-      !toBridgeAddress
+      !toBridgeAddress ||
+      !toTokenSymbol ||
+      !toTokenDecimals ||
+      !toPublicClient
     ) {
       console.log('Missing required parameters');
-      console.log('-- publicClient', publicClient);
+      console.log('-- publicClient', fromPublicClient);
+      console.log('-- toPublicClient', toPublicClient);
       console.log('-- bridgeAddress', bridgeAddress);
       console.log('-- fromTokenAddress', fromTokenAddress);
       console.log('-- fromTokenSymbol', fromTokenSymbol);
+      console.log('-- fromTokenDecimals', fromTokenDecimals);
       console.log('-- toTokenAddress', toTokenAddress);
       console.log('-- toBridgeAddress', toBridgeAddress);
+      console.log('-- toTokenSymbol', toTokenSymbol);
+      console.log('-- toTokenDecimals', toTokenDecimals);
       console.log('-- dstEndpoint', dstEndpoint);
       console.log('-- amount', amount);
       return false;
@@ -219,7 +231,7 @@ export class LayerZero {
     }
 
     // Check symbol from token contract address
-    const contractSymbol = await publicClient.readContract({
+    const contractSymbol = await fromPublicClient.readContract({
       address: fromTokenAddress as `0x${string}`,
       abi: ERC20_TOKEN,
       functionName: 'symbol',
@@ -232,8 +244,17 @@ export class LayerZero {
       );
       return false;
     }
+    const contractDecimals = await fromPublicClient.readContract({
+      address: fromTokenAddress as `0x${string}`,
+      abi: ERC20_TOKEN,
+      functionName: 'decimals',
+    });
+    if (fromTokenDecimals !== contractDecimals) {
+      console.log('Failed to match from token decimals');
+      return false;
+    }
     // Remote contract address validation
-    const trustedRemoteAddress = await publicClient.readContract({
+    const trustedRemoteAddress = await fromPublicClient.readContract({
       address: bridgeAddress as `0x${string}`,
       abi: CAKE_PROXY_OFT_ABI,
       functionName: 'getTrustedRemoteAddress',
@@ -247,22 +268,51 @@ export class LayerZero {
       );
       return false;
     }
+    // Check to token contract address
+    const toTokenContractSymbol = await toPublicClient.readContract({
+      address: toTokenAddress as `0x${string}`,
+      abi: ERC20_TOKEN,
+      functionName: 'symbol',
+    });
+    if (toTokenContractSymbol.toLowerCase() !== toTokenSymbol.toLowerCase()) {
+      console.log(
+        'Failed to match to token symbol',
+        toTokenSymbol,
+        toTokenContractSymbol
+      );
+      return false;
+    }
+    const toTokenContractDecimals = await toPublicClient.readContract({
+      address: toTokenAddress as `0x${string}`,
+      abi: ERC20_TOKEN,
+      functionName: 'decimals',
+    });
+    if (toTokenDecimals !== toTokenContractDecimals) {
+      console.log('Failed to match to token decimals');
+      return false;
+    }
     // Supported token validation
-    const supportedToken = await publicClient.readContract({
+    const supportedFromToken = await fromPublicClient.readContract({
       address: bridgeAddress as `0x${string}`,
       abi: CAKE_PROXY_OFT_ABI,
       functionName: 'token',
     });
-    if (supportedToken.toLowerCase() === fromTokenAddress.toLowerCase()) {
-      console.log(
-        'LayerZero token information matched',
-        supportedToken,
-        fromTokenAddress
-      );
+    const supportedToToken = await toPublicClient.readContract({
+      address: toBridgeAddress as `0x${string}`,
+      abi: CAKE_PROXY_OFT_ABI,
+      functionName: 'token',
+    });
+    if (
+      supportedFromToken.toLowerCase() === fromTokenAddress.toLowerCase() &&
+      supportedToToken.toLowerCase() === toTokenAddress.toLowerCase()
+    ) {
+      console.log('LayerZero token information matched');
+      console.log('From token address', fromTokenAddress, supportedFromToken);
+      console.log('To token address', toTokenAddress, supportedToToken);
       return true;
     }
     console.log('Failed to match layerZero token information');
-    console.log('-- publicClient', publicClient);
+    console.log('-- publicClient', fromPublicClient);
     console.log('-- bridgeAddress', bridgeAddress);
     console.log('-- fromTokenAddress', fromTokenAddress);
     console.log('-- fromTokenSymbol', fromTokenSymbol);
