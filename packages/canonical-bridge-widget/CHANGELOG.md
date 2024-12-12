@@ -1,5 +1,11 @@
 # @bnb-chain/canonical-bridge-widget
 
+## 0.5.10
+
+### Patch Changes
+
+- 63c1a6a: Token transfer parameters validation
+
 ## 0.5.9
 
 ### Patch Changes
