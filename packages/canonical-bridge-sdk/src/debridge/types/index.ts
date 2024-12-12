@@ -112,13 +112,12 @@ export interface IDeBridgeToken {
 }
 
 export interface IDeBridgeTokenValidateParams {
-  tokenAddress: `0x${string}`;
-  fromTokenAddress: `0x${string}`;
-  fromBridgeAddress: `0x${string}`;
+  fromTokenAddress: string;
+  fromBridgeAddress: string;
   fromTokenSymbol: string;
   fromChainId?: number;
   fromChainType?: string;
-  toTokenAddress: `0x${string}`;
+  toTokenAddress: string;
   toTokenSymbol?: string;
   toChainId?: number;
   toChainType?: string;

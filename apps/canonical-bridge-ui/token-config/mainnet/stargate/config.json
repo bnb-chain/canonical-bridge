@@ -367,7 +367,7 @@
         "address": "0x19e26B0638bf63aa9fa4d14c6baF8D52eBE86C5C",
         "bridgeAddress": "0x77C71633C34C3784ede189d74223122422492a0f",
         "decimals": 6,
-        "symbol": "USDC",
+        "symbol": "USDC.e",
         "type": "hydra",
         "endpointID": 30290,
         "name": "USD Coin"
@@ -407,7 +407,7 @@
         "address": "0x06efdbff2a14a7c8e15944d1f4a48f9f95f663a4",
         "bridgeAddress": "0x3Fc69CC4A842838bCDC9499178740226062b14E4",
         "decimals": 6,
-        "symbol": "USDC.e",
+        "symbol": "USDC",
         "endpointID": 30214,
         "name": "USD Coin"
       },

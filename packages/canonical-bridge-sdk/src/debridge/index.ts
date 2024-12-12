@@ -1,5 +1,5 @@
 import { createAdapter } from '@/debridge/utils/createAdapter';
-import { CLIENT_TIME_OUT } from '@/core/constants';
+import { CLIENT_TIME_OUT, VALIDATION_API_TIMEOUT } from '@/core/constants';
 import {
   BaseBridgeConfigOptions,
   BaseBridgeConfig,
@@ -196,6 +196,11 @@ export class DeBridge {
     deBridgeEndpoint,
   }: IDeBridgeTokenValidateParams) => {
     try {
+      // Check amount
+      if (Number(amount) <= 0) {
+        console.log('Invalid deBridge amount', amount);
+        return false;
+      }
       if (
         !fromChainId ||
         !fromChainType ||
@@ -207,15 +212,24 @@ export class DeBridge {
         !toChainType ||
         !amount ||
         !fromTokenDecimals ||
-        !fromBridgeAddress ||
+        (!fromBridgeAddress && fromChainType === 'evm') ||
         !toTokenDecimals ||
         !deBridgeEndpoint
       ) {
-        return false;
-      }
-      // Check amount
-      if (Number(amount) <= 0) {
-        console.log('Invalid deBridge amount', amount);
+        console.log('Invalid deBridge token validation params');
+        console.log('-- fromChainId', fromChainId);
+        console.log('-- fromChainType', fromChainType);
+        console.log('-- fromTokenSymbol', fromTokenSymbol);
+        console.log('-- fromTokenAddress', fromTokenAddress);
+        console.log('-- fromTokenDecimals', fromTokenDecimals);
+        console.log('-- fromBridgeAddress', fromBridgeAddress);
+        console.log('-- toChainId', toChainId);
+        console.log('-- toChainType', toChainType);
+        console.log('-- toTokenSymbol', toTokenSymbol);
+        console.log('-- toTokenAddress', toTokenAddress);
+        console.log('-- toTokenDecimals', toTokenDecimals);
+        console.log('-- amount', amount);
+        console.log('-- deBridgeEndpoint', deBridgeEndpoint);
         return false;
       }
       // Check from token address
@@ -226,8 +240,8 @@ export class DeBridge {
       });
       // Check to token address
       const isValidToToken = isValidTokenAddress({
-        contractAddress: fromTokenAddress,
-        chainType: fromChainType,
+        contractAddress: toTokenAddress,
+        chainType: toChainType,
         isSourceChain: true,
       });
       if (!isValidFromToken || !isValidToToken) {
@@ -256,10 +270,14 @@ export class DeBridge {
       // Check token info on API
       const fromRequest = axios.get<{
         tokens: { [key: string]: IDeBridgeToken };
-      }>(`${deBridgeEndpoint}/token-list?chainId=${fromChainId}dd`);
+      }>(`${deBridgeEndpoint}/token-list?chainId=${fromChainId}`, {
+        timeout: VALIDATION_API_TIMEOUT,
+      });
       const toRequest = axios.get<{
         tokens: { [key: string]: IDeBridgeToken };
-      }>(`${deBridgeEndpoint}/token-list?chainId=${toChainId}cc`);
+      }>(`${deBridgeEndpoint}/token-list?chainId=${toChainId}`, {
+        timeout: VALIDATION_API_TIMEOUT,
+      });
       const [fromTokenList, toTokenList] = await Promise.allSettled([
         fromRequest,
         toRequest,

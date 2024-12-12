@@ -1,4 +1,4 @@
-import { CLIENT_TIME_OUT } from '@/core/constants';
+import { CLIENT_TIME_OUT, VALIDATION_API_TIMEOUT } from '@/core/constants';
 import {
   BaseBridgeConfig,
   BaseBridgeConfigOptions,
@@ -225,6 +225,10 @@ export class Stargate {
     stargateEndpoint,
   }: IStargateTokenValidateParams) {
     try {
+      if (amount <= 0) {
+        console.log('Invalid amount', amount);
+        return false;
+      }
       // Check params exist
       if (
         !fromChainId ||
@@ -292,11 +296,9 @@ export class Stargate {
         functionName: 'token',
       });
       if (fromApiTokenAddr.toLowerCase() !== fromTokenAddress.toLowerCase()) {
-        console.log(
-          'Stargate from token address not matched',
-          fromApiTokenAddr,
-          fromTokenAddress
-        );
+        console.log('Stargate from token address not matched');
+        console.log('fromBridgeAddress', fromBridgeAddress);
+        console.log('from token address in API', fromApiTokenAddr);
         return false;
       }
       // Check Stargate to chain information
@@ -325,7 +327,7 @@ export class Stargate {
       // Check token information from API
       const { data: stargateConfig } = await axios.get<{
         data: IStargateTokenList;
-      }>(`${stargateEndpoint}`);
+      }>(`${stargateEndpoint}`, { timeout: VALIDATION_API_TIMEOUT });
       if (!stargateConfig) {
         console.log('Failed to get Stargate API config');
         return false;
@@ -336,7 +338,8 @@ export class Stargate {
           fromToken.chainKey.toLowerCase() === fromChainKey.toLowerCase() &&
           fromToken.address.toLowerCase() === fromBridgeAddress.toLowerCase() && // bridge contract address
           fromToken.token.decimals === fromTokenDecimals &&
-          fromToken.token.symbol === fromTokenSymbol &&
+          fromToken.token.symbol.toLowerCase() ===
+            fromTokenSymbol.toLowerCase() &&
           fromToken.token.address.toLowerCase() ===
             fromTokenAddress.toLowerCase()
         );
@@ -346,7 +349,7 @@ export class Stargate {
         return (
           toToken.chainKey.toLowerCase() === toChainKey.toLowerCase() &&
           toToken.address.toLowerCase() === toBridgeAddress.toLowerCase() &&
-          toToken.token.symbol === toTokenSymbol &&
+          toToken.token.symbol.toLowerCase() === toTokenSymbol.toLowerCase() &&
           toToken.token.decimals === toTokenDecimals &&
           toToken.token.address.toLowerCase() === toTokenAddress.toLowerCase()
         );

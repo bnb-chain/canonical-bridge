@@ -10,6 +10,7 @@ import {
   IMesonTokenList,
   IMesonTokenValidateParams,
 } from '@/meson/types/index';
+import { VALIDATION_API_TIMEOUT } from '@/core/constants';
 
 export class Meson {
   private client?: AxiosInstance;
@@ -119,6 +120,10 @@ export class Meson {
     mesonEndpoint,
   }: IMesonTokenValidateParams) => {
     try {
+      if (Number(amount) <= 0) {
+        console.log('Invalid token amount');
+        return false;
+      }
       if (
         !fromChainId ||
         !fromTokenAddress ||
@@ -148,11 +153,6 @@ export class Meson {
         console.log('-- mesonEndpoint', mesonEndpoint);
         return false;
       }
-      // Check amount
-      if (Number(amount) <= 0) {
-        console.log('Invalid token amount');
-        return false;
-      }
       if (fromTokenSymbol.toLowerCase() !== toTokenSymbol.toLowerCase()) {
         console.log('Invalid token symbol', fromTokenSymbol, toTokenSymbol);
         return false;
@@ -169,6 +169,9 @@ export class Meson {
           console.log('Invalid from token address', fromTokenAddress);
           return false;
         }
+      } else {
+        console.log('Invalid from chain type', fromChainType);
+        return false;
       }
       // to token address
       if (toChainType === 'evm') {
@@ -181,15 +184,18 @@ export class Meson {
           console.log('Invalid to token address', toTokenAddress);
           return false;
         }
+      } else {
+        console.log('Invalid to chain type', toChainType);
+        return false;
       }
       // Check token information from Meson API
       const { data: mesonConfig } = await axios.get<{
         result: IMesonTokenList[];
-      }>(`${mesonEndpoint}/limits`);
+      }>(`${mesonEndpoint}/limits`, { timeout: VALIDATION_API_TIMEOUT });
       const fromHexNum = fromChainId?.toString(16);
       const toHexNum = toChainId?.toString(16);
       // from token validation
-      const isValidFromToken = mesonConfig.result.filter((chainInfo) => {
+      const validFromToken = mesonConfig.result.filter((chainInfo) => {
         const fromTokenInfo = chainInfo.tokens.filter(
           (token) =>
             (token?.addr?.toLowerCase() === fromTokenAddress.toLowerCase() &&
@@ -211,7 +217,7 @@ export class Meson {
         );
       });
       // to token validation
-      const isValidToToken = mesonConfig.result.filter((chainInfo) => {
+      const validToToken = mesonConfig.result.filter((chainInfo) => {
         const toTokenInfo = chainInfo.tokens.filter(
           (token) =>
             (token?.addr?.toLowerCase() === toTokenAddress.toLowerCase() &&
@@ -231,8 +237,8 @@ export class Meson {
           !!toTokenInfo
         );
       });
-      if (!!isValidToToken && !!isValidFromToken) {
-        console.log('Meson token info matched', isValidToToken);
+      if (validToToken?.length > 0 && validFromToken?.length > 0) {
+        console.log('Meson token info matched', validToToken, validFromToken);
         return true;
       }
       console.log('Could not find Meson token');
