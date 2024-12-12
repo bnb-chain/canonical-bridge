@@ -1,4 +1,13 @@
 import { CBridge } from '../../src/cbridge';
+declare global {
+  interface BigInt {
+    toJSON(): Number;
+  }
+}
+
+BigInt.prototype.toJSON = function () {
+  return Number(this);
+};
 
 describe('cBridge', () => {
   let bridge: CBridge;
@@ -470,5 +479,101 @@ describe('cBridge', () => {
           'https://cbridge-prod2.celer.app/v2/getTransferConfigsForAll',
       })
     ).toBe(false);
+  });
+
+  it('Test 24: cBridge get pegged deposit function name', async () => {
+    expect(
+      await bridge.getTransferFunction({
+        isPegged: true,
+        transferType: 'deposit',
+      })
+    ).toBe('deposit');
+  });
+
+  it('Test 25: cBridge get pegged deposit function name', async () => {
+    expect(
+      await bridge.getTransferFunction({
+        isPegged: true,
+        transferType: 'withdraw',
+      })
+    ).toBe('burn');
+  });
+
+  it('Test 27: cBridge get pool based function name', async () => {
+    expect(
+      await bridge.getTransferFunction({
+        isPegged: false,
+        transferType: undefined,
+      })
+    ).toBe('send');
+  });
+
+  const AIpeggedConfig = {
+    org_chain_id: 56,
+    org_token: {
+      token: {
+        symbol: 'AI',
+        address: '0xA9b038285F43cD6fE9E16B4C80B4B9bCcd3C161b',
+        decimal: 18,
+        xfer_disabled: false,
+      },
+      name: 'Flourishing AI',
+      icon: 'https://i.postimg.cc/vTzMmCVW/AI.png',
+      inbound_lmt: '',
+      inbound_epoch_cap: '',
+      transfer_disabled: false,
+      liq_add_disabled: false,
+      liq_rm_disabled: false,
+      liq_agg_rm_src_disabled: false,
+      delay_threshold: '',
+      delay_period: 0,
+    },
+    pegged_chain_id: 42161,
+    pegged_token: {
+      token: {
+        symbol: 'AI',
+        address: '0x8d7c2588c365b9e98Ea464b63DBCCDf13ECd9809',
+        decimal: 18,
+        xfer_disabled: false,
+      },
+      name: 'Flourishing AI',
+      icon: 'https://i.postimg.cc/vTzMmCVW/AI.png',
+      inbound_lmt: '',
+      inbound_epoch_cap: '',
+      transfer_disabled: false,
+      liq_add_disabled: false,
+      liq_rm_disabled: false,
+      liq_agg_rm_src_disabled: false,
+      delay_threshold: '',
+      delay_period: 0,
+    },
+    pegged_deposit_contract_addr: '0x11a0c9270D88C99e221360BCA50c2f6Fda44A980',
+    pegged_burn_contract_addr: '0xc72e7fC220e650e93495622422F3c14fb03aAf6B',
+    canonical_token_contract_addr: '',
+    vault_version: 2,
+    bridge_version: 2,
+    migration_peg_burn_contract_addr: '',
+  };
+
+  it('Test 27: cBridge get pool based function name', async () => {
+    expect(
+      await bridge.getTransferParams({
+        address: '0x4DcfAF0ae6034e31191390c04006d0169326DEc7',
+        amount: 20100000000000000000n,
+        isPegged: true,
+        maxSlippage: 10000,
+        nonce: 1733983028205,
+        peggedConfig: AIpeggedConfig,
+        toChainId: 42161,
+        tokenAddress: '0xA9b038285F43cD6fE9E16B4C80B4B9bCcd3C161b',
+        transferType: 'deposit',
+      })
+    ).toEqual([
+      '0xA9b038285F43cD6fE9E16B4C80B4B9bCcd3C161b',
+      20100000000000000000n,
+      42161,
+      '0x4DcfAF0ae6034e31191390c04006d0169326DEc7',
+      1733983028205,
+    ]);
   });
 });
