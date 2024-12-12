@@ -5,6 +5,7 @@ describe('deBridge test cases', () => {
   let bridge: DeBridge;
 
   beforeEach(() => {
+    //
     bridge = new DeBridge({
       endpoint: 'http://localhost:3000',
       statsEndpoint: 'http://localhost:3000',
