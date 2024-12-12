@@ -160,7 +160,7 @@ export const useLoadingBridgeFees = () => {
           fromTokenAddress: selectedToken.deBridge?.raw?.address as `0x${string}`,
           amount,
           toChainId: toChain?.id,
-          toTokenAddress: toToken?.deBridge?.address as `0x${string}`,
+          toTokenAddress: toToken?.deBridge?.raw?.address as `0x${string}`,
           accesstoken: deBridgeAccessToken,
           userAddress:
             fromChain.chainType === 'solana'
