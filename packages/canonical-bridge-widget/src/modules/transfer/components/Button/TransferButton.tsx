@@ -250,7 +250,7 @@ export function TransferButton({
       } else if (transferActionInfo.bridgeType === 'deBridge') {
         try {
           let deBridgeHash: string | undefined;
-          const isValidToken = await await bridgeSDK.deBridge.validateDeBridgeToken({
+          const isValidToken = await bridgeSDK.deBridge.validateDeBridgeToken({
             fromChainId: fromChain?.id,
             toChainId: toChain?.id,
             fromTokenSymbol: selectedToken.symbol,
