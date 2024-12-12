@@ -99,3 +99,30 @@ export interface TokenQueryParams {
   chainId: number;
   address: string;
 }
+
+export interface IDeBridgeToken {
+  address: string;
+  symbol: string;
+  decimals: number;
+  name: string;
+  logoURI: string | null;
+  eip2612?: boolean;
+  tags: string[];
+  domainVersion?: string;
+}
+
+export interface IDeBridgeTokenValidateParams {
+  fromTokenAddress: string;
+  fromBridgeAddress: string;
+  fromTokenSymbol: string;
+  fromChainId?: number;
+  fromChainType?: string;
+  toTokenAddress: string;
+  toTokenSymbol?: string;
+  toChainId?: number;
+  toChainType?: string;
+  amount: number;
+  fromTokenDecimals?: number;
+  toTokenDecimals?: number;
+  deBridgeEndpoint: string;
+}

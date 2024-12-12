@@ -1,5 +1,5 @@
 import { createAdapter } from '@/debridge/utils/createAdapter';
-import { CLIENT_TIME_OUT } from '@/core/constants';
+import { CLIENT_TIME_OUT, VALIDATION_API_TIMEOUT } from '@/core/constants';
 import {
   BaseBridgeConfigOptions,
   BaseBridgeConfig,
@@ -9,10 +9,13 @@ import {
   DeBridgeCreateQuoteResponse,
   DeBridgeTransferConfigs,
   IDeBridgeEstimatedFeesInput,
+  IDeBridgeToken,
+  IDeBridgeTokenValidateParams,
   ISendDebridgeTokenInput,
 } from '@/debridge/types';
 import axios, { AxiosInstance } from 'axios';
 import { Hash } from 'viem';
+import { isValidTokenAddress } from '@/core/utils/address';
 
 export * from './types';
 
@@ -176,6 +179,158 @@ export class DeBridge {
       throw new Error(`Failed to send DeBridge token: ${error}`);
     }
   }
+
+  validateDeBridgeToken = async ({
+    fromChainId,
+    fromChainType,
+    toChainId,
+    toChainType,
+    fromTokenAddress,
+    fromTokenSymbol,
+    fromTokenDecimals,
+    fromBridgeAddress,
+    toTokenAddress,
+    toTokenSymbol,
+    toTokenDecimals,
+    amount,
+    deBridgeEndpoint,
+  }: IDeBridgeTokenValidateParams) => {
+    try {
+      // Check amount
+      if (Number(amount) <= 0) {
+        console.log('Invalid deBridge amount', amount);
+        return false;
+      }
+      if (
+        !fromChainId ||
+        !fromChainType ||
+        !fromTokenAddress ||
+        !toTokenAddress ||
+        !fromTokenSymbol ||
+        !toTokenSymbol ||
+        !toChainId ||
+        !toChainType ||
+        !amount ||
+        !fromTokenDecimals ||
+        (!fromBridgeAddress && fromChainType === 'evm') ||
+        !toTokenDecimals ||
+        !deBridgeEndpoint
+      ) {
+        console.log('Invalid deBridge token validation params');
+        console.log('-- fromChainId', fromChainId);
+        console.log('-- fromChainType', fromChainType);
+        console.log('-- fromTokenSymbol', fromTokenSymbol);
+        console.log('-- fromTokenAddress', fromTokenAddress);
+        console.log('-- fromTokenDecimals', fromTokenDecimals);
+        console.log('-- fromBridgeAddress', fromBridgeAddress);
+        console.log('-- toChainId', toChainId);
+        console.log('-- toChainType', toChainType);
+        console.log('-- toTokenSymbol', toTokenSymbol);
+        console.log('-- toTokenAddress', toTokenAddress);
+        console.log('-- toTokenDecimals', toTokenDecimals);
+        console.log('-- amount', amount);
+        console.log('-- deBridgeEndpoint', deBridgeEndpoint);
+        return false;
+      }
+      // Check from token address
+      const isValidFromToken = isValidTokenAddress({
+        contractAddress: fromTokenAddress,
+        chainType: fromChainType,
+        isSourceChain: true,
+      });
+      // Check to token address
+      const isValidToToken = isValidTokenAddress({
+        contractAddress: toTokenAddress,
+        chainType: toChainType,
+        isSourceChain: true,
+      });
+      if (!isValidFromToken || !isValidToToken) {
+        console.log(
+          'Invalid deBridge bridge token address',
+          fromTokenAddress,
+          toTokenAddress
+        );
+        return false;
+      }
+      // Check bridge contract address
+      if (fromChainType !== 'solana') {
+        const isValidBridgeContractAddress = isValidTokenAddress({
+          contractAddress: fromBridgeAddress,
+          chainType: fromChainType,
+          isSourceChain: true,
+        });
+        if (!isValidBridgeContractAddress) {
+          console.log(
+            'Invalid deBridge bridge contract address',
+            fromBridgeAddress
+          );
+          return false;
+        }
+      }
+      // Check token info on API
+      const fromRequest = axios.get<{
+        tokens: { [key: string]: IDeBridgeToken };
+      }>(`${deBridgeEndpoint}/token-list?chainId=${fromChainId}`, {
+        timeout: VALIDATION_API_TIMEOUT,
+      });
+      const toRequest = axios.get<{
+        tokens: { [key: string]: IDeBridgeToken };
+      }>(`${deBridgeEndpoint}/token-list?chainId=${toChainId}`, {
+        timeout: VALIDATION_API_TIMEOUT,
+      });
+      const [fromTokenList, toTokenList] = await Promise.allSettled([
+        fromRequest,
+        toRequest,
+      ]);
+      if (
+        fromTokenList.status === 'fulfilled' &&
+        toTokenList.status === 'fulfilled'
+      ) {
+        const fromToken =
+          fromTokenList?.value?.data.tokens[fromTokenAddress.toLowerCase()];
+        const toToken =
+          toTokenList?.value?.data.tokens[toTokenAddress.toLowerCase()];
+        if (
+          !!fromToken &&
+          fromToken?.address.toLowerCase() === fromTokenAddress.toLowerCase() &&
+          fromToken?.symbol === fromTokenSymbol &&
+          fromToken?.decimals === fromTokenDecimals &&
+          !!toToken &&
+          toToken?.address.toLowerCase() === toTokenAddress.toLowerCase() &&
+          toToken?.symbol === toTokenSymbol &&
+          toToken?.decimals === toTokenDecimals
+        ) {
+          console.log('deBridge token info matched', fromToken);
+          return true;
+        }
+      } else {
+        console.log(
+          'Failed to get deBridge API token info',
+          fromTokenList,
+          toTokenList
+        );
+        return false;
+      }
+      console.log('Could not find deBridge token info');
+      console.log('-- fromChainId', fromChainId);
+      console.log('-- from fromChainType', fromChainType);
+      console.log('-- from tokenSymbol', fromTokenSymbol);
+      console.log('-- from tokenAddress', fromTokenAddress);
+      console.log('-- from TokenDecimals', fromTokenDecimals);
+      console.log('-- to ChainId', toChainId);
+      console.log('-- to ChainType', toChainType);
+      console.log('-- to tokenSymbol', toTokenSymbol);
+      console.log('-- to tokenAddress', toTokenAddress);
+      console.log('-- to TokenDecimals', toTokenDecimals);
+      console.log('-- amount', amount);
+      return false;
+      // eslint-disable-next-line
+    } catch (error: any) {
+      // eslint-disable-next-line no-console
+      console.log('deBridge token validation error', error);
+      return false;
+    }
+  };
 
   /** @see createAdapter for implementation details */
   createAdapter(params: CreateAdapterParameters<DeBridgeTransferConfigs>) {
