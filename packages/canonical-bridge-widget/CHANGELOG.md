@@ -1,5 +1,11 @@
 # @bnb-chain/canonical-bridge-widget
 
+## 0.5.11
+
+### Patch Changes
+
+- c1aefab: Update meson validation
+
 ## 0.5.10
 
 ### Patch Changes
