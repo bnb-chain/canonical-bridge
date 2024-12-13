@@ -41,13 +41,6 @@
           "min": "0.001",
           "decimals": 18,
           "max": "2"
-        },
-        {
-          "id": "btc",
-          "addr": "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
-          "decimals": 8,
-          "min": "0.00055",
-          "max": "0.05"
         }
       ]
     },
@@ -108,13 +101,6 @@
       "chainId": "0xdf",
       "address": "0x25aB3Efd52e6470681CE037cD546Dc60726948D3",
       "tokens": [
-        {
-          "id": "btc",
-          "addr": "0x0000000000000000000000000000000000000000",
-          "decimals": 18,
-          "min": "0.00055",
-          "max": "0.05"
-        },
         {
           "id": "usdc",
           "addr": "0xE544e8a38aDD9B1ABF21922090445Ba93f74B9E5",
@@ -247,13 +233,6 @@
       "address": "0x25aB3Efd52e6470681CE037cD546Dc60726948D3",
       "tokens": [
         {
-          "id": "btc",
-          "addr": "0x0000000000000000000000000000000000000000",
-          "decimals": 18,
-          "min": "0.00055",
-          "max": "0.05"
-        },
-        {
           "id": "usdc",
           "addr": "0xf8C374CE88A3BE3d374e8888349C7768B607c755",
           "decimals": 6,
@@ -324,13 +303,6 @@
           "decimals": 18,
           "min": "1.0",
           "max": "20000"
-        },
-        {
-          "id": "btc",
-          "addr": "0x7130d2A12B9BCbFAe4f2634d864A1Ee1Ce3Ead9c",
-          "decimals": 18,
-          "min": "0.00055",
-          "max": "0.05"
         }
       ]
     },
@@ -340,13 +312,6 @@
       "chainId": "0xed88",
       "address": "0x25aB3Efd52e6470681CE037cD546Dc60726948D3",
       "tokens": [
-        {
-          "id": "btc",
-          "addr": "0x03c7054bcb39f7b2e5b2c7acb37583e32d70cfa3",
-          "decimals": 8,
-          "min": "0.00055",
-          "max": "0.05"
-        },
         {
           "id": "usdt",
           "addr": "0x05d032ac25d322df992303dca074ee7392c117b9",
@@ -412,13 +377,6 @@
           "decimals": 6,
           "min": "0.5",
           "max": "20000"
-        },
-        {
-          "id": "btc",
-          "decimals": 8,
-          "addr": "0x8034ab88c3512246bf7894f57c834dddbd1de01f",
-          "min": "0.00055",
-          "max": "0.05"
         },
         {
           "id": "usdt",
@@ -499,13 +457,6 @@
           "decimals": 18,
           "min": "0.001",
           "max": "2"
-        },
-        {
-          "id": "btc",
-          "addr": "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599",
-          "decimals": 8,
-          "min": "0.0006",
-          "max": "0.05"
         }
       ]
     },
@@ -656,13 +607,6 @@
       "address": "0x25aB3Efd52e6470681CE037cD546Dc60726948D3",
       "tokens": [
         {
-          "id": "btc",
-          "addr": "0x0000000000000000000000000000000000000000",
-          "decimals": 18,
-          "min": "0.00055",
-          "max": "0.05"
-        },
-        {
           "id": "usdc",
           "addr": "0x6b4eCAdA640F1B30dBdB68f77821A03A5f282EbE",
           "decimals": 6,
@@ -748,13 +692,6 @@
           "decimals": 18,
           "min": "0.002",
           "max": "2"
-        },
-        {
-          "id": "btc",
-          "addr": "0xcDd475325D6F564d27247D1DddBb0DAc6fA0a5CF",
-          "decimals": 8,
-          "min": "0.00055",
-          "max": "0.05"
         }
       ]
     },
@@ -1004,13 +941,6 @@
           "decimals": 18,
           "min": "0.002",
           "max": "2"
-        },
-        {
-          "id": "btc",
-          "addr": "0x13A0c5930C028511Dc02665E7285134B6d11A5f4",
-          "decimals": 8,
-          "min": "0.00055",
-          "max": "0.05"
         }
       ]
     },
@@ -1098,13 +1028,6 @@
           "decimals": 18,
           "min": "1.0",
           "max": "20000"
-        },
-        {
-          "id": "btc",
-          "decimals": 18,
-          "addr": "0x7118D8700B1b635CA37992294349Dc616fDC94Fe",
-          "min": "0.0005",
-          "max": "0.05"
         }
       ]
     },
