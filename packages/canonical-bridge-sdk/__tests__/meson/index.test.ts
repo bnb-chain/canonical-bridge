@@ -257,4 +257,61 @@ describe('Meson SDK validation', () => {
       })
     ).toBe(true);
   });
+
+  it('Test 14: Meson validation with from tron token', async () => {
+    expect(
+      await bridge.validateMesonToken({
+        fromChainId: 728126428,
+        fromTokenAddress: 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t',
+        fromTokenSymbol: 'usdt',
+        fromTokenDecimals: 6,
+        fromChainType: 'tron',
+        toChainId: 56,
+        toTokenAddress: '0x55d398326f99059ff775485246999027b3197955',
+        toTokenDecimals: 18,
+        toChainType: 'evm',
+        toTokenSymbol: 'usdt',
+        amount: 5,
+        mesonEndpoint: 'https://relayer.meson.fi/api/v1',
+      })
+    ).toBe(true);
+  });
+
+  it('Test 15: Meson validation with to tron token', async () => {
+    expect(
+      await bridge.validateMesonToken({
+        fromChainId: 56,
+        fromTokenAddress: '0x55d398326f99059ff775485246999027b3197955',
+        fromTokenSymbol: 'usdt',
+        fromTokenDecimals: 18,
+        fromChainType: 'evm',
+        toChainId: 728126428,
+        toTokenAddress: 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t',
+        toTokenDecimals: 6,
+        toChainType: 'tron',
+        toTokenSymbol: 'usdt',
+        amount: 5,
+        mesonEndpoint: 'https://relayer.meson.fi/api/v1',
+      })
+    ).toBe(true);
+  });
+
+  it('Test 16: Meson validation with wrong to tron token', async () => {
+    expect(
+      await bridge.validateMesonToken({
+        fromChainId: 56,
+        fromTokenAddress: '0x55d398326f99059ff775485246999027b3197955',
+        fromTokenSymbol: 'usdt',
+        fromTokenDecimals: 18,
+        fromChainType: 'evm',
+        toChainId: 728126428,
+        toTokenAddress: 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6txx',
+        toTokenDecimals: 6,
+        toChainType: 'tron',
+        toTokenSymbol: 'usdt',
+        amount: 5,
+        mesonEndpoint: 'https://relayer.meson.fi/api/v1',
+      })
+    ).toBe(false);
+  });
 });

@@ -192,8 +192,11 @@ export class Meson {
       const { data: mesonConfig } = await axios.get<{
         result: IMesonTokenList[];
       }>(`${mesonEndpoint}/limits`, { timeout: VALIDATION_API_TIMEOUT });
-      const fromHexNum = fromChainId?.toString(16);
-      const toHexNum = toChainId?.toString(16);
+
+      const fromHexNum =
+        fromChainType === 'tron' ? 'tron' : `0x${fromChainId?.toString(16)}`;
+      const toHexNum =
+        toChainType === 'tron' ? 'tron' : `0x${toChainId?.toString(16)}`;
       // from token validation
       const validFromToken = mesonConfig.result.filter((chainInfo) => {
         const fromTokenInfo = chainInfo.tokens.filter(
@@ -211,7 +214,7 @@ export class Meson {
           console.log('Meson from token info', fromTokenInfo);
         }
         return (
-          chainInfo.chainId === `0x${fromHexNum}` &&
+          chainInfo.chainId === fromHexNum &&
           fromTokenInfo?.length > 0 &&
           !!fromTokenInfo
         );
@@ -232,7 +235,7 @@ export class Meson {
           console.log('Meson to token info', toTokenInfo);
         }
         return (
-          chainInfo.chainId === `0x${toHexNum}` &&
+          chainInfo.chainId === toHexNum &&
           toTokenInfo?.length > 0 &&
           !!toTokenInfo
         );
