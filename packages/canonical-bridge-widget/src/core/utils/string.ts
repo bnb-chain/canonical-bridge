@@ -49,3 +49,7 @@ export function utf8ToHex(utf8Str: any) {
     .map((char: any) => char.charCodeAt(0).toString(16).padStart(2, '0'))
     .join('');
 }
+
+export function includesIgnoreCase(strArr: string[], target: string) {
+  return !!strArr?.find((e) => e.toUpperCase() === target?.toUpperCase());
+}

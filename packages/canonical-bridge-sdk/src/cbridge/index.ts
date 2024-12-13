@@ -3,7 +3,7 @@ import {
   BaseBridgeConfigOptions,
   CreateAdapterParameters,
 } from '@/core/types';
-import { CLIENT_TIME_OUT } from '@/core/constants';
+import { CLIENT_TIME_OUT, VALIDATION_API_TIMEOUT } from '@/core/constants';
 import axios, { AxiosInstance } from 'axios';
 import {
   CBridgeChain,
@@ -13,6 +13,8 @@ import {
   CBridgeSendRangeInput,
   CBridgeTransferConfigs,
   CBridgeTransferEstimatedTime,
+  ICBridgeTokenValidateParams,
+  ICBridgeTransferConfig,
   IGetCBridgeABI,
   IGetCBridgeTransferAddressInput,
   IGetCBridgeTransferFunction,
@@ -26,6 +28,7 @@ import { ORIGINAL_TOKEN_VAULT_V2 } from '@/cbridge/abi/originalTokenVaultV2';
 import { PEGGED_TOKEN_BRIDGE } from '@/cbridge/abi/peggedTokenBridge';
 import { PEGGED_TOKEN_BRIDGE_V2 } from '@/cbridge/abi/peggedTokenBridgeV2';
 import { createAdapter } from '@/cbridge/utils/createAdapter';
+import { isEvmAddress } from '@/core/utils/address';
 
 export * from './types';
 
@@ -364,4 +367,163 @@ export class CBridge {
       args: args,
     };
   }
+
+  /**
+   * validate token and contract information
+   */
+  validateCBridgeToken = async ({
+    isPegged,
+    fromChainId,
+    fromTokenAddress,
+    fromTokenSymbol,
+    fromTokenDecimals,
+    bridgeAddress,
+    toChainId,
+    toTokenAddress,
+    toTokenSymbol,
+    toTokenDecimals,
+    amount,
+    cBridgeEndpoint,
+  }: ICBridgeTokenValidateParams) => {
+    try {
+      if (amount <= 0) {
+        console.log('Invalid amount', amount);
+        return false;
+      }
+      if (
+        !fromChainId ||
+        !toChainId ||
+        !fromTokenAddress ||
+        !bridgeAddress ||
+        !fromTokenSymbol ||
+        !fromTokenDecimals ||
+        !toTokenAddress ||
+        !toTokenSymbol ||
+        !toTokenDecimals ||
+        !amount ||
+        !cBridgeEndpoint
+      ) {
+        console.log('Failed to get cBridge token address validation params');
+        console.log('isPegged', isPegged);
+        console.log('fromChainId', fromChainId);
+        console.log('fromTokenAddress', fromTokenAddress);
+        console.log('fromTokenSymbol', fromTokenSymbol);
+        console.log('bridgeAddress', bridgeAddress);
+        console.log('toChainId', toChainId);
+        console.log('toTokenAddress', toTokenAddress);
+        console.log('toTokenSymbol', toTokenSymbol);
+        console.log('amount', amount);
+        console.log('fromTokenDecimals', fromTokenDecimals);
+        console.log('toTokenDecimals', toTokenDecimals);
+        console.log('cBridgeEndpoint', cBridgeEndpoint);
+        return false;
+      }
+      if (!isEvmAddress(fromTokenAddress) || !isEvmAddress(bridgeAddress)) {
+        console.log('Invalid evm address', fromTokenAddress, bridgeAddress);
+        return false;
+      }
+      const { data: cBridgeConfig } = await axios.get<ICBridgeTransferConfig>(
+        `${cBridgeEndpoint}`,
+        { timeout: VALIDATION_API_TIMEOUT }
+      );
+      if (!cBridgeConfig) {
+        console.log('failed to get cBridge API config');
+        return false;
+      }
+      if (isPegged === true) {
+        // pegged token
+        const peggedToken = cBridgeConfig.pegged_pair_configs.filter((pair) => {
+          const orgToken = pair.org_token?.token;
+          const peggedToken = pair.pegged_token?.token;
+          return (
+            (pair.pegged_deposit_contract_addr === bridgeAddress &&
+              pair?.org_chain_id === fromChainId &&
+              orgToken?.address === fromTokenAddress &&
+              orgToken?.symbol === fromTokenSymbol &&
+              orgToken?.decimal === fromTokenDecimals &&
+              peggedToken?.address === toTokenAddress &&
+              peggedToken?.symbol === toTokenSymbol &&
+              peggedToken?.decimal === toTokenDecimals &&
+              pair?.pegged_chain_id === toChainId) ||
+            (pair?.pegged_burn_contract_addr === bridgeAddress &&
+              pair?.pegged_chain_id === fromChainId &&
+              peggedToken?.address === fromTokenAddress &&
+              peggedToken?.symbol === fromTokenSymbol &&
+              peggedToken?.decimal === fromTokenDecimals &&
+              orgToken?.address === toTokenAddress &&
+              orgToken?.symbol === toTokenSymbol &&
+              orgToken?.decimal === toTokenDecimals &&
+              pair?.org_chain_id === toChainId)
+          );
+        });
+        if (!!peggedToken && peggedToken.length > 0) {
+          console.log('cBridge pegged token info matched', peggedToken);
+          return true;
+        }
+        console.log('Can not find cBridge pegged info');
+        console.log('-- isPegged', isPegged);
+        console.log('-- fromChainId', fromChainId);
+        console.log('-- fromTokenAddress', fromTokenAddress);
+        console.log('-- fromTokenSymbol', fromTokenSymbol);
+        console.log('-- toChainId', toChainId);
+        console.log('-- toTokenAddress', toTokenAddress);
+        console.log('-- toTokenSymbol', toTokenSymbol);
+        console.log('-- bridgeAddress', bridgeAddress);
+        return false;
+      } else {
+        // bridge contract address
+        const addressInfo = cBridgeConfig.chains.filter((chain) => {
+          return (
+            chain.id === fromChainId &&
+            chain.contract_addr.toLowerCase() === bridgeAddress.toLowerCase()
+          );
+        });
+        // token info
+        const fromTokenInfo = cBridgeConfig.chain_token[
+          fromChainId
+        ]?.token.filter((t) => {
+          return (
+            t?.token.address.toLowerCase() === fromTokenAddress.toLowerCase() &&
+            t?.token.decimal === fromTokenDecimals &&
+            t?.token.symbol === fromTokenSymbol
+          );
+        });
+        const toTokenInfo = cBridgeConfig.chain_token[toChainId]?.token.filter(
+          (t) => {
+            return (
+              t?.token.address.toLowerCase() === toTokenAddress.toLowerCase() &&
+              t?.token.decimal === toTokenDecimals &&
+              t?.token.symbol === toTokenSymbol
+            );
+          }
+        );
+        if (
+          addressInfo?.length > 0 &&
+          fromTokenInfo?.length > 0 &&
+          toTokenInfo?.length > 0
+        ) {
+          console.log('cBridge pool info matched');
+          console.log('bridge contract address info', addressInfo);
+          console.log('bridge from token info', fromTokenInfo);
+          console.log('bridge to token info', toTokenInfo);
+          return true;
+        } else {
+          console.log('Can not find cBridge pool info');
+          console.log('-- isPegged', isPegged);
+          console.log('-- fromChainId', fromChainId);
+          console.log('-- fromTokenAddress', fromTokenAddress);
+          console.log('-- fromTokenSymbol', fromTokenSymbol);
+          console.log('-- toChainId', toChainId);
+          console.log('-- toTokenAddress', toTokenAddress);
+          console.log('-- toTokenSymbol', toTokenSymbol);
+          console.log('-- bridgeAddress', bridgeAddress);
+          return false;
+        }
+      }
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.log('cBridge token address validation error', error);
+      return false;
+    }
+  };
 }

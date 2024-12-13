@@ -1,5 +1,17 @@
 # @bnb-chain/canonical-bridge-sdk
 
+## 0.4.4
+
+### Patch Changes
+
+- d81727c: Update meson token validation
+
+## 0.4.3
+
+### Patch Changes
+
+- 63c1a6a: Token transfer parameters validation
+
 ## 0.4.2
 
 ### Patch Changes

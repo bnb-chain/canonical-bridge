@@ -49,6 +49,18 @@
 
 - Add more customizable configs
 
+## 0.5.11
+
+### Patch Changes
+
+- c1aefab: Update meson validation
+
+## 0.5.10
+
+### Patch Changes
+
+- 63c1a6a: Token transfer parameters validation
+
 ## 0.5.9
 
 ### Patch Changes
