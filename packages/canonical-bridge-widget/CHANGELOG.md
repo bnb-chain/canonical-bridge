@@ -1,5 +1,11 @@
 # @bnb-chain/canonical-bridge-widget
 
+## 0.5.14-alpha.0
+
+### Patch Changes
+
+- Add to token address to route
+
 ## 0.5.12-alpha.3
 
 ### Patch Changes

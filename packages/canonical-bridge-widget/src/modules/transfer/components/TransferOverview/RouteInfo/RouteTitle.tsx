@@ -123,6 +123,8 @@ export const ToTokenInfo = React.forwardRef(
             alignItems="center"
             color={theme.colors[colorMode].text.tertiary}
             justifyContent="flex-start"
+            className="bccb-widget-route-token-to-address"
+            data-address={toTokenInfo.address}
           >
             <Link
               href={tokenUrl}
