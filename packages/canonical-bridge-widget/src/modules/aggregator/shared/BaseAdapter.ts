@@ -3,6 +3,7 @@ import { BridgeType } from '@bnb-chain/canonical-bridge-sdk';
 
 import { IBridgeTokenBaseInfo, IExternalChain, INativeCurrency } from '@/modules/aggregator/types';
 import { isSameAddress } from '@/core/utils/address';
+import { includesIgnoreCase } from '@/core/utils/string';
 
 export interface ITransferTokenPair<T, P = unknown> {
   fromChainId: number;
@@ -274,7 +275,9 @@ export abstract class BaseAdapter<G extends object, C = unknown, T = unknown> {
 
     let toToken = tokenMap?.get(fromTokenSymbol);
     if (!toToken) {
-      const bridgedGroup = this.bridgedTokenGroups.find((group) => group.includes(fromTokenSymbol));
+      const bridgedGroup = this.bridgedTokenGroups.find((group) =>
+        includesIgnoreCase(group, fromTokenSymbol),
+      );
       const nextToken = bridgedGroup?.find((item) => item.toUpperCase() !== fromTokenSymbol);
       if (nextToken) {
         toToken = tokenMap?.get(nextToken?.toUpperCase());
