@@ -25,10 +25,10 @@ export interface IMesonTokenValidateParams {
   fromChainId?: number;
   toChainId?: number;
   fromTokenSymbol: string;
-  fromTokenAddress: `0x${string}`;
+  fromTokenAddress: string;
   fromTokenDecimals: number;
   fromChainType?: string;
-  toTokenAddress?: `0x${string}`;
+  toTokenAddress?: string;
   toTokenDecimals?: number;
   toChainType?: string;
   toTokenSymbol?: string;
