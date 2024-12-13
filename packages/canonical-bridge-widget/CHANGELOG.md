@@ -49,6 +49,12 @@
 
 - Add more customizable configs
 
+## 0.5.12
+
+### Patch Changes
+
+- 4992f44: Fixed the bridgedTokenGroup case issue
+
 ## 0.5.11
 
 ### Patch Changes
