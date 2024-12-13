@@ -12,6 +12,8 @@ export * from '@/core/utils/gtm';
 // locales
 export * from '@/core/locales';
 
+export * from '@/core/constants/error';
+
 // components
 export * from '@/core/components/StateModal';
 

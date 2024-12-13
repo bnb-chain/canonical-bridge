@@ -1,5 +1,23 @@
 # @bnb-chain/canonical-bridge-widget
 
+## 0.5.12-alpha.3
+
+### Patch Changes
+
+- Support custom toast for errors
+
+## 0.5.12-alpha.2
+
+### Patch Changes
+
+- Support custom toast for errors
+
+## 0.5.12-alpha.1
+
+### Patch Changes
+
+- Support custom toast for errors
+
 ## 0.5.12-alpha.0
 
 ### Patch Changes

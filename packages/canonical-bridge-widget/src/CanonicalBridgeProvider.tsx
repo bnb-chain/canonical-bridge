@@ -47,6 +47,7 @@ interface CanonicalBridgeContextProps extends ICanonicalBridgeConfig {
     chainId: number;
     onConnected?: (params?: { walletType?: ChainType; chainId?: number }) => void;
   }) => void;
+  onError?: (params: { type: string; message?: string; error?: Error }) => void;
 }
 
 const CanonicalBridgeContext = React.createContext({} as CanonicalBridgeContextProps);
@@ -63,6 +64,7 @@ export interface CanonicalBridgeProviderProps {
   connectWalletButton?: React.ReactNode;
   children: React.ReactNode;
   onClickConnectWalletButton?: CanonicalBridgeContextProps['onClickConnectWalletButton'];
+  onError?: CanonicalBridgeContextProps['onError'];
   refreshingIcon?: React.ReactNode;
 }
 
@@ -76,6 +78,7 @@ export function CanonicalBridgeProvider(props: CanonicalBridgeProviderProps) {
     connectWalletButton,
     refreshingIcon,
     onClickConnectWalletButton,
+    onError,
   } = props;
 
   const value = useMemo<CanonicalBridgeContextProps>(() => {
@@ -101,9 +104,17 @@ export function CanonicalBridgeProvider(props: CanonicalBridgeProviderProps) {
       routeContentBottom,
       connectWalletButton: connectWalletButton ?? <WalletConnectButton />,
       onClickConnectWalletButton,
+      onError,
       refreshingIcon,
     };
-  }, [config, connectWalletButton, onClickConnectWalletButton, refreshingIcon, routeContentBottom]);
+  }, [
+    config,
+    connectWalletButton,
+    onClickConnectWalletButton,
+    onError,
+    refreshingIcon,
+    routeContentBottom,
+  ]);
 
   return (
     <CanonicalBridgeContext.Provider value={value}>
