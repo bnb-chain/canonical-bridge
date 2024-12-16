@@ -6,8 +6,8 @@ import { useSelection } from '@/modules/aggregator/hooks/useSelection';
 import { useAggregator } from '@/modules/aggregator/components/AggregatorProvider';
 
 export function useDefaultSelectedInfo() {
-  const { isReady, defaultSelectedInfo } = useAggregator();
-  const { selectDefault } = useSelection();
+  const { isReady, defaultSelectedInfo, chainConfigs } = useAggregator();
+  const { selectDefault, selectFirstChain } = useSelection();
   const dispatch = useAppDispatch();
   const sendValue = useAppSelector((state) => state.transfer.sendValue);
 
@@ -18,4 +18,9 @@ export function useDefaultSelectedInfo() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isReady]);
+
+  useEffect(() => {
+    selectFirstChain();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [chainConfigs]);
 }

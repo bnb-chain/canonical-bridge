@@ -1,5 +1,11 @@
 # @bnb-chain/canonical-bridge-widget
 
+## 0.5.14-alpha.1
+
+### Patch Changes
+
+- Support specific wallets to exclude unsupported chains
+
 ## 0.5.14-alpha.0
 
 ### Patch Changes

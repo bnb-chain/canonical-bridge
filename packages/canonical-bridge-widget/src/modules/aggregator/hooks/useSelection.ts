@@ -199,6 +199,19 @@ export function useSelection() {
         tmpToken: newToken,
       });
     },
+
+    // Some wallets do not support current chain, and the first supported chain is re-selected by default
+    async selectFirstChain() {
+      const fromChains = getFromChains({});
+      const firstChain = fromChains?.[0];
+
+      if (fromChain && firstChain) {
+        const hasChain = fromChains.find((e) => e.id === fromChain.id);
+        if (!hasChain) {
+          selectFromChain(firstChain);
+        }
+      }
+    },
   };
 }
 

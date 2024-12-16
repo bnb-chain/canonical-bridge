@@ -190,7 +190,6 @@ export interface IChainConfig {
   };
   contracts?: any;
   chainType?: ChainType;
-  notSupportedWallets?: string[];
 }
 
 export type ChainType = 'link' | 'evm' | 'tron' | 'solana';
