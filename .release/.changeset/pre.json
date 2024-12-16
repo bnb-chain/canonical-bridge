@@ -6,6 +6,7 @@
     "@bnb-chain/canonical-bridge-widget": "0.5.9"
   },
   "changesets": [
+    "cold-baboons-serve",
     "happy-insects-give",
     "hip-news-reflect",
     "honest-adults-mate",

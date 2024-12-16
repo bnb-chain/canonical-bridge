@@ -40,7 +40,12 @@ export const TokenInfoTooltip = ({
   );
 
   return (
-    <Flex className="bccb-widget-route-token-tooltip" display={'inline-block'} w={'auto'}>
+    <Flex
+      className="bccb-widget-route-token-tooltip"
+      data-address={tokenAddress}
+      display={'inline-block'}
+      w={'auto'}
+    >
       <LightMode>
         <Popover
           placement="top-start"

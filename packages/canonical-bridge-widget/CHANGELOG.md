@@ -1,5 +1,11 @@
 # @bnb-chain/canonical-bridge-widget
 
+## 0.5.14-alpha.3
+
+### Patch Changes
+
+- Add attribute `data-address` to all routes
+
 ## 0.5.14-alpha.2
 
 ### Patch Changes
