@@ -9,6 +9,8 @@ import {
   ICryptoCurrencyQuoteEntity,
   IDebridgeChain,
   IDebridgeToken,
+  IMesonChain,
+  IStargateTokenList,
   ITransferConfigsForAll,
 } from '@/shared/web3/web3.interface';
 import {
@@ -17,6 +19,8 @@ import {
   CMC_API_KEY,
   COINGECKO_ENDPOINT,
   DEBRIDGE_ENDPOINT,
+  STARGATE_ENDPOINT,
+  MESON_ENDPOINT,
   LLAMA_COINS_ENDPOINT,
   TOKEN_REQUEST_LIMIT,
 } from '@/common/constants';
@@ -75,6 +79,20 @@ export class Web3Service {
       tokens: Record<string, IDebridgeToken>;
     }>(`${DEBRIDGE_ENDPOINT}/token-list?chainId=${chainId}`);
 
+    return data;
+  }
+
+  async getStargateConfigs() {
+    const { data } = await this.httpService.axiosRef.get<IStargateTokenList>(
+      `${STARGATE_ENDPOINT}`,
+    );
+    return data;
+  }
+
+  async getMesonConfigs() {
+    const { data } = await this.httpService.axiosRef.get<{ result: IMesonChain[] }>(
+      `${MESON_ENDPOINT}/limits`,
+    );
     return data;
   }
 

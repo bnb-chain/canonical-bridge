@@ -137,3 +137,62 @@ export interface ICoinPrice {
   price: number;
   decimals: number;
 }
+
+export interface IStargateBridgeTokenInfo {
+  stargateType: string;
+  address: `0x${string}`;
+  token: {
+    address: `0x${string}`;
+    decimals: number;
+    symbol: string;
+  };
+  lpToken: {
+    address: `0x${string}`;
+    decimals: number;
+    symbol: string;
+  };
+  farm: {
+    stargateStaking: {
+      address: `0x${string}`;
+      rewardTokens: [
+        {
+          address: `0x${string}`;
+          decimals: number;
+          symbol: string;
+        },
+        {
+          address: `0x${string}`;
+          decimals: number;
+          symbol: string;
+        },
+      ];
+    };
+  };
+  id: string;
+  assetId: string;
+  chainKey: string;
+  chainName: string;
+  tokenMessaging: `0x${string}`;
+  sharedDecimals: number;
+}
+export interface IStargateTokenList {
+  v1: IStargateBridgeTokenInfo[];
+  v2: IStargateBridgeTokenInfo[];
+}
+
+export interface IMesonToken {
+  id: string;
+  symbol: string;
+  name: string;
+  decimals: number;
+  addr?: string;
+  min: string;
+  max: string;
+}
+export interface IMesonChain {
+  id: string;
+  name: string;
+  chainId: string;
+  address: string;
+  tokens: IMesonToken[];
+}

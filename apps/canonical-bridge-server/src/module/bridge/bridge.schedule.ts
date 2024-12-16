@@ -21,6 +21,14 @@ export class BridgeSchedule implements OnModuleInit {
       jobId: Tasks.fetchDebridge,
       removeOnComplete: true,
     });
+    await this.syncBridge.add(Tasks.fetchStargate, null, {
+      jobId: Tasks.fetchStargate,
+      removeOnComplete: true,
+    });
+    await this.syncBridge.add(Tasks.fetchMeson, null, {
+      jobId: Tasks.fetchMeson,
+      removeOnComplete: true,
+    });
   }
 
   async onModuleInit() {
