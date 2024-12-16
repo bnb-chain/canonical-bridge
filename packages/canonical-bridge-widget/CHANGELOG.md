@@ -1,5 +1,11 @@
 # @bnb-chain/canonical-bridge-widget
 
+## 0.5.14-alpha.2
+
+### Patch Changes
+
+- Fixed an issue caused by sdk not building
+
 ## 0.5.14-alpha.1
 
 ### Patch Changes
