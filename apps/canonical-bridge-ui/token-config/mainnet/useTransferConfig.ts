@@ -129,11 +129,15 @@ export function useTransferConfig() {
               56: [
                 '0x67d66e8ec1fd25d98b3ccd3b19b7dc4b4b7fc493',
                 '0x0000000000000000000000000000000000000000',
+                '0x9c7beba8f6ef6643abd725e45a4e8387ef260649',
               ],
               137: ['cUSDCv3'],
               42161: ['cUSDCv3'],
               43114: ['BNB'],
-              7565164: ['So11111111111111111111111111111111111111112'],
+              7565164: [
+                'So11111111111111111111111111111111111111112',
+                'FmqVMWXBESyu4g6FT1uz1GABKdJ4j6wbuuLFwPJtqpmu',
+              ],
             },
           },
           bridgedTokenGroups: [

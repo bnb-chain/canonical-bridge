@@ -45,6 +45,7 @@ export function TokenSelectButton(props: SelectButtonProps) {
           chainType={fromChain?.chainType}
           tokenAddress={token?.address ?? ''}
           tokenLinkUrl={tokenUrl}
+          offset={[-20, 6]}
         >
           <Box>
             <IconImage

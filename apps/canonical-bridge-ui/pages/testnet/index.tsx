@@ -1,7 +1,8 @@
 import {
   CanonicalBridgeProvider,
   ICanonicalBridgeConfig,
-  TransferWidget,
+  BridgeTransfer,
+  BridgeRoutes,
 } from '@bnb-chain/canonical-bridge-widget';
 
 import { useTestnetTransferConfig } from '@/token-config/testnet/useTestnetTransferConfig';
@@ -52,7 +53,8 @@ function BridgeWidget() {
       onClickConnectWalletButton={onOpen}
     >
       <Layout>
-        <TransferWidget />
+        <BridgeTransfer />
+        <BridgeRoutes />
       </Layout>
     </CanonicalBridgeProvider>
   );

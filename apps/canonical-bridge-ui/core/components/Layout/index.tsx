@@ -9,11 +9,12 @@ export function Layout({ children }: React.PropsWithChildren) {
       <Header />
       <Flex
         as="main"
-        flexDir="column"
         flex={1}
-        w={['100%', '100%', '100%', 'auto']}
         p={['24px 20px', '24px 20px', '40px']}
-        alignItems="center"
+        w={['100%']}
+        mb={['120px', '120px', '160px']}
+        alignItems={'flex-start'}
+        justifyContent={'center'}
       >
         {children}
       </Flex>

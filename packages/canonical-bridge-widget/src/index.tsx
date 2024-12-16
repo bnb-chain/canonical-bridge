@@ -1,12 +1,18 @@
 export * from '@/modules/aggregator';
 export * from '@/CanonicalBridgeProvider';
-export * from '@/modules/transfer';
+
+export * from '@/modules/transfer/BridgeTransfer';
+export * from '@/modules/transfer/BridgeRoutes';
+
+export { useBridge } from '@/ExportsProvider';
 
 // gtm
 export * from '@/core/utils/gtm';
 
 // locales
 export * from '@/core/locales';
+
+export * from '@/core/constants/error';
 
 // components
 export * from '@/core/components/StateModal';

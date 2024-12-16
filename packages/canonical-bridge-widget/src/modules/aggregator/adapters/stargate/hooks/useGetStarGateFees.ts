@@ -15,6 +15,7 @@ import { useBridgeSDK } from '@/core/hooks/useBridgeSDK';
 import { formatFeeAmount } from '@/core/utils/string';
 import { useGetNativeToken } from '@/modules/transfer/hooks/useGetNativeToken';
 import { ERC20_TOKEN } from '@/core/contract/abi';
+import { useIsWalletCompatible } from '@/modules/wallet/hooks/useIsWalletCompatible';
 
 export const useGetStargateFees = () => {
   const dispatch = useAppDispatch();
@@ -24,6 +25,7 @@ export const useGetStargateFees = () => {
   const bridgeSDK = useBridgeSDK();
   const { formatMessage } = useIntl();
   const nativeToken = useGetNativeToken();
+  const isWalletCompatible = useIsWalletCompatible();
 
   const fromChain = useAppSelector((state) => state.transfer.fromChain);
   const { data: nativeBalance } = useBalance({ address, chainId: fromChain?.id });
@@ -128,7 +130,11 @@ export const useGetStargateFees = () => {
               value: `${formatNumber(Number(fee), 8)} ${nativeToken}`,
               name: 'nativeFee',
             });
-            if (nativeBalance?.value && nativeBalance?.value < Number(nativeFee)) {
+            if (
+              nativeBalance?.value &&
+              nativeBalance?.value < Number(nativeFee) &&
+              isWalletCompatible
+            ) {
               dispatch(
                 setRouteError({ stargate: `Insufficient ${nativeToken} to cover native fee` }),
               );
@@ -242,6 +248,7 @@ export const useGetStargateFees = () => {
       nativeBalance?.value,
       fromChain,
       balance,
+      isWalletCompatible,
     ],
   );
 

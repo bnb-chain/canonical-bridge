@@ -10,6 +10,7 @@ import { TokenPricesProvider } from '@/modules/aggregator/components/TokenPrices
 import { locales } from '@/core/locales';
 import { TronAccountProvider } from '@/modules/wallet/TronAccountProvider';
 import { WalletConnectButton } from '@/modules/transfer/components/Button/WalletConnectButton';
+import { ExportsProvider } from '@/ExportsProvider';
 
 export interface ICanonicalBridgeConfig {
   appName: string;
@@ -40,11 +41,13 @@ export interface ICanonicalBridgeConfig {
 interface CanonicalBridgeContextProps extends ICanonicalBridgeConfig {
   routeContentBottom: React.ReactNode;
   connectWalletButton: React.ReactNode;
+  refreshingIcon?: React.ReactNode;
   onClickConnectWalletButton?: (params: {
     chainType: ChainType;
     chainId: number;
     onConnected?: (params?: { walletType?: ChainType; chainId?: number }) => void;
   }) => void;
+  onError?: (params: { type: string; message?: string; error?: Error }) => void;
 }
 
 const CanonicalBridgeContext = React.createContext({} as CanonicalBridgeContextProps);
@@ -61,6 +64,8 @@ export interface CanonicalBridgeProviderProps {
   connectWalletButton?: React.ReactNode;
   children: React.ReactNode;
   onClickConnectWalletButton?: CanonicalBridgeContextProps['onClickConnectWalletButton'];
+  onError?: CanonicalBridgeContextProps['onError'];
+  refreshingIcon?: React.ReactNode;
 }
 
 export function CanonicalBridgeProvider(props: CanonicalBridgeProviderProps) {
@@ -71,7 +76,9 @@ export function CanonicalBridgeProvider(props: CanonicalBridgeProviderProps) {
     transferConfig,
     routeContentBottom,
     connectWalletButton,
+    refreshingIcon,
     onClickConnectWalletButton,
+    onError,
   } = props;
 
   const value = useMemo<CanonicalBridgeContextProps>(() => {
@@ -97,8 +104,17 @@ export function CanonicalBridgeProvider(props: CanonicalBridgeProviderProps) {
       routeContentBottom,
       connectWalletButton: connectWalletButton ?? <WalletConnectButton />,
       onClickConnectWalletButton,
+      onError,
+      refreshingIcon,
     };
-  }, [config, connectWalletButton, onClickConnectWalletButton, routeContentBottom]);
+  }, [
+    config,
+    connectWalletButton,
+    onClickConnectWalletButton,
+    onError,
+    refreshingIcon,
+    routeContentBottom,
+  ]);
 
   return (
     <CanonicalBridgeContext.Provider value={value}>
@@ -109,7 +125,7 @@ export function CanonicalBridgeProvider(props: CanonicalBridgeProviderProps) {
               <TronAccountProvider>
                 <TokenBalancesProvider />
                 <TokenPricesProvider />
-                {children}
+                <ExportsProvider>{children}</ExportsProvider>
               </TronAccountProvider>
             </ThemeProvider>
           </AggregatorProvider>

@@ -43,3 +43,7 @@ export const setRouteFees = createAction<ITransferState['routeFees']>('transfer/
 export const setIsToAddressChecked = createAction<ITransferState['isToAddressChecked']>(
   'transfer/setIsToAddressChecked',
 );
+
+export const setIsRoutesModalOpen = createAction<ITransferState['isRoutesModalOpen']>(
+  'transfer/setIsRoutesModalOpen',
+);

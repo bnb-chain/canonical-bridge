@@ -1,5 +1,8 @@
 import { useWallet as useTronWallet } from '@tronweb3/tronwallet-adapter-react-hooks';
 
+import { useBridgeConfig } from '@/CanonicalBridgeProvider';
+import { ERROR_TYPES } from '@/core/constants/error';
+
 interface UseTronSwitchChainProps {
   mutation?: {
     onMutate?: () => void;
@@ -12,6 +15,8 @@ interface UseTronSwitchChainProps {
 export function useTronSwitchChain(props?: UseTronSwitchChainProps) {
   const { wallet } = useTronWallet();
 
+  const { onError } = useBridgeConfig();
+
   return {
     async switchChain({ chainId }: { chainId: number }) {
       const hexChainId = `0x${chainId?.toString(16)}`;
@@ -21,7 +26,12 @@ export function useTronSwitchChain(props?: UseTronSwitchChainProps) {
         if (!res) {
           props?.mutation?.onSuccess?.({ chainId });
         }
-      } catch (err) {
+      } catch (err: any) {
+        onError?.({
+          type: ERROR_TYPES.SWITCH_TRON_CHAIN,
+          message: undefined,
+          error: err,
+        });
         props?.mutation?.onError?.(err);
       }
       props?.mutation?.onSettled?.();
