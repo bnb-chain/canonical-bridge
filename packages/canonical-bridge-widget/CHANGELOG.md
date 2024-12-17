@@ -1,5 +1,11 @@
 # @bnb-chain/canonical-bridge-widget
 
+## 0.5.14-alpha.4
+
+### Patch Changes
+
+- Add blocked rules to celer bridge
+
 ## 0.5.14-alpha.3
 
 ### Patch Changes
