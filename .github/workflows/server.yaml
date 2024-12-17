@@ -7,9 +7,12 @@ on:
 
     paths:
       - apps/canonical-bridge-server/**
+      - .github/**
 
 permissions:
-  contents: read
+  contents: write
+  issues: write
+  pull-requests: write
 
 jobs:
   cicd:
