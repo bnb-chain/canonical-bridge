@@ -23,6 +23,10 @@ export class BridgeProcessor extends WorkerHost {
         return this.fetchCBridge();
       case Tasks.fetchDebridge:
         return this.fetchDeBridge();
+      case Tasks.fetchMeson:
+        return this.fetchMeson();
+      case Tasks.fetchStargate:
+        return this.fetchStargate();
       default:
     }
   }
