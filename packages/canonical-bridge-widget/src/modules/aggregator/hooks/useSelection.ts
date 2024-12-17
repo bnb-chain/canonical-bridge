@@ -216,7 +216,7 @@ export function useSelection() {
 }
 
 function useSortedTokens() {
-  const { transferConfig } = useAggregator();
+  const { transferConfig, chainConfigs } = useAggregator();
   const { getTokenPrice } = useTokenPrice();
 
   const { address } = useAccount();
@@ -243,6 +243,7 @@ function useSortedTokens() {
         evmParams: {
           account: address,
           chain: chains?.find((item) => item.id === fromChainId),
+          chainConfig: chainConfigs?.find((item) => item.id === fromChainId),
         },
         solanaParams: {
           account: solanaAddress,

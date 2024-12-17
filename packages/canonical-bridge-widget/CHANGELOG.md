@@ -1,5 +1,11 @@
 # @bnb-chain/canonical-bridge-widget
 
+## 0.5.14-alpha.5
+
+### Patch Changes
+
+- Use rpc in chainsConfig to get balance
+
 ## 0.5.14-alpha.4
 
 ### Patch Changes

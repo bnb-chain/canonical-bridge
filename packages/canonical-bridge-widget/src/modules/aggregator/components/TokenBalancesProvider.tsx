@@ -11,8 +11,10 @@ import { setIsLoadingTokenBalances, setTokenBalances } from '@/modules/aggregato
 import { useTronWeb } from '@/core/hooks/useTronWeb';
 import { useSolanaAccount } from '@/modules/wallet/hooks/useSolanaAccount';
 import { useTronAccount } from '@/modules/wallet/hooks/useTronAccount';
+import { useAggregator } from '@/modules/aggregator/components/AggregatorProvider';
 
 export function TokenBalancesProvider() {
+  const { chainConfigs } = useAggregator();
   const { address } = useAccount();
   const { address: solanaAddress } = useSolanaAccount();
   const { address: tronAddress } = useTronAccount();
@@ -41,6 +43,7 @@ export function TokenBalancesProvider() {
         evmParams: {
           account: address,
           chain: chains?.find((item) => item.id === fromChain?.id),
+          chainConfig: chainConfigs?.find((item) => item.id === fromChain?.id),
         },
         solanaParams: {
           account: solanaAddress,
