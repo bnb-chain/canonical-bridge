@@ -49,4 +49,16 @@ export class BridgeProcessor extends WorkerHost {
     if (!config) return;
     await this.cache.set(`${CACHE_KEY.CBRIDGE_CONFIG}`, config);
   }
+
+  async fetchStargate() {
+    const config = await this.web3Service.getStargateConfigs();
+    if (!config) return;
+    await this.cache.set(`${CACHE_KEY.STARGATE_CONFIG}`, config);
+  }
+
+  async fetchMeson() {
+    const config = await this.web3Service.getMesonConfigs();
+    if (!config) return;
+    await this.cache.set(`${CACHE_KEY.MESON_CONFIG}`, config);
+  }
 }

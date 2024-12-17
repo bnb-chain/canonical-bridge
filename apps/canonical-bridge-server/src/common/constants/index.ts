@@ -8,6 +8,9 @@ export const CMC_API_ENDPOINT = process.env.CMC_API_ENDPOINT || 'https://pro-api
 export const CBRIDGE_ENDPOINT = process.env.CBRIDGE_ENDPOINT || 'https://cbridge-prod2.celer.app';
 export const DEBRIDGE_ENDPOINT =
   process.env.DEBRIDGE_ENDPOINT || 'https://deswap.debridge.finance/v1.0';
+export const STARGATE_ENDPOINT =
+  process.env.STARGATE_ENDPOINT || 'https://mainnet.stargate-api.com/v1/metadata?version=v2';
+export const MESON_ENDPOINT = process.env.MESON_ENDPOINT || 'https://relayer.meson.fi/api/v1';
 export const LLAMA_COINS_ENDPOINT = process.env.LLMA_COINS__ENDPOINT || 'https://coins.llama.fi';
 export const COINGECKO_ENDPOINT = process.env.COINGECKO_ENDPOINT || 'https://api.coingecko.com/api';
 
@@ -28,6 +31,8 @@ export enum Tasks {
   fetchLlamaPrice = 'fetchLlamaPrice',
   fetchCbridge = 'fetchCbridge',
   fetchDebridge = 'fetchDebridge',
+  fetchStargate = 'fetchStargate',
+  fetchMeson = 'fetchMeson',
   cacheCmcConfig = 'cacheCmcConfig',
   cacheLlamaConfig = 'cacheLlamaConfig',
 }
@@ -43,6 +48,8 @@ export const CACHE_KEY = {
   CMC_CRYPTO_TOKEN: 'cmc:token',
   CBRIDGE_CONFIG: 'bridge:cbridge',
   DEBRIDGE_CONFIG: 'bridge:debridge',
+  STARGATE_CONFIG: 'bridge:stargate',
+  MESON_CONFIG: 'bridge:meson',
   CMC_CONFIG: 'cmc:config',
   LLAMA_CONFIG: 'llama:config',
   PLATFORM_MAPPING: 'llama:platform',
