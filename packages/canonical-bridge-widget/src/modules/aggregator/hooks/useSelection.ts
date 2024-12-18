@@ -199,11 +199,24 @@ export function useSelection() {
         tmpToken: newToken,
       });
     },
+
+    // Some wallets do not support current chain, and the first supported chain is re-selected by default
+    async selectFirstChain() {
+      const fromChains = getFromChains({});
+      const firstChain = fromChains?.[0];
+
+      if (fromChain && firstChain) {
+        const hasChain = fromChains.find((e) => e.id === fromChain.id);
+        if (!hasChain) {
+          selectFromChain(firstChain);
+        }
+      }
+    },
   };
 }
 
 function useSortedTokens() {
-  const { transferConfig } = useAggregator();
+  const { transferConfig, chainConfigs } = useAggregator();
   const { getTokenPrice } = useTokenPrice();
 
   const { address } = useAccount();
@@ -230,6 +243,7 @@ function useSortedTokens() {
         evmParams: {
           account: address,
           chain: chains?.find((item) => item.id === fromChainId),
+          chainConfig: chainConfigs?.find((item) => item.id === fromChainId),
         },
         solanaParams: {
           account: solanaAddress,

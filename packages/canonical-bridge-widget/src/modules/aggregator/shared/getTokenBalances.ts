@@ -5,7 +5,7 @@ import { Connection, LAMPORTS_PER_SOL, PublicKey } from '@solana/web3.js';
 import { TOKEN_PROGRAM_ID } from '@solana/spl-token';
 import axios from 'axios';
 
-import { ChainType, IBridgeToken } from '@/modules/aggregator/types';
+import { ChainType, IBridgeToken, IChainConfig } from '@/modules/aggregator/types';
 import { ERC20_TOKEN } from '@/core/contract/abi';
 import { isChainOrTokenCompatible } from '@/modules/aggregator/shared/isChainOrTokenCompatible';
 import { isSameAddress } from '@/core/utils/address';
@@ -23,6 +23,7 @@ export async function getTokenBalances({
   evmParams: {
     account?: string;
     chain?: Chain;
+    chainConfig?: IChainConfig;
   };
   solanaParams: {
     account?: string;
@@ -54,6 +55,7 @@ export async function getTokenBalances({
     account: evmParams.account,
     chain: evmParams.chain,
     tokens: compatibleTokens,
+    chainConfig: evmParams.chainConfig,
   });
 }
 
@@ -61,19 +63,22 @@ async function getEvmTokenBalances({
   account,
   chain,
   tokens,
+  chainConfig,
 }: {
   account?: string;
   chain?: Chain;
   tokens?: IBridgeToken[];
+  chainConfig?: IChainConfig;
 }) {
   try {
     if (!chain || !account || !tokens?.length) {
       return {};
     }
 
+    const rpcUrl = chainConfig?.rpcUrl;
     const client = createPublicClient({
       chain,
-      transport: http(),
+      transport: http(rpcUrl),
     });
 
     const contracts = tokens.map((item) => ({

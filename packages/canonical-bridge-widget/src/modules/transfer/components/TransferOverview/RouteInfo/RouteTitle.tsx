@@ -123,6 +123,8 @@ export const ToTokenInfo = React.forwardRef(
             alignItems="center"
             color={theme.colors[colorMode].text.tertiary}
             justifyContent="flex-start"
+            className="bccb-widget-route-token-to-address"
+            data-address={toTokenInfo.address}
           >
             <Link
               href={tokenUrl}
@@ -146,7 +148,7 @@ export const ToTokenInfo = React.forwardRef(
             <InfoTooltip
               label={formatMessage({ id: 'route.token-address.tips' })}
               maxW={'250px'}
-              placement="top-start"
+              placement="top"
               hasArrow
             >
               <Center>

@@ -23,7 +23,8 @@ export const en = {
   'route.title.select.routes': 'Select Bridge Routes',
   'route.fees.title': 'Fees:',
   'route.time.title': 'Time:',
-  'route.allowed-send-amount': 'Your send amount should be between {min} to {max} {symbol}',
+  'route.allowed-send-amount':
+    'The amount you send must be greater than {min} and less than {max} {symbol}',
   'route.token-address.tips':
     'Please double check the received token address before making the transaction.',
 
