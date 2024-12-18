@@ -1,5 +1,24 @@
 # @bnb-chain/canonical-bridge-widget
 
+## 0.5.14
+
+### Patch Changes
+
+- c245228: Add attribute `data-address` to all routes
+- 0a61381: Use rpc in chainsConfig to get balance
+- 2849332: Add more customizable configs
+- 513791e: Keep the previous selected route after routes refreshing
+- f9c82ec: Fixed an issue caused by sdk not building
+- 0cf34de: Support custom toast for errors
+- 513791e: Split `TransferWidget` into `BridgeTransfer` and `BridgeRoutes`
+- 513791e: AlertIcon supports customize color
+- 3f69a66: Add blocked rules to celer bridge
+- fc7cd1c: Add to token address to route
+- 0cf34de: Support custom toast for errors
+- 0cf34de: Support custom toast for errors
+- 513791e: Remove bridge bottom element if `routeContentBottom` not setted
+- 99b14df: Support specific wallets to exclude unsupported chains
+
 ## 0.5.14-alpha.5
 
 ### Patch Changes
