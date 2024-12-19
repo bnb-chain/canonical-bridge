@@ -23,6 +23,10 @@ export class BridgeProcessor extends WorkerHost {
         return this.fetchCBridge();
       case Tasks.fetchDebridge:
         return this.fetchDeBridge();
+      case Tasks.fetchMeson:
+        return this.fetchMeson();
+      case Tasks.fetchStargate:
+        return this.fetchStargate();
       default:
     }
   }
@@ -48,5 +52,17 @@ export class BridgeProcessor extends WorkerHost {
     const config = await this.web3Service.getTransferConfigsForAll();
     if (!config) return;
     await this.cache.set(`${CACHE_KEY.CBRIDGE_CONFIG}`, config);
+  }
+
+  async fetchStargate() {
+    const config = await this.web3Service.getStargateConfigs();
+    if (!config) return;
+    await this.cache.set(`${CACHE_KEY.STARGATE_CONFIG}`, config);
+  }
+
+  async fetchMeson() {
+    const config = await this.web3Service.getMesonConfigs();
+    if (!config) return;
+    await this.cache.set(`${CACHE_KEY.MESON_CONFIG}`, config);
   }
 }

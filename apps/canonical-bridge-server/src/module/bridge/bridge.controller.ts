@@ -17,4 +17,14 @@ export class BridgeController {
   getDeBridgeConfig() {
     return this.cache.get(CACHE_KEY.DEBRIDGE_CONFIG);
   }
+
+  @Get('/stargate')
+  getStargateConfig() {
+    return this.cache.get(CACHE_KEY.STARGATE_CONFIG);
+  }
+
+  @Get('/meson')
+  getMesonConfig() {
+    return this.cache.get(CACHE_KEY.MESON_CONFIG);
+  }
 }

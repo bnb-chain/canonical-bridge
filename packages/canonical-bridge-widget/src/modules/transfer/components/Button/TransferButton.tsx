@@ -434,12 +434,13 @@ export function TransferButton({
         const isValidToken = await bridgeSDK.meson.validateMesonToken({
           fromChainId: fromChain?.id,
           toChainId: toChain?.id,
-          fromTokenAddress: selectedToken.meson?.raw?.addr as `0x${string}`,
+          fromTokenAddress:
+            selectedToken.meson?.raw?.addr ?? '0x0000000000000000000000000000000000000000',
           fromTokenSymbol: selectedToken.meson?.raw?.id as string,
           fromTokenDecimals: selectedToken.meson?.raw?.decimals as number,
           fromChainType: fromChain?.chainType,
           toChainType: toChain?.chainType,
-          toTokenAddress: toToken?.meson?.raw?.addr as `0x${string}`,
+          toTokenAddress: toToken?.meson?.raw?.addr ?? '0x0000000000000000000000000000000000000000',
           toTokenSymbol: toToken?.meson?.raw?.id,
           toTokenDecimals: toToken?.meson?.raw?.decimals,
           amount: Number(sendValue),
