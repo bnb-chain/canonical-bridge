@@ -1,7 +1,8 @@
-export const formatNumber = (value: number, decimals = 18) => {
+export const formatNumber = (value: number, decimals = 18, useGrouping = true) => {
   const num = removeAfterDecimals(value, decimals);
   return num.toLocaleString('fullwide', {
     maximumFractionDigits: decimals,
+    useGrouping,
   });
 };
 

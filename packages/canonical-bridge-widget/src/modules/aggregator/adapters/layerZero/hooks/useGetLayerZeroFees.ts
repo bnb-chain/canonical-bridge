@@ -69,7 +69,7 @@ export const useGetLayerZeroFees = () => {
       ];
       const nativeFee = fees[0];
       const minAmount = parseUnits(
-        String(formatNumber(Number(sendValue), 8)),
+        String(formatNumber(Number(sendValue), 8, false)),
         selectedToken?.layerZero?.raw?.decimals ?? (18 as number),
       );
       const cakeArgs = {
