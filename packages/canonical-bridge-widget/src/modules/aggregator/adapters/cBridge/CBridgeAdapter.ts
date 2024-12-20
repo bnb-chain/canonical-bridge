@@ -91,6 +91,26 @@ export class CBridgeAdapter extends BaseAdapter<
     this.symbolMap = symbolMap;
   }
 
+  private checkIsBlocked({
+    fromChainId,
+    toChainId,
+    tokenSymbol,
+  }: {
+    fromChainId: number;
+    toChainId: number;
+    tokenSymbol: string;
+  }) {
+    const blockedList = this.config.blocked_bridge_direct ?? [];
+    const isBlocked = blockedList.find((e) => {
+      return (
+        Number(e.src_chain_id) === fromChainId &&
+        Number(e.dst_chain_id) === toChainId &&
+        e.symbol.toUpperCase() === tokenSymbol.toUpperCase()
+      );
+    });
+    return isBlocked;
+  }
+
   protected initTransferMap() {
     const transferMap = new Map<
       number,
@@ -104,10 +124,20 @@ export class CBridgeAdapter extends BaseAdapter<
 
           const transferableTokenMap = new Map<string, ITransferTokenPair<ICBridgeToken>>();
           fromTokens.forEach((fromToken) => {
+            const fromTokenSymbol = fromToken.token.symbol?.toUpperCase();
+            const isBlocked = this.checkIsBlocked({
+              fromChainId: fromChain.id,
+              toChainId: toChain.id,
+              tokenSymbol: fromTokenSymbol,
+            });
+            if (isBlocked) {
+              return;
+            }
+
             const toToken = this.getToToken({
               fromChainId: fromChain.id,
               toChainId: toChain.id,
-              fromTokenSymbol: fromToken.token.symbol?.toUpperCase(),
+              fromTokenSymbol,
             });
             if (toToken) {
               const tokenPair: ITransferTokenPair<ICBridgeToken> = {
@@ -118,7 +148,7 @@ export class CBridgeAdapter extends BaseAdapter<
                 fromToken,
                 toToken,
               };
-              transferableTokenMap.set(fromToken.token.symbol?.toUpperCase(), tokenPair);
+              transferableTokenMap.set(fromTokenSymbol, tokenPair);
             }
           });
 
@@ -142,6 +172,15 @@ export class CBridgeAdapter extends BaseAdapter<
       toToken: ICBridgeToken,
       item: ICBridgePeggedPairConfig,
     ) => {
+      const isBlocked = this.checkIsBlocked({
+        fromChainId,
+        toChainId,
+        tokenSymbol: fromToken.token.symbol,
+      });
+      if (isBlocked) {
+        return;
+      }
+
       if (
         !transferMap.get(fromChainId)?.get(toChainId)?.get(fromToken.token.symbol?.toUpperCase())
       ) {
