@@ -1,5 +1,11 @@
 # @bnb-chain/canonical-bridge-sdk
 
+## 0.4.5
+
+### Patch Changes
+
+- 0c42d50: Fix layerzero min amount decimal issue
+
 ## 0.4.4
 
 ### Patch Changes

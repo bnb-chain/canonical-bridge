@@ -1,5 +1,11 @@
 # @bnb-chain/canonical-bridge-widget
 
+## 0.5.15
+
+### Patch Changes
+
+- 0c42d50: Fix layerzero min amount decimal issue
+
 ## 0.5.14
 
 ### Patch Changes
