@@ -80,7 +80,7 @@ export class LayerZero {
       ];
       const nativeFee = fees[0];
       const minAmount = parseUnits(
-        String(formatNumber(Number(formatUnits(amount, 18)), 8)),
+        String(formatNumber(Number(formatUnits(amount, 18)), 8, false)),
         18
       );
       const cakeArgs = {
