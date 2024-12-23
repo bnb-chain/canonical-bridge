@@ -110,6 +110,9 @@ export function ChooseTokenModal(props: ChooseTokenModalProps) {
                 isActive={isActive}
                 isDisabled={isDisabled}
                 data-address={item.address}
+                data-name={item.name}
+                data-symbol={item.symbol}
+                data-display-symbol={item.displaySymbol}
                 incompatibleTooltip={formatMessage({
                   id: 'select-modal.token.incompatible.tooltip',
                 })}

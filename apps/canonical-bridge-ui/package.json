@@ -51,7 +51,6 @@
     "eslint-config-next": "14.2.3",
     "lint-staged": "~13.0.3",
     "prettier": "~2.7.1",
-    "supports-color": "8.1.1",
     "typescript": "5.5.4"
   },
   "lint-staged": {
