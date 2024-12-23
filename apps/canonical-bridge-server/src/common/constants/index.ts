@@ -59,3 +59,125 @@ export const JOB_KEY = {
   CORN_TOKEN_PREFIX: 'corn:token:',
   CORN_PRICE_PREFIX: 'corn:price:',
 };
+
+export const STARGATE_CHAIN_INFO = [
+  {
+    chainId: 1,
+    chainName: 'Ethereum',
+    endpointID: 30101,
+  },
+  {
+    chainId: 10,
+    chainName: 'Optimism',
+    endpointID: 30110,
+  },
+  {
+    chainId: 14,
+    chainName: 'Flare',
+    endpointID: 30295,
+  },
+  {
+    chainId: 56,
+    chainName: 'BSC',
+    endpointID: 30102,
+  },
+  {
+    chainId: 97,
+    chainName: 'BSC Testnet',
+    network: 'testnet',
+    endpointID: 40102,
+  },
+  {
+    chainId: 137,
+    chainName: 'Polygon',
+    endpointID: 30109,
+  },
+  {
+    chainId: 1088,
+    chainName: 'Metis',
+    endpointID: 30151,
+  },
+  {
+    chainId: 1329,
+    chainName: 'Sei',
+    endpointID: 30280,
+  },
+  {
+    chainId: 2222,
+    chainName: 'Kava',
+    endpointID: 30177,
+  },
+  {
+    chainId: 5000,
+    chainName: 'Mantle',
+    endpointID: 30181,
+  },
+  {
+    chainId: 8217,
+    chainName: 'Klaytn',
+    endpointID: 30150,
+  },
+  {
+    chainId: 8453,
+    chainName: 'Base',
+    endpointID: 30184,
+  },
+  {
+    chainId: 8822,
+    chainName: 'IOTA',
+    endpointID: 30284,
+  },
+  {
+    chainId: 42161,
+    chainName: 'Arbitrum',
+    endpointID: 30110,
+  },
+  {
+    chainId: 43114,
+    chainName: 'Avalanche',
+    endpointID: 30106,
+  },
+  {
+    chainId: 59144,
+    chainName: 'Linea',
+    endpointID: 30183,
+  },
+  {
+    chainId: 167000,
+    chainName: 'Taiko Mainnet',
+    endpointID: 30290,
+  },
+  {
+    chainId: 421614,
+    chainName: 'Arbitrum Sepolia',
+    network: 'testnet',
+    endpointID: 40231,
+  },
+  {
+    chainId: 11155420,
+    chainName: 'OP Sepolia Testnet',
+    network: 'testnet',
+    endpointID: 40232,
+  },
+  {
+    chainId: 534352,
+    chainName: 'Scroll',
+    endpointID: 30214,
+  },
+  {
+    chainId: 11155111,
+    chainName: 'Sepolia',
+    network: 'testnet',
+    endpointID: 40161,
+  },
+  {
+    chainId: 1313161554,
+    chainName: 'Aurora',
+    endpointID: 30211,
+  },
+  {
+    chainId: 1380012617,
+    chainName: 'RARI Chain',
+    endpointID: 30235,
+  },
+];
