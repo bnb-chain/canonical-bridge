@@ -23,6 +23,7 @@ import {
   MESON_ENDPOINT,
   LLAMA_COINS_ENDPOINT,
   TOKEN_REQUEST_LIMIT,
+  STARGATE_CHAIN_INFO,
 } from '@/common/constants';
 import { values } from 'lodash';
 
@@ -86,7 +87,21 @@ export class Web3Service {
     const { data } = await this.httpService.axiosRef.get<IStargateTokenList>(
       `${STARGATE_ENDPOINT}`,
     );
-    return data;
+    const processedTokenList = [];
+    try {
+      const v2List = data.v2;
+      v2List.forEach((token) => {
+        const chainInfo = STARGATE_CHAIN_INFO.filter(
+          (chain) => chain.chainName.toUpperCase() === token.chainKey.toUpperCase(),
+        );
+        if (chainInfo && chainInfo.length > 0) {
+          processedTokenList.push({ ...token, endpointID: chainInfo[0].endpointID });
+        }
+      });
+    } catch (e) {
+      console.log(`Failed to retrieve Stargate API data at ${new Date().getTime()}`, e);
+    }
+    return processedTokenList;
   }
 
   async getMesonConfigs() {
