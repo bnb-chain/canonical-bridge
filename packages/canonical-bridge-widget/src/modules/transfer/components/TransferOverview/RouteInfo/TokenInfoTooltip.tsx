@@ -10,13 +10,14 @@ import {
   useTheme,
   LightMode,
   Portal,
+  PopoverProps,
 } from '@bnb-chain/space';
 import { useMemo } from 'react';
 
 import { isNativeToken } from '@/core/utils/address.ts';
 import { ChainType } from '@/modules/aggregator';
 
-interface TokenTooltipProps {
+interface TokenTooltipProps extends PopoverProps {
   tokenLinkUrl: string;
   tokenAddress: string;
   children: React.ReactNode;
@@ -30,6 +31,7 @@ export const TokenInfoTooltip = ({
   tokenLinkUrl,
   isReceiveArea,
   chainType = 'evm',
+  ...restProps
 }: TokenTooltipProps) => {
   const theme = useTheme();
   const nativeToken = useMemo(
@@ -38,9 +40,20 @@ export const TokenInfoTooltip = ({
   );
 
   return (
-    <Flex className="bccb-widget-route-token-tooltip" display={'inline-block'} w={'auto'}>
+    <Flex
+      className="bccb-widget-route-token-tooltip"
+      data-address={tokenAddress}
+      display={'inline-block'}
+      w={'auto'}
+    >
       <LightMode>
-        <Popover placement="top-start" trigger={'hover'} strategy={'fixed'} autoFocus={false}>
+        <Popover
+          placement="top-start"
+          trigger={'hover'}
+          strategy={'fixed'}
+          autoFocus={false}
+          {...restProps}
+        >
           <PopoverTrigger>{children}</PopoverTrigger>
           <Portal>
             <PopoverContent

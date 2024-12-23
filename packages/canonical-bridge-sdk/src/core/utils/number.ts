@@ -12,10 +12,15 @@ export function removeAfterDecimals(num: string | number, decimals = 8) {
   return result;
 }
 
-export const formatNumber = (value: number, decimals = 18) => {
+export const formatNumber = (
+  value: number,
+  decimals = 18,
+  useGrouping = true
+) => {
   const num = removeAfterDecimals(value, decimals);
   return num.toLocaleString('fullwide', {
     maximumFractionDigits: decimals,
+    useGrouping,
   });
 };
 

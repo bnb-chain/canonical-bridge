@@ -9,6 +9,9 @@ import {
 } from '@bnb-chain/space';
 import { useAccount, useSwitchChain } from 'wagmi';
 
+import { ERROR_TYPES } from '@/core/constants/error';
+import { useBridgeConfig } from '@/index';
+
 type UseEvmSwitchChainProps = Parameters<typeof useSwitchChain>[0];
 
 // walletConnect:
@@ -19,6 +22,7 @@ export function useEvmSwitchChain(props?: UseEvmSwitchChainProps) {
 
   const { connector } = useAccount();
   const { formatMessage } = useIntl();
+  const { onError } = useBridgeConfig();
 
   const res = useSwitchChain({
     ...props,
@@ -27,22 +31,24 @@ export function useEvmSwitchChain(props?: UseEvmSwitchChainProps) {
       onError: (err: any, ...params) => {
         const switchErrorMsg = formatMessage({ id: 'wallet.error.switch-network' });
 
-        let message = '';
+        let message: string | undefined = undefined;
         if (
           connector?.id === 'walletConnect' ||
           connector?.id === 'trust' ||
-          connector?.id === 'binanceWeb3Wallet'
+          connector?.id === 'binanceWeb3Wallet' ||
+          connector?.id === 'BinanceW3WSDK'
         ) {
           if (
             err?.message?.includes('The JSON sent is not a valid Request object') ||
             err?.message?.includes('Error Calling Method: switchEthereumChain') ||
-            err?.details?.includes('not support')
+            err?.details?.includes('not support') ||
+            (connector?.id === 'BinanceW3WSDK' && err.code === 4902)
           ) {
             message = switchErrorMsg;
           }
         }
 
-        if (message) {
+        if (message && !onError) {
           toast({
             render() {
               return (
@@ -58,6 +64,12 @@ export function useEvmSwitchChain(props?: UseEvmSwitchChainProps) {
             },
           });
         }
+
+        onError?.({
+          type: ERROR_TYPES.SWITCH_EVM_CHAIN,
+          message,
+          error: err,
+        });
 
         props?.mutation?.onError?.(err, ...params);
       },

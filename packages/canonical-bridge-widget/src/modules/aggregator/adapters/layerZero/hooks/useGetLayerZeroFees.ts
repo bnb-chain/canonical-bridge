@@ -13,6 +13,7 @@ import { useGetNativeToken } from '@/modules/transfer/hooks/useGetNativeToken';
 import { formatNumber } from '@/core/utils/number';
 import { formatFeeAmount } from '@/core/utils/string';
 import { useGetAllowance } from '@/core/contract/hooks/useGetAllowance';
+import { useIsWalletCompatible } from '@/modules/wallet/hooks/useIsWalletCompatible';
 
 export const useGetLayerZeroFees = () => {
   const { address, chain } = useAccount();
@@ -24,6 +25,7 @@ export const useGetLayerZeroFees = () => {
   const selectedToken = useAppSelector((state) => state.transfer.selectedToken);
   const sendValue = useAppSelector((state) => state.transfer.sendValue);
   const fromChain = useAppSelector((state) => state.transfer.fromChain);
+  const isWalletCompatible = useIsWalletCompatible();
 
   const { data: nativeBalance } = useBalance({ address, chainId: fromChain?.id });
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -67,7 +69,7 @@ export const useGetLayerZeroFees = () => {
       ];
       const nativeFee = fees[0];
       const minAmount = parseUnits(
-        String(formatNumber(Number(sendValue), 8)),
+        String(formatNumber(Number(sendValue), 8, false)),
         selectedToken?.layerZero?.raw?.decimals ?? (18 as number),
       );
       const cakeArgs = {
@@ -119,7 +121,7 @@ export const useGetLayerZeroFees = () => {
             isFailedToGetGas = true;
           }
         }
-      } else {
+      } else if (isWalletCompatible) {
         dispatch(setRouteError({ layerZero: `Insufficient ${nativeToken} to cover native fee` }));
         isDisplayError = true;
       }
@@ -159,6 +161,7 @@ export const useGetLayerZeroFees = () => {
       chain,
       fromChain?.id,
       allowance,
+      isWalletCompatible,
     ],
   );
 

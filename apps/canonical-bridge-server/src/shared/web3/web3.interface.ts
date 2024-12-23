@@ -146,12 +146,12 @@ export interface IStargateBridgeTokenInfo {
     decimals: number;
     symbol: string;
   };
-  lpToken: {
+  lpToken?: {
     address: `0x${string}`;
     decimals: number;
     symbol: string;
   };
-  farm: {
+  farm?: {
     stargateStaking: {
       address: `0x${string}`;
       rewardTokens: [

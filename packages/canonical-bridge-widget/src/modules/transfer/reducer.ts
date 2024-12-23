@@ -27,6 +27,7 @@ export interface ITransferState {
   toAccount: {
     address?: string;
   };
+  isRoutesModalOpen: boolean;
 }
 
 const initStates: ITransferState = {
@@ -50,6 +51,7 @@ const initStates: ITransferState = {
   toAccount: {
     address: '',
   },
+  isRoutesModalOpen: false,
 };
 
 export default createReducer(initStates, (builder) => {
@@ -129,5 +131,10 @@ export default createReducer(initStates, (builder) => {
       ...state.toAccount,
       ...payload,
     },
+  }));
+
+  builder.addCase(actions.setIsRoutesModalOpen, (state, { payload }) => ({
+    ...state,
+    isRoutesModalOpen: payload,
   }));
 });
