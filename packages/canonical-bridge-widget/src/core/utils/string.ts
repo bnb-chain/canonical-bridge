@@ -53,3 +53,8 @@ export function utf8ToHex(utf8Str: any) {
 export function includesIgnoreCase(strArr: string[], target: string) {
   return !!strArr?.find((e) => e.toUpperCase() === target?.toUpperCase());
 }
+
+export function capitalizeFirst(text: string) {
+  if (typeof text !== 'string') return '';
+  return text.charAt(0).toUpperCase() + text.slice(1).toLowerCase();
+}

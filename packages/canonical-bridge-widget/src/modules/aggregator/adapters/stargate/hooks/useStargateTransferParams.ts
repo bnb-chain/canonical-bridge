@@ -22,7 +22,10 @@ export const useStargateTransferParams = (): { args: IStargateParams | null } =>
     if (!debouncedSendValue || !toTokenInfo || !selectedToken) {
       return null;
     }
-    const amount = parseUnits(debouncedSendValue, selectedToken?.stargate?.raw?.decimals || 18);
+    const amount = parseUnits(
+      debouncedSendValue,
+      selectedToken?.stargate?.raw?.token?.decimals || 18,
+    );
     // random address for getting fee details without connecting to wallet
     const receiver = address || DEFAULT_ADDRESS;
     return {
