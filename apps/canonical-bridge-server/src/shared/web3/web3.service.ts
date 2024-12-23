@@ -99,7 +99,7 @@ export class Web3Service {
         }
       });
     } catch (e) {
-      console.log('stargate api failed', e, new Date());
+      console.log(`Failed to retrieve Stargate API data at ${new Date().getTime()}`, e);
     }
     return processedTokenList;
   }

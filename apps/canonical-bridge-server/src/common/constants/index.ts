@@ -98,9 +98,19 @@ export const STARGATE_CHAIN_INFO = [
     endpointID: 30151,
   },
   {
+    chainId: 1116,
+    chainName: 'coredao',
+    endpointID: 30153,
+  },
+  {
     chainId: 1329,
     chainName: 'Sei',
     endpointID: 30280,
+  },
+  {
+    chainId: 1625,
+    chainName: 'Gravity',
+    endpointID: 30294,
   },
   {
     chainId: 2222,
@@ -144,7 +154,7 @@ export const STARGATE_CHAIN_INFO = [
   },
   {
     chainId: 167000,
-    chainName: 'Taiko Mainnet',
+    chainName: 'Taiko',
     endpointID: 30290,
   },
   {
@@ -177,7 +187,7 @@ export const STARGATE_CHAIN_INFO = [
   },
   {
     chainId: 1380012617,
-    chainName: 'RARI Chain',
+    chainName: 'rarible',
     endpointID: 30235,
   },
 ];
