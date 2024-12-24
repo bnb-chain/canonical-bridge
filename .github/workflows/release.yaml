@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - main
-      - alpha
+      - alpha/packages
 
     paths:
       - .release/**
@@ -45,11 +45,11 @@ jobs:
           node common/scripts/install-run-rush.js build -t @bnb-chain/canonical-bridge-widget
 
       - name: Enter pre mode
-        if: ${{steps.get-branch.outputs.branch == 'alpha'}}
+        if: ${{steps.get-branch.outputs.branch == 'alpha/packages'}}
         run: cd .release && pnpm ci:enter
 
       - name: Create and publish alpha versions
-        if: ${{steps.get-branch.outputs.branch == 'alpha'}}
+        if: ${{steps.get-branch.outputs.branch == 'alpha/packages'}}
         uses: changesets/action@v1
         with:
           version: pnpm ci:alpha-version

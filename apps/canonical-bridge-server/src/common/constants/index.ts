@@ -69,7 +69,7 @@ export const STARGATE_CHAIN_INFO = [
   {
     chainId: 10,
     chainName: 'Optimism',
-    endpointID: 30110,
+    endpointID: 30111,
   },
   {
     chainId: 14,
