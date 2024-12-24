@@ -1,5 +1,11 @@
 # @bnb-chain/canonical-bridge-widget
 
+## 0.5.16-alpha.1
+
+### Patch Changes
+
+- Use stargate & meson api to fetch chain & token config
+
 ## 0.5.16-alpha.0
 
 ### Patch Changes

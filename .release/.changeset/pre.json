@@ -6,6 +6,7 @@
     "@bnb-chain/canonical-bridge-widget": "0.5.15"
   },
   "changesets": [
+    "bright-impalas-sniff",
     "serious-cars-worry"
   ]
 }
