@@ -1,96 +1,119 @@
 import React, { useContext, useMemo } from 'react';
-import { ColorMode, IntlProvider, theme } from '@bnb-chain/space';
+import { ColorMode, DeepPartial, IntlProvider, theme } from '@bnb-chain/space';
+import { merge } from 'lodash';
+import { breakpoints } from '@bnb-chain/space/dist/modules/theme/foundations/breakpoints';
+import { theme as spaceTheme } from '@bnb-chain/space';
 
-import { ChainType, IChainConfig, ITransferConfig } from '@/modules/aggregator/types';
+import { ChainType, IChainConfig, IExternalChain } from '@/modules/aggregator/types';
 import { StoreProvider } from '@/modules/store/StoreProvider';
 import { ThemeProvider } from '@/core/theme/ThemeProvider';
 import { AggregatorProvider } from '@/modules/aggregator/components/AggregatorProvider';
 import { TokenBalancesProvider } from '@/modules/aggregator/components/TokenBalancesProvider';
 import { TokenPricesProvider } from '@/modules/aggregator/components/TokenPricesProvider';
-import { locales } from '@/core/locales';
 import { TronAccountProvider } from '@/modules/wallet/TronAccountProvider';
 import { WalletConnectButton } from '@/modules/transfer/components/Button/WalletConnectButton';
 import { ExportsProvider } from '@/ExportsProvider';
+import { en } from '@/core/locales/en';
+import { light } from '@/core/theme/colors/light';
+import { ColorType, dark } from '@/core/theme/colors/dark';
 
-export interface ICanonicalBridgeConfig {
-  appName: string;
-  assetPrefix?: string;
+export interface IBridgeConfig {
+  bridgeTitle: React.ReactNode;
+  assetPrefix: string;
 
-  appearance: {
-    colorMode?: ColorMode;
-    theme?: {
-      dark?: any;
-      light?: any;
-      fontFamily?: string;
-      breakpoints?: Partial<typeof theme.breakpoints>;
+  locale: {
+    language: string;
+    messages: Record<string, string>;
+  };
+
+  theme: {
+    colorMode: ColorMode;
+    breakpoints: Partial<typeof theme.breakpoints>;
+    colors: {
+      dark: DeepPartial<ColorType>;
+      light: DeepPartial<ColorType>;
     };
-    locale?: string;
-    messages?: Record<string, string>;
-    bridgeTitle?: string;
   };
 
   http: {
-    refetchingInterval?: number;
-    apiTimeOut?: number;
+    refetchingInterval: number;
+    apiTimeOut: number;
     deBridgeAccessToken?: string;
-    serverEndpoint: string;
-    mesonEndpoint?: string;
+    serverEndpoint?: string;
+    mesonEndpoint: string;
   };
-}
 
-interface CanonicalBridgeContextProps extends ICanonicalBridgeConfig {
-  routeContentBottom: React.ReactNode;
-  connectWalletButton: React.ReactNode;
-  refreshingIcon?: React.ReactNode;
+  components: {
+    connectWalletButton: React.ReactNode;
+    routeContentBottom?: React.ReactNode;
+    refreshingIcon?: React.ReactNode;
+  };
+
+  transfer: {
+    defaultFromChainId: number;
+    defaultToChainId: number;
+    defaultTokenAddress: string;
+    defaultAmount: string;
+
+    supportedChains: IChainConfig[];
+    displayTokenSymbols: Record<number, Record<string, string>>;
+    brandChains: number[];
+    externalChains: IExternalChain[];
+    providers: any[];
+    chainSorter: () => void;
+    tokenSorter: () => void;
+  };
+
+  onError?: (params: { type: string; message?: string; error?: Error }) => void;
   onClickConnectWalletButton?: (params: {
     chainType: ChainType;
     chainId: number;
     onConnected?: (params?: { walletType?: ChainType; chainId?: number }) => void;
   }) => void;
-  onError?: (params: { type: string; message?: string; error?: Error }) => void;
 }
 
-const CanonicalBridgeContext = React.createContext({} as CanonicalBridgeContextProps);
-
-export function useBridgeConfig() {
-  return useContext(CanonicalBridgeContext);
-}
-
-export interface CanonicalBridgeProviderProps {
-  config: ICanonicalBridgeConfig;
-  transferConfig?: ITransferConfig;
-  chains: IChainConfig[];
-  routeContentBottom?: React.ReactNode;
-  connectWalletButton?: React.ReactNode;
+export interface CanonicalBridgeProviderProps extends DeepPartial<IBridgeConfig> {
   children: React.ReactNode;
-  onClickConnectWalletButton?: CanonicalBridgeContextProps['onClickConnectWalletButton'];
-  onError?: CanonicalBridgeContextProps['onError'];
-  refreshingIcon?: React.ReactNode;
 }
 
 export function CanonicalBridgeProvider(props: CanonicalBridgeProviderProps) {
   const {
-    config,
-    children,
-    chains,
-    transferConfig,
-    routeContentBottom,
-    connectWalletButton,
-    refreshingIcon,
+    bridgeTitle,
+    assetPrefix,
+
+    locale,
+    theme,
+    http,
+    components,
+    transfer,
+
     onClickConnectWalletButton,
     onError,
+    children,
   } = props;
 
-  const value = useMemo<CanonicalBridgeContextProps>(() => {
-    return {
-      ...config,
+  const value = useMemo(() => {
+    const context: IBridgeConfig = {
+      bridgeTitle: bridgeTitle ?? 'BNB Chain Cross-Chain Bridge',
+      assetPrefix: assetPrefix ?? 'https://static.bnbchain.org/bnb-chain-bridge/static',
+      locale: {
+        language: locale?.language ?? en.language,
+        messages: {
+          ...en.messages,
+          ...locale?.messages,
+        },
+      },
 
-      appearance: {
-        bridgeTitle: 'BNB Chain Cross-Chain Bridge',
-        colorMode: 'dark',
-        locale: 'en',
-        messages: locales.en,
-        ...config.appearance,
+      theme: {
+        colorMode: theme?.colorMode ?? 'dark',
+        breakpoints: breakpoints ?? {
+          ...spaceTheme.breakpoints,
+          lg: '1080px',
+        },
+        colors: {
+          dark: merge(dark, theme?.colors?.dark),
+          light: merge(light, theme?.colors?.light),
+        },
       },
 
       http: {
@@ -98,39 +121,73 @@ export function CanonicalBridgeProvider(props: CanonicalBridgeProviderProps) {
         apiTimeOut: 60000,
         deBridgeAccessToken: '',
         mesonEndpoint: 'https://relayer.meson.fi/api/v1',
-        ...config.http,
+        ...http,
       },
 
-      routeContentBottom,
-      connectWalletButton: connectWalletButton ?? <WalletConnectButton />,
+      components: {
+        connectWalletButton: <WalletConnectButton />,
+        ...components,
+      },
+
+      transfer: {
+        defaultFromChainId: 1,
+        defaultToChainId: 56,
+        defaultTokenAddress: '0xdac17f958d2ee523a2206206994597c13d831ec7',
+        defaultAmount: '',
+
+        displayTokenSymbols: {},
+        brandChains: [],
+        externalChains: [],
+        chainSorter: () => {},
+        tokenSorter: () => {},
+        ...transfer,
+
+        supportedChains: transfer?.supportedChains || [],
+        providers: transfer?.providers ?? [],
+      } as IBridgeConfig['transfer'],
+
       onClickConnectWalletButton,
       onError,
-      refreshingIcon,
     };
+    return context;
   }, [
-    config,
-    connectWalletButton,
+    assetPrefix,
+    bridgeTitle,
+    components,
+    http,
+    locale?.language,
+    locale?.messages,
     onClickConnectWalletButton,
     onError,
-    refreshingIcon,
-    routeContentBottom,
+    theme?.colorMode,
+    theme?.colors?.dark,
+    theme?.colors?.light,
+    transfer,
   ]);
 
   return (
     <CanonicalBridgeContext.Provider value={value}>
       <StoreProvider>
-        <IntlProvider locale={value.appearance.locale!} messages={value.appearance.messages}>
-          <AggregatorProvider transferConfig={transferConfig} chains={chains}>
-            <ThemeProvider>
+        <IntlProvider locale={value.locale.language} messages={value.locale.messages}>
+          <ThemeProvider>
+            <AggregatorProvider>
               <TronAccountProvider>
                 <TokenBalancesProvider />
                 <TokenPricesProvider />
                 <ExportsProvider>{children}</ExportsProvider>
               </TronAccountProvider>
-            </ThemeProvider>
-          </AggregatorProvider>
+            </AggregatorProvider>
+          </ThemeProvider>
         </IntlProvider>
       </StoreProvider>
     </CanonicalBridgeContext.Provider>
   );
+}
+
+interface CanonicalBridgeContextProps extends IBridgeConfig {}
+
+const CanonicalBridgeContext = React.createContext({} as CanonicalBridgeContextProps);
+
+export function useBridgeConfig() {
+  return useContext(CanonicalBridgeContext);
 }

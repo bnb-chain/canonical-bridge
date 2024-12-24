@@ -1,8 +1,6 @@
 import { rgba } from 'polished';
 
-import { ColorType } from '@/core/theme/colors/types';
-
-export const dark: ColorType = {
+export const dark = {
   primitives: {
     logo: '#F0B90B',
     white: '#FFFFFF',
@@ -194,3 +192,5 @@ export const dark: ColorType = {
     separator: '#5C5F6A',
   },
 };
+
+export type ColorType = typeof dark;

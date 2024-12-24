@@ -5,9 +5,7 @@ import {
   AdapterConstructorType,
   AdapterType,
   IBridgeChain,
-  ITransferConfig,
   IBridgeToken,
-  IChainConfig,
   INativeCurrency,
 } from '@/modules/aggregator/types';
 import { getNativeCurrencies } from '@/modules/aggregator/shared/getNativeCurrencies';
@@ -27,9 +25,6 @@ import { aggregateToToken, IGetToTokenParams } from '@/modules/aggregator/shared
 import { useBridgeConfig } from '@/index';
 export interface AggregatorContextProps {
   isReady: boolean;
-  transferConfig: ITransferConfig;
-  defaultSelectedInfo: ITransferConfig['defaultSelectedInfo'];
-  chainConfigs: IChainConfig[];
   nativeCurrencies: Record<number, INativeCurrency>;
   adapters: AdapterType[];
   getFromChains: (params: IGetFromChainsParams) => IBridgeChain[];
@@ -40,9 +35,6 @@ export interface AggregatorContextProps {
 
 const DEFAULT_CONTEXT: AggregatorContextProps = {
   isReady: false,
-  transferConfig: {} as ITransferConfig,
-  defaultSelectedInfo: {} as ITransferConfig['defaultSelectedInfo'],
-  chainConfigs: [],
   nativeCurrencies: {},
   adapters: [],
   getFromChains: () => [],
@@ -53,15 +45,9 @@ const DEFAULT_CONTEXT: AggregatorContextProps = {
 
 export const AggregatorContext = React.createContext(DEFAULT_CONTEXT);
 
-export interface AggregatorProviderProps {
-  transferConfig?: ITransferConfig;
-  chains: IChainConfig[];
-  children: React.ReactNode;
-}
+export interface AggregatorProviderProps {}
 
 export function AggregatorProvider(props: AggregatorProviderProps) {
-  const { transferConfig, chains, children } = props;
-
   const bridgeConfig = useBridgeConfig();
   const chainConfigs = useMemo(() => {
     return chains.map((item) => ({

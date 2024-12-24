@@ -118,12 +118,6 @@ export interface IExternalChain {
 }
 
 export interface ITransferConfig {
-  defaultSelectedInfo: {
-    fromChainId: number;
-    toChainId: number;
-    tokenSymbol: string;
-    amount: string;
-  };
   order?: {
     chains?: number[];
     tokens?: string[];
@@ -174,6 +168,7 @@ export interface ITransferConfig {
 }
 
 export interface IChainConfig {
+  chainType?: ChainType;
   id: number;
   name: string;
   nativeCurrency: {
@@ -181,14 +176,11 @@ export interface IChainConfig {
     symbol: string;
     decimals: number;
   };
-  rpcUrl: string;
   explorer: {
     name: string;
     url: string;
     tokenUrlPattern?: string;
   };
-  contracts?: any;
-  chainType?: ChainType;
 }
 
 export type ChainType = 'link' | 'evm' | 'tron' | 'solana';

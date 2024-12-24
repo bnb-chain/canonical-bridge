@@ -15,7 +15,6 @@ import { useWalletModal } from '@/core/wallet/hooks/useWalletModal';
 import { Layout } from '@/core/components/Layout';
 
 export const bridgeConfig: ICanonicalBridgeConfig = {
-  appName: env.APP_NAME,
   assetPrefix: env.ASSET_PREFIX,
   appearance: {
     bridgeTitle: 'BNB Chain Cross-Chain Bridge Testnet',

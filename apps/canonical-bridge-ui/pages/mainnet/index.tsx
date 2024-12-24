@@ -24,7 +24,6 @@ const unsupportedChainsInWallets = [
 ];
 
 export const bridgeConfig: ICanonicalBridgeConfig = {
-  appName: env.APP_NAME,
   assetPrefix: env.ASSET_PREFIX,
   appearance: {
     bridgeTitle: 'BNB Chain Cross-Chain Bridge',
