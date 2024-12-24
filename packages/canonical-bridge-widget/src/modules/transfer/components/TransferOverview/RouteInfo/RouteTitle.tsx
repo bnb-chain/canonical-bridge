@@ -53,7 +53,7 @@ export const RouteTitle = ({
       {toTokenInfo && hoverToShowTokenAddress && (
         <TokenInfoTooltip
           chainType={toChain?.chainType}
-          tokenAddress={toTokenInfo.address}
+          tokenInfo={toTokenInfo}
           tokenLinkUrl={tokenUrl}
           isReceiveArea={true}
         >
@@ -125,6 +125,9 @@ export const ToTokenInfo = React.forwardRef(
             justifyContent="flex-start"
             className="bccb-widget-route-token-to-address"
             data-address={toTokenInfo.address}
+            data-name={toTokenInfo.name}
+            data-symbol={toTokenInfo.symbol}
+            data-display-symbol={toTokenInfo.displaySymbol}
           >
             <Link
               href={tokenUrl}

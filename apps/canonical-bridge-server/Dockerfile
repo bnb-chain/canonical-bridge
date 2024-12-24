@@ -1,9 +1,6 @@
 FROM busybox:1.36.1 as builder
 FROM node:20-buster
 
-RUN useradd -u 9000 appuser
-USER appuser
-
 WORKDIR /opt/deploy
 
 COPY . .

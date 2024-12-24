@@ -152,7 +152,7 @@ export const useLoadingBridgeFees = () => {
             layerZeroV2: toToken?.stargate?.raw?.endpointID,
           },
           bridgeAddress: {
-            stargate: selectedToken?.stargate?.raw?.bridgeAddress as `0x${string}`,
+            stargate: selectedToken?.stargate?.raw?.address as `0x${string}`,
             layerZero: selectedToken?.layerZero?.raw?.bridgeAddress as `0x${string}`,
           },
           isPegged: selectedToken?.isPegged,

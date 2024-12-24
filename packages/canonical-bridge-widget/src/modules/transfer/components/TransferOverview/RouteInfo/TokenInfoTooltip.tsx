@@ -15,11 +15,11 @@ import {
 import { useMemo } from 'react';
 
 import { isNativeToken } from '@/core/utils/address.ts';
-import { ChainType } from '@/modules/aggregator';
+import { ChainType, IBridgeTokenBaseInfo } from '@/modules/aggregator';
 
 interface TokenTooltipProps extends PopoverProps {
   tokenLinkUrl: string;
-  tokenAddress: string;
+  tokenInfo?: IBridgeTokenBaseInfo;
   children: React.ReactNode;
   isReceiveArea?: boolean;
   chainType?: ChainType;
@@ -27,12 +27,14 @@ interface TokenTooltipProps extends PopoverProps {
 
 export const TokenInfoTooltip = ({
   children,
-  tokenAddress,
+  tokenInfo,
   tokenLinkUrl,
   isReceiveArea,
   chainType = 'evm',
   ...restProps
 }: TokenTooltipProps) => {
+  const tokenAddress = tokenInfo?.address ?? '';
+
   const theme = useTheme();
   const nativeToken = useMemo(
     () => isNativeToken(tokenAddress, chainType),
@@ -42,7 +44,10 @@ export const TokenInfoTooltip = ({
   return (
     <Flex
       className="bccb-widget-route-token-tooltip"
-      data-address={tokenAddress}
+      data-address={tokenInfo?.address}
+      data-name={tokenInfo?.name}
+      data-symbol={tokenInfo?.symbol}
+      data-display-symbol={tokenInfo?.displaySymbol}
       display={'inline-block'}
       w={'auto'}
     >

@@ -46,7 +46,7 @@ export const useStargateTransfer = () => {
       return;
     }
     try {
-      const bridgeAddress = selectedToken.stargate?.raw?.bridgeAddress as `0x${string}`;
+      const bridgeAddress = selectedToken.stargate?.raw?.address as `0x${string}`;
 
       const quoteOFTResponse = await bridgeSDK.stargate.getQuoteOFT({
         publicClient: publicClient,
@@ -89,7 +89,7 @@ export const useStargateTransfer = () => {
       )
         return;
       try {
-        const bridgeAddress = selectedToken.stargate?.raw?.bridgeAddress as `0x${string}`;
+        const bridgeAddress = selectedToken.stargate?.raw?.address as `0x${string}`;
         const amountReceivedLD = estimatedAmount?.stargate[2].amountReceivedLD;
         const sendParams = { ...args };
         if (amountReceivedLD) {
