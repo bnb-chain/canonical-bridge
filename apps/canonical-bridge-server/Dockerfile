@@ -15,7 +15,4 @@ EXPOSE 3000
 
 ENV NODE_ENV production
 
-RUN useradd -u 9000 appuser
-USER appuser
-
 CMD ["yarn", "start"]
