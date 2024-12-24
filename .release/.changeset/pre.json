@@ -1,0 +1,12 @@
+{
+  "mode": "pre",
+  "tag": "alpha",
+  "initialVersions": {
+    "@bnb-chain/canonical-bridge-sdk": "0.4.5",
+    "@bnb-chain/canonical-bridge-widget": "0.5.15"
+  },
+  "changesets": [
+    "bright-impalas-sniff",
+    "serious-cars-worry"
+  ]
+}

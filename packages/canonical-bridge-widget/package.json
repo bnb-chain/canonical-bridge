@@ -1,6 +1,6 @@
 {
   "name": "@bnb-chain/canonical-bridge-widget",
-  "version": "0.5.15",
+  "version": "0.5.16-alpha.1",
   "description": "canonical bridge widget",
   "author": "bnb-chain",
   "private": false,
@@ -61,7 +61,7 @@
     "@types/react-dom": "^18",
     "@vitejs/plugin-react": "^4.3.1",
     "alchemy-sdk": "~3.4.1",
-    "axios": "~1.6.8",
+    "axios": "~1.7.4",
     "eslint": "^8.8.0",
     "eslint-config-next": "14.2.3",
     "ethers": "^5.7.2",
@@ -78,7 +78,7 @@
     "tsx": "~4.15.7",
     "typescript": "5.5.4",
     "viem": "~2.21.14",
-    "vite": "^4.5.3",
+    "vite": "^6.0.5",
     "vite-plugin-css-injected-by-js": "~3.5.1",
     "vite-plugin-dts": "^3.9.1",
     "wagmi": "~2.12.14"

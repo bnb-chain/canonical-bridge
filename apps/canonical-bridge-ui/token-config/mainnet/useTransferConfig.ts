@@ -3,26 +3,32 @@ import {
   ICBridgeTransferConfig,
   IDeBridgeTransferConfig,
   ITransferConfig,
+  IMesonChain,
+  IStargateApiTokenConfig,
 } from '@bnb-chain/canonical-bridge-widget';
 import axios from 'axios';
 
 import { env } from '@/core/env';
-import stargateConfig from '@/token-config/mainnet/stargate/config.json';
 import layerZeroConfig from '@/token-config/mainnet/layerZero/config.json';
-import mesonConfig from '@/token-config/mainnet/meson/config.json';
 
 export function useTransferConfig() {
   const [transferConfig, setTransferConfig] = useState<ITransferConfig>();
 
   useEffect(() => {
     const initConfig = async () => {
-      const [cBridgeRes, deBridgeRes] = await Promise.all([
+      const [cBridgeRes, deBridgeRes, StargateRes, MesonRes] = await Promise.all([
         axios.get<{ data: ICBridgeTransferConfig }>(`${env.SERVER_ENDPOINT}/api/bridge/cbridge`),
         axios.get<{ data: IDeBridgeTransferConfig }>(`${env.SERVER_ENDPOINT}/api/bridge/debridge`),
+        axios.get<{ data: IStargateApiTokenConfig[] }>(
+          `${env.SERVER_ENDPOINT}/api/bridge/stargate`,
+        ),
+        axios.get<{ data: IMesonChain[] }>(`${env.SERVER_ENDPOINT}/api/bridge/meson`),
       ]);
 
       const cBridgeConfig = cBridgeRes.data.data;
       const deBridgeConfig = handleDeBridgeConfig(deBridgeRes.data.data);
+      const mesonConfig = MesonRes.data.data;
+      const stargateConfig = StargateRes.data.data;
 
       const transferConfig: ITransferConfig = {
         defaultSelectedInfo: {
@@ -179,7 +185,7 @@ export function useTransferConfig() {
           bridgedTokenGroups: [],
         },
         meson: {
-          config: mesonConfig.result as any,
+          config: mesonConfig,
           exclude: {
             chains: [],
             tokens: { 42161: ['SOL'] },
