@@ -1,5 +1,11 @@
 # @bnb-chain/canonical-bridge-widget
 
+## 0.5.16-alpha.2
+
+### Patch Changes
+
+- Update token element's info
+
 ## 0.5.16-alpha.1
 
 ### Patch Changes
