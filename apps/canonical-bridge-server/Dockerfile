@@ -12,7 +12,7 @@ COPY --from=builder /bin/sleep /usr/local/bin/sleep
 WORKDIR /opt/deploy/apps/canonical-bridge-server
 
 RUN useradd -u 9000 appuser
-RUN chown -R appuser /opt/deploy
+RUN chown -R appuser /opt/deploy/apps/canonical-bridge-server
 USER appuser
 
 EXPOSE 3000
