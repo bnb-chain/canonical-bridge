@@ -55,7 +55,7 @@ export class StargateAdapter extends BaseAdapter<
 
     const tokenMap = new Map<number, IStargateBridgeTokenInfo[]>();
     const symbolMap = new Map<number, Map<string, IStargateBridgeTokenInfo>>();
-    const filteredTokens = tokens.filter((token) => {
+    const filteredTokens = tokens.filter((token, index) => {
       const chainId = stargateChainKey[token.chainKey.toUpperCase()];
       if (chainId) {
         const isExcludedToken = this.checkIsExcludedToken({
@@ -63,8 +63,26 @@ export class StargateAdapter extends BaseAdapter<
           tokenSymbol: token.token.symbol?.toUpperCase(),
           tokenAddress: token.address,
         });
-        return !isExcludedToken;
+
+        const anotherTokenIndex = tokens.findIndex(
+          (e, eIndex) =>
+            e.token.symbol.toUpperCase() === token.token.symbol.toUpperCase() &&
+            e.chainKey === token.chainKey &&
+            eIndex !== index,
+        );
+        const isDuplicatedToken = anotherTokenIndex > -1 && anotherTokenIndex !== index;
+
+        if (isDuplicatedToken) {
+          // eslint-disable-next-line no-console
+          console.log(
+            `Duplicate Stargate token ${token.token.symbol} symbol in ${token.chainName}`,
+          );
+        }
+
+        return !isExcludedToken && !isDuplicatedToken;
       }
+
+      return false;
     });
 
     if (filteredTokens.length > 0) {
@@ -72,22 +90,10 @@ export class StargateAdapter extends BaseAdapter<
         const chainId = stargateChainKey[token.chainKey.toUpperCase()];
         if (this.chainMap.has(chainId) && chainId) {
           const existToken = symbolMap.get(chainId);
-          if (existToken) {
-            // remove duplicate token
-            const existTokenSymbol = symbolMap.get(chainId)?.get(token.token.symbol?.toUpperCase());
-            if (existTokenSymbol) {
-              symbolMap.get(chainId)?.delete(token.token.symbol?.toUpperCase());
-              // eslint-disable-next-line no-console
-              console.log(
-                `Duplicate Stargate token ${token.token.symbol} symbol in ${token.chainName}`,
-              );
-            } else {
-              symbolMap.get(chainId)?.set(token.token.symbol?.toUpperCase(), token);
-            }
-          } else {
+          if (!existToken) {
             symbolMap.set(chainId, new Map<string, IStargateBridgeTokenInfo>());
-            symbolMap.get(chainId)?.set(token.token.symbol?.toUpperCase(), token);
           }
+          symbolMap.get(chainId)?.set(token.token.symbol?.toUpperCase(), token);
 
           const existTokens = tokenMap.get(chainId);
           if (existTokens && existTokens?.length > 0) {

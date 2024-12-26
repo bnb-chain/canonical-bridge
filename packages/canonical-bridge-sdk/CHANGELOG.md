@@ -1,5 +1,17 @@
 # @bnb-chain/canonical-bridge-sdk
 
+## 0.4.6-alpha.2
+
+### Patch Changes
+
+- Remove duplicated tokens for stargate
+
+## 0.4.6-alpha.1
+
+### Patch Changes
+
+- Update token element's info
+
 ## 0.4.6-alpha.0
 
 ### Patch Changes

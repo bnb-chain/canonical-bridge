@@ -46,6 +46,10 @@ export function TokenSelectButton(props: SelectButtonProps) {
           tokenInfo={token}
           tokenLinkUrl={tokenUrl}
           offset={[-20, 6]}
+          data-address={token?.address}
+          data-name={token?.name}
+          data-symbol={token?.symbol}
+          data-display-symbol={token?.displaySymbol}
         >
           <Box>
             <IconImage
