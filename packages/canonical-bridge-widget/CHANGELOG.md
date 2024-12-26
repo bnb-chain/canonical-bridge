@@ -1,5 +1,11 @@
 # @bnb-chain/canonical-bridge-widget
 
+## 0.5.16-alpha.3
+
+### Patch Changes
+
+- Remove duplicated tokens for stargate
+
 ## 0.5.16-alpha.2
 
 ### Patch Changes
