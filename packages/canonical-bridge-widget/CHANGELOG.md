@@ -1,5 +1,11 @@
 # @bnb-chain/canonical-bridge-widget
 
+## 0.5.16-alpha.4
+
+### Patch Changes
+
+- Fix meson token display symbol issue
+
 ## 0.5.16-alpha.3
 
 ### Patch Changes

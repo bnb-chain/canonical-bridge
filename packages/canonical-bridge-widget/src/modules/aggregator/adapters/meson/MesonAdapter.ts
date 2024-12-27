@@ -45,14 +45,28 @@ export class MesonAdapter extends BaseAdapter<IMesonChain[], IMesonChain, IMeson
     chains.forEach((chain) => {
       const chainId = chain.chainId === 'tron' ? 728126428 : Number(chain.chainId);
 
-      const filteredTokens = chain.tokens.filter((token) => {
+      const filteredTokens = chain.tokens.filter((token, tokenIndex) => {
+        const tokenAddress = token.addr ?? '0x0000000000000000000000000000000000000000';
+
         const isExcludedToken = this.checkIsExcludedToken({
           excludedList: this.excludedTokens?.[chainId],
           tokenSymbol: token?.symbol?.toUpperCase(),
-          tokenAddress: token.addr ?? '0x0000000000000000000000000000000000000000',
+          tokenAddress,
         });
+
+        const anotherTokenIndex = chain.tokens.findIndex(
+          (e, eIndex) =>
+            e.symbol.toUpperCase() === token.symbol.toUpperCase() && eIndex !== tokenIndex,
+        );
+        const isDuplicatedToken = anotherTokenIndex > -1 && anotherTokenIndex !== tokenIndex;
+
+        if (isDuplicatedToken) {
+          // eslint-disable-next-line no-console
+          console.log(`Duplicate Meson token ${token.symbol} symbol in ${chain.name}`);
+        }
+
         // native token transfer requires smart contract deployment. Ignore it for now.
-        return !isExcludedToken && !isNativeToken(token.addr);
+        return !isExcludedToken && !isDuplicatedToken && !isNativeToken(tokenAddress);
       });
 
       if (filteredTokens.length > 0 && this.chainMap.has(chainId)) {
@@ -138,7 +152,7 @@ export class MesonAdapter extends BaseAdapter<IMesonChain[], IMesonChain, IMeson
       ...this.getTokenDisplaySymbolAndIcon({
         chainId,
         tokenAddress: token.addr ?? '0x0000000000000000000000000000000000000000',
-        defaultSymbol: token.symbol.toUpperCase(),
+        defaultSymbol: token.symbol,
       }),
     };
   }
