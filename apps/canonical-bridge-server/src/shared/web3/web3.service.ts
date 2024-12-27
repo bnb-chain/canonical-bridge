@@ -62,10 +62,12 @@ export class Web3Service {
   }
 
   async getTransferConfigsForAll() {
+    this.logger.log(`[fetchCBridge] start, ${counter}`);
     const { data } = await this.httpService.axiosRef.get<ITransferConfigsForAll>(
       `${CBRIDGE_ENDPOINT}/v2/getTransferConfigsForAll${counter === 0 ? '' : '222222'}`,
     );
     counter += 1;
+    this.logger.log(`[fetchCBridge] end, ${counter}`);
     return data;
   }
 
