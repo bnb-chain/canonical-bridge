@@ -51,7 +51,7 @@ export class BridgeProcessor extends WorkerHost {
   async fetchCBridge() {
     const config = await this.web3Service.getTransferConfigsForAll();
     if (!config) return;
-    await this.cache.set(`${CACHE_KEY.CBRIDGE_CONFIG}`, config, TIME.MINUTE * 5);
+    await this.cache.set(`${CACHE_KEY.CBRIDGE_CONFIG}`, config, TIME.DAY);
   }
 
   async fetchStargate() {
