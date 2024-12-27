@@ -1,5 +1,11 @@
 # @bnb-chain/canonical-bridge-sdk
 
+## 0.4.6-alpha.3
+
+### Patch Changes
+
+- Fix meson token display symbol issue
+
 ## 0.4.6-alpha.2
 
 ### Patch Changes

@@ -152,7 +152,7 @@ export class MesonAdapter extends BaseAdapter<IMesonChain[], IMesonChain, IMeson
       ...this.getTokenDisplaySymbolAndIcon({
         chainId,
         tokenAddress: token.addr ?? '0x0000000000000000000000000000000000000000',
-        defaultSymbol: token.symbol.toUpperCase(),
+        defaultSymbol: token.symbol,
       }),
     };
   }
