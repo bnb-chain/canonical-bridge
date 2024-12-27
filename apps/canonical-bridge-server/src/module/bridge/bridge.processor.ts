@@ -1,4 +1,4 @@
-import { CACHE_KEY, Queues, Tasks } from '@/common/constants';
+import { CACHE_KEY, Queues, Tasks, TIME } from '@/common/constants';
 import { Processor, WorkerHost } from '@nestjs/bullmq';
 import { Inject, Logger } from '@nestjs/common';
 import { Job } from 'bullmq';
@@ -45,24 +45,24 @@ export class BridgeProcessor extends WorkerHost {
 
     const data = { chains: config.chains, tokens: tokenMap };
 
-    await this.cache.set(`${CACHE_KEY.DEBRIDGE_CONFIG}`, data);
+    await this.cache.set(`${CACHE_KEY.DEBRIDGE_CONFIG}`, data, TIME.DAY);
   }
 
   async fetchCBridge() {
     const config = await this.web3Service.getTransferConfigsForAll();
     if (!config) return;
-    await this.cache.set(`${CACHE_KEY.CBRIDGE_CONFIG}`, config);
+    await this.cache.set(`${CACHE_KEY.CBRIDGE_CONFIG}`, config, TIME.MINUTE * 5);
   }
 
   async fetchStargate() {
     const config = await this.web3Service.getStargateConfigs();
     if (!config) return;
-    await this.cache.set(`${CACHE_KEY.STARGATE_CONFIG}`, config);
+    await this.cache.set(`${CACHE_KEY.STARGATE_CONFIG}`, config, TIME.DAY);
   }
 
   async fetchMeson() {
     const config = await this.web3Service.getMesonConfigs();
     if (!config) return;
-    await this.cache.set(`${CACHE_KEY.MESON_CONFIG}`, config);
+    await this.cache.set(`${CACHE_KEY.MESON_CONFIG}`, config, TIME.DAY);
   }
 }

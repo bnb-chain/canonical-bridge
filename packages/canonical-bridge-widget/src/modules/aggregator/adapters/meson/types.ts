@@ -1,5 +1,7 @@
 export interface IMesonToken {
   id: string;
+  symbol: string;
+  name: string;
   addr: string;
   decimals: number;
   min: string;

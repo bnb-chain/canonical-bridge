@@ -42,7 +42,7 @@ export const useGetStargateFees = () => {
   const allowedSendAmount = useMemo(() => {
     if (estimatedAmount?.stargate && estimatedAmount?.stargate?.[0]) {
       const fees = estimatedAmount?.stargate;
-      const decimal = selectedToken?.stargate?.raw?.decimals ?? (18 as number);
+      const decimal = selectedToken?.stargate?.raw?.token?.decimals ?? (18 as number);
       const allowedMin = Number(formatUnits(fees[0].minAmountLD, decimal));
       const allowedMax = Number(formatUnits(fees[0].maxAmountLD, decimal));
       return {
@@ -51,18 +51,18 @@ export const useGetStargateFees = () => {
       };
     }
     return null;
-  }, [estimatedAmount?.stargate, selectedToken?.stargate?.raw?.decimals]);
+  }, [estimatedAmount?.stargate, selectedToken?.stargate?.raw?.token?.decimals]);
 
   const isAllowSendError = useMemo(() => {
     if (estimatedAmount?.stargate && estimatedAmount?.stargate?.[0]) {
       const fees = estimatedAmount?.stargate;
-      const decimal = selectedToken?.stargate?.raw?.decimals ?? (18 as number);
+      const decimal = selectedToken?.stargate?.raw?.token?.decimals ?? (18 as number);
       const allowedMin = Number(formatUnits(fees[0].minAmountLD, decimal));
       const allowedMax = Number(formatUnits(fees[0].maxAmountLD, decimal));
       return Number(sendValue) < allowedMin || Number(sendValue) > allowedMax;
     }
     return false;
-  }, [estimatedAmount?.stargate, selectedToken?.stargate?.raw?.decimals, sendValue]);
+  }, [estimatedAmount?.stargate, selectedToken?.stargate?.raw?.token?.decimals, sendValue]);
 
   const stargateFeeSorting = useCallback(
     // fees are response of quoteOFT
@@ -74,8 +74,8 @@ export const useGetStargateFees = () => {
       let isDisplayError = false;
 
       const receiver = address || DEFAULT_ADDRESS;
-      const bridgeAddress = selectedToken?.stargate?.raw?.bridgeAddress as `0x${string}`;
-      const decimal = selectedToken?.stargate?.raw?.decimals ?? (18 as number);
+      const bridgeAddress = selectedToken?.stargate?.raw?.address as `0x${string}`;
+      const decimal = selectedToken?.stargate?.raw?.token?.decimals ?? (18 as number);
       const allowedMin = Number(formatUnits(fees[0].minAmountLD, decimal));
       const allowedMax = Number(formatUnits(fees[0].maxAmountLD, decimal));
       const amount = parseUnits(sendValue, decimal);
@@ -118,7 +118,8 @@ export const useGetStargateFees = () => {
           });
           let nativeFee = quoteSendResponse!.nativeFee;
           if (
-            selectedToken?.stargate?.raw?.address === '0x0000000000000000000000000000000000000000'
+            selectedToken?.stargate?.raw?.token?.address ===
+            '0x0000000000000000000000000000000000000000'
           ) {
             nativeFee += args.amountLD;
           }
@@ -146,16 +147,16 @@ export const useGetStargateFees = () => {
               // gas fee
               let allowance = null;
               if (
-                selectedToken?.stargate?.raw?.address !==
+                selectedToken?.stargate?.raw?.token?.address !==
                 '0x0000000000000000000000000000000000000000'
               ) {
                 allowance = await publicClient.readContract({
-                  address: selectedToken?.stargate?.raw?.address
+                  address: selectedToken?.stargate?.raw?.token?.address
                     ? (selectedToken?.address as `0x${string}`)
                     : ('' as `0x${string}`),
                   abi: ERC20_TOKEN,
                   functionName: 'allowance',
-                  args: [address as `0x${string}`, selectedToken?.stargate?.raw?.bridgeAddress],
+                  args: [address as `0x${string}`, selectedToken?.stargate?.raw?.address],
                   chainId: fromChain?.id,
                   enabled:
                     !!address &&

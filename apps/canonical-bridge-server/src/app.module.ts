@@ -14,7 +14,7 @@ import { AllExceptionFilter } from './common/filters/all-exception.filter';
 import { HttpExceptionFilter } from './common/filters/http-exception.filter';
 import { TransformInterceptor } from './common/interceptors/transform.interceptor';
 import { TimeoutInterceptor } from './common/interceptors/timeout.interceptor';
-import { REDIS_HOST, REDIS_PORT } from './common/constants';
+import { REDIS_HOST, REDIS_PORT, TIME } from './common/constants';
 import { TokenModule } from './module/token/token.module';
 import { BullModule } from '@nestjs/bullmq';
 import { Web3Module } from '@/shared/web3/web3.module';
@@ -32,6 +32,7 @@ import { BridgeModule } from '@/module/bridge/bridge.module';
     HealthModule,
     ScheduleModule.forRoot(),
     CacheModule.register<RedisOptions>({
+      ttl: TIME.DAY,
       isGlobal: true,
       store: () => redisStore({ host: REDIS_HOST, port: REDIS_PORT }),
     }),

@@ -5,6 +5,7 @@ import { AppProps } from 'next/app';
 
 import { ThemeProvider } from '@/core/components/ThemeProvider';
 import { SvgDefs } from '@/core/components/icons/SvgDefs';
+import { VConsole } from '@/core/components/VConsole';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -19,6 +20,7 @@ const queryClient = new QueryClient({
 export default function App({ Component, ...restProps }: AppProps) {
   return (
     <>
+      <VConsole />
       <Head>
         <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
       </Head>

@@ -56,8 +56,8 @@ export const StarGateOption = () => {
   );
 
   const onSelectBridge = useCallback(() => {
-    if (!selectedToken?.stargate?.raw?.bridgeAddress || isError) return;
-    const bridgeAddress = selectedToken.stargate.raw?.bridgeAddress;
+    if (!selectedToken?.stargate?.raw?.address || isError) return;
+    const bridgeAddress = selectedToken.stargate.raw?.address;
     dispatch(
       setTransferActionInfo({
         bridgeType: 'stargate',

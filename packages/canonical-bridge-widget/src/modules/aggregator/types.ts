@@ -19,9 +19,8 @@ import {
 } from '@/modules/aggregator/adapters/layerZero/types';
 import { StargateAdapter } from '@/modules/aggregator/adapters/stargate/StargateAdapter';
 import {
+  IStargateApiTokenConfig,
   IStargateChain,
-  IStargateToken,
-  IStargateTransferConfig,
 } from '@/modules/aggregator/adapters/stargate/types';
 import { IMesonChain, IMesonToken } from '@/modules/aggregator/adapters/meson/types';
 import { MesonAdapter } from '@/modules/aggregator/adapters/meson/MesonAdapter';
@@ -87,7 +86,7 @@ export interface IBridgeToken extends IBridgeTokenBaseInfo {
   stargate?: IBridgeTokenBaseInfo & {
     isCompatible: boolean;
     isMatched: boolean;
-    raw?: IStargateToken;
+    raw?: IStargateApiTokenConfig;
   };
   layerZero?: IBridgeTokenBaseInfo & {
     isCompatible: boolean;
@@ -149,7 +148,7 @@ export interface ITransferConfig {
     bridgedTokenGroups?: string[][];
   };
   stargate?: {
-    config: IStargateTransferConfig;
+    config: IStargateApiTokenConfig[];
     exclude?: {
       chains?: number[];
       tokens?: Record<number, string[]>;

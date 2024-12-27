@@ -3,26 +3,32 @@ import {
   ICBridgeTransferConfig,
   IDeBridgeTransferConfig,
   ITransferConfig,
+  IMesonChain,
+  IStargateApiTokenConfig,
 } from '@bnb-chain/canonical-bridge-widget';
 import axios from 'axios';
 
 import { env } from '@/core/env';
-import stargateConfig from '@/token-config/mainnet/stargate/config.json';
 import layerZeroConfig from '@/token-config/mainnet/layerZero/config.json';
-import mesonConfig from '@/token-config/mainnet/meson/config.json';
 
 export function useTransferConfig() {
   const [transferConfig, setTransferConfig] = useState<ITransferConfig>();
 
   useEffect(() => {
     const initConfig = async () => {
-      const [cBridgeRes, deBridgeRes] = await Promise.all([
+      const [cBridgeRes, deBridgeRes, stargateRes, mesonRes] = await Promise.all([
         axios.get<{ data: ICBridgeTransferConfig }>(`${env.SERVER_ENDPOINT}/api/bridge/cbridge`),
         axios.get<{ data: IDeBridgeTransferConfig }>(`${env.SERVER_ENDPOINT}/api/bridge/debridge`),
+        axios.get<{ data: IStargateApiTokenConfig[] }>(
+          `${env.SERVER_ENDPOINT}/api/bridge/stargate`,
+        ),
+        axios.get<{ data: IMesonChain[] }>(`${env.SERVER_ENDPOINT}/api/bridge/meson`),
       ]);
 
       const cBridgeConfig = cBridgeRes.data.data;
-      const deBridgeConfig = handleDeBridgeConfig(deBridgeRes.data.data);
+      const deBridgeConfig = deBridgeRes.data.data;
+      const mesonConfig = mesonRes.data.data;
+      const stargateConfig = stargateRes.data.data;
 
       const transferConfig: ITransferConfig = {
         defaultSelectedInfo: {
@@ -109,83 +115,93 @@ export function useTransferConfig() {
             '0x49D5c2BdFfac6CE2BFdB6640F4F80f226bc10bAB': 'WETH.e',
           },
         },
-        cBridge: {
-          config: cBridgeConfig,
-          exclude: {
-            chains: [],
-            tokens: {
-              56: ['0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c'],
-              42161: [
-                '0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9',
-                '0xFF970A61A04b1cA14834A43f5dE4533eBDDB5CC8',
-              ], // ['USDT', 'USDC.e']
-            },
-          },
-          bridgedTokenGroups: [],
-        },
-        deBridge: {
-          config: deBridgeConfig,
-          exclude: {
-            chains: [],
-            tokens: {
-              1: ['cUSDCv3', '0x5e21d1ee5cf0077b314c381720273ae82378d613'],
-              56: [
-                '0x67d66e8ec1fd25d98b3ccd3b19b7dc4b4b7fc493',
-                '0x0000000000000000000000000000000000000000',
-                '0x9c7beba8f6ef6643abd725e45a4e8387ef260649',
+        cBridge: cBridgeConfig
+          ? {
+              config: cBridgeConfig,
+              exclude: {
+                chains: [],
+                tokens: {
+                  56: ['0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c'],
+                  42161: [
+                    '0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9',
+                    '0xFF970A61A04b1cA14834A43f5dE4533eBDDB5CC8',
+                  ], // ['USDT', 'USDC.e']
+                },
+              },
+              bridgedTokenGroups: [],
+            }
+          : undefined,
+        deBridge: deBridgeConfig
+          ? {
+              config: handleDeBridgeConfig(deBridgeRes.data.data),
+              exclude: {
+                chains: [],
+                tokens: {
+                  1: ['cUSDCv3', '0x5e21d1ee5cf0077b314c381720273ae82378d613'],
+                  56: [
+                    '0x67d66e8ec1fd25d98b3ccd3b19b7dc4b4b7fc493',
+                    '0x0000000000000000000000000000000000000000',
+                    '0x9c7beba8f6ef6643abd725e45a4e8387ef260649',
+                  ],
+                  137: ['cUSDCv3'],
+                  42161: ['cUSDCv3'],
+                  43114: ['BNB'],
+                  7565164: [
+                    'So11111111111111111111111111111111111111112',
+                    'FmqVMWXBESyu4g6FT1uz1GABKdJ4j6wbuuLFwPJtqpmu',
+                  ],
+                },
+              },
+              bridgedTokenGroups: [
+                ['USDT', 'USDT.e'],
+                ['USDC', 'USDC.e'],
+                ['WETH', 'WETH.e'],
+                ['DAI', 'DAI.e'],
+                ['WBTC', 'WBTC.e'],
+                ['LINK', 'LINK.e'],
+                ['AAVE', 'AAVE.e'],
+                ['WOO', 'WOO.e'],
+                ['BUSD', 'BUSD.e'],
+                ['ALPHA', 'ALPHA.e'],
+                ['SUSHI', 'SUSHI.e'],
+                ['SWAP', 'SWAP.e'],
               ],
-              137: ['cUSDCv3'],
-              42161: ['cUSDCv3'],
-              43114: ['BNB'],
-              7565164: [
-                'So11111111111111111111111111111111111111112',
-                'FmqVMWXBESyu4g6FT1uz1GABKdJ4j6wbuuLFwPJtqpmu',
+            }
+          : undefined,
+        stargate: stargateConfig
+          ? {
+              config: stargateConfig,
+              exclude: {
+                chains: [],
+                tokens: {},
+              },
+              bridgedTokenGroups: [
+                ['ETH', 'mETH'],
+                ['USDT', 'm.USDT'],
+                ['USDC', 'USDC.e'],
               ],
-            },
-          },
-          bridgedTokenGroups: [
-            ['USDT', 'USDT.e'],
-            ['USDC', 'USDC.e'],
-            ['WETH', 'WETH.e'],
-            ['DAI', 'DAI.e'],
-            ['WBTC', 'WBTC.e'],
-            ['LINK', 'LINK.e'],
-            ['AAVE', 'AAVE.e'],
-            ['WOO', 'WOO.e'],
-            ['BUSD', 'BUSD.e'],
-            ['ALPHA', 'ALPHA.e'],
-            ['SUSHI', 'SUSHI.e'],
-            ['SWAP', 'SWAP.e'],
-          ],
-        },
-        stargate: {
-          config: stargateConfig,
-          exclude: {
-            chains: [],
-            tokens: {},
-          },
-          bridgedTokenGroups: [
-            ['ETH', 'mETH'],
-            ['USDT', 'm.USDT'],
-            ['USDC', 'USDC.e'],
-          ],
-        },
-        layerZero: {
-          config: layerZeroConfig,
-          exclude: {
-            chains: [],
-            tokens: {},
-          },
-          bridgedTokenGroups: [],
-        },
-        meson: {
-          config: mesonConfig.result as any,
-          exclude: {
-            chains: [],
-            tokens: { 42161: ['SOL'] },
-          },
-          bridgedTokenGroups: [],
-        },
+            }
+          : undefined,
+        layerZero: layerZeroConfig
+          ? {
+              config: layerZeroConfig,
+              exclude: {
+                chains: [],
+                tokens: {},
+              },
+              bridgedTokenGroups: [],
+            }
+          : undefined,
+        meson: mesonConfig
+          ? {
+              config: mesonConfig,
+              exclude: {
+                chains: [],
+                tokens: { 42161: ['SOL'] },
+              },
+              bridgedTokenGroups: [],
+            }
+          : undefined,
       };
 
       setTransferConfig(transferConfig);
