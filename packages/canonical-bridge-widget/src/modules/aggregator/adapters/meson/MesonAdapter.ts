@@ -26,7 +26,9 @@ export class MesonAdapter extends BaseAdapter<IMesonChain[], IMesonChain, IMeson
     const chainMap = new Map<number, IMesonChain>();
     filteredChains.forEach((chain) => {
       const chainId = this.getChainId(chain);
-      chainMap.set(chainId, chain);
+      if (!!Number(chainId)) {
+        chainMap.set(chainId, chain);
+      }
     });
 
     this.chains = filteredChains;
