@@ -15,7 +15,7 @@ export class TokenSchedule implements OnModuleInit {
     private tokensService: TokenService,
   ) {}
 
-  @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
+  @Cron(CronExpression.EVERY_HOUR)
   async syncCmcTokens() {
     this.logger.log('syncCmcTokens');
     await this.syncToken.add(

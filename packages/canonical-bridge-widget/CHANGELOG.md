@@ -1,5 +1,11 @@
 # @bnb-chain/canonical-bridge-widget
 
+## 0.5.16-alpha.5
+
+### Patch Changes
+
+- Fix tron does not display due to its id
+
 ## 0.5.16-alpha.4
 
 ### Patch Changes

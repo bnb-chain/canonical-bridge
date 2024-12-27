@@ -29,9 +29,9 @@
     "react-dom": "~18.3.1",
     "supports-color": "~9.4.0",
     "tronweb": "~6.0.0",
+    "vconsole": "~3.15.1",
     "viem": "~2.21.14",
-    "wagmi": "^2",
-    "vconsole": "~3.15.1"
+    "wagmi": "^2"
   },
   "devDependencies": {
     "@babel/core": "^7.21.4",
