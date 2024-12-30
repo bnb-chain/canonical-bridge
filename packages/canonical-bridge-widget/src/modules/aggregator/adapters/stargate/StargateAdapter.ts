@@ -22,6 +22,12 @@ export class StargateAdapter extends BaseAdapter<
     const filteredTokens = tokens.filter((token) => {
       const chainId = stargateChainKey[token.chainKey.toUpperCase()];
       if (!!chainId) {
+        const endpointId = token.endpointID;
+        if (!endpointId) {
+          // eslint-disable-next-line no-console
+          console.error(`Can not find Stargate token ${token.token.symbol} endpointID`);
+          return false;
+        }
         const hasChainConfig = this.includedChains.includes(chainId);
         const isExcludedChain = this.excludedChains.includes(chainId);
         return hasChainConfig && !isExcludedChain;

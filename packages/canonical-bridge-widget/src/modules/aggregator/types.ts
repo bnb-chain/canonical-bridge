@@ -206,3 +206,8 @@ export type AdapterType =
   | StargateAdapter
   | LayerZeroAdapter
   | MesonAdapter;
+
+export interface IFeeDetails {
+  value: string;
+  symbol: string;
+}

@@ -1,5 +1,6 @@
 import { MIN_FEE } from '@/core/constants';
 import { formatNumber } from '@/core/utils/number';
+import { IFeeDetails } from '@/modules/aggregator';
 
 export function truncateStr(str: string, headLen = 6, tailLen = 6) {
   if (!str) {
@@ -42,6 +43,22 @@ export function formatFeeAmount(amount: string | number) {
   } else {
     return formatNumber(Number(amount), 4);
   }
+}
+
+export function formatRouteFees(feeList: IFeeDetails[]) {
+  const result = feeList.reduce((acc: { [key: string]: number }, item) => {
+    const symbol = item.symbol;
+    const value = Number(item.value);
+    if (symbol && !acc[symbol]) acc[symbol] = 0;
+    acc[symbol] += value;
+    return acc;
+  }, {} as { [key: string]: number });
+  const resultString = Object.keys(result)
+    .map((symbol) => {
+      return `${formatFeeAmount(result[symbol])} ${symbol}`;
+    })
+    .join(' + ');
+  return resultString ? resultString : '';
 }
 
 export function utf8ToHex(utf8Str: any) {
