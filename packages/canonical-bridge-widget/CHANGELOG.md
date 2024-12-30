@@ -1,5 +1,17 @@
 # @bnb-chain/canonical-bridge-widget
 
+## 0.5.16
+
+### Patch Changes
+
+- Use stargate & meson api to fetch chain & token config
+- 2538636: Remove duplicated tokens for stargate
+- 5d08223: Fix stargate fee display and handle api error
+- c4f3ee7: Update token element's info
+- 7caf17e: Fix meson token display symbol issue
+- e19a76c: Fix tron does not display due to its id
+- b930ad4: Add more token info to token element
+
 ## 0.5.16-alpha.5
 
 ### Patch Changes
