@@ -36,13 +36,13 @@ export const usePreSelectRoute = () => {
         );
       } else if (
         bridgeType === 'stargate' &&
-        selectedToken?.stargate?.raw?.bridgeAddress &&
+        selectedToken?.stargate?.raw?.address &&
         stargateEst.status === 'fulfilled'
       ) {
         dispatch(
           setTransferActionInfo({
             bridgeType: 'stargate',
-            bridgeAddress: selectedToken?.stargate?.raw?.bridgeAddress as `0x${string}`,
+            bridgeAddress: selectedToken?.stargate?.raw?.address as `0x${string}`,
           }),
         );
       } else if (bridgeType === 'layerZero' && layerZeroEst.status === 'fulfilled') {
@@ -68,7 +68,7 @@ export const usePreSelectRoute = () => {
     [
       dispatch,
       selectedToken?.layerZero?.raw?.bridgeAddress,
-      selectedToken?.stargate?.raw?.bridgeAddress,
+      selectedToken?.stargate?.raw?.address,
       cBridgeAddress,
       fromChain,
     ],

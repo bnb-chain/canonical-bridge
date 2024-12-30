@@ -20,17 +20,22 @@ export class CBridgeAdapter extends BaseAdapter<
   private burnPairConfigs: ICBridgeBurnPairConfig[] = [];
 
   protected init() {
-    this.initChains();
-    this.initTokens();
+    try {
+      this.initChains();
+      this.initTokens();
 
-    this.initPeggedPairConfigs();
-    this.initBurnPairConfigs();
+      this.initPeggedPairConfigs();
+      this.initBurnPairConfigs();
 
-    this.initTransferMap();
-    this.filterTransferMap();
+      this.initTransferMap();
+      this.filterTransferMap();
 
-    this.initFromChains();
-    this.initToChains();
+      this.initFromChains();
+      this.initToChains();
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error('Error in cBridge adapter init', error);
+    }
   }
 
   protected initChains() {

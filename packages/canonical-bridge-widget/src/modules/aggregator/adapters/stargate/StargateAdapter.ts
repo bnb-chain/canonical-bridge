@@ -1,32 +1,55 @@
-import { BridgeType } from '@bnb-chain/canonical-bridge-sdk';
+import { BridgeType, IStargateBridgeTokenInfo } from '@bnb-chain/canonical-bridge-sdk';
 
 import {
-  IStargateTransferConfig,
   IStargateChain,
-  IStargateToken,
+  IStargateApiTokenConfig,
 } from '@/modules/aggregator/adapters/stargate/types';
 import { BaseAdapter, ITransferTokenPair } from '@/modules/aggregator/shared/BaseAdapter';
+import { stargateChainKey } from '@/modules/aggregator/adapters/stargate/const';
+import { capitalizeFirst } from '@/core/utils/string';
 
 export class StargateAdapter extends BaseAdapter<
-  IStargateTransferConfig,
+  IStargateApiTokenConfig[],
   IStargateChain,
-  IStargateToken
+  IStargateBridgeTokenInfo
 > {
   public bridgeType: BridgeType = 'stargate';
 
   protected initChains() {
-    const { chains, tokens } = this.config;
+    const tokens = this.config;
 
-    const filteredChains = chains.filter((chain) => {
-      const hasChainConfig = this.includedChains.includes(chain.chainId);
-      const isExcludedChain = this.excludedChains.includes(chain.chainId);
-      const hasToken = tokens[chain.chainId]?.length > 0;
-      return hasChainConfig && !isExcludedChain && hasToken;
+    const filteredChains: IStargateChain[] = [];
+    const filteredTokens = tokens.filter((token) => {
+      const chainId = stargateChainKey[token.chainKey.toUpperCase()];
+      if (!!chainId) {
+        const endpointId = token.endpointID;
+        if (!endpointId) {
+          // eslint-disable-next-line no-console
+          console.error(`Can not find Stargate token ${token.token.symbol} endpointID`);
+          return false;
+        }
+        const hasChainConfig = this.includedChains.includes(chainId);
+        const isExcludedChain = this.excludedChains.includes(chainId);
+        return hasChainConfig && !isExcludedChain;
+      } else {
+        return false;
+      }
     });
 
     const chainMap = new Map<number, IStargateChain>();
-    filteredChains.forEach((chain) => {
-      chainMap.set(chain.chainId, chain);
+    filteredTokens.forEach((token) => {
+      const chainId = stargateChainKey[token.chainKey.toUpperCase()];
+      // Do not add duplicate chain
+      if (!chainMap.get(chainId)) {
+        chainMap.set(chainId, {
+          chainId: chainId,
+          chainName: capitalizeFirst(token.chainName),
+        });
+        filteredChains.push({
+          chainId: chainId,
+          chainName: capitalizeFirst(token.chainName),
+        });
+      }
     });
 
     this.chains = filteredChains;
@@ -34,32 +57,59 @@ export class StargateAdapter extends BaseAdapter<
   }
 
   protected initTokens() {
-    const { tokens } = this.config;
+    const tokens = this.config;
 
-    const tokenMap = new Map<number, IStargateToken[]>();
-    const symbolMap = new Map<number, Map<string, IStargateToken>>();
-    Object.entries(tokens).forEach(([id, chainTokens]) => {
-      const chainId = Number(id);
-
-      const filteredTokens = chainTokens.filter((token) => {
+    const tokenMap = new Map<number, IStargateBridgeTokenInfo[]>();
+    const symbolMap = new Map<number, Map<string, IStargateBridgeTokenInfo>>();
+    const filteredTokens = tokens.filter((token, index) => {
+      const chainId = stargateChainKey[token.chainKey.toUpperCase()];
+      if (chainId) {
         const isExcludedToken = this.checkIsExcludedToken({
           excludedList: this.excludedTokens?.[chainId],
-          tokenSymbol: token.symbol?.toUpperCase(),
+          tokenSymbol: token.token.symbol?.toUpperCase(),
           tokenAddress: token.address,
         });
-        return !isExcludedToken;
-      });
 
-      if (filteredTokens.length > 0 && this.chainMap.has(chainId)) {
-        symbolMap.set(chainId, new Map<string, IStargateToken>());
+        const anotherTokenIndex = tokens.findIndex(
+          (e, eIndex) =>
+            e.token.symbol.toUpperCase() === token.token.symbol.toUpperCase() &&
+            e.chainKey === token.chainKey &&
+            eIndex !== index,
+        );
+        const isDuplicatedToken = anotherTokenIndex > -1 && anotherTokenIndex !== index;
 
-        filteredTokens.forEach((token) => {
-          symbolMap.get(chainId)?.set(token.symbol?.toUpperCase(), token);
-        });
+        if (isDuplicatedToken) {
+          // eslint-disable-next-line no-console
+          console.log(
+            `Duplicate Stargate token ${token.token.symbol} symbol in ${token.chainName}`,
+          );
+        }
 
-        tokenMap.set(chainId, filteredTokens);
+        return !isExcludedToken && !isDuplicatedToken;
       }
+
+      return false;
     });
+
+    if (filteredTokens.length > 0) {
+      filteredTokens.forEach((token) => {
+        const chainId = stargateChainKey[token.chainKey.toUpperCase()];
+        if (this.chainMap.has(chainId) && chainId) {
+          const existToken = symbolMap.get(chainId);
+          if (!existToken) {
+            symbolMap.set(chainId, new Map<string, IStargateBridgeTokenInfo>());
+          }
+          symbolMap.get(chainId)?.set(token.token.symbol?.toUpperCase(), token);
+
+          const existTokens = tokenMap.get(chainId);
+          if (existTokens && existTokens?.length > 0) {
+            tokenMap.set(chainId, existTokens?.concat(token));
+          } else {
+            tokenMap.set(chainId, [token]);
+          }
+        }
+      });
+    }
 
     this.tokenMap = tokenMap;
     this.symbolMap = symbolMap;
@@ -68,7 +118,7 @@ export class StargateAdapter extends BaseAdapter<
   protected initTransferMap() {
     const transferMap = new Map<
       number,
-      Map<number, Map<string, ITransferTokenPair<IStargateToken>>>
+      Map<number, Map<string, ITransferTokenPair<IStargateBridgeTokenInfo>>>
     >();
 
     this.chains.forEach((fromChain) => {
@@ -76,16 +126,19 @@ export class StargateAdapter extends BaseAdapter<
         if (fromChain.chainId !== toChain.chainId && fromChain.network === toChain.network) {
           const fromTokens = this.tokenMap.get(fromChain.chainId) ?? [];
 
-          const transferableTokenMap = new Map<string, ITransferTokenPair<IStargateToken>>();
+          const transferableTokenMap = new Map<
+            string,
+            ITransferTokenPair<IStargateBridgeTokenInfo>
+          >();
           fromTokens.forEach((fromToken) => {
             const toToken = this.getToToken({
               fromChainId: fromChain.chainId,
               toChainId: toChain.chainId,
-              fromTokenSymbol: fromToken.symbol?.toUpperCase(),
+              fromTokenSymbol: fromToken.token.symbol?.toUpperCase(),
             });
 
             if (toToken) {
-              const tokenPair: ITransferTokenPair<IStargateToken> = {
+              const tokenPair: ITransferTokenPair<IStargateBridgeTokenInfo> = {
                 fromChainId: fromChain.chainId,
                 toChainId: toChain.chainId,
                 fromToken,
@@ -93,7 +146,7 @@ export class StargateAdapter extends BaseAdapter<
                 fromTokenAddress: fromToken.address,
                 toTokenAddress: toToken.address,
               };
-              transferableTokenMap.set(fromToken.symbol?.toUpperCase(), tokenPair);
+              transferableTokenMap.set(fromToken.token.symbol?.toUpperCase(), tokenPair);
             }
           });
 
@@ -101,7 +154,7 @@ export class StargateAdapter extends BaseAdapter<
             if (!transferMap.has(fromChain.chainId)) {
               transferMap.set(
                 fromChain.chainId,
-                new Map<number, Map<string, ITransferTokenPair<IStargateToken>>>(),
+                new Map<number, Map<string, ITransferTokenPair<IStargateBridgeTokenInfo>>>(),
               );
             }
             transferMap.get(fromChain.chainId)?.set(toChain.chainId, transferableTokenMap);
@@ -123,16 +176,16 @@ export class StargateAdapter extends BaseAdapter<
     };
   }
 
-  public getTokenInfo({ chainId, token }: { chainId: number; token: IStargateToken }) {
+  public getTokenInfo({ chainId, token }: { chainId: number; token: IStargateBridgeTokenInfo }) {
     return {
-      name: token.name,
-      symbol: token.symbol,
-      address: token.address,
-      decimals: token.decimals,
+      name: token.token.symbol,
+      symbol: token.token.symbol,
+      address: token.token.address,
+      decimals: token.token.decimals,
       ...this.getTokenDisplaySymbolAndIcon({
         chainId,
-        tokenAddress: token.address,
-        defaultSymbol: token.symbol,
+        tokenAddress: token.token.address,
+        defaultSymbol: token.token.symbol,
       }),
     };
   }
