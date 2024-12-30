@@ -67,6 +67,7 @@ export class Web3Service {
       return data;
     } catch (e) {
       console.error(`Failed to retrieve cBridge data at ${new Date().getTime()}`, e);
+      return {};
     }
   }
 
@@ -79,6 +80,7 @@ export class Web3Service {
       return data;
     } catch (e) {
       console.error(`Failed to retrieve DeBridge chain data at ${new Date().getTime()}`, e);
+      return { chains: [] };
     }
   }
 
