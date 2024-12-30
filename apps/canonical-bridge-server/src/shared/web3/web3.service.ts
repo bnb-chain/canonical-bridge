@@ -63,7 +63,6 @@ export class Web3Service {
     const { data } = await this.httpService.axiosRef.get<ITransferConfigsForAll>(
       `${CBRIDGE_ENDPOINT}/v2/getTransferConfigsForAll`,
     );
-
     return data;
   }
 
