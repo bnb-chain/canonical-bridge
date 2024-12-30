@@ -7,7 +7,7 @@ import { useIntl } from '@bnb-chain/space';
 import { formatNumber } from '@/core/utils/number';
 import { useAppDispatch, useAppSelector } from '@/modules/store/StoreProvider';
 import { DeBridgeAdapter } from '@/modules/aggregator/adapters/deBridge/DeBridgeAdapter';
-import { formatFeeAmount } from '@/core/utils/string';
+import { formatRouteFees } from '@/core/utils/string';
 import { useAdapter } from '@/modules/aggregator/hooks/useAdapter';
 import { setRouteError, setRouteFees } from '@/modules/transfer/action';
 import { useToTokenInfo } from '@/modules/transfer/hooks/useToTokenInfo';
@@ -15,11 +15,7 @@ import { useGetTokenBalance } from '@/core/contract/hooks/useGetTokenBalance';
 import { ERC20_TOKEN } from '@/core/contract/abi';
 import { useNativeCurrency } from '@/modules/aggregator/hooks/useNativeCurrency';
 import { useSolanaBalance } from '@/modules/wallet/hooks/useSolanaBalance';
-
-export interface IFeeDetails {
-  value: string;
-  symbol: string;
-}
+import { IFeeDetails } from '@/modules/aggregator';
 
 export const useGetDeBridgeFees = () => {
   const dispatch = useAppDispatch();
@@ -213,18 +209,7 @@ export const useGetDeBridgeFees = () => {
         dispatch(setRouteError({ deBridge: 'Failed to get gas fee' }));
         isFailedToGetGas = true;
       }
-      const result = feeList.reduce((acc: { [key: string]: number }, item) => {
-        const symbol = item.symbol;
-        const value = Number(item.value);
-        if (symbol && !acc[symbol]) acc[symbol] = 0;
-        acc[symbol] += value;
-        return acc;
-      }, {} as { [key: string]: number });
-      const resultString = Object.keys(result)
-        .map((symbol) => {
-          return `${formatFeeAmount(result[symbol])} ${symbol}`;
-        })
-        .join(' + ');
+      const resultString = formatRouteFees(feeList);
 
       dispatch(
         setRouteFees({

@@ -12,10 +12,11 @@ import { STARGATE_POOL } from '@/modules/aggregator/adapters/stargate/abi/starga
 import { useGetTokenBalance } from '@/core/contract/hooks/useGetTokenBalance';
 import { setRouteError, setRouteFees } from '@/modules/transfer/action';
 import { useBridgeSDK } from '@/core/hooks/useBridgeSDK';
-import { formatFeeAmount } from '@/core/utils/string';
+import { formatRouteFees } from '@/core/utils/string';
 import { useGetNativeToken } from '@/modules/transfer/hooks/useGetNativeToken';
 import { ERC20_TOKEN } from '@/core/contract/abi';
 import { useIsWalletCompatible } from '@/modules/wallet/hooks/useIsWalletCompatible';
+import { IFeeDetails } from '@/modules/aggregator';
 
 export const useGetStargateFees = () => {
   const dispatch = useAppDispatch();
@@ -67,11 +68,11 @@ export const useGetStargateFees = () => {
   const stargateFeeSorting = useCallback(
     // fees are response of quoteOFT
     async (fees: any) => {
-      let feeContent = '';
       let nativeTokenFee = null;
       const feeBreakdown = [];
       let isFailedToGetGas = false;
       let isDisplayError = false;
+      const feeList: IFeeDetails[] = [];
 
       const receiver = address || DEFAULT_ADDRESS;
       const bridgeAddress = selectedToken?.stargate?.raw?.address as `0x${string}`;
@@ -96,10 +97,11 @@ export const useGetStargateFees = () => {
               BigInt(Math.abs(Number(proFee))),
               getToDecimals().stargate || 18,
             );
-            if (!!protocolFee) {
-              feeContent +=
-                (!!feeContent ? ` + ` : '') +
-                `${`${formatFeeAmount(protocolFee)} ${toTokenInfo?.symbol}`}`;
+            if (!!protocolFee && toTokenInfo?.symbol) {
+              feeList.push({
+                symbol: toTokenInfo?.symbol,
+                value: protocolFee,
+              });
               feeBreakdown.push({
                 label: formatMessage({ id: 'route.option.info.protocol-fee' }),
                 value: `${formatNumber(Number(protocolFee), 8)} ${toTokenInfo?.symbol}` || '',
@@ -204,21 +206,24 @@ export const useGetStargateFees = () => {
             isFailedToGetGas = true;
           }
 
-          if (nativeTokenFee !== null) {
-            feeContent +=
-              (!!feeContent ? ` + ` : '') + `${formatFeeAmount(nativeTokenFee)} ${nativeToken}`;
+          if (nativeTokenFee !== null && nativeToken) {
+            feeList.push({
+              symbol: nativeToken,
+              value: String(nativeTokenFee),
+            });
           }
+          const feeSummary = formatRouteFees(feeList);
           dispatch(
             setRouteFees({
               stargate: {
-                summary: !!feeContent ? feeContent : '--',
+                summary: feeSummary,
                 breakdown: feeBreakdown,
               },
             }),
           );
           nativeTokenFee = null;
           return {
-            summary: feeContent ? feeContent : '--',
+            summary: feeSummary ? feeSummary : '--',
             breakdown: feeBreakdown,
             isFailedToGetGas,
             isDisplayError,
