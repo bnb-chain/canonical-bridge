@@ -74,14 +74,19 @@ export abstract class BaseAdapter<G extends object, C = unknown, T = unknown> {
   }
 
   protected init() {
-    this.initChains();
-    this.initTokens();
+    try {
+      this.initChains();
+      this.initTokens();
 
-    this.initTransferMap();
-    this.filterTransferMap();
+      this.initTransferMap();
+      this.filterTransferMap();
 
-    this.initFromChains();
-    this.initToChains();
+      this.initFromChains();
+      this.initToChains();
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error('Failed to init base adapter', error);
+    }
   }
 
   protected abstract initChains(): void;
