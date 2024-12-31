@@ -10,6 +10,7 @@ import { ToAccount } from '@/modules/transfer/components/ToAccount';
 import { SvgDefs } from '@/core/components/icons/defs.tsx';
 import { useAppDispatch } from '@/modules/store/StoreProvider';
 import { setIsRoutesModalOpen } from '@/modules/transfer/action';
+import { TransferWarningMessage } from '@/modules/transfer/components/TransferWarningMessage';
 
 export function BridgeTransfer() {
   const { colorMode } = useColorMode();
@@ -57,6 +58,7 @@ export function BridgeTransfer() {
         <ReceiveInfo onOpen={() => dispatch(setIsRoutesModalOpen(true))} />
         <Flex flexDir="column">
           <TransferButtonGroup />
+          <TransferWarningMessage />
         </Flex>
         {routeContentBottom && (
           <Box display={{ base: 'block', lg: 'none' }}>{routeContentBottom}</Box>
