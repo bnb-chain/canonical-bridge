@@ -206,7 +206,7 @@ export const ReceiveInfo = ({ onOpen }: ReceiveInfoProps) => {
                   {bridgeType && (
                     <RouteTitle
                       receiveAmt={
-                        receiveAmt ? formatNumber(Number(Number(receiveAmt)), 8) : undefined
+                        receiveAmt ? formatNumber(Number(receiveAmt), 8, false) : undefined
                       }
                       toTokenInfo={toTokenInfo?.[bridgeType]}
                       hoverToShowTokenAddress={false}
