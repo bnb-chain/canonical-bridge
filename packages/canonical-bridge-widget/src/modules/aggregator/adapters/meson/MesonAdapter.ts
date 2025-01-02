@@ -3,7 +3,7 @@ import { BridgeType } from '@bnb-chain/canonical-bridge-sdk';
 import { BaseAdapter, ITransferTokenPair } from '@/modules/aggregator/shared/BaseAdapter';
 import { IMesonChain, IMesonToken } from '@/modules/aggregator/adapters/meson/types';
 import { isNativeToken } from '@/core/utils/address';
-import { NON_EVM_CHAIN_ID_MAP } from '@/core/constants';
+import { TRON_CHAIN_ID } from '@/core/constants';
 
 // const SUPPORTED_CHAIN_IDS = [56, 97, 3448148188, 728126428];
 // const SUPPORTED_TOKENS = ['USDT', 'USDC'];
@@ -15,8 +15,8 @@ export class MesonAdapter extends BaseAdapter<IMesonChain[], IMesonChain, IMeson
     const chains = this.config;
 
     const filteredChains = chains.filter((chain) => {
-      const hasChainConfig = this.includedChains.includes(Number(chain.chainId));
-      const isExcludedChain = this.excludedChains.includes(Number(chain.chainId));
+      const hasChainConfig = this.includedChains.includes(this.getChainId(chain));
+      const isExcludedChain = this.excludedChains.includes(this.getChainId(chain));
       const hasToken = chain.tokens?.length > 0;
 
       // const isSupported = SUPPORTED_CHAIN_IDS.includes(Number(chain.chainId)); // TODO
@@ -25,8 +25,7 @@ export class MesonAdapter extends BaseAdapter<IMesonChain[], IMesonChain, IMeson
 
     const chainMap = new Map<number, IMesonChain>();
     filteredChains.forEach((chain) => {
-      const chainId =
-        chain.chainId === 'tron' ? NON_EVM_CHAIN_ID_MAP['tron'] : Number(chain.chainId);
+      const chainId = this.getChainId(chain);
       if (!!Number(chainId)) {
         chainMap.set(chainId, chain);
       }
@@ -43,16 +42,30 @@ export class MesonAdapter extends BaseAdapter<IMesonChain[], IMesonChain, IMeson
     const symbolMap = new Map<number, Map<string, IMesonToken>>();
 
     chains.forEach((chain) => {
-      const chainId = chain.chainId === 'tron' ? 728126428 : Number(chain.chainId);
+      const chainId = this.getChainId(chain);
 
-      const filteredTokens = chain.tokens.filter((token) => {
+      const filteredTokens = chain.tokens.filter((token, tokenIndex) => {
+        const tokenAddress = token.addr ?? '0x0000000000000000000000000000000000000000';
+
         const isExcludedToken = this.checkIsExcludedToken({
           excludedList: this.excludedTokens?.[chainId],
           tokenSymbol: token?.symbol?.toUpperCase(),
-          tokenAddress: token.addr ?? '0x0000000000000000000000000000000000000000',
+          tokenAddress,
         });
+
+        const anotherTokenIndex = chain.tokens.findIndex(
+          (e, eIndex) =>
+            e.symbol.toUpperCase() === token.symbol.toUpperCase() && eIndex !== tokenIndex,
+        );
+        const isDuplicatedToken = anotherTokenIndex > -1 && anotherTokenIndex !== tokenIndex;
+
+        if (isDuplicatedToken) {
+          // eslint-disable-next-line no-console
+          console.log(`Duplicate Meson token ${token.symbol} symbol in ${chain.name}`);
+        }
+
         // native token transfer requires smart contract deployment. Ignore it for now.
-        return !isExcludedToken && !isNativeToken(token.addr);
+        return !isExcludedToken && !isDuplicatedToken && !isNativeToken(tokenAddress);
       });
 
       if (filteredTokens.length > 0 && this.chainMap.has(chainId)) {
@@ -79,19 +92,23 @@ export class MesonAdapter extends BaseAdapter<IMesonChain[], IMesonChain, IMeson
     this.chains.forEach((fromChain) => {
       this.chains.forEach((toChain) => {
         if (fromChain?.chainId !== toChain?.chainId) {
-          const fromTokens = this.tokenMap.get(Number(fromChain.chainId)) ?? [];
+          const fromChainId = this.getChainId(fromChain);
+          const toChainId = this.getChainId(toChain);
+
+          const fromTokens = this.tokenMap.get(fromChainId) ?? [];
           const transferableTokenMap = new Map<string, ITransferTokenPair<IMesonToken>>();
+
           fromTokens.forEach((fromToken) => {
             const toToken = this.getToToken({
-              fromChainId: Number(fromChain.chainId),
-              toChainId: Number(toChain.chainId),
+              fromChainId,
+              toChainId,
               fromTokenSymbol: fromToken.symbol?.toUpperCase(),
             });
 
             if (toToken) {
               const tokenPair: ITransferTokenPair<IMesonToken> = {
-                fromChainId: Number(fromChain.chainId),
-                toChainId: Number(toChain.chainId),
+                fromChainId,
+                toChainId,
                 fromToken,
                 toToken,
                 fromTokenAddress: fromToken.addr,
@@ -102,15 +119,13 @@ export class MesonAdapter extends BaseAdapter<IMesonChain[], IMesonChain, IMeson
           });
 
           if (transferableTokenMap.size > 0) {
-            if (!transferMap.has(Number(fromChain.chainId))) {
+            if (!transferMap.has(fromChainId)) {
               transferMap.set(
-                Number(fromChain.chainId),
+                fromChainId,
                 new Map<number, Map<string, ITransferTokenPair<IMesonToken>>>(),
               );
             }
-            transferMap
-              .get(Number(fromChain.chainId))
-              ?.set(Number(toChain.chainId), transferableTokenMap);
+            transferMap.get(fromChainId)?.set(toChainId, transferableTokenMap);
           }
         }
       });
@@ -120,7 +135,7 @@ export class MesonAdapter extends BaseAdapter<IMesonChain[], IMesonChain, IMeson
   }
 
   public getChainId(chain: IMesonChain) {
-    return Number(chain.chainId);
+    return chain.chainId === 'tron' ? TRON_CHAIN_ID : Number(chain.chainId);
   }
 
   protected getChainIdAsObject(chainId: number) {
@@ -138,7 +153,7 @@ export class MesonAdapter extends BaseAdapter<IMesonChain[], IMesonChain, IMeson
       ...this.getTokenDisplaySymbolAndIcon({
         chainId,
         tokenAddress: token.addr ?? '0x0000000000000000000000000000000000000000',
-        defaultSymbol: token.symbol.toUpperCase(),
+        defaultSymbol: token.symbol,
       }),
     };
   }

@@ -56,6 +56,10 @@ export const RouteTitle = ({
           tokenInfo={toTokenInfo}
           tokenLinkUrl={tokenUrl}
           isReceiveArea={true}
+          data-to-address={toTokenInfo?.address}
+          data-to-name={toTokenInfo?.name}
+          data-to-symbol={toTokenInfo?.symbol}
+          data-to-display-symbol={toTokenInfo?.displaySymbol}
         >
           <ToTokenInfo
             toTokenInfo={toTokenInfo}
@@ -124,10 +128,10 @@ export const ToTokenInfo = React.forwardRef(
             color={theme.colors[colorMode].text.tertiary}
             justifyContent="flex-start"
             className="bccb-widget-route-token-to-address"
-            data-address={toTokenInfo.address}
-            data-name={toTokenInfo.name}
-            data-symbol={toTokenInfo.symbol}
-            data-display-symbol={toTokenInfo.displaySymbol}
+            data-to-address={toTokenInfo.address}
+            data-to-name={toTokenInfo.name}
+            data-to-symbol={toTokenInfo.symbol}
+            data-to-display-symbol={toTokenInfo.displaySymbol}
           >
             <Link
               href={tokenUrl}

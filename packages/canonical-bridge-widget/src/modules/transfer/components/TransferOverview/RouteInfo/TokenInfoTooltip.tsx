@@ -10,19 +10,19 @@ import {
   useTheme,
   LightMode,
   Portal,
-  PopoverProps,
 } from '@bnb-chain/space';
 import { useMemo } from 'react';
 
 import { isNativeToken } from '@/core/utils/address.ts';
 import { ChainType, IBridgeTokenBaseInfo } from '@/modules/aggregator';
 
-interface TokenTooltipProps extends PopoverProps {
+interface TokenTooltipProps {
   tokenLinkUrl: string;
   tokenInfo?: IBridgeTokenBaseInfo;
   children: React.ReactNode;
   isReceiveArea?: boolean;
   chainType?: ChainType;
+  offset?: [number, number];
 }
 
 export const TokenInfoTooltip = ({
@@ -31,6 +31,7 @@ export const TokenInfoTooltip = ({
   tokenLinkUrl,
   isReceiveArea,
   chainType = 'evm',
+  offset,
   ...restProps
 }: TokenTooltipProps) => {
   const tokenAddress = tokenInfo?.address ?? '';
@@ -44,12 +45,9 @@ export const TokenInfoTooltip = ({
   return (
     <Flex
       className="bccb-widget-route-token-tooltip"
-      data-address={tokenInfo?.address}
-      data-name={tokenInfo?.name}
-      data-symbol={tokenInfo?.symbol}
-      data-display-symbol={tokenInfo?.displaySymbol}
       display={'inline-block'}
       w={'auto'}
+      {...restProps}
     >
       <LightMode>
         <Popover
@@ -57,7 +55,7 @@ export const TokenInfoTooltip = ({
           trigger={'hover'}
           strategy={'fixed'}
           autoFocus={false}
-          {...restProps}
+          offset={offset}
         >
           <PopoverTrigger>{children}</PopoverTrigger>
           <Portal>

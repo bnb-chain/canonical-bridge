@@ -1,6 +1,6 @@
 {
   "name": "@bnb-chain/canonical-bridge-sdk",
-  "version": "0.4.5",
+  "version": "0.4.6",
   "description": "canonical bridge sdk",
   "author": "bnb-chain",
   "private": false,
@@ -32,19 +32,19 @@
     "test:watch": "jest --watch"
   },
   "peerDependencies": {
-    "axios": "^0",
+    "axios": ">=1.7.4",
     "viem": "^2"
   },
   "devDependencies": {
     "@types/jest": "~29.5.14",
     "@vitejs/plugin-react": "^4.2.0",
-    "axios": "~0.27.2",
+    "axios": "~1.7.4",
     "jest": "~29.7.0",
     "rollup-plugin-peer-deps-external": "^2.2.4",
     "ts-jest": "~29.2.5",
     "typescript": "^5",
-    "viem": "^2.21.49",
-    "vite": "^4.5.0",
+    "viem": "~2.21.14",
+    "vite": "^6.0.5",
     "vite-plugin-dts": "^3.6.3"
   }
 }

@@ -60,6 +60,15 @@ export const JOB_KEY = {
   CORN_PRICE_PREFIX: 'corn:price:',
 };
 
+export const TIME = {
+  SECOND: 1000,
+  MINUTE: 60 * 1000,
+  HOUR: 60 * 60 * 1000,
+  DAY: 24 * 60 * 60 * 1000,
+  WEEK: 7 * 24 * 60 * 60 * 1000,
+  MONTH: 30 * 24 * 60 * 60 * 1000,
+};
+
 export const STARGATE_CHAIN_INFO = [
   {
     chainId: 1,
@@ -69,7 +78,7 @@ export const STARGATE_CHAIN_INFO = [
   {
     chainId: 10,
     chainName: 'Optimism',
-    endpointID: 30110,
+    endpointID: 30111,
   },
   {
     chainId: 14,
