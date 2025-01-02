@@ -52,7 +52,6 @@ export const ReceiveInfo = ({ onOpen }: ReceiveInfoProps) => {
   const isGlobalFeeLoading = useAppSelector((state) => state.transfer.isGlobalFeeLoading);
   const sendValue = useAppSelector((state) => state.transfer.sendValue);
   const selectedToken = useAppSelector((state) => state.transfer.selectedToken);
-  const routeFees = useAppSelector((state) => state.transfer.routeFees);
   const estimatedAmount = useAppSelector((state) => state.transfer.estimatedAmount);
   const isBase = useBreakpointValue({ base: true, lg: false }) ?? false;
 
@@ -72,28 +71,6 @@ export const ReceiveInfo = ({ onOpen }: ReceiveInfoProps) => {
 
   const { allowedSendAmount: STAllowedSendAmount, isAllowSendError: STIsAllowSendError } =
     useGetStargateFees();
-
-  const feeDetails = useMemo(() => {
-    let feeContent = '';
-    const feeBreakdown = [];
-    if (bridgeType === 'cBridge' && routeFees?.['cBridge']) {
-      feeContent = routeFees?.['cBridge'].summary;
-      feeBreakdown.push(...routeFees?.['cBridge'].breakdown);
-    } else if (bridgeType === 'deBridge' && routeFees?.['deBridge']) {
-      feeContent = routeFees?.['deBridge'].summary;
-      feeBreakdown.push(...routeFees?.['deBridge'].breakdown);
-    } else if (bridgeType === 'stargate' && routeFees?.['stargate']) {
-      feeContent = routeFees?.['stargate'].summary;
-      feeBreakdown.push(...routeFees?.['stargate'].breakdown);
-    } else if (bridgeType === 'layerZero' && routeFees?.['layerZero']) {
-      feeContent = routeFees?.['layerZero'].summary;
-      feeBreakdown.push(...routeFees?.['layerZero'].breakdown);
-    } else if (bridgeType === 'meson' && routeFees?.['meson']) {
-      feeContent = routeFees?.['meson'].summary;
-      feeBreakdown.push(...routeFees?.['meson'].breakdown);
-    }
-    return { summary: feeContent ? feeContent : '--', breakdown: feeBreakdown };
-  }, [bridgeType, routeFees]);
 
   const allowedAmtContent = useMemo(() => {
     if (cBridgeAllowedAmt && transferActionInfo?.bridgeType === 'cBridge') {

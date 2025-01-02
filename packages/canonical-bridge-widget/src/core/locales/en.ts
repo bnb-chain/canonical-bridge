@@ -62,7 +62,9 @@ export const en = {
   'transfer.button.switch-network': 'Switch Network in Wallet',
   'transfer.button.wallet-connect': 'Connect Wallet',
   'transfer.button.switch-wallet': 'Switch Wallet',
+  'transfer.button.confirm-summary': 'Confirm Transfer',
 
+  'transfer.warning.confirm.to.address': 'Please double check the received token address:',
   'transfer.warning.sol.balance':
     'At least {min} SOL is required to proceed with this transaction.',
 
