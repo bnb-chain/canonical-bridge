@@ -214,11 +214,7 @@ export const ReceiveInfo = ({ onOpen }: ReceiveInfoProps) => {
                   )}
                   <Flex flexDir={'column'} gap={'4px'}>
                     <EstimatedArrivalTime bridgeType={bridgeType} />
-                    <FeesInfo
-                      bridgeType={bridgeType}
-                      summary={feeDetails.summary}
-                      breakdown={feeDetails.breakdown}
-                    />
+                    <FeesInfo bridgeType={bridgeType} />
                     <AllowedSendAmount
                       allowedSendAmount={allowedAmtContent}
                       isError={

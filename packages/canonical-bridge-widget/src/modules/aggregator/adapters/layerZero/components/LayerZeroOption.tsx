@@ -22,7 +22,6 @@ export const LayerZeroOption = () => {
   const transferActionInfo = useAppSelector((state) => state.transfer.transferActionInfo);
   const estimatedAmount = useAppSelector((state) => state.transfer.estimatedAmount);
   const routeError = useAppSelector((state) => state.transfer.routeError);
-  const routeFees = useAppSelector((state) => state.transfer.routeFees);
 
   const receiveAmt = useMemo(() => {
     return estimatedAmount &&
@@ -71,12 +70,7 @@ export const LayerZeroOption = () => {
         toTokenInfo={toTokenInfo?.['layerZero']}
       />
       <EstimatedArrivalTime bridgeType={'layerZero'} />
-      <FeesInfo
-        isError={isError}
-        bridgeType="layerZero"
-        summary={routeFees?.['layerZero']?.summary ?? '--'}
-        breakdown={routeFees?.['layerZero']?.breakdown}
-      />
+      <FeesInfo isError={isError} bridgeType="layerZero" />
       <OtherRouteError bridgeType={'layerZero'} />
     </RouteWrapper>
   );
