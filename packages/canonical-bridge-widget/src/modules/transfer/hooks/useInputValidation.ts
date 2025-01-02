@@ -3,10 +3,16 @@ import { BridgeType } from '@bnb-chain/canonical-bridge-sdk';
 import { useCallback } from 'react';
 
 import { formatNumber } from '@/core/utils/number';
+import { useAppSelector } from '@/modules/store/StoreProvider';
+import { useSolanaBalance } from '@/modules/wallet/hooks/useSolanaBalance';
+import { MIN_SOL_TO_ENABLED_TX } from '@/core/constants';
 import { useIsWalletCompatible } from '@/modules/wallet/hooks/useIsWalletCompatible';
 
 export const useInputValidation = () => {
+  const { data } = useSolanaBalance();
   const isWalletCompatible = useIsWalletCompatible();
+  const solBalance = Number(data?.formatted);
+  const fromChain = useAppSelector((state) => state.transfer.fromChain);
   const validateInput = useCallback(
     ({
       balance,
@@ -49,7 +55,14 @@ export const useInputValidation = () => {
         }
 
         if (!!balance) {
-          return { text: `${formatNumber(balance)}`, isError: false };
+          if (fromChain?.chainType === 'solana' && solBalance < MIN_SOL_TO_ENABLED_TX) {
+            return {
+              text: ``, // Error message has been moved to send button section
+              isError: true,
+            };
+          } else {
+            return { text: `${formatNumber(balance)}`, isError: false };
+          }
         } else if (isWalletCompatible) {
           return { isError: true, text: 'You have insufficient balance' };
         }
@@ -58,7 +71,7 @@ export const useInputValidation = () => {
         console.log(e);
       }
     },
-    [isWalletCompatible],
+    [fromChain?.chainType, solBalance, isWalletCompatible],
   );
 
   return {
