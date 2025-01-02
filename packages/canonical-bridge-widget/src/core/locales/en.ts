@@ -63,6 +63,9 @@ export const en = {
   'transfer.button.wallet-connect': 'Connect Wallet',
   'transfer.button.switch-wallet': 'Switch Wallet',
 
+  'transfer.warning.sol.balance':
+    'At least {min} SOL is required to proceed with this transaction.',
+
   'modal.approve.title': 'Approve Token',
   'modal.approve.desc.1': 'Please approve at least ',
   'modal.approve.desc.2': ' and initiate the transfer',
@@ -80,6 +83,8 @@ export const en = {
 
   'modal.confirm.title': 'Waiting for Confirmation',
   'modal.confirm.desc': 'Confirm this transaction in your wallet',
+
+  'modal.summary.title': 'Confirm Transaction',
 
   'select-modal.tag.incompatible': 'Incompatible',
   'select-modal.search.no-result.title': 'No result found',

@@ -1,4 +1,4 @@
-import { Flex, theme, useColorMode } from '@bnb-chain/space';
+import { Flex, theme, useColorMode, useIntl } from '@bnb-chain/space';
 import { rgba } from 'polished';
 
 import { MIN_SOL_TO_ENABLED_TX } from '@/core/constants';
@@ -11,6 +11,8 @@ export const TransferWarningMessage = () => {
   const { data } = useSolanaBalance();
   const solBalance = Number(data?.formatted);
   const fromChain = useAppSelector((state) => state.transfer.fromChain);
+
+  const { formatMessage } = useIntl();
 
   if (fromChain?.chainType === 'solana' && solBalance < MIN_SOL_TO_ENABLED_TX) {
     return (
@@ -30,7 +32,7 @@ export const TransferWarningMessage = () => {
           fontSize={'12px'}
           fontWeight={400}
         />
-        {`At least ${MIN_SOL_TO_ENABLED_TX} SOL is required to proceed with this transaction.`}
+        {formatMessage({ id: 'transfer.warning.sol.balance' }, { min: MIN_SOL_TO_ENABLED_TX })}
       </Flex>
     );
   }
