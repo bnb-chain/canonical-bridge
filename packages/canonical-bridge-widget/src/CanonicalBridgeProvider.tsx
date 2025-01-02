@@ -4,7 +4,14 @@ import { merge } from 'lodash';
 import { breakpoints } from '@bnb-chain/space/dist/modules/theme/foundations/breakpoints';
 import { theme as spaceTheme } from '@bnb-chain/space';
 
-import { ChainType, IChainConfig, IExternalChain } from '@/modules/aggregator/types';
+import {
+  ChainType,
+  IBridgeChain,
+  IBridgeProvider,
+  IBridgeToken,
+  IChainConfig,
+  IExternalChain,
+} from '@/modules/aggregator/types';
 import { StoreProvider } from '@/modules/store/StoreProvider';
 import { ThemeProvider } from '@/core/theme/ThemeProvider';
 import { AggregatorProvider } from '@/modules/aggregator/components/AggregatorProvider';
@@ -55,13 +62,13 @@ export interface IBridgeConfig {
     defaultTokenAddress: string;
     defaultAmount: string;
 
-    supportedChains: IChainConfig[];
+    chainConfigs: IChainConfig[];
     displayTokenSymbols: Record<number, Record<string, string>>;
     brandChains: number[];
     externalChains: IExternalChain[];
-    providers: any[];
-    chainSorter: () => void;
-    tokenSorter: () => void;
+    providers: IBridgeProvider[];
+    chainSorter: (a?: IBridgeChain, b?: IBridgeChain) => number;
+    tokenSorter: (a?: IBridgeToken, b?: IBridgeToken) => number;
   };
 
   onError?: (params: { type: string; message?: string; error?: Error }) => void;
@@ -96,6 +103,7 @@ export function CanonicalBridgeProvider(props: CanonicalBridgeProviderProps) {
     const context: IBridgeConfig = {
       bridgeTitle: bridgeTitle ?? 'BNB Chain Cross-Chain Bridge',
       assetPrefix: assetPrefix ?? 'https://static.bnbchain.org/bnb-chain-bridge/static',
+
       locale: {
         language: locale?.language ?? en.language,
         messages: {
@@ -138,12 +146,11 @@ export function CanonicalBridgeProvider(props: CanonicalBridgeProviderProps) {
         displayTokenSymbols: {},
         brandChains: [],
         externalChains: [],
-        chainSorter: () => {},
-        tokenSorter: () => {},
-        ...transfer,
-
-        supportedChains: transfer?.supportedChains || [],
+        chainConfigs: transfer?.chainConfigs || [],
         providers: transfer?.providers ?? [],
+        chainSorter: () => 0,
+        tokenSorter: () => 0,
+        ...transfer,
       } as IBridgeConfig['transfer'],
 
       onClickConnectWalletButton,

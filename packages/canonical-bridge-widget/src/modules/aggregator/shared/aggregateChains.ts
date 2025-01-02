@@ -6,7 +6,6 @@ import {
   IBridgeToken,
   IChainConfig,
 } from '@/modules/aggregator/types';
-import { isChainOrTokenCompatible } from '@/modules/aggregator/shared/isChainOrTokenCompatible';
 
 export interface IGetFromChainsParams {
   toChainId?: number;
@@ -36,8 +35,6 @@ export function aggregateChains({
   assetPrefix,
 }: IAggregateChainsParams) {
   const chainMap = new Map<number, IBridgeChain>();
-
-  const chainOrder = transferConfig.order?.chains ?? [];
 
   adapters.forEach((adapter) => {
     const { bridgeType } = adapter;
@@ -89,35 +86,6 @@ export function aggregateChains({
   });
 
   const chains = [...chainMap.values()];
-
-  chains.sort((a, b) => {
-    if (direction === 'to') {
-      const isA = isChainOrTokenCompatible(a);
-      const isB = isChainOrTokenCompatible(b);
-
-      if (isA && !isB) {
-        return -1;
-      }
-      if (!isA && isB) {
-        return 1;
-      }
-    }
-
-    const indexA = chainOrder.indexOf(a.id);
-    const indexB = chainOrder.indexOf(b.id);
-
-    if (indexA > -1 && indexB === -1) {
-      return -1;
-    }
-    if (indexA === -1 && indexB > -1) {
-      return 1;
-    }
-    if (indexA > -1 && indexB > -1) {
-      return indexA - indexB;
-    }
-
-    return a.name < b.name ? -1 : 1;
-  });
 
   return chains;
 }

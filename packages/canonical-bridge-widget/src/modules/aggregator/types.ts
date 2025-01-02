@@ -1,3 +1,5 @@
+import { BridgeType } from '@bnb-chain/canonical-bridge-sdk';
+
 import { CBridgeAdapter } from '@/modules/aggregator/adapters/cBridge/CBridgeAdapter';
 import {
   ICBridgeChain,
@@ -168,7 +170,7 @@ export interface ITransferConfig {
 }
 
 export interface IChainConfig {
-  chainType?: ChainType;
+  chainType: ChainType;
   id: number;
   name: string;
   nativeCurrency: {

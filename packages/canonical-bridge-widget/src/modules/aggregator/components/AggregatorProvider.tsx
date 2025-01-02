@@ -23,8 +23,8 @@ import {
 import { aggregateTokens, IGetTokensParams } from '@/modules/aggregator/shared/aggregateTokens';
 import { aggregateToToken, IGetToTokenParams } from '@/modules/aggregator/shared/aggregateToToken';
 import { useBridgeConfig } from '@/index';
+
 export interface AggregatorContextProps {
-  isReady: boolean;
   nativeCurrencies: Record<number, INativeCurrency>;
   adapters: AdapterType[];
   getFromChains: (params: IGetFromChainsParams) => IBridgeChain[];
@@ -33,37 +33,18 @@ export interface AggregatorContextProps {
   getToToken: (params: IGetToTokenParams) => IBridgeToken | undefined;
 }
 
-const DEFAULT_CONTEXT: AggregatorContextProps = {
-  isReady: false,
-  nativeCurrencies: {},
-  adapters: [],
-  getFromChains: () => [],
-  getToChains: () => [],
-  getTokens: () => [],
-  getToToken: () => undefined,
-};
+export const AggregatorContext = React.createContext({} as AggregatorContextProps);
 
-export const AggregatorContext = React.createContext(DEFAULT_CONTEXT);
-
-export interface AggregatorProviderProps {}
+export interface AggregatorProviderProps {
+  children: React.ReactNode;
+}
 
 export function AggregatorProvider(props: AggregatorProviderProps) {
+  const { children } = props;
+
   const bridgeConfig = useBridgeConfig();
-  const chainConfigs = useMemo(() => {
-    return chains.map((item) => ({
-      ...item,
-      chainType: item.chainType ? item.chainType : 'evm',
-    }));
-  }, [chains]);
 
   const value = useMemo(() => {
-    if (!transferConfig) {
-      return {
-        ...DEFAULT_CONTEXT,
-        chainConfigs,
-      };
-    }
-
     const bridges: Array<{
       bridgeType: BridgeType;
       Adapter: AdapterConstructorType;
@@ -87,37 +68,38 @@ export function AggregatorProvider(props: AggregatorProviderProps) {
       { bridgeType: 'meson', Adapter: MesonAdapter },
     ];
 
+    const { chainConfigs, providers, brandChains, externalChains, displayTokenSymbols } =
+      bridgeConfig.transfer;
     const nativeCurrencies = getNativeCurrencies(chainConfigs);
+
     const includedChains = chainConfigs.map((item) => item.id);
     const assetPrefix = bridgeConfig.assetPrefix;
 
     const adapters = bridges
-      .filter((item) => transferConfig[item.bridgeType])
+      .filter(({ bridgeType }) => {
+        const provider = providers.find((p) => p.id === bridgeType);
+        return provider && provider.config;
+      })
       .map(({ bridgeType, Adapter }) => {
-        const adapterConfig = transferConfig[bridgeType]!;
+        const provider = providers.find((p) => p.id === bridgeType)!;
 
         return new Adapter({
-          config: adapterConfig.config,
-          excludedChains: adapterConfig.exclude?.chains,
-          excludedTokens: adapterConfig.exclude?.tokens,
-          bridgedTokenGroups: adapterConfig.bridgedTokenGroups,
+          config: provider.config,
+          excludedChains: provider.excludedChains,
+          excludedTokens: provider.excludedTokens,
+          bridgedTokenGroups: provider.bridgedTokenGroups,
           includedChains,
           nativeCurrencies,
-          brandChains: transferConfig.brandChains,
-          externalChains: transferConfig.externalChains,
-          displayTokenSymbols: transferConfig.displayTokenSymbols,
+          brandChains,
+          externalChains,
+          displayTokenSymbols,
           assetPrefix,
         } as IBaseAdapterOptions<any>);
       });
 
     return {
-      isReady: true,
-      transferConfig,
-
-      defaultSelectedInfo: transferConfig.defaultSelectedInfo,
       nativeCurrencies,
       adapters,
-      chainConfigs,
 
       getFromChains: (params: IGetFromChainsParams) => {
         return aggregateChains({
@@ -152,7 +134,7 @@ export function AggregatorProvider(props: AggregatorProviderProps) {
         });
       },
     };
-  }, [transferConfig, chainConfigs, bridgeConfig.assetPrefix]);
+  }, [bridgeConfig.assetPrefix]);
 
   return <AggregatorContext.Provider value={value}>{children}</AggregatorContext.Provider>;
 }

@@ -11,7 +11,7 @@
     "**/node_modules": true,
     "**/.next": true,
     "**/*.log": true,
-    "**/dist": true,
+    // "**/dist": true,
     "**/.rush": true,
     "**/temp": true,
     "**/tsconfig.tsbuildinfo": true

@@ -30,10 +30,8 @@ export const ThemeProvider = ({ children }: ThemeProviderProps) => {
     <ChakraProvider
       colorModeManager={{
         type: 'localStorage',
-        get() {
-          return theme.colorMode;
-        },
-        set() {},
+        get: () => theme.colorMode,
+        set: () => undefined,
       }}
       theme={customTheme}
       toastOptions={{

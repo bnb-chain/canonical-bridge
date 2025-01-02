@@ -1,28 +1,26 @@
-import { LayerZero } from '@/layerZero';
-import { CBridge, CBridgePeggedPairConfig } from '@/cbridge';
-import { ERC20_TOKEN } from '@/core/abi/erc20Token';
+import { LayerZero } from '@/adapters/layerZero';
+import { CBridge } from '@/adapters/cBridge';
+import { ERC20_TOKEN } from '@/abi/erc20Token';
 import {
-  BaseBridgeConfig,
-  BridgeAddress,
-  BridgeEndpointId,
-  BridgeType,
+  IBaseBridgeConfig,
+  IBridgeAddress,
+  IBridgeEndpointId,
   IApproveTokenInput,
   IGetAllowanceInput,
   IGetTokenBalanceInput,
 } from '@/core/types';
-import {
-  DeBridge,
-  DeBridgeConfig,
-  IDeBridgeEstimatedFeesInput,
-} from '@/debridge';
-import { Stargate } from '@/stargate';
+import { DeBridge, IDeBridgeConfig } from '@/adapters/deBridge';
+import { Stargate } from '@/adapters/stargate';
 import { Hash, type PublicClient, type WalletClient } from 'viem';
-import { Meson } from '@/meson';
-import { IGetMesonEstimateFeeInput } from '@/meson/types';
+import { Meson } from '@/adapters/meson';
+import { IGetMesonEstimateFeeInput } from '@/adapters/meson/types';
+import { BridgeType } from '@/shared/types';
+import { IDeBridgeEstimatedFeesInput } from '@/adapters/deBridge/types';
+import { ICBridgePeggedPairConfig } from '@/adapters/cBridge/types';
 
 export * from './types';
 
-export interface CanonicalBridgeSDKOptions<T extends BaseBridgeConfig> {
+export interface CanonicalBridgeSDKOptions<T extends IBaseBridgeConfig> {
   bridgeConfigs: T[];
 }
 
@@ -33,10 +31,12 @@ export class CanonicalBridgeSDK {
   layerZero!: LayerZero;
   meson!: Meson;
 
-  private options: CanonicalBridgeSDKOptions<BaseBridgeConfig | DeBridgeConfig>;
+  private options: CanonicalBridgeSDKOptions<
+    IBaseBridgeConfig | IDeBridgeConfig
+  >;
 
   constructor(
-    options: CanonicalBridgeSDKOptions<BaseBridgeConfig | DeBridgeConfig>
+    options: CanonicalBridgeSDKOptions<IBaseBridgeConfig | IDeBridgeConfig>
   ) {
     const cBridgeConfig = options.bridgeConfigs.find(
       (item) => item.bridgeType === 'cBridge'
@@ -62,7 +62,7 @@ export class CanonicalBridgeSDK {
       this.cBridge = new CBridge(cBridgeConfig);
     }
     if (deBridgeConfig) {
-      this.deBridge = new DeBridge(deBridgeConfig as DeBridgeConfig);
+      this.deBridge = new DeBridge(deBridgeConfig as IDeBridgeConfig);
     }
     if (stargateConfig) {
       this.stargate = new Stargate(stargateConfig);
@@ -202,8 +202,8 @@ export class CanonicalBridgeSDK {
     sendValue: bigint;
     fromTokenSymbol: string;
     publicClient?: PublicClient;
-    endPointId?: BridgeEndpointId;
-    bridgeAddress?: BridgeAddress;
+    endPointId?: IBridgeEndpointId;
+    bridgeAddress?: IBridgeAddress;
     isPegged?: boolean;
     slippage?: number;
     mesonOpts?: IGetMesonEstimateFeeInput;
@@ -309,9 +309,9 @@ export class CanonicalBridgeSDK {
     walletClient: WalletClient;
     publicClient: PublicClient;
     slippage?: number;
-    peggedConfig?: CBridgePeggedPairConfig;
+    peggedConfig?: ICBridgePeggedPairConfig;
     deBridgeData?: `0x${string}`;
-    bridgeEndPointId?: BridgeEndpointId;
+    bridgeEndPointId?: IBridgeEndpointId;
     debridgeOpts?: {
       data?: `0x${string}`;
     };

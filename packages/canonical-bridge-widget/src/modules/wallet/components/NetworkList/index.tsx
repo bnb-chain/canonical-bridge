@@ -16,9 +16,10 @@ import { WarningIcon } from '@/core/components/icons/WarningIcon.tsx';
 import { ExLinkIcon } from '@/core/components/icons/ExLinkIcon.tsx';
 import { openLink } from '@/core/utils/common.ts';
 import { WalletConnectButton } from '@/modules/transfer/components/Button/WalletConnectButton';
-import { ChainType, useSolanaAccount, useTronAccount } from '@/index';
+import { useSolanaAccount, useTronAccount } from '@/index';
 import { useNeedSwitchChain } from '@/modules/wallet/hooks/useNeedSwitchChain';
 import { useAutoSelectFromChain } from '@/modules/wallet/hooks/useAutoSelectFromChain';
+import { ChainType } from '@/modules/aggregator';
 
 export interface NetworkListProps {
   onClickNetwork?: (params: { chainType: ChainType; chainId: number }) => void;
