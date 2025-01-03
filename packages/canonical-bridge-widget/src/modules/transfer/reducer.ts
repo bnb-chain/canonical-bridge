@@ -24,6 +24,7 @@ export interface ITransferState {
   estimatedAmount?: IEstimatedAmount;
   routeFees?: IRouteFees;
   isToAddressChecked?: boolean;
+  isManuallyReload: boolean;
   toAccount: {
     address?: string;
   };
@@ -52,6 +53,7 @@ const initStates: ITransferState = {
     address: '',
   },
   isRoutesModalOpen: false,
+  isManuallyReload: false,
 };
 
 export default createReducer(initStates, (builder) => {
@@ -136,5 +138,9 @@ export default createReducer(initStates, (builder) => {
   builder.addCase(actions.setIsRoutesModalOpen, (state, { payload }) => ({
     ...state,
     isRoutesModalOpen: payload,
+  }));
+  builder.addCase(actions.setIsManuallyReload, (state, { payload }) => ({
+    ...state,
+    isManuallyReload: payload,
   }));
 });

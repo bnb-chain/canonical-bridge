@@ -62,6 +62,12 @@ export const en = {
   'transfer.button.switch-network': 'Switch Network in Wallet',
   'transfer.button.wallet-connect': 'Connect Wallet',
   'transfer.button.switch-wallet': 'Switch Wallet',
+  'transfer.button.confirm-summary': 'Confirm Transfer',
+  'transfer.button.confirm-loading': 'Reloading Quotation',
+
+  'transfer.warning.confirm.to.address': 'Please double check the received token address:',
+  'transfer.warning.sol.balance':
+    'At least {min} SOL is required to proceed with this transaction.',
 
   'modal.approve.title': 'Approve Token',
   'modal.approve.desc.1': 'Please approve at least ',
@@ -80,6 +86,13 @@ export const en = {
 
   'modal.confirm.title': 'Waiting for Confirmation',
   'modal.confirm.desc': 'Confirm this transaction in your wallet',
+
+  'modal.summary.title': 'Confirm Transaction',
+
+  'modal.quote.error.title': 'Failed to Get the Quotation',
+  'modal.quote.error.desc':
+    'We’ve encountered an unknown issue on this route. Please try again later.',
+  'modal.quote.error.button.close': 'OK',
 
   'select-modal.tag.incompatible': 'Incompatible',
   'select-modal.search.no-result.title': 'No result found',

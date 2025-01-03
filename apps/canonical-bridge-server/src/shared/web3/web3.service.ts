@@ -60,34 +60,49 @@ export class Web3Service {
   }
 
   async getTransferConfigsForAll() {
-    const { data } = await this.httpService.axiosRef.get<ITransferConfigsForAll>(
-      `${CBRIDGE_ENDPOINT}/v2/getTransferConfigsForAll`,
-    );
-    return data;
+    try {
+      const { data } = await this.httpService.axiosRef.get<ITransferConfigsForAll>(
+        `${CBRIDGE_ENDPOINT}/v2/getTransferConfigsForAll`,
+      );
+      return data;
+    } catch (e) {
+      console.error(`Failed to retrieve cBridge data at ${new Date().getTime()}`, e.message);
+    }
   }
 
   async getDebridgeChains() {
-    const { data } = await this.httpService.axiosRef.get<{ chains: IDebridgeChain[] }>(
-      `${DEBRIDGE_ENDPOINT}/supported-chains-info`,
-    );
+    try {
+      const { data } = await this.httpService.axiosRef.get<{ chains: IDebridgeChain[] }>(
+        `${DEBRIDGE_ENDPOINT}/supported-chains-info`,
+      );
 
-    return data;
+      return data;
+    } catch (e) {
+      console.error(`Failed to retrieve DeBridge chain data at ${new Date().getTime()}`, e.message);
+    }
   }
 
   async getDebridgeChainTokens(chainId: number) {
-    const { data } = await this.httpService.axiosRef.get<{
-      tokens: Record<string, IDebridgeToken>;
-    }>(`${DEBRIDGE_ENDPOINT}/token-list?chainId=${chainId}`);
+    try {
+      const { data } = await this.httpService.axiosRef.get<{
+        tokens: Record<string, IDebridgeToken>;
+      }>(`${DEBRIDGE_ENDPOINT}/token-list?chainId=${chainId}`);
 
-    return data;
+      return data;
+    } catch (e) {
+      console.error(
+        `Failed to retrieve DeBridge token data from ${chainId} at ${new Date().getTime()}`,
+        e.message,
+      );
+    }
   }
 
   async getStargateConfigs() {
-    const { data } = await this.httpService.axiosRef.get<IStargateTokenList>(
-      `${STARGATE_ENDPOINT}`,
-    );
-    const processedTokenList = [];
     try {
+      const { data } = await this.httpService.axiosRef.get<IStargateTokenList>(
+        `${STARGATE_ENDPOINT}`,
+      );
+      const processedTokenList = [];
       const v2List = data.v2;
       v2List.forEach((token) => {
         const chainInfo = STARGATE_CHAIN_INFO.filter(
@@ -97,17 +112,22 @@ export class Web3Service {
           processedTokenList.push({ ...token, endpointID: chainInfo[0].endpointID });
         }
       });
+      return processedTokenList;
     } catch (e) {
-      console.log(`Failed to retrieve Stargate API data at ${new Date().getTime()}`, e);
+      console.error(`Failed to retrieve Stargate API data at ${new Date().getTime()}`, e.message);
     }
-    return processedTokenList;
   }
 
   async getMesonConfigs() {
-    const { data } = await this.httpService.axiosRef.get<{ result: IMesonChain[] }>(
-      `${MESON_ENDPOINT}/limits`,
-    );
-    return data;
+    try {
+      const { data } = await this.httpService.axiosRef.get<{ result: IMesonChain[] }>(
+        `${MESON_ENDPOINT}/limits`,
+      );
+      return data;
+    } catch (e) {
+      console.log(`Failed to retrieve Meson API data at ${new Date().getTime()}`, e);
+      return [];
+    }
   }
 
   async getAssetPlatforms() {

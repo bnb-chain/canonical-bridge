@@ -1,4 +1,4 @@
-import { Flex, useDisclosure } from '@bnb-chain/space';
+import { Flex, useDisclosure, useIntl } from '@bnb-chain/space';
 import { useState } from 'react';
 
 import { TransferButton } from '@/modules/transfer/components/Button/TransferButton';
@@ -7,10 +7,14 @@ import { TransactionFailedModal } from '@/modules/transfer/components/Modal/Tran
 import { TransactionApproveModal } from '@/modules/transfer/components/Modal/TransactionApproveModal';
 import { TransactionConfirmingModal } from '@/modules/transfer/components/Modal/TransactionConfirmingModal';
 import { WalletButtonWrapper } from '@/modules/transfer/components/Button/WalletButtonWrapper';
+import { TransactionSummaryModal } from '@/modules/transfer/components/Modal/TransactionSummaryModal';
+import { TransferWarningMessage } from '@/modules/transfer/components/TransferWarningMessage';
+import { MIN_SOL_TO_ENABLED_TX } from '@/core/constants';
 
 export const TransferButtonGroup = () => {
   const [hash, setHash] = useState<string | null>(null);
   const [chosenBridge, setChosenBridge] = useState<string | null>(null);
+  const { formatMessage } = useIntl();
 
   const {
     isOpen: isSubmittedModalOpen,
@@ -32,6 +36,11 @@ export const TransferButtonGroup = () => {
     onOpen: onOpenConfirmingModal,
     onClose: onCloseConfirmingModal,
   } = useDisclosure();
+  const {
+    isOpen: isSummaryModalOpen,
+    onOpen: onOpenSummaryModal,
+    onClose: onCloseSummaryModal,
+  } = useDisclosure();
 
   return (
     <>
@@ -42,15 +51,19 @@ export const TransferButtonGroup = () => {
       >
         <WalletButtonWrapper>
           <TransferButton
-            onOpenSubmittedModal={onOpenSubmittedModal}
             onOpenFailedModal={onOpenFailedModal}
             onOpenApproveModal={onOpenApproveModal}
-            onOpenConfirmingModal={onOpenConfirmingModal}
             onCloseConfirmingModal={onCloseConfirmingModal}
-            setHash={setHash}
+            onOpenSummaryModal={onOpenSummaryModal}
             setChosenBridge={setChosenBridge}
           />
         </WalletButtonWrapper>
+        <TransferWarningMessage
+          text={formatMessage(
+            { id: 'transfer.warning.sol.balance' },
+            { min: MIN_SOL_TO_ENABLED_TX },
+          )}
+        />
       </Flex>
       <TransactionSubmittedModal
         isOpen={isSubmittedModalOpen}
@@ -66,6 +79,17 @@ export const TransferButtonGroup = () => {
         onCloseConfirmingModal={onCloseConfirmingModal}
       />
       <TransactionConfirmingModal isOpen={isConfirmingModalOpen} onClose={onCloseConfirmingModal} />
+      <TransactionSummaryModal
+        isOpen={isSummaryModalOpen}
+        onClose={onCloseSummaryModal}
+        onOpenSubmittedModal={onOpenSubmittedModal}
+        onOpenFailedModal={onOpenFailedModal}
+        onOpenApproveModal={onOpenApproveModal}
+        onOpenConfirmingModal={onOpenConfirmingModal}
+        onCloseConfirmingModal={onCloseConfirmingModal}
+        setHash={setHash}
+        setChosenBridge={setChosenBridge}
+      />
     </>
   );
 };
