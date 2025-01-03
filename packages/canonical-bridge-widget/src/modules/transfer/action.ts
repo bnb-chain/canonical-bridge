@@ -47,3 +47,7 @@ export const setIsToAddressChecked = createAction<ITransferState['isToAddressChe
 export const setIsRoutesModalOpen = createAction<ITransferState['isRoutesModalOpen']>(
   'transfer/setIsRoutesModalOpen',
 );
+
+export const setIsManuallyReload = createAction<ITransferState['isManuallyReload']>(
+  'transfer/setIsManuallyReload',
+);
