@@ -24,6 +24,9 @@ export const ThemeProvider = ({ children }: ThemeProviderProps) => {
       global: ({ colorMode }: { colorMode: ColorMode }) => ({
         body: {
           bg: theme.colors[colorMode].background[3],
+          '.bccb-widget-transaction-summary-modal-overlap': {
+            opacity: '0.88 !important',
+          },
         },
       }),
     },
