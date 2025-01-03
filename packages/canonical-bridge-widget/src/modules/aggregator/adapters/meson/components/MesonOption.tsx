@@ -19,7 +19,6 @@ export const MesonOption = () => {
   const transferActionInfo = useAppSelector((state) => state.transfer.transferActionInfo);
   const estimatedAmount = useAppSelector((state) => state.transfer.estimatedAmount);
   const routeError = useAppSelector((state) => state.transfer.routeError);
-  const routeFees = useAppSelector((state) => state.transfer.routeFees);
   const fromChain = useAppSelector((state) => state.transfer.fromChain);
 
   const receiveAmt = useMemo(() => {
@@ -55,12 +54,7 @@ export const MesonOption = () => {
       <RouteName isError={isError} bridgeType="meson" />
       <RouteTitle isError={isError} receiveAmt={receiveAmt} toTokenInfo={toTokenInfo?.['meson']} />
       <EstimatedArrivalTime isError={isError} bridgeType={'meson'} />
-      <FeesInfo
-        isError={isError}
-        bridgeType="meson"
-        summary={routeFees?.meson?.summary ?? '--'}
-        breakdown={routeFees?.meson?.breakdown}
-      />
+      <FeesInfo isError={isError} bridgeType="meson" />
       {/* <AllowedSendAmount
         position={'static'}
         isError={isAllowSendError}

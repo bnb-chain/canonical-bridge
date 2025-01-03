@@ -24,10 +24,13 @@ export interface ITransferState {
   estimatedAmount?: IEstimatedAmount;
   routeFees?: IRouteFees;
   isToAddressChecked?: boolean;
+  isManuallyReload: boolean;
   toAccount: {
     address?: string;
   };
   isRoutesModalOpen: boolean;
+  isFailedGetQuoteModalOpen: boolean;
+  isSummaryModalOpen: boolean;
 }
 
 const initStates: ITransferState = {
@@ -52,6 +55,9 @@ const initStates: ITransferState = {
     address: '',
   },
   isRoutesModalOpen: false,
+  isManuallyReload: false,
+  isFailedGetQuoteModalOpen: false,
+  isSummaryModalOpen: false,
 };
 
 export default createReducer(initStates, (builder) => {
@@ -136,5 +142,18 @@ export default createReducer(initStates, (builder) => {
   builder.addCase(actions.setIsRoutesModalOpen, (state, { payload }) => ({
     ...state,
     isRoutesModalOpen: payload,
+  }));
+  builder.addCase(actions.setIsManuallyReload, (state, { payload }) => ({
+    ...state,
+    isManuallyReload: payload,
+  }));
+
+  builder.addCase(actions.setIsFailedGetQuoteModalOpen, (state, { payload }) => ({
+    ...state,
+    isFailedGetQuoteModalOpen: payload,
+  }));
+  builder.addCase(actions.setIsSummaryModalOpen, (state, { payload }) => ({
+    ...state,
+    isSummaryModalOpen: payload,
   }));
 });

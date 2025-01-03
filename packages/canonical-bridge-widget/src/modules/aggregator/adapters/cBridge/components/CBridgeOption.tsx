@@ -25,7 +25,6 @@ export const CBridgeOption = () => {
   const estimatedAmount = useAppSelector((state) => state.transfer.estimatedAmount);
   const sendValue = useAppSelector((state) => state.transfer.sendValue);
   const routeError = useAppSelector((state) => state.transfer.routeError);
-  const routeFees = useAppSelector((state) => state.transfer.routeFees);
 
   const receiveAmt = useMemo(() => {
     return estimatedAmount &&
@@ -89,12 +88,7 @@ export const CBridgeOption = () => {
         toTokenInfo={toTokenInfo?.['cBridge']}
       />
       <EstimatedArrivalTime isError={isError} bridgeType={'cBridge'} />
-      <FeesInfo
-        isError={isError}
-        bridgeType="cBridge"
-        summary={routeFees?.['cBridge']?.summary ?? '--'}
-        breakdown={routeFees?.['cBridge']?.breakdown}
-      />
+      <FeesInfo isError={isError} bridgeType="cBridge" />
       <AllowedSendAmount
         position={'static'}
         isError={isAllowSendError}

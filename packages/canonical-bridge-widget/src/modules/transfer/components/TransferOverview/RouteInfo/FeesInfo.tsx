@@ -1,21 +1,44 @@
 import { Box, useColorMode, useIntl, useTheme } from '@bnb-chain/space';
+import { useMemo } from 'react';
 
 import { FeesIcon } from '@/core/components/icons/FeesIcon';
 import { FeeBreakdown } from '@/modules/transfer/components/TransferOverview/RouteInfo/FeeBreakdown';
 import { InfoTooltip } from '@/core/components/InfoTooltip';
-import { IFeeBreakDown } from '@/modules/transfer/types';
+import { useAppSelector } from '@/modules/store/StoreProvider';
 
 interface FeesInfoProps {
-  summary?: string;
-  breakdown?: IFeeBreakDown;
   bridgeType?: string;
   isError?: boolean;
 }
 
-export const FeesInfo = ({ summary, breakdown, bridgeType, isError }: FeesInfoProps) => {
+export const FeesInfo = ({ bridgeType, isError }: FeesInfoProps) => {
   const theme = useTheme();
   const { colorMode } = useColorMode();
   const { formatMessage } = useIntl();
+
+  const routeFees = useAppSelector((state) => state.transfer.routeFees);
+
+  const feeDetails = useMemo(() => {
+    let feeContent = '';
+    const feeBreakdown = [];
+    if (bridgeType === 'cBridge' && routeFees?.['cBridge']) {
+      feeContent = routeFees?.['cBridge'].summary;
+      feeBreakdown.push(...routeFees?.['cBridge'].breakdown);
+    } else if (bridgeType === 'deBridge' && routeFees?.['deBridge']) {
+      feeContent = routeFees?.['deBridge'].summary;
+      feeBreakdown.push(...routeFees?.['deBridge'].breakdown);
+    } else if (bridgeType === 'stargate' && routeFees?.['stargate']) {
+      feeContent = routeFees?.['stargate'].summary;
+      feeBreakdown.push(...routeFees?.['stargate'].breakdown);
+    } else if (bridgeType === 'layerZero' && routeFees?.['layerZero']) {
+      feeContent = routeFees?.['layerZero'].summary;
+      feeBreakdown.push(...routeFees?.['layerZero'].breakdown);
+    } else if (bridgeType === 'meson' && routeFees?.['meson']) {
+      feeContent = routeFees?.['meson'].summary;
+      feeBreakdown.push(...routeFees?.['meson'].breakdown);
+    }
+    return { summary: feeContent ? feeContent : '--', breakdown: feeBreakdown };
+  }, [bridgeType, routeFees]);
   return (
     <Box
       className="bccb-widget-route-fee-info"
@@ -50,12 +73,12 @@ export const FeesInfo = ({ summary, breakdown, bridgeType, isError }: FeesInfoPr
         lineHeight={'16px'}
         fontWeight={500}
       >
-        {summary}
+        {feeDetails.summary}
       </Box>
       <InfoTooltip
         label={
-          breakdown && breakdown?.length > 0
-            ? breakdown.map((fee, index) => {
+          feeDetails.breakdown && feeDetails.breakdown?.length > 0
+            ? feeDetails.breakdown.map((fee, index) => {
                 return fee.value !== '0' && fee.value !== null ? (
                   <FeeBreakdown
                     key={`${bridgeType}-${index}-fee`}

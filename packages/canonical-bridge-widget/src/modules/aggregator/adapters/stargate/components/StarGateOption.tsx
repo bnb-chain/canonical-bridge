@@ -25,7 +25,6 @@ export const StarGateOption = () => {
   const transferActionInfo = useAppSelector((state) => state.transfer.transferActionInfo);
   const estimatedAmount = useAppSelector((state) => state.transfer.estimatedAmount);
   const routeError = useAppSelector((state) => state.transfer.routeError);
-  const routeFees = useAppSelector((state) => state.transfer.routeFees);
 
   const receiveAmt = useMemo(() => {
     return estimatedAmount &&
@@ -79,12 +78,7 @@ export const StarGateOption = () => {
         toTokenInfo={toTokenInfo?.['stargate']}
       />
       <EstimatedArrivalTime isError={isError} bridgeType={'stargate'} />
-      <FeesInfo
-        isError={isError}
-        bridgeType="stargate"
-        summary={routeFees?.stargate?.summary ?? '--'}
-        breakdown={routeFees?.stargate?.breakdown}
-      />
+      <FeesInfo isError={isError} bridgeType="stargate" />
       <AllowedSendAmount
         position={'static'}
         isError={isAllowSendError}
