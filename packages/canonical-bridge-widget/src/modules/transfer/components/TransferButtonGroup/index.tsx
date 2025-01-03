@@ -10,11 +10,20 @@ import { WalletButtonWrapper } from '@/modules/transfer/components/Button/Wallet
 import { TransactionSummaryModal } from '@/modules/transfer/components/Modal/TransactionSummaryModal';
 import { TransferWarningMessage } from '@/modules/transfer/components/TransferWarningMessage';
 import { MIN_SOL_TO_ENABLED_TX } from '@/core/constants';
+import { FailedToGetQuoteModal } from '@/modules/transfer/components/Modal/FailedToGetQuoteModal';
+import { useFailGetQuoteModal } from '@/modules/transfer/hooks/modal/useFailGetQuoteModal';
+import { useAppSelector } from '@/modules/store/StoreProvider';
+import { useSummaryModal } from '@/modules/transfer/hooks/modal/useSummaryModal';
 
 export const TransferButtonGroup = () => {
   const [hash, setHash] = useState<string | null>(null);
   const [chosenBridge, setChosenBridge] = useState<string | null>(null);
   const { formatMessage } = useIntl();
+
+  const isFailedGetQuoteModalOpen = useAppSelector(
+    (state) => state.transfer.isFailedGetQuoteModalOpen,
+  );
+  const isSummaryModalOpen = useAppSelector((state) => state.transfer.isSummaryModalOpen);
 
   const {
     isOpen: isSubmittedModalOpen,
@@ -36,12 +45,8 @@ export const TransferButtonGroup = () => {
     onOpen: onOpenConfirmingModal,
     onClose: onCloseConfirmingModal,
   } = useDisclosure();
-  const {
-    isOpen: isSummaryModalOpen,
-    onOpen: onOpenSummaryModal,
-    onClose: onCloseSummaryModal,
-  } = useDisclosure();
-
+  const { onCloseFailedGetQuoteModal } = useFailGetQuoteModal();
+  const { onCloseSummaryModal, onOpenSummaryModal } = useSummaryModal();
   return (
     <>
       <Flex
@@ -89,6 +94,10 @@ export const TransferButtonGroup = () => {
         onCloseConfirmingModal={onCloseConfirmingModal}
         setHash={setHash}
         setChosenBridge={setChosenBridge}
+      />
+      <FailedToGetQuoteModal
+        isOpen={isFailedGetQuoteModalOpen}
+        onClose={onCloseFailedGetQuoteModal}
       />
     </>
   );
