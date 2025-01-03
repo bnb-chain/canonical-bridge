@@ -43,7 +43,11 @@ export function TransactionSummaryModal(props: ITransactionSummaryModalProps) {
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} size={{ md: 'lg' }} isCentered>
-      <ModalOverlay className="bccb-widget-transaction-summary-modal-overlap" w={'100%'} />
+      <ModalOverlay
+        bg={'black'}
+        className="bccb-widget-transaction-summary-modal-overlap"
+        w={'100%'}
+      />
       <ModalContent
         className="bccb-widget-transaction-summary-modal-content"
         background={theme.colors[colorMode].background.body}

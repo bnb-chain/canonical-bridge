@@ -50,7 +50,13 @@ export const TransferSummary = () => {
         amount={!!sendValue ? `-${sendValue}` : ''}
         tokenSymbol={selectedToken?.symbol ?? ''}
       />
-      <TransferToIcon w={'24px'} h={'24px'} mb={{ base: '-8px' }} transform={'rotate(90deg)'} />
+      <TransferToIcon
+        w={'24px'}
+        h={'24px'}
+        mb={{ base: '-8px' }}
+        transform={'rotate(90deg)'}
+        iconOpacity="1"
+      />
       <TokenInfo
         chainIconUrl={toChain?.icon}
         tokenIconUrl={toTokenInfo?.icon}
