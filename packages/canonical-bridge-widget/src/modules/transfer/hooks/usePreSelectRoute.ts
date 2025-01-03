@@ -4,11 +4,12 @@ import { useCallback } from 'react';
 import { useAppDispatch, useAppSelector } from '@/modules/store/StoreProvider';
 import { setTransferActionInfo } from '@/modules/transfer/action';
 import { useCBridgeTransferParams } from '@/modules/aggregator/adapters/cBridge/hooks/useCBridgeTransferParams';
+import { useFailGetQuoteModal } from '@/modules/transfer/hooks/modal/useFailGetQuoteModal';
 
 export const usePreSelectRoute = () => {
   const dispatch = useAppDispatch();
   const { bridgeAddress: cBridgeAddress } = useCBridgeTransferParams();
-
+  const { onOpenFailedGetQuoteModal } = useFailGetQuoteModal();
   const selectedToken = useAppSelector((state) => state.transfer.selectedToken);
   const fromChain = useAppSelector((state) => state.transfer.fromChain);
 
@@ -63,6 +64,9 @@ export const usePreSelectRoute = () => {
             bridgeAddress: fromChain?.meson?.raw?.address as `0x${string}`,
           }),
         );
+      } else {
+        // Can not find the route
+        onOpenFailedGetQuoteModal();
       }
     },
     [
@@ -71,6 +75,7 @@ export const usePreSelectRoute = () => {
       selectedToken?.stargate?.raw?.address,
       cBridgeAddress,
       fromChain,
+      onOpenFailedGetQuoteModal,
     ],
   );
 
