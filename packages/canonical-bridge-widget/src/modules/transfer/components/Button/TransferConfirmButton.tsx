@@ -539,13 +539,7 @@ export const TransferConfirmButton = ({
     handleFailure,
   ]);
 
-  const isDisabled =
-    isLoading ||
-    isGlobalFeeLoading ||
-    !sendValue ||
-    !Number(sendValue) ||
-    !transferActionInfo ||
-    !isTransferable;
+  const isFeeLoading = isLoading || isGlobalFeeLoading || !transferActionInfo || !isTransferable;
 
   return (
     <Flex className={`bccb-widget-transfer-summary-button`} flexDir="column" w={'100%'} mt={'24px'}>
@@ -560,9 +554,11 @@ export const TransferConfirmButton = ({
           _disabled: { bg: theme.colors[colorMode].button.disabled },
         }}
         onClick={sendTx}
-        isDisabled={isDisabled}
+        isDisabled={isFeeLoading}
       >
-        {formatMessage({ id: 'transfer.button.confirm-summary' })}
+        {formatMessage({
+          id: isFeeLoading ? 'transfer.button.confirm-loading' : 'transfer.button.confirm-summary',
+        })}
       </Button>
     </Flex>
   );

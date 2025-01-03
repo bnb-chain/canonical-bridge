@@ -1,6 +1,7 @@
-import { Box, Flex, theme, useColorMode } from '@bnb-chain/space';
+import { Box, Flex, Skeleton, theme, useColorMode } from '@bnb-chain/space';
 
 import { IconImage } from '@/core/components/IconImage';
+import { useAppSelector } from '@/modules/store/StoreProvider';
 
 export const TokenInfo = ({
   chainIconUrl,
@@ -16,6 +17,7 @@ export const TokenInfo = ({
   tokenSymbol?: string;
 }) => {
   const { colorMode } = useColorMode();
+  const isGlobalFeeLoading = useAppSelector((state) => state.transfer.isGlobalFeeLoading);
 
   return (
     <Flex flexDir={'row'} justifyContent={'space-between'} w={'100%'} alignItems={'center'}>
@@ -35,15 +37,19 @@ export const TokenInfo = ({
           {chainName}
         </Box>
       </Flex>
-      <Box
-        color={
-          Number(amount) < 0
-            ? theme.colors[colorMode].support.danger[3]
-            : theme.colors[colorMode].support.success[3]
-        }
-      >
-        {amount ?? '--'} {tokenSymbol}
-      </Box>
+      {isGlobalFeeLoading ? (
+        <Skeleton height="24px" maxW="120px" w={'100%'} borderRadius={'4px'} />
+      ) : (
+        <Box
+          color={
+            Number(amount) < 0
+              ? theme.colors[colorMode].support.danger[3]
+              : theme.colors[colorMode].support.success[3]
+          }
+        >
+          {amount ?? '--'} {tokenSymbol}
+        </Box>
+      )}
     </Flex>
   );
 };

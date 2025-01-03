@@ -63,6 +63,7 @@ export const en = {
   'transfer.button.wallet-connect': 'Connect Wallet',
   'transfer.button.switch-wallet': 'Switch Wallet',
   'transfer.button.confirm-summary': 'Confirm Transfer',
+  'transfer.button.confirm-loading': 'Reloading Quotation',
 
   'transfer.warning.confirm.to.address': 'Please double check the received token address:',
   'transfer.warning.sol.balance':
