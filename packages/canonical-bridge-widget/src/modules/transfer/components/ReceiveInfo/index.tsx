@@ -177,7 +177,13 @@ export const ReceiveInfo = ({ onOpen }: ReceiveInfoProps) => {
                         },
                       }}
                     >
-                      <RefreshingButton position={'absolute'} right={'12px'} top={'10px'} />
+                      <RefreshingButton
+                        boxProps={{
+                          position: 'absolute',
+                          right: '12px',
+                          top: '10px',
+                        }}
+                      />
                     </Box>
                   }
                   {bridgeType && (

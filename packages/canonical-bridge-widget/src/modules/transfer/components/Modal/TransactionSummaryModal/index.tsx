@@ -4,6 +4,7 @@ import {
   Modal,
   ModalContent,
   ModalOverlay,
+  SkeletonCircle,
   useColorMode,
   useIntl,
   useTheme,
@@ -12,6 +13,8 @@ import {
 import { TransferSummary } from '@/modules/transfer/components/Modal/TransactionSummaryModal/TransferSummary';
 import { TransferConfirmButton } from '@/modules/transfer/components/Button/TransferConfirmButton';
 import { FeeSummary } from '@/modules/transfer/components/Modal/TransactionSummaryModal/FeeSummary';
+import { RefreshingButton } from '@/modules/transfer/components/Button/RefreshingButton';
+import { useAppSelector } from '@/modules/store/StoreProvider';
 
 interface ITransactionSummaryModalProps {
   isOpen: boolean;
@@ -40,6 +43,7 @@ export function TransactionSummaryModal(props: ITransactionSummaryModalProps) {
   const theme = useTheme();
   const { colorMode } = useColorMode();
   const { formatMessage } = useIntl();
+  const isGlobalLoading = useAppSelector((state) => state.transfer.isGlobalFeeLoading);
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} size={{ md: 'lg' }} isCentered>
@@ -70,7 +74,18 @@ export function TransactionSummaryModal(props: ITransactionSummaryModalProps) {
           borderBottom={`1px solid ${theme.colors[colorMode].border['3']}`}
           flexShrink={0}
         >
-          <Flex boxSize={'24px'}></Flex>
+          <Flex boxSize={'24px'}>
+            {isGlobalLoading ? (
+              <SkeletonCircle className="skeleton" w={'24px'} h={'24px'} />
+            ) : (
+              <RefreshingButton
+                iconProps={{
+                  h: '24px',
+                  w: '24px',
+                }}
+              />
+            )}
+          </Flex>
           {formatMessage({ id: 'modal.summary.title' })}
           <CloseIcon
             boxSize={'24px'}

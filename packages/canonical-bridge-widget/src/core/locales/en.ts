@@ -89,6 +89,11 @@ export const en = {
 
   'modal.summary.title': 'Confirm Transaction',
 
+  'modal.quote.error.title': 'Failed to Get the Quotation',
+  'modal.quote.error.desc':
+    'We’ve encountered an unknown issue on this route. Please try again later.',
+  'modal.quote.error.button.close': 'OK',
+
   'select-modal.tag.incompatible': 'Incompatible',
   'select-modal.search.no-result.title': 'No result found',
   'select-modal.search.no-result.warning':

@@ -1,11 +1,17 @@
-import { Box, BoxProps, useColorMode, useTheme } from '@bnb-chain/space';
+import { Box, BoxProps, IconProps, useColorMode, useTheme } from '@bnb-chain/space';
 
 import { useAppDispatch, useAppSelector } from '@/modules/store/StoreProvider';
 import { setIsManuallyReload, setIsRefreshing } from '@/modules/transfer/action';
 import { RefreshingIcon } from '@/modules/transfer/components/LoadingImg/RefreshingIcon';
 import { useBridgeConfig } from '@/index';
 
-export const RefreshingButton = (props: BoxProps) => {
+export const RefreshingButton = ({
+  iconProps,
+  boxProps,
+}: {
+  iconProps?: IconProps;
+  boxProps?: BoxProps;
+}) => {
   const { colorMode } = useColorMode();
   const theme = useTheme();
   const dispatch = useAppDispatch();
@@ -30,9 +36,9 @@ export const RefreshingButton = (props: BoxProps) => {
         dispatch(setIsManuallyReload(true));
         dispatch(setIsRefreshing(true));
       }}
-      {...props}
+      {...boxProps}
     >
-      {refreshingIcon ?? <RefreshingIcon />}
+      {refreshingIcon ?? <RefreshingIcon {...iconProps} />}
     </Box>
   ) : null;
 };
