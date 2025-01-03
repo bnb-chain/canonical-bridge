@@ -55,7 +55,7 @@ export const TransferSummary = () => {
         h={'24px'}
         mb={{ base: '-8px' }}
         transform={'rotate(90deg)'}
-        iconOpacity="1"
+        iconopacity="1"
       />
       <TokenInfo
         chainIconUrl={toChain?.icon}

@@ -24,8 +24,8 @@ export const WarningMessage = ({ text, ...restProps }: { text: React.ReactNode }
       <InfoIcon
         w={'16px'}
         h={'16px'}
-        iconColor={theme.colors[colorMode].text.warning}
-        iconBgColor={theme.colors[colorMode].support.warning[4]}
+        iconcolor={theme.colors[colorMode].text.warning}
+        iconbgcolor={theme.colors[colorMode].support.warning[4]}
       />
       {text}
     </Flex>
