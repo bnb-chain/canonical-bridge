@@ -60,41 +60,41 @@ export class Web3Service {
   }
 
   async getTransferConfigsForAll() {
-    try {
-      const { data } = await this.httpService.axiosRef.get<ITransferConfigsForAll>(
-        `${CBRIDGE_ENDPOINT}/v2/getTransferConfigsForAll`,
-      );
-      return data;
-    } catch (e) {
-      console.error(`Failed to retrieve cBridge data at ${new Date().getTime()}`, e.message);
-    }
+    // try {
+    const { data } = await this.httpService.axiosRef.get<ITransferConfigsForAll>(
+      `${CBRIDGE_ENDPOINT}/v2/getTransferConfigsForAll`,
+    );
+    return data;
+    // } catch (e) {
+    //   console.error(`Failed to retrieve cBridge data at ${new Date().getTime()}`, e.message);
+    // }
   }
 
   async getDebridgeChains() {
-    try {
-      const { data } = await this.httpService.axiosRef.get<{ chains: IDebridgeChain[] }>(
-        `${DEBRIDGE_ENDPOINT}/supported-chains-info`,
-      );
+    // try {
+    const { data } = await this.httpService.axiosRef.get<{ chains: IDebridgeChain[] }>(
+      `${DEBRIDGE_ENDPOINT}/supported-chains-info`,
+    );
 
-      return data;
-    } catch (e) {
-      console.error(`Failed to retrieve DeBridge chain data at ${new Date().getTime()}`, e.message);
-    }
+    return data;
+    // } catch (e) {
+    //   console.error(`Failed to retrieve DeBridge chain data at ${new Date().getTime()}`, e.message);
+    // }
   }
 
   async getDebridgeChainTokens(chainId: number) {
-    try {
-      const { data } = await this.httpService.axiosRef.get<{
-        tokens: Record<string, IDebridgeToken>;
-      }>(`${DEBRIDGE_ENDPOINT}/token-list?chainId=${chainId}`);
+    // try {
+    const { data } = await this.httpService.axiosRef.get<{
+      tokens: Record<string, IDebridgeToken>;
+    }>(`${DEBRIDGE_ENDPOINT}/token-list?chainId=${chainId}`);
 
-      return data;
-    } catch (e) {
-      console.error(
-        `Failed to retrieve DeBridge token data from ${chainId} at ${new Date().getTime()}`,
-        e.message,
-      );
-    }
+    return data;
+    // } catch (e) {
+    //   console.error(
+    //     `Failed to retrieve DeBridge token data from ${chainId} at ${new Date().getTime()}`,
+    //     e.message,
+    //   );
+    // }
   }
 
   async getStargateConfigs() {
