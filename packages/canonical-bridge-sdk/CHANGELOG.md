@@ -1,5 +1,14 @@
 # @bnb-chain/canonical-bridge-sdk
 
+## 0.4.6
+
+### Patch Changes
+
+- Use stargate & meson api to fetch chain & token config
+- 2538636: Remove duplicated tokens for stargate
+- c4f3ee7: Update token element's info
+- 7caf17e: Fix meson token display symbol issue
+
 ## 0.4.6-alpha.3
 
 ### Patch Changes
