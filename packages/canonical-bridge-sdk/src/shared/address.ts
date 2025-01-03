@@ -1,3 +1,7 @@
+import {
+  EVM_NATIVE_TOKEN_ADDRESS,
+  SOLANA_NATIVE_TOKEN_ADDRESS,
+} from '@/constants';
 import { ChainType } from '@/shared/types';
 
 export function isSameAddress(A?: string, B?: string) {
@@ -19,10 +23,10 @@ export function isNativeToken(
   chainType: ChainType = 'evm'
 ) {
   if (chainType === 'solana') {
-    return tokenAddress === '11111111111111111111111111111111';
+    return tokenAddress === SOLANA_NATIVE_TOKEN_ADDRESS;
   }
 
-  return tokenAddress === '0x0000000000000000000000000000000000000000';
+  return tokenAddress === EVM_NATIVE_TOKEN_ADDRESS;
 }
 
 export function isSolanaAddress(address?: string) {

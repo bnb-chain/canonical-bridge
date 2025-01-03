@@ -1,6 +1,7 @@
+import { IBridgeChain, IBridgeToken } from '@bnb-chain/canonical-bridge-sdk';
+
 import * as actions from '@/modules/transfer/action';
 import { createReducer } from '@/modules/store/createReducer';
-import { IBridgeChain, IBridgeToken } from '@/modules/aggregator/types';
 import {
   IBridgeError,
   IEstimatedAmount,

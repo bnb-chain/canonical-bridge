@@ -12,9 +12,9 @@ import {
   Portal,
 } from '@bnb-chain/space';
 import { useMemo } from 'react';
+import { ChainType, IBridgeTokenBaseInfo } from '@bnb-chain/canonical-bridge-sdk';
 
 import { isNativeToken } from '@/core/utils/address.ts';
-import { ChainType, IBridgeTokenBaseInfo } from '@/modules/aggregator';
 
 interface TokenTooltipProps {
   tokenLinkUrl: string;

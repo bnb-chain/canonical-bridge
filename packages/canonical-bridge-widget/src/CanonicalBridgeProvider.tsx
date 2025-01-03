@@ -3,15 +3,15 @@ import { ColorMode, DeepPartial, IntlProvider, theme } from '@bnb-chain/space';
 import { merge } from 'lodash';
 import { breakpoints } from '@bnb-chain/space/dist/modules/theme/foundations/breakpoints';
 import { theme as spaceTheme } from '@bnb-chain/space';
-
 import {
   ChainType,
   IBridgeChain,
-  IBridgeProvider,
   IBridgeToken,
   IChainConfig,
   IExternalChain,
-} from '@/modules/aggregator/types';
+} from '@bnb-chain/canonical-bridge-sdk';
+import { IBridgeProvider } from '@bnb-chain/canonical-bridge-sdk/dist/adapters/base/types';
+
 import { StoreProvider } from '@/modules/store/StoreProvider';
 import { ThemeProvider } from '@/core/theme/ThemeProvider';
 import { AggregatorProvider } from '@/modules/aggregator/components/AggregatorProvider';

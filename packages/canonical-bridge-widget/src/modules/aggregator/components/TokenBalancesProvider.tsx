@@ -11,10 +11,11 @@ import { setIsLoadingTokenBalances, setTokenBalances } from '@/modules/aggregato
 import { useTronWeb } from '@/core/hooks/useTronWeb';
 import { useSolanaAccount } from '@/modules/wallet/hooks/useSolanaAccount';
 import { useTronAccount } from '@/modules/wallet/hooks/useTronAccount';
-import { useAggregator } from '@/modules/aggregator/components/AggregatorProvider';
+import { useBridgeConfig } from '@/index';
 
 export function TokenBalancesProvider() {
-  const { chainConfigs } = useAggregator();
+  const bridgeConfig = useBridgeConfig();
+
   const { address } = useAccount();
   const { address: solanaAddress } = useSolanaAccount();
   const { address: tronAddress } = useTronAccount();
@@ -37,13 +38,17 @@ export function TokenBalancesProvider() {
     refetchInterval: REFETCH_INTERVAL,
     queryKey: ['tokenBalances', fromChain?.id, toChain?.id, address, solanaAddress, tronAddress],
     queryFn: async () => {
+      const chainConfig = bridgeConfig.transfer.chainConfigs?.find(
+        (item) => item.id === fromChain?.id,
+      );
+
       const balances = await getTokenBalances({
         chainType: fromChain?.chainType,
         tokens,
+        chainConfig,
         evmParams: {
           account: address,
           chain: chains?.find((item) => item.id === fromChain?.id),
-          chainConfig: chainConfigs?.find((item) => item.id === fromChain?.id),
         },
         solanaParams: {
           account: solanaAddress,

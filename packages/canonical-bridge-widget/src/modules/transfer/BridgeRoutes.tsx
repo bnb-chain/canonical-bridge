@@ -11,7 +11,7 @@ export function BridgeRoutes() {
   const dispatch = useAppDispatch();
 
   const isBase = useBreakpointValue({ base: true, lg: false }) ?? false;
-  const { routeContentBottom } = useBridgeConfig();
+  const bridgeConfig = useBridgeConfig();
   const isRoutesModalOpen = useAppSelector((state) => state.transfer.isRoutesModalOpen);
 
   if (isBase) {
@@ -26,5 +26,5 @@ export function BridgeRoutes() {
     );
   }
 
-  return <TransferOverview routeContentBottom={routeContentBottom} />;
+  return <TransferOverview routeContentBottom={bridgeConfig.components.routeContentBottom} />;
 }

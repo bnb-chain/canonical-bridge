@@ -1,11 +1,11 @@
 import { Center, Flex, Link, useColorMode, useIntl, useTheme } from '@bnb-chain/space';
 import React from 'react';
+import { IBridgeTokenBaseInfo } from '@bnb-chain/canonical-bridge-sdk';
 
 import { TokenInfoTooltip } from '@/modules/transfer/components/TransferOverview/RouteInfo/TokenInfoTooltip';
 import { IconImage } from '@/core/components/IconImage';
 import { useAppSelector } from '@/modules/store/StoreProvider';
 import { formatTokenUrl } from '@/core/utils/string';
-import { IBridgeTokenBaseInfo } from '@/modules/aggregator/types';
 import { AlertIcon } from '@/core/components/icons/AlertIcon';
 import { InfoTooltip } from '@/core/components/InfoTooltip';
 import { formatAppAddress, isNativeToken } from '@/core/utils/address';

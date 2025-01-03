@@ -336,3 +336,8 @@ export interface ICBridgeTokenValidateParams {
   amount: number;
   cBridgeEndpoint: string;
 }
+
+export interface ICBridgeMaxMinSendAmt {
+  max: string;
+  min: string;
+}

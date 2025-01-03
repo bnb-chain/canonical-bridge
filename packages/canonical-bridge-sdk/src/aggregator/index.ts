@@ -16,6 +16,7 @@ import {
   BridgeType,
   IBridgeChain,
   IBridgeToken,
+  INativeCurrency,
   ValueOf,
 } from '@/shared/types';
 
@@ -48,28 +49,40 @@ export class Aggregator {
     this.adapters = providers
       .filter((item) => item.config)
       .map((item) => {
-        const params: IBaseAdapterOptions<any> = {
+        const adapterOptions: IBaseAdapterOptions<any> = {
           ...commonOptions,
           ...item,
         };
 
         switch (item.id) {
           case 'cBridge':
-            return new CBridgeAdapter(params);
+            return new CBridgeAdapter(adapterOptions);
           case 'deBridge':
-            return new DeBridgeAdapter(params);
+            return new DeBridgeAdapter(adapterOptions);
           case 'layerZero':
-            return new LayerZeroAdapter(params);
+            return new LayerZeroAdapter(adapterOptions);
           case 'meson':
-            return new MesonAdapter(params);
+            return new MesonAdapter(adapterOptions);
           default:
-            return new StargateAdapter(params);
+            return new StargateAdapter(adapterOptions);
         }
       });
   }
 
-  getAdapter<P extends BridgeType>(id: P) {
+  public getAdapter<P extends BridgeType>(id: P) {
     return this.adapters.find((item) => item.id === id) as Adapters[P];
+  }
+
+  public getNativeCurrencies() {
+    const nativeCurrencies: Record<string, INativeCurrency> = {};
+
+    this.options.chainConfigs?.forEach((chain) => {
+      if (chain.id && chain.nativeCurrency) {
+        nativeCurrencies[chain.id] = chain.nativeCurrency;
+      }
+    });
+
+    return nativeCurrencies;
   }
 
   public getFromChains() {

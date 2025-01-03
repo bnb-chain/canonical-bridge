@@ -1,6 +1,6 @@
 import { useAccount } from 'wagmi';
+import { ChainType } from '@bnb-chain/canonical-bridge-sdk';
 
-import { ChainType } from '@/modules/aggregator';
 import { useFromChains } from '@/modules/aggregator/hooks/useFromChains';
 import { useSelection } from '@/modules/aggregator/hooks/useSelection';
 import { useEvmSwitchChain } from '@/modules/wallet/hooks/useEvmSwitchChain';

@@ -19,6 +19,7 @@ export const CBRIDGE_ENDPOINT = 'https://cbridge-prod2.celer.app/v2';
 export const DEBRIDGE_ENDPOINT = 'https://deswap.debridge.finance/v1.0';
 export const STARGATE_ENDPOINT = 'https://mainnet.stargate-api.com/v1/metadata?version=v2';
 export const MESON_ENDPOINT = 'https://relayer.meson.fi/api/v1';
+export const DEBRIDGE_STATS_ENDPOINT = 'https://stats-api.dln.trade/api';
 
 export const nativeTokenMap = {
   1: 'ETH',

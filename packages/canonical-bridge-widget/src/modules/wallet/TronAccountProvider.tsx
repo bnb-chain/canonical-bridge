@@ -1,3 +1,4 @@
+import { TRON_CHAIN_ID } from '@bnb-chain/canonical-bridge-sdk';
 import { useWallet as useTronWallet } from '@tronweb3/tronwallet-adapter-react-hooks';
 import React, { useMemo } from 'react';
 import { useEffect, useState } from 'react';
@@ -7,8 +8,6 @@ export interface TronAccountContextProps {
   chainId?: number;
   isConnected: boolean;
 }
-
-const TRON_CHAIN_ID = 728126428;
 
 export const TronAccountContext = React.createContext({} as TronAccountContextProps);
 

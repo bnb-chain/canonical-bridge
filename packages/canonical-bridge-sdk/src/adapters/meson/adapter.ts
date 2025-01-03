@@ -5,11 +5,9 @@ import {
   IMesonToken,
   IMesonTransferConfig,
 } from '@/adapters/meson/types';
-import { EVM_NATIVE_TOKEN_ADDRESS } from '@/constants';
+import { EVM_NATIVE_TOKEN_ADDRESS, TRON_CHAIN_ID } from '@/constants';
 import { isNativeToken } from '@/shared/address';
 import { BridgeType } from '@/shared/types';
-
-export const TRON_CHAIN_ID = 728126428;
 
 export class MesonAdapter extends BaseAdapter<
   IMesonTransferConfig,

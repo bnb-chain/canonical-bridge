@@ -1,12 +1,12 @@
 import { useWallet as useSolanaWallet } from '@solana/wallet-adapter-react';
 
-import { useAggregator } from '@/modules/aggregator/components/AggregatorProvider';
+import { useBridgeConfig } from '@/index';
 
 export function useSolanaAccount() {
   const { connected, publicKey } = useSolanaWallet();
-  const { chainConfigs } = useAggregator();
+  const bridgeConfig = useBridgeConfig();
 
-  const solana = chainConfigs.find((e) => e.chainType === 'solana');
+  const solana = bridgeConfig.transfer.chainConfigs.find((e) => e.chainType === 'solana');
 
   return {
     publicKey,

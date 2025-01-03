@@ -4,26 +4,30 @@ import * as SPLToken from '@solana/spl-token';
 import { Connection, LAMPORTS_PER_SOL, PublicKey } from '@solana/web3.js';
 import { TOKEN_PROGRAM_ID } from '@solana/spl-token';
 import axios from 'axios';
+import {
+  ChainType,
+  IBridgeToken,
+  IChainConfig,
+  isSameAddress,
+} from '@bnb-chain/canonical-bridge-sdk';
 
-import { ChainType, IBridgeToken, IChainConfig } from '@/modules/aggregator/types';
 import { ERC20_TOKEN } from '@/core/contract/abi';
-import { isChainOrTokenCompatible } from '@/modules/aggregator/shared/isChainOrTokenCompatible';
-import { isSameAddress } from '@/core/utils/address';
 import { EVM_NATIVE_TOKEN_ADDRESS, SOLANA_NATIVE_TOKEN_ADDRESS } from '@/core/constants';
 
 export async function getTokenBalances({
   chainType,
   tokens,
+  chainConfig,
   evmParams,
   solanaParams,
   tronParams,
 }: {
   chainType?: ChainType;
   tokens?: IBridgeToken[];
+  chainConfig?: IChainConfig;
   evmParams: {
     account?: string;
     chain?: Chain;
-    chainConfig?: IChainConfig;
   };
   solanaParams: {
     account?: string;
@@ -34,7 +38,7 @@ export async function getTokenBalances({
     tronWeb?: TronWeb;
   };
 }) {
-  const compatibleTokens = tokens?.filter((item) => isChainOrTokenCompatible(item));
+  const compatibleTokens = tokens?.filter((item) => item.isCompatible);
 
   if (chainType === 'solana') {
     return await getSolanaTokenBalances({
@@ -55,7 +59,7 @@ export async function getTokenBalances({
     account: evmParams.account,
     chain: evmParams.chain,
     tokens: compatibleTokens,
-    chainConfig: evmParams.chainConfig,
+    chainConfig,
   });
 }
 
@@ -75,7 +79,7 @@ async function getEvmTokenBalances({
       return {};
     }
 
-    const rpcUrl = chainConfig?.rpcUrl;
+    const rpcUrl = chainConfig?.rpcUrls?.default.http?.[0];
     const client = createPublicClient({
       chain,
       transport: http(rpcUrl),

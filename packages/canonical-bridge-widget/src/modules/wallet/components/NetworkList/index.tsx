@@ -2,6 +2,7 @@ import { Flex, useColorMode, useIntl, useTheme, Text, Typography, Box } from '@b
 import { TickIcon, InfoCircleIcon } from '@bnb-chain/icons';
 import { useAccount } from 'wagmi';
 import { useMemo, useRef } from 'react';
+import { ChainType } from '@bnb-chain/canonical-bridge-sdk';
 
 import { IconImage } from '@/core/components/IconImage';
 import { useAppSelector } from '@/modules/store/StoreProvider';
@@ -19,7 +20,6 @@ import { WalletConnectButton } from '@/modules/transfer/components/Button/Wallet
 import { useSolanaAccount, useTronAccount } from '@/index';
 import { useNeedSwitchChain } from '@/modules/wallet/hooks/useNeedSwitchChain';
 import { useAutoSelectFromChain } from '@/modules/wallet/hooks/useAutoSelectFromChain';
-import { ChainType } from '@/modules/aggregator';
 
 export interface NetworkListProps {
   onClickNetwork?: (params: { chainType: ChainType; chainId: number }) => void;

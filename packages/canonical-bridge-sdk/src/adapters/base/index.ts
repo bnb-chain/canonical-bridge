@@ -44,11 +44,12 @@ export abstract class BaseAdapter<G extends object, C = unknown, T = unknown> {
     this.bridgedTokenGroups = options.bridgedTokenGroups ?? [];
 
     this.assetPrefix = options?.assetPrefix ?? '';
-    this.nativeCurrencies = options?.nativeCurrencies ?? {};
     this.brandChains = options?.brandChains ?? [];
     this.externalChains = options?.externalChains ?? [];
     this.displayTokenSymbols = options?.displayTokenSymbols ?? {};
     this.chainConfigs = options?.chainConfigs ?? [];
+
+    this.nativeCurrencies = options?.nativeCurrencies ?? {};
 
     this.init();
   }

@@ -18,7 +18,7 @@ export function BridgeTransfer() {
 
   useDefaultSelectedInfo();
 
-  const { appearance, routeContentBottom } = useBridgeConfig();
+  const bridgeConfig = useBridgeConfig();
 
   return (
     <>
@@ -37,7 +37,7 @@ export function BridgeTransfer() {
         gap={'24px'}
         position="relative"
       >
-        {appearance.bridgeTitle && (
+        {bridgeConfig.bridgeTitle && (
           <Typography
             className="bccb-widget-transfer-widget-title"
             variant={'heading'}
@@ -47,7 +47,7 @@ export function BridgeTransfer() {
             textAlign={'center'}
             mb={'-4px'}
           >
-            {appearance.bridgeTitle}
+            {bridgeConfig.bridgeTitle}
           </Typography>
         )}
 
@@ -58,8 +58,10 @@ export function BridgeTransfer() {
         <Flex flexDir="column">
           <TransferButtonGroup />
         </Flex>
-        {routeContentBottom && (
-          <Box display={{ base: 'block', lg: 'none' }}>{routeContentBottom}</Box>
+        {bridgeConfig.components.routeContentBottom && (
+          <Box display={{ base: 'block', lg: 'none' }}>
+            {bridgeConfig.components.routeContentBottom}
+          </Box>
         )}
       </Flex>
     </>
