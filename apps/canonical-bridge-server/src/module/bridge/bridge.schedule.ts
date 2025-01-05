@@ -10,7 +10,7 @@ export class BridgeSchedule implements OnModuleInit {
 
   constructor(@InjectQueue(Queues.SyncBridge) private syncBridge: Queue) {}
 
-  @Cron(CronExpression.EVERY_5_MINUTES)
+  @Cron(CronExpression.EVERY_3_HOURS)
   async syncBridgeInfo() {
     this.logger.log('syncBridgeInfo');
     await this.syncBridge.add(Tasks.fetchCbridge, null, {
