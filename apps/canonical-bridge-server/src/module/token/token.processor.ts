@@ -1,6 +1,6 @@
 import { InjectQueue, Processor, WorkerHost } from '@nestjs/bullmq';
 import { Inject, Logger } from '@nestjs/common';
-import { CACHE_KEY, JOB_KEY, Queues, Tasks, TIME, TOKEN_REQUEST_LIMIT } from '@/common/constants';
+import { CACHE_KEY, JOB_KEY, Queues, Tasks, TOKEN_REQUEST_LIMIT } from '@/common/constants';
 import { Job, Queue } from 'bullmq';
 import { ITokenJob } from '@/module/token/token.interface';
 import { Web3Service } from '@/shared/web3/web3.service';
@@ -57,7 +57,7 @@ export class TokenProcessor extends WorkerHost {
         return r;
       }, {});
 
-    await this.cache.set(`${CACHE_KEY.LLAMA_CONFIG}`, config, TIME.MONTH);
+    await this.cache.set(`${CACHE_KEY.LLAMA_CONFIG}`, config);
     return config;
   }
 
@@ -79,7 +79,7 @@ export class TokenProcessor extends WorkerHost {
         return r;
       }, {});
 
-    await this.cache.set(`${CACHE_KEY.CMC_CONFIG}`, config, TIME.MONTH);
+    await this.cache.set(`${CACHE_KEY.CMC_CONFIG}`, config);
     return config;
   }
 
@@ -101,7 +101,7 @@ export class TokenProcessor extends WorkerHost {
         {} as Record<string, string>,
       );
 
-    await this.cache.set(`${CACHE_KEY.PLATFORM_MAPPING}`, mapping, TIME.MONTH);
+    await this.cache.set(`${CACHE_KEY.PLATFORM_MAPPING}`, mapping);
     this.tokenService.syncCoingeckoTokens(coins, platforms);
   }
 
