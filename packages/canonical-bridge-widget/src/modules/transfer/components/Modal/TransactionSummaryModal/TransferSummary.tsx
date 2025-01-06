@@ -8,7 +8,7 @@ import { TransferToIcon } from '@/core/components/icons/TransferToIcon';
 import { TokenInfo } from '@/modules/transfer/components/Modal/TransactionSummaryModal/TokenInfo';
 import { formatTokenUrl } from '@/core/utils/string';
 import { WarningMessage } from '@/modules/transfer/components/TransferWarningMessage/WarningMessage';
-import { formatAppAddress } from '@/core/utils/address';
+import { formatAppAddress, isNativeToken } from '@/core/utils/address';
 
 export const TransferSummary = () => {
   const { colorMode } = useColorMode();
@@ -34,6 +34,8 @@ export const TransferSummary = () => {
     return null;
   }, [getSortedReceiveAmount, transferActionInfo, sendValue]);
 
+  const isNative = useMemo(() => isNativeToken(toTokenInfo?.address), [toTokenInfo?.address]);
+
   return (
     <Flex
       flexDir={'column'}
@@ -53,7 +55,7 @@ export const TransferSummary = () => {
       <TransferToIcon
         w={'24px'}
         h={'24px'}
-        mb={{ base: '-8px' }}
+        mb={{ base: '-4px' }}
         transform={'rotate(90deg)'}
         iconopacity="1"
       />
@@ -67,20 +69,32 @@ export const TransferSummary = () => {
       <WarningMessage
         text={
           <span>
-            {formatMessage({ id: 'transfer.warning.confirm.to.address' })}
-            <Link
-              isExternal
-              href={formatTokenUrl(toChain?.tokenUrlPattern, toTokenInfo?.address)}
-              display="inline-block"
-              overflowWrap={'break-word'}
-              pointerEvents={'all'}
-              color="currentColor"
-              ml={'2px'}
-            >
-              {isBase
-                ? formatAppAddress({ address: toTokenInfo?.address, isTruncated: true })
-                : toTokenInfo?.address}
-            </Link>
+            {!isNative ? (
+              <>
+                <span style={{ marginRight: '2px' }}>
+                  {formatMessage({ id: 'transfer.warning.confirm.to.address' })}
+                </span>
+                <Link
+                  isExternal
+                  href={formatTokenUrl(toChain?.tokenUrlPattern, toTokenInfo?.address)}
+                  display="inline-block"
+                  overflowWrap={'break-word'}
+                  pointerEvents={'all'}
+                  color="currentColor"
+                >
+                  {isBase
+                    ? formatAppAddress({ address: toTokenInfo?.address, isTruncated: true })
+                    : toTokenInfo?.address}
+                </Link>
+              </>
+            ) : (
+              <>
+                <span style={{ marginRight: '2px' }}>
+                  {formatMessage({ id: 'transfer.warning.confirm.to.native.token.address' })}
+                </span>
+                <span>{toTokenInfo?.symbol?.toUpperCase()}</span>
+              </>
+            )}
           </span>
         }
       />

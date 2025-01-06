@@ -21,19 +21,19 @@ export const TokenInfo = ({
 
   return (
     <Flex flexDir={'row'} justifyContent={'space-between'} w={'100%'} alignItems={'center'}>
-      <Flex flexDir={'row'} gap={'14px'} alignItems={'center'}>
+      <Flex flexDir={'row'} alignItems={'center'}>
         <Box w={'32px'} h={'32px'} position={'relative'}>
           <IconImage
             position={'absolute'}
             bottom={'-4px'}
             right={'-4px'}
             boxSize="16px"
-            src={chainIconUrl}
+            src={tokenIconUrl}
             flexShrink={0}
           />
-          <IconImage boxSize="32px" src={tokenIconUrl} flexShrink={0} />
+          <IconImage boxSize="32px" src={chainIconUrl} flexShrink={0} />
         </Box>
-        <Box fontSize={'16px'} fontWeight={700}>
+        <Box fontSize={'16px'} py={'8px'} fontWeight={700}>
           {chainName}
         </Box>
       </Flex>
@@ -41,6 +41,8 @@ export const TokenInfo = ({
         <Skeleton height="24px" maxW="120px" w={'100%'} borderRadius={'4px'} />
       ) : (
         <Box
+          wordBreak={'break-all'}
+          py={'8px'}
           color={
             Number(amount) < 0
               ? theme.colors[colorMode].support.danger[3]

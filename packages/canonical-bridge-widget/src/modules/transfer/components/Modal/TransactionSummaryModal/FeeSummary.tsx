@@ -13,7 +13,13 @@ export const FeeSummary = () => {
   const bridgeType = useMemo(() => transferActionInfo?.bridgeType, [transferActionInfo]);
 
   return (
-    <Box mt={'8px'} p={'12px'} borderRadius={'8px'} bg={theme.colors[colorMode].background.modal}>
+    <Box
+      mt={'8px'}
+      p={'12px'}
+      h={['auto', 'auto', '60px']}
+      borderRadius={'8px'}
+      bg={theme.colors[colorMode].background.modal}
+    >
       {isGlobalFeeLoading ? (
         <Flex flexDir={'column'} gap={'8px'}>
           <Skeleton height="12px" maxW="333px" w={'100%'} borderRadius={'4px'} />

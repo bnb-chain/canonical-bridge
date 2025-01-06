@@ -66,6 +66,8 @@ export const en = {
   'transfer.button.confirm-loading': 'Reloading Quotation',
 
   'transfer.warning.confirm.to.address': 'Please double check the received token address:',
+  'transfer.warning.confirm.to.native.token.address':
+    'Please double check the token received is native token:',
   'transfer.warning.sol.balance':
     'At least {min} SOL is required to proceed with this transaction.',
 
