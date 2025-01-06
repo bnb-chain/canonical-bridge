@@ -31,6 +31,7 @@ export interface ITransferState {
   isRoutesModalOpen: boolean;
   isFailedGetQuoteModalOpen: boolean;
   isSummaryModalOpen: boolean;
+  refreshAnimationProgress: number;
 }
 
 const initStates: ITransferState = {
@@ -58,6 +59,7 @@ const initStates: ITransferState = {
   isManuallyReload: false,
   isFailedGetQuoteModalOpen: false,
   isSummaryModalOpen: false,
+  refreshAnimationProgress: 0,
 };
 
 export default createReducer(initStates, (builder) => {
@@ -155,5 +157,9 @@ export default createReducer(initStates, (builder) => {
   builder.addCase(actions.setIsSummaryModalOpen, (state, { payload }) => ({
     ...state,
     isSummaryModalOpen: payload,
+  }));
+  builder.addCase(actions.setRefreshAnimationProgress, (state, { payload }) => ({
+    ...state,
+    refreshAnimationProgress: payload,
   }));
 });
