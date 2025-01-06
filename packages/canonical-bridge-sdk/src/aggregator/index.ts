@@ -28,7 +28,8 @@ export interface Adapters {
   stargate: StargateAdapter;
 }
 
-export interface AggregatorOptions extends IBaseAdapterCommonOptions {
+export interface AggregatorOptions
+  extends Omit<IBaseAdapterCommonOptions, 'nativeCurrencies'> {
   providers: IBridgeProvider[];
   chainSorter?: (a: IBridgeChain, b: IBridgeChain) => number;
   tokenSorter?: (a: IBridgeToken, b: IBridgeToken) => number;
@@ -37,19 +38,35 @@ export interface AggregatorOptions extends IBaseAdapterCommonOptions {
 export class Aggregator {
   private options: AggregatorOptions;
   public adapters: Array<ValueOf<Adapters>> = [];
+  public nativeCurrencies: Record<string, INativeCurrency> = {};
 
   constructor(options: AggregatorOptions) {
     this.options = {
       ...options,
     };
 
+    this.initNativeCurrencies();
+    this.initAdapters();
+  }
+
+  private initNativeCurrencies() {
+    this.nativeCurrencies = {};
+    this.options.chainConfigs?.forEach((chain) => {
+      if (chain.id && chain.nativeCurrency) {
+        this.nativeCurrencies[chain.id] = chain.nativeCurrency;
+      }
+    });
+  }
+
+  private initAdapters() {
     const { providers, chainSorter, tokenSorter, ...commonOptions } =
       this.options;
 
     this.adapters = providers
-      .filter((item) => item.config)
+      .filter((item) => !!item.config)
       .map((item) => {
         const adapterOptions: IBaseAdapterOptions<any> = {
+          nativeCurrencies: this.nativeCurrencies,
           ...commonOptions,
           ...item,
         };
@@ -70,19 +87,14 @@ export class Aggregator {
   }
 
   public getAdapter<P extends BridgeType>(id: P) {
-    return this.adapters.find((item) => item.id === id) as Adapters[P];
+    return this.adapters.find((item) => item.id === id) as
+      | Adapters[P]
+      | undefined;
   }
 
-  public getNativeCurrencies() {
-    const nativeCurrencies: Record<string, INativeCurrency> = {};
-
-    this.options.chainConfigs?.forEach((chain) => {
-      if (chain.id && chain.nativeCurrency) {
-        nativeCurrencies[chain.id] = chain.nativeCurrency;
-      }
-    });
-
-    return nativeCurrencies;
+  public getNativeCurrency(chainId?: number) {
+    if (!chainId) return;
+    return this.nativeCurrencies?.[chainId];
   }
 
   public getFromChains() {

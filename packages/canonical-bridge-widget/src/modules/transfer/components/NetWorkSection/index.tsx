@@ -3,11 +3,13 @@ import { Flex, Typography, useColorMode, useIntl, useTheme } from '@bnb-chain/sp
 import { TransferToIcon } from '@/core/components/icons/TransferToIcon';
 import { FromSection } from '@/modules/transfer/components/FromSection';
 import { ToSection } from '@/modules/transfer/components/ToSection';
+import { useSelection } from '@/modules/aggregator/hooks/useSelection';
 
 export const NetWorkSection = () => {
   const { formatMessage } = useIntl();
   const { colorMode } = useColorMode();
   const theme = useTheme();
+  const { exchange } = useSelection();
 
   return (
     <Flex className="bccb-widget-network" flexDir={'column'} gap={'8px'}>
@@ -57,6 +59,7 @@ export const NetWorkSection = () => {
           h={'24px'}
           mb={{ base: '-8px', md: 0 }}
           transform={{ base: 'rotate(90deg)', md: 'none' }}
+          onClick={() => exchange()}
         />
         <ToSection />
       </Flex>

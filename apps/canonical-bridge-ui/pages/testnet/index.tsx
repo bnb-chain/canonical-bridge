@@ -1,56 +1,53 @@
 import {
   CanonicalBridgeProvider,
-  ICanonicalBridgeConfig,
   BridgeTransfer,
   BridgeRoutes,
+  ICustomizedBridgeConfig,
 } from '@bnb-chain/canonical-bridge-widget';
+import { useMemo } from 'react';
 
-import { useTestnetTransferConfig } from '@/token-config/testnet/useTestnetTransferConfig';
-import { testnetChains } from '@/token-config/testnet/testnetChains';
-import { dark } from '@/core/theme/dark';
-import { light } from '@/core/theme/light';
+import { chains } from '@/token-config/mainnet/chains';
 import { env } from '@/core/env';
-import { WalletProvider } from '@/core/wallet/WalletProvider';
 import { useWalletModal } from '@/core/wallet/hooks/useWalletModal';
+import { WalletProvider } from '@/core/wallet/WalletProvider';
 import { Layout } from '@/core/components/Layout';
+import { useTestnetTransferConfig } from '@/token-config/testnet/useTestnetTransferConfig';
+import { light } from '@/core/theme/light';
+import { dark } from '@/core/theme/dark';
 
-export const bridgeConfig: ICanonicalBridgeConfig = {
-  assetPrefix: env.ASSET_PREFIX,
-  appearance: {
-    bridgeTitle: 'BNB Chain Cross-Chain Bridge Testnet',
-    theme: {
-      dark: dark,
-      light: light,
-    },
-  },
-  http: {
-    refetchingInterval: 30 * 1000, // 30s
-    apiTimeOut: 60 * 1000, // 60s
-    deBridgeAccessToken: '',
-    serverEndpoint: env.SERVER_ENDPOINT,
-    mesonEndpoint: 'https://testnet-relayer.meson.fi/api/v1',
-  },
-};
-
-export default function TestnetPage() {
+export default function MainnetPage() {
   return (
-    <WalletProvider chainConfigs={testnetChains}>
+    <WalletProvider chainConfigs={chains}>
       <BridgeWidget />
     </WalletProvider>
   );
 }
 
 function BridgeWidget() {
-  const testnetTransferConfig = useTestnetTransferConfig();
+  const transferConfig = useTestnetTransferConfig();
   const { onOpen } = useWalletModal();
 
+  const config: ICustomizedBridgeConfig = useMemo(
+    () => ({
+      theme: {
+        colorMode: 'dark',
+        colors: {
+          light,
+          dark,
+        },
+      },
+      http: {
+        serverEndpoint: env.SERVER_ENDPOINT,
+        mesonEndpoint: 'https://testnet-relayer.meson.fi/api/v1',
+      },
+      transfer: transferConfig,
+      onClickConnectWalletButton: onOpen,
+    }),
+    [onOpen, transferConfig],
+  );
+
   return (
-    <CanonicalBridgeProvider
-      config={bridgeConfig}
-      transferConfig={testnetTransferConfig}
-      chains={testnetChains}
-      onClickConnectWalletButton={onOpen}
-    >
+    <CanonicalBridgeProvider config={config}>
       <Layout>
         <BridgeTransfer />
         <BridgeRoutes />

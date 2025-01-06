@@ -27,6 +27,9 @@ export const dark = {
     warning: '#FFEADB',
     danger: '#F8545F',
     route: { title: '#8C8F9B' },
+    network: {
+      title: '#8C8F9B',
+    },
     on: {
       color: {
         primary: '#181A1E',

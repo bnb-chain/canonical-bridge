@@ -15,6 +15,7 @@ export class MesonAdapter extends BaseAdapter<
   IMesonToken
 > {
   public id: BridgeType = 'meson';
+  protected bridgedTokenGroups = [];
 
   protected initChains() {
     const chains = this.config;

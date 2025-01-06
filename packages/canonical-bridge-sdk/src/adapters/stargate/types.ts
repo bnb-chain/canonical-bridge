@@ -6,16 +6,7 @@ export interface IStargateChain {
   network?: string;
 }
 
-export interface IStargateToken {
-  address: string;
-  bridgeAddress: string;
-  decimals: number;
-  type?: string;
-  symbol: string;
-  endpointID: number;
-}
-
-export interface IStarGateParams {
+export interface IStargateParams {
   dstEid: number;
   to: `0x${string}`;
   amountLD: bigint;
@@ -25,12 +16,12 @@ export interface IStarGateParams {
   oftCmd: `0x${string}`;
 }
 
-export interface IStarGateQuoteSend {
+export interface IStargateQuoteSend {
   nativeFee: bigint;
   lzTokenFee: bigint;
 }
 
-export interface IStarGateBusDriveSettings {
+export interface IStargateBusDriveSettings {
   avgWaitTime: number;
   maxWaitTime: number;
   passengersToDrive: number;
@@ -123,8 +114,8 @@ export interface IStargateTokenList {
   v2: IStargateBridgeTokenInfo[];
 }
 
-export interface IStargateApiTokenConfig extends IStargateBridgeTokenInfo {
+export interface IStargateToken extends IStargateBridgeTokenInfo {
   endpointID?: number;
 }
 
-export type IStargateTransferConfig = IStargateApiTokenConfig[];
+export type IStargateTransferConfig = IStargateToken[];

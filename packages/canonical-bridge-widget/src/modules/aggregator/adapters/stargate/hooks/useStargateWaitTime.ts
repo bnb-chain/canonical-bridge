@@ -1,8 +1,8 @@
 import { useQuery } from '@tanstack/react-query';
+import { IStargateBusDriveSettings } from '@bnb-chain/canonical-bridge-sdk';
 
 import { useAppSelector } from '@/modules/store/StoreProvider';
 import { useToTokenInfo } from '@/modules/transfer/hooks/useToTokenInfo';
-import { IStargateBusDriveSettings } from '@/modules/aggregator/adapters/stargate/types';
 import { useBridgeSDK } from '@/core/hooks/useBridgeSDK';
 
 export const useStargateWaitTime = () => {

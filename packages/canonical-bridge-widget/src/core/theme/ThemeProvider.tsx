@@ -1,7 +1,7 @@
 import { ChakraProvider, theme as defaultTheme } from '@bnb-chain/space';
 import { useMemo } from 'react';
 
-import { useBridgeConfig } from '@/CanonicalBridgeProvider';
+import { useBridgeConfig } from '@/CanonicalBrideProvider';
 
 export interface ThemeProviderProps {
   children: React.ReactNode;

@@ -4,7 +4,7 @@ import { STARGATE_POOL } from '@/adapters/stargate/abi/stargatePool';
 import { stargateChainKey } from '@/adapters/stargate/const';
 import {
   ISendTokenInput,
-  IStarGateBusDriveSettings,
+  IStargateBusDriveSettings,
   IStargateOFTQuote,
   IStargateQuoteOFT,
   IStargateTokenList,
@@ -47,7 +47,7 @@ export class Stargate {
     toEndpointId: string;
   }) {
     return (
-      await this.client!.get<IStarGateBusDriveSettings>(
+      await this.client!.get<IStargateBusDriveSettings>(
         `${fromEndpointId}/${toEndpointId}`
       )
     ).data;

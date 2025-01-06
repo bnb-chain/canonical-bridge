@@ -29,7 +29,9 @@ export const light: ColorType = {
     warning: '#BC4E00',
     danger: '#EF2A37',
     route: { title: '#5C5F6A' },
-
+    network: {
+      title: '#8C8F9B',
+    },
     on: {
       color: {
         primary: '#FFFFFF',

@@ -1,5 +1,8 @@
+// sdk
+export * from '@bnb-chain/canonical-bridge-sdk';
+
 // provider
-export * from '@/CanonicalBridgeProvider';
+export * from '@/CanonicalBrideProvider';
 export { useBridge } from '@/ExportsProvider';
 
 // components

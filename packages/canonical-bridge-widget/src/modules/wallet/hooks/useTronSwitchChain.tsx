@@ -1,6 +1,6 @@
 import { useWallet as useTronWallet } from '@tronweb3/tronwallet-adapter-react-hooks';
 
-import { useBridgeConfig } from '@/CanonicalBridgeProvider';
+import { useBridgeConfig } from '@/CanonicalBrideProvider';
 import { ERROR_TYPES } from '@/core/constants/error';
 
 interface UseTronSwitchChainProps {

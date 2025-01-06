@@ -12,13 +12,13 @@ import {
 
 export abstract class BaseAdapter<G extends object, C = unknown, T = unknown> {
   public abstract id: BridgeType;
+  protected abstract bridgedTokenGroups: string[][];
 
   protected options: IBaseAdapterOptions<G>;
 
   protected config: G;
   protected excludedChains: number[] = [];
   protected excludedTokens: Record<number, Array<string>> = {};
-  protected bridgedTokenGroups: string[][] = [];
 
   protected assetPrefix: string = '';
   protected nativeCurrencies: Record<number, INativeCurrency> = {};
@@ -41,14 +41,12 @@ export abstract class BaseAdapter<G extends object, C = unknown, T = unknown> {
     this.config = options.config ?? {};
     this.excludedChains = options.excludedChains ?? [];
     this.excludedTokens = options.excludedTokens ?? {};
-    this.bridgedTokenGroups = options.bridgedTokenGroups ?? [];
 
     this.assetPrefix = options?.assetPrefix ?? '';
     this.brandChains = options?.brandChains ?? [];
     this.externalChains = options?.externalChains ?? [];
     this.displayTokenSymbols = options?.displayTokenSymbols ?? {};
     this.chainConfigs = options?.chainConfigs ?? [];
-
     this.nativeCurrencies = options?.nativeCurrencies ?? {};
 
     this.init();
@@ -194,15 +192,15 @@ export abstract class BaseAdapter<G extends object, C = unknown, T = unknown> {
 
     let toTokens = tokenMap?.get(fromTokenSymbol);
     if (!toTokens) {
-      const bridgedGroup = this.bridgedTokenGroups.find((group) =>
-        group.includes(fromTokenSymbol)
-      );
-      const nextToken = bridgedGroup?.find(
-        (item) => item.toUpperCase() !== fromTokenSymbol
-      );
-      if (nextToken) {
-        toTokens = tokenMap?.get(nextToken?.toUpperCase());
-      }
+      // const bridgedGroup = this.bridgedTokenGroups.find((group) =>
+      //   group.includes(fromTokenSymbol)
+      // );
+      // const nextToken = bridgedGroup?.find(
+      //   (item) => item.toUpperCase() !== fromTokenSymbol
+      // );
+      // if (nextToken) {
+      //   toTokens = tokenMap?.get(nextToken?.toUpperCase());
+      // }
     }
 
     return toTokens;
@@ -323,7 +321,7 @@ export abstract class BaseAdapter<G extends object, C = unknown, T = unknown> {
     tokenSymbol: string;
     tokenAddress: string;
   }) {
-    const excludedTokens = this.excludedTokens[chainId] ?? {};
+    const excludedTokens = this.excludedTokens[chainId] ?? [];
     return excludedTokens?.some(
       (e) =>
         e.toUpperCase() === tokenSymbol.toUpperCase() ||

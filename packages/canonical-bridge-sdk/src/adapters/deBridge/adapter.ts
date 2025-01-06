@@ -15,6 +15,21 @@ export class DeBridgeAdapter extends BaseAdapter<
 > {
   public id: BridgeType = 'deBridge';
 
+  protected bridgedTokenGroups = [
+    ['USDT', 'USDT.e'],
+    ['USDC', 'USDC.e'],
+    ['WETH', 'WETH.e'],
+    ['DAI', 'DAI.e'],
+    ['WBTC', 'WBTC.e'],
+    ['LINK', 'LINK.e'],
+    ['AAVE', 'AAVE.e'],
+    ['WOO', 'WOO.e'],
+    ['BUSD', 'BUSD.e'],
+    ['ALPHA', 'ALPHA.e'],
+    ['SUSHI', 'SUSHI.e'],
+    ['SWAP', 'SWAP.e'],
+  ];
+
   protected initChains() {
     const { chains, tokens } = this.config;
 

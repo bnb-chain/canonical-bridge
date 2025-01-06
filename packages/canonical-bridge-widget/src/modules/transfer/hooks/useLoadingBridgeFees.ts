@@ -131,7 +131,7 @@ export const useLoadingBridgeFees = () => {
 
       const availableBridgeTypes = bridgeSDK.getSupportedBridges();
       availableBridgeTypes.forEach((bridge) => {
-        if (selectedToken[bridge]?.isMatched) {
+        if (selectedToken[bridge]) {
           bridgeTypeList.push(bridge);
         }
       });

@@ -13,6 +13,7 @@ export class LayerZeroAdapter extends BaseAdapter<
   ILayerZeroToken
 > {
   public id: BridgeType = 'layerZero';
+  protected bridgedTokenGroups = [];
 
   protected initChains() {
     const { chains, tokens } = this.config;

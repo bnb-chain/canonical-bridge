@@ -2,7 +2,7 @@ import { useBreakpointValue, useIntl } from '@bnb-chain/space';
 
 import { TransferOverview } from '@/modules/transfer/components/TransferOverview';
 import { RoutesModal } from '@/modules/transfer/components/TransferOverview/modal/RoutesModal';
-import { useBridgeConfig } from '@/CanonicalBridgeProvider';
+import { useBridgeConfig } from '@/CanonicalBrideProvider';
 import { useAppDispatch, useAppSelector } from '@/modules/store/StoreProvider';
 import { setIsRoutesModalOpen } from '@/modules/transfer/action';
 

@@ -3,7 +3,7 @@ import { ITokenPair } from '@/adapters/base/types';
 import { stargateChainKey } from '@/adapters/stargate/const/stargateChainKey';
 import {
   IStargateTransferConfig,
-  IStargateBridgeTokenInfo,
+  IStargateToken,
   IStargateChain,
 } from '@/adapters/stargate/types';
 import { capitalizeFirst } from '@/shared/string';
@@ -12,9 +12,14 @@ import { BridgeType } from '@/shared/types';
 export class StargateAdapter extends BaseAdapter<
   IStargateTransferConfig,
   IStargateChain,
-  IStargateBridgeTokenInfo
+  IStargateToken
 > {
   public id: BridgeType = 'stargate';
+
+  protected bridgedTokenGroups: string[][] = [
+    ['USDT', 'm.USDT'],
+    ['USDC', 'USDC.e'],
+  ];
 
   protected initChains() {
     const tokens = this.config;
@@ -64,11 +69,8 @@ export class StargateAdapter extends BaseAdapter<
   protected initTokens() {
     const tokens = this.config;
 
-    const tokenMap = new Map<number, IStargateBridgeTokenInfo[]>();
-    const symbolMap = new Map<
-      number,
-      Map<string, IStargateBridgeTokenInfo[]>
-    >();
+    const tokenMap = new Map<number, IStargateToken[]>();
+    const symbolMap = new Map<number, Map<string, IStargateToken[]>>();
 
     const filteredTokens = tokens.filter((token, index) => {
       const chainId = stargateChainKey[token.chainKey.toUpperCase()];
@@ -106,10 +108,7 @@ export class StargateAdapter extends BaseAdapter<
         const chainId = stargateChainKey[token.chainKey.toUpperCase()];
         if (this.chainMap.has(chainId) && chainId) {
           if (!symbolMap.get(chainId)) {
-            symbolMap.set(
-              chainId,
-              new Map<string, IStargateBridgeTokenInfo[]>()
-            );
+            symbolMap.set(chainId, new Map<string, IStargateToken[]>());
           }
 
           const tokenSymbol = token.token.symbol?.toUpperCase();
@@ -135,7 +134,7 @@ export class StargateAdapter extends BaseAdapter<
   protected initTransferMap() {
     const transferMap = new Map<
       number,
-      Map<number, Map<string, ITokenPair<IStargateBridgeTokenInfo>[]>>
+      Map<number, Map<string, ITokenPair<IStargateToken>[]>>
     >();
 
     this.chains.forEach((fromChain) => {
@@ -146,10 +145,7 @@ export class StargateAdapter extends BaseAdapter<
         ) {
           const fromTokens = this.tokenMap.get(fromChain.chainId) ?? [];
 
-          const tokenPairsMap = new Map<
-            string,
-            ITokenPair<IStargateBridgeTokenInfo>[]
-          >();
+          const tokenPairsMap = new Map<string, ITokenPair<IStargateToken>[]>();
           fromTokens.forEach((fromToken) => {
             const toTokens = this.getToTokensForPair({
               fromChainId: fromChain.chainId,
@@ -158,7 +154,7 @@ export class StargateAdapter extends BaseAdapter<
             });
 
             if (toTokens?.length) {
-              const tokenPairs: ITokenPair<IStargateBridgeTokenInfo>[] = [];
+              const tokenPairs: ITokenPair<IStargateToken>[] = [];
 
               toTokens.forEach((toToken) => {
                 tokenPairs.push({
@@ -179,10 +175,7 @@ export class StargateAdapter extends BaseAdapter<
             if (!transferMap.has(fromChain.chainId)) {
               transferMap.set(
                 fromChain.chainId,
-                new Map<
-                  number,
-                  Map<string, ITokenPair<IStargateBridgeTokenInfo>[]>
-                >()
+                new Map<number, Map<string, ITokenPair<IStargateToken>[]>>()
               );
             }
             transferMap
@@ -205,7 +198,7 @@ export class StargateAdapter extends BaseAdapter<
     token,
   }: {
     chainId: number;
-    token: IStargateBridgeTokenInfo;
+    token: IStargateToken;
   }) {
     return {
       name: token.token.symbol,

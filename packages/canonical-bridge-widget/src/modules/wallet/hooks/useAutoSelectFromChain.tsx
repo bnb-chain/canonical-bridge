@@ -1,12 +1,11 @@
 import { useAccount } from 'wagmi';
 import { ChainType } from '@bnb-chain/canonical-bridge-sdk';
 
-import { useFromChains } from '@/modules/aggregator/hooks/useFromChains';
 import { useSelection } from '@/modules/aggregator/hooks/useSelection';
 import { useEvmSwitchChain } from '@/modules/wallet/hooks/useEvmSwitchChain';
 import { useSolanaAccount } from '@/modules/wallet/hooks/useSolanaAccount';
 import { useTronSwitchChain } from '@/modules/wallet/hooks/useTronSwitchChain';
-import { useBridgeConfig } from '@/CanonicalBridgeProvider';
+import { useBridgeConfig } from '@/CanonicalBrideProvider';
 import { useTronAccount } from '@/modules/wallet/hooks/useTronAccount';
 
 interface UseAutoSelectFromChainProps {
@@ -18,17 +17,9 @@ export function useAutoSelectFromChain(props: UseAutoSelectFromChainProps = {}) 
   const { onClickConnectWalletButton } = useBridgeConfig();
   const { selectFromChain } = useSelection();
 
-  const supportedChains = useFromChains();
   const evmAccount = useAccount();
   const tronAccount = useTronAccount();
   const solanaAccount = useSolanaAccount();
-
-  const selectChain = (chainId: number) => {
-    const chain = supportedChains.find((e) => e.id === chainId);
-    if (chain) {
-      selectFromChain(chain);
-    }
-  };
 
   const { switchChain: evmSwitchChain } = useEvmSwitchChain({
     mutation: {
@@ -39,7 +30,7 @@ export function useAutoSelectFromChain(props: UseAutoSelectFromChainProps = {}) 
         props.onSettle?.();
       },
       onSuccess(_, { chainId }) {
-        selectChain(chainId);
+        selectFromChain(chainId);
       },
     },
   });
@@ -52,7 +43,7 @@ export function useAutoSelectFromChain(props: UseAutoSelectFromChainProps = {}) 
         props.onSettle?.();
       },
       onSuccess({ chainId }) {
-        selectChain(chainId);
+        selectFromChain(chainId);
       },
     },
   });
@@ -65,7 +56,7 @@ export function useAutoSelectFromChain(props: UseAutoSelectFromChainProps = {}) 
           chainId,
           onConnected({ walletType } = {}) {
             if (walletType === chainType) {
-              selectChain(chainId);
+              selectFromChain(chainId);
             }
           },
         });
@@ -78,7 +69,7 @@ export function useAutoSelectFromChain(props: UseAutoSelectFromChainProps = {}) 
               chainId,
             });
           } else {
-            selectChain(chainId);
+            selectFromChain(chainId);
           }
         } else {
           connectWallet();
@@ -90,14 +81,14 @@ export function useAutoSelectFromChain(props: UseAutoSelectFromChainProps = {}) 
               chainId,
             });
           } else {
-            selectChain(chainId);
+            selectFromChain(chainId);
           }
         } else {
           connectWallet();
         }
       } else if (chainType === 'solana') {
         if (solanaAccount.isConnected) {
-          selectChain(chainId);
+          selectFromChain(chainId);
         } else {
           connectWallet();
         }

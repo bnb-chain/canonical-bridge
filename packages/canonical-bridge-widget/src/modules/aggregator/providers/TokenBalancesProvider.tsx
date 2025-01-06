@@ -1,9 +1,10 @@
 import { useQuery } from '@tanstack/react-query';
 import { useAccount, useChains } from 'wagmi';
-import { useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 import { useConnection } from '@solana/wallet-adapter-react';
+import { IBridgeToken } from '@bnb-chain/canonical-bridge-sdk';
 
-import { REFETCH_INTERVAL } from '@/core/constants';
+import { UPDATE_INTERVAL } from '@/core/constants';
 import { useTokens } from '@/modules/aggregator/hooks/useTokens';
 import { getTokenBalances } from '@/modules/aggregator/shared/getTokenBalances';
 import { useAppDispatch, useAppSelector } from '@/modules/store/StoreProvider';
@@ -28,14 +29,11 @@ export function TokenBalancesProvider() {
   const toChain = useAppSelector((state) => state.transfer.toChain);
   const dispatch = useAppDispatch();
 
-  const tokens = useTokens({
-    fromChainId: fromChain?.id,
-    toChainId: toChain?.id,
-  });
+  const tokens = useTokens();
 
   const { isLoading, data } = useQuery<Record<string, string | undefined>>({
     enabled: !!fromChain?.id && !!toChain?.id,
-    refetchInterval: REFETCH_INTERVAL,
+    refetchInterval: UPDATE_INTERVAL,
     queryKey: ['tokenBalances', fromChain?.id, toChain?.id, address, solanaAddress, tronAddress],
     queryFn: async () => {
       const chainConfig = bridgeConfig.transfer.chainConfigs?.find(
@@ -69,4 +67,23 @@ export function TokenBalancesProvider() {
   }, [data, dispatch, isLoading]);
 
   return null;
+}
+
+export function useTokenBalance() {
+  const tokenBalances = useAppSelector((state) => state.aggregator.tokenBalances);
+
+  const getTokenBalance = useCallback(
+    (params: IBridgeToken | { address?: string } = {}) => {
+      const tokenAddress = (params as IBridgeToken).address ?? params.address;
+
+      if (tokenAddress) {
+        return tokenBalances[tokenAddress.toLowerCase()];
+      }
+    },
+    [tokenBalances],
+  );
+
+  return {
+    getTokenBalance,
+  };
 }

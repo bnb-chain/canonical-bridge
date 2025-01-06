@@ -29,20 +29,10 @@ export interface IBaseAdapterOptions<G>
   extends IBaseAdapterCommonOptions,
     IBridgeProviderOptions<G> {}
 
-export interface IBridgeTokenBaseInfo {
-  name: string;
-  symbol: string;
-  address: string;
-  decimals: number;
-  displaySymbol: string;
-  icon: string;
-}
-
 export interface IBridgeProviderOptions<T = unknown> {
   config: T;
   excludedTokens?: Record<number, string[]>;
   excludedChains?: number[];
-  bridgedTokenGroups?: string[][];
 }
 
 export interface IBridgeProvider<T = unknown>

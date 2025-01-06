@@ -8,7 +8,7 @@ import { useGetReceiveAmount } from '@/modules/transfer/hooks/useGetReceiveAmoun
 import { useGetBestTime } from '@/modules/transfer/hooks/useGetBestTime';
 import { getMaxValueKey } from '@/core/utils/number';
 import { BestRouteTag } from '@/modules/transfer/components/TransferOverview/RouteInfo/RouteName/BestRouteTag';
-import { useBridgeConfig } from '@/CanonicalBridgeProvider';
+import { useBridgeConfig } from '@/CanonicalBrideProvider';
 
 interface RouteNameProps {
   bridgeType?: BridgeType;

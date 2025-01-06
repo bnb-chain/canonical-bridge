@@ -94,7 +94,7 @@ export function WalletProvider(props: WalletProviderProps) {
       solanaConfig: solana
         ? defaultSolanaConfig({
             autoConnect: true,
-            rpcUrl: solana?.rpcUrl,
+            rpcUrl: solana?.rpcUrls.default.http[0],
             wallets: solanaWallets,
           })
         : undefined,
@@ -104,7 +104,6 @@ export function WalletProvider(props: WalletProviderProps) {
   return (
     <WalletKitProvider config={config} mode="light">
       {children}
-
       <PreventingModal isOpen={isOpen} onClose={onClose} />
       <ConnectModal />
     </WalletKitProvider>
@@ -113,27 +112,11 @@ export function WalletProvider(props: WalletProviderProps) {
 
 function getEvmChains(chainConfigs: IChainConfig[]) {
   return chainConfigs
-    .filter((e) => !e.chainType || e.chainType === 'evm')
+    .filter((e) => e.chainType === 'evm')
     .map((item) => {
       const evmChain = Object.values(allChains).find((e) => e.id === item.id);
       return {
-        id: item.id as number,
-        name: item.name,
-        nativeCurrency: item.nativeCurrency,
-        rpcUrls: {
-          default: {
-            http: [item.rpcUrl],
-          },
-          public: {
-            http: [item.rpcUrl],
-          },
-        },
-        blockExplorers: {
-          default: {
-            name: item.explorer.name,
-            url: item.explorer.url,
-          },
-        },
+        ...item,
         contracts: {
           ...evmChain?.contracts,
           ...item.contracts,

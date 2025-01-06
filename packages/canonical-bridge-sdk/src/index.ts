@@ -1,4 +1,5 @@
 // adapters
+export * from './adapters/base/exports';
 export * from './adapters/cBridge/exports';
 export * from './adapters/deBridge/exports';
 export * from './adapters/layerZero/exports';

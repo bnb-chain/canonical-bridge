@@ -1,5 +1,4 @@
-import { isChainOrTokenCompatible } from '@/modules/aggregator/shared/isChainOrTokenCompatible';
-import { IBridgeTokenWithBalance } from '@/modules/aggregator/types';
+import { IBridgeTokenWithBalance } from '@bnb-chain/canonical-bridge-sdk';
 
 export function sortTokens({
   tokens = [],
@@ -14,8 +13,8 @@ export function sortTokens({
     const aSymbol = a.displaySymbol.toUpperCase();
     const bSymbol = b.displaySymbol.toUpperCase();
 
-    const isA = isChainOrTokenCompatible(a);
-    const isB = isChainOrTokenCompatible(b);
+    const isA = a.isCompatible;
+    const isB = b.isCompatible;
 
     const indexA = tokenOrders.indexOf(aSymbol);
     const indexB = tokenOrders.indexOf(bSymbol);

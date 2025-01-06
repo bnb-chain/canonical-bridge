@@ -10,7 +10,6 @@ import { Dropdown } from '@/modules/wallet/components/Dropdown/Dropdown';
 import { DropdownButton } from '@/modules/wallet/components/Dropdown/DropdownButton';
 import { DropdownList } from '@/modules/wallet/components/Dropdown/DropdownList';
 import { DropdownItem } from '@/modules/wallet/components/Dropdown/DropdownItem';
-import { useFromChains } from '@/modules/aggregator/hooks/useFromChains';
 import { TransferToIcon } from '@/core/components/icons/TransferToIcon';
 import { SwitchNetworkButton } from '@/modules/transfer/components/Button/SwitchNetworkButton';
 import { WarningIcon } from '@/core/components/icons/WarningIcon.tsx';
@@ -20,6 +19,7 @@ import { WalletConnectButton } from '@/modules/transfer/components/Button/Wallet
 import { useSolanaAccount, useTronAccount } from '@/index';
 import { useNeedSwitchChain } from '@/modules/wallet/hooks/useNeedSwitchChain';
 import { useAutoSelectFromChain } from '@/modules/wallet/hooks/useAutoSelectFromChain';
+import { useFromChains } from '@/modules/aggregator/hooks/useFromChains';
 
 export interface NetworkListProps {
   onClickNetwork?: (params: { chainType: ChainType; chainId: number }) => void;
@@ -33,6 +33,7 @@ export function NetworkList(props: NetworkListProps) {
   const { formatMessage } = useIntl();
   const theme = useTheme();
   const { colorMode } = useColorMode();
+
   const supportedChains = useFromChains();
 
   const { needSwitchChain } = useNeedSwitchChain();
