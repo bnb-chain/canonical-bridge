@@ -56,7 +56,7 @@ export function TransactionSummaryModal(props: ITransactionSummaryModalProps) {
         className="bccb-widget-transaction-summary-modal-content"
         background={theme.colors[colorMode].background.body}
         p={0}
-        w={['100%', '100%', '435px']}
+        w={['100%', '435px']}
         overflow={['auto', 'auto', 'auto', 'hidden']}
         mx={'20px'}
       >
