@@ -34,7 +34,10 @@ export const TransferSummary = () => {
     return null;
   }, [getSortedReceiveAmount, transferActionInfo, sendValue]);
 
-  const isNative = useMemo(() => isNativeToken(toTokenInfo?.address), [toTokenInfo?.address]);
+  const isNative = useMemo(
+    () => isNativeToken(toTokenInfo?.address, toChain?.chainType),
+    [toTokenInfo?.address, toChain?.chainType],
+  );
 
   return (
     <Flex
