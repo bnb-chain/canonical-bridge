@@ -66,7 +66,6 @@ export function BridgeRoutes() {
     } else {
       dispatch(setIsManuallyReload(false));
       mount = false;
-      dispatch(setIsManuallyReload(false));
     }
   }, [
     transferActionInfo,
