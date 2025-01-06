@@ -21,8 +21,15 @@ export const TokenInfo = ({
 
   return (
     <Flex flexDir={'row'} justifyContent={'space-between'} w={'100%'} alignItems={'center'}>
-      <Flex flexDir={'row'} alignItems={'center'}>
-        <Box w={'32px'} h={'32px'} position={'relative'}>
+      <Flex flexDir={'row'} alignItems={'center'} gap={'14px'}>
+        <Flex
+          justifyContent={'center'}
+          alignItems={'center'}
+          flexShrink={0}
+          w={'32px'}
+          h={'32px'}
+          position={'relative'}
+        >
           <IconImage
             position={'absolute'}
             bottom={'-4px'}
@@ -32,7 +39,7 @@ export const TokenInfo = ({
             flexShrink={0}
           />
           <IconImage boxSize="32px" src={chainIconUrl} flexShrink={0} />
-        </Box>
+        </Flex>
         <Box fontSize={'16px'} py={'8px'} fontWeight={700}>
           {chainName}
         </Box>
