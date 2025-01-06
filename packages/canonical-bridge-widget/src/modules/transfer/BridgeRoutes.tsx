@@ -12,6 +12,7 @@ import {
   setIsRoutesModalOpen,
 } from '@/modules/transfer/action';
 import { TriggerType, useLoadingBridgeFees } from '@/modules/transfer/hooks/useLoadingBridgeFees';
+import { useFeeRefreshProgress } from '@/modules/transfer/hooks/useFeeRefreshProgress';
 
 export function BridgeRoutes() {
   const { formatMessage } = useIntl();
@@ -24,6 +25,8 @@ export function BridgeRoutes() {
   const isRoutesModalOpen = useAppSelector((state) => state.transfer.isRoutesModalOpen);
   const transferActionInfo = useAppSelector((state) => state.transfer.transferActionInfo);
   const isManuallyReload = useAppSelector((state) => state.transfer.isManuallyReload);
+
+  useFeeRefreshProgress();
 
   // Load estimated bridge fees every 30 seconds when there is bridge route available
   useEffect(() => {

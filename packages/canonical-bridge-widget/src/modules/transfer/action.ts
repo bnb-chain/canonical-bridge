@@ -58,3 +58,7 @@ export const setIsFailedGetQuoteModalOpen = createAction<
 export const setIsSummaryModalOpen = createAction<ITransferState['isSummaryModalOpen']>(
   'transfer/setIsSummaryModalOpen',
 );
+
+export const setRefreshAnimationProgress = createAction<ITransferState['refreshAnimationProgress']>(
+  'transfer/setRefreshAnimationProgress',
+);

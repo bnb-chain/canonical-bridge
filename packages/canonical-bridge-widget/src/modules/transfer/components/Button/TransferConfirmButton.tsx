@@ -547,7 +547,7 @@ export const TransferConfirmButton = ({
         bg={theme.colors[colorMode].button.brand.default}
         size={'lg'}
         fontWeight={500}
-        h={'56px'}
+        h={'44px'}
         w="100%"
         _hover={{
           bg: theme.colors[colorMode].button.brand.hover,
