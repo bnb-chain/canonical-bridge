@@ -7,6 +7,7 @@ import {
   useColorMode,
   Typography,
   Link,
+  Center,
 } from '@bnb-chain/space';
 import { IBridgeToken, isSameAddress } from '@bnb-chain/canonical-bridge-sdk';
 
@@ -16,6 +17,8 @@ import { formatAppAddress } from '@/core/utils/address';
 import { useSelection } from '@/modules/aggregator/hooks/useSelection';
 import { InfoTooltip } from '@/core/components/InfoTooltip';
 import { formatTokenUrl } from '@/core/utils/string';
+import { useResponsive } from '@/core/hooks/useResponsive';
+import { ExLinkIcon } from '@/core/components/icons/ExLinkIcon';
 
 export function ToTokenSection() {
   const { formatMessage } = useIntl();
@@ -61,7 +64,12 @@ function ToTokenItem({ token, isSelected }: { token: IBridgeToken; isSelected: b
   const theme = useTheme();
   const { colorMode } = useColorMode();
   const { selectToToken } = useSelection();
+  const { isMobile } = useResponsive();
+
   const fromChain = useAppSelector((state) => state.transfer.fromChain);
+  const isGlobalFeeLoading = useAppSelector((state) => state.transfer.isGlobalFeeLoading);
+
+  const tokenUrl = formatTokenUrl(fromChain?.tokenUrlPattern, token.address);
 
   return (
     <InfoTooltip label={token.name}>
@@ -71,18 +79,30 @@ function ToTokenItem({ token, isSelected }: { token: IBridgeToken; isSelected: b
         data-to-address={token.address}
         data-to-symbol={token.symbol}
         data-to-display-symbol={token.displaySymbol}
-        p="8px"
+        p={{ base: '8px', md: '8px 12px' }}
         h="48px"
         alignItems="center"
         gap="4px"
         borderRadius="8px"
         cursor="pointer"
-        onClick={() => selectToToken(token.address)}
-        border={theme.colors[colorMode].button.select.border}
-        color={theme.colors[colorMode].button.select.color}
+        onClick={() => {
+          if (isGlobalFeeLoading) return;
+          selectToToken(token.address);
+        }}
+        border="1px solid"
+        borderColor={
+          isSelected
+            ? theme.colors[colorMode].border.brand
+            : theme.colors[colorMode].button.select.border
+        }
+        color={
+          isSelected
+            ? theme.colors[colorMode].border.brand
+            : theme.colors[colorMode].button.select.color
+        }
         bg={theme.colors[colorMode].button.select.background.default}
         _hover={{
-          bg: theme.colors[colorMode].button.select.background.hover,
+          bg: isSelected ? undefined : theme.colors[colorMode].button.select.background.hover,
         }}
         fontWeight={500}
         fontSize={'14px'}
@@ -99,12 +119,37 @@ function ToTokenItem({ token, isSelected }: { token: IBridgeToken; isSelected: b
           gap={{ base: '0', md: '4px' }}
           flexDir={{ base: 'column', md: 'row' }}
         >
-          <Text color={theme.colors[colorMode].text.tertiary}>{token.displaySymbol}</Text>
-          <Link isExternal href={formatTokenUrl(fromChain?.tokenUrlPattern, token.address)}>
-            {formatAppAddress({
-              address: token.address,
-            })}
-          </Link>
+          <Text
+            color={
+              isSelected
+                ? theme.colors[colorMode].text.primary
+                : theme.colors[colorMode].text.tertiary
+            }
+          >
+            {token.displaySymbol}
+          </Text>
+
+          {isMobile ? (
+            <Flex alignItems="center" gap="4px" textDecoration={{ base: 'underline', md: 'unset' }}>
+              {formatAppAddress({
+                address: token.address,
+              })}
+              <Center boxSize="16px">
+                {isSelected && (
+                  <Link isExternal href={tokenUrl} color="inherit" _hover={{ color: 'inherit' }}>
+                    <ExLinkIcon boxSize="100%" />
+                  </Link>
+                )}
+              </Center>
+            </Flex>
+          ) : (
+            <Link isExternal href={tokenUrl} color="inherit" _hover={{ color: 'inherit' }}>
+              {formatAppAddress({
+                address: token.address,
+                headLen: 4,
+              })}
+            </Link>
+          )}
         </Flex>
       </Flex>
     </InfoTooltip>

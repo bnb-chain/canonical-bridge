@@ -62,11 +62,15 @@ export interface IBridgeConfig {
     defaultTokenAddress: string;
     defaultAmount: string;
 
+    dollarUpperLimit: number;
     providers: IBridgeProvider[];
     chainConfigs: IChainConfig[];
     displayTokenSymbols: Record<number, Record<string, string>>;
     brandChains: number[];
     externalChains: IExternalChain[];
+    chainOrders: number[];
+    tokenOrders: string[];
+
     chainSorter: (a?: IBridgeChain, b?: IBridgeChain) => number;
     tokenSorter: (a?: IBridgeToken, b?: IBridgeToken) => number;
   };
@@ -150,8 +154,58 @@ export function CanonicalBridgeProvider(props: CanonicalBridgeProviderProps) {
         displayTokenSymbols: {},
         brandChains: [],
         externalChains: [],
-        chainSorter: () => 0,
-        tokenSorter: () => 0,
+
+        dollarUpperLimit: 500000,
+
+        chainOrders: [],
+        tokenOrders: [],
+        chainSorter(a: IBridgeChain, b: IBridgeChain) {
+          if (a.isCompatible && !b.isCompatible) {
+            return -1;
+          }
+          if (!a.isCompatible && b.isCompatible) {
+            return 1;
+          }
+
+          const indexA = transfer?.chainOrders?.indexOf(a.id) ?? -1;
+          const indexB = transfer?.chainOrders?.indexOf(b.id) ?? -1;
+
+          if (indexA > -1 && indexB === -1) {
+            return -1;
+          }
+          if (indexA === -1 && indexB > -1) {
+            return 1;
+          }
+          if (indexA > -1 && indexB > -1) {
+            return indexA - indexB;
+          }
+
+          return a.name < b.name ? -1 : 1;
+        },
+        tokenSorter(a: IBridgeToken, b: IBridgeToken) {
+          if (a.isCompatible && !b.isCompatible) {
+            return -1;
+          }
+          if (!a.isCompatible && b.isCompatible) {
+            return 1;
+          }
+
+          const orders = transfer?.tokenOrders?.map((e) => e?.toUpperCase()) ?? [];
+          const indexA = orders?.indexOf(a.displaySymbol.toUpperCase()) ?? -1;
+          const indexB = orders?.indexOf(b.displaySymbol.toUpperCase()) ?? -1;
+
+          if (indexA > -1 && indexB === -1) {
+            return -1;
+          }
+          if (indexA === -1 && indexB > -1) {
+            return 1;
+          }
+          if (indexA > -1 && indexB > -1) {
+            return indexA - indexB;
+          }
+
+          return a.name < b.name ? -1 : 1;
+        },
         chainConfigs: [],
         providers: [],
         ...transfer,

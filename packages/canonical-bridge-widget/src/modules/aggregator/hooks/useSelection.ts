@@ -319,7 +319,6 @@ function useSortedTokens() {
 
       return sortTokens({
         tokens: tmpTokens,
-        orders: [],
       });
     },
     [

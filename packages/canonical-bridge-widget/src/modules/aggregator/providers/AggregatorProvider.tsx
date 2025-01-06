@@ -14,7 +14,15 @@ export function AggregatorProvider(props: AggregatorProviderProps) {
 
   const value = useMemo(() => {
     const { assetPrefix, transfer } = bridgeConfig;
-    const { chainConfigs, providers, brandChains, externalChains, displayTokenSymbols } = transfer;
+    const {
+      chainConfigs,
+      providers,
+      brandChains,
+      externalChains,
+      displayTokenSymbols,
+      chainSorter,
+      tokenSorter,
+    } = transfer;
 
     const aggregator = new Aggregator({
       providers,
@@ -23,6 +31,8 @@ export function AggregatorProvider(props: AggregatorProviderProps) {
       displayTokenSymbols,
       assetPrefix,
       chainConfigs,
+      chainSorter,
+      tokenSorter,
     });
 
     return {

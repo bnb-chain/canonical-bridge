@@ -1,9 +1,13 @@
 export function isAndroid(): boolean {
-  return typeof navigator !== 'undefined' && /android/i.test(navigator.userAgent);
+  return (
+    typeof navigator !== 'undefined' && /android/i.test(navigator.userAgent)
+  );
 }
 
 export function isSmallIOS(): boolean {
-  return typeof navigator !== 'undefined' && /iPhone|iPod/.test(navigator.userAgent);
+  return (
+    typeof navigator !== 'undefined' && /iPhone|iPod/.test(navigator.userAgent)
+  );
 }
 
 export function isLargeIOS(): boolean {

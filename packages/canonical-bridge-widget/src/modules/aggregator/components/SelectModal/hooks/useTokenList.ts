@@ -37,7 +37,6 @@ export function useTokenList(tokens: IBridgeToken[] = [], keyword?: string) {
 
     const sortedTokens = sortTokens({
       tokens: tmpTokens,
-      orders: [],
     }).sort((a) => {
       return isSameAddress(a.address, selectedToken?.address) && a.isCompatible ? -1 : 0;
     });

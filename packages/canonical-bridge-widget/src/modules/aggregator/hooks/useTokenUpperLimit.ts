@@ -1,20 +1,31 @@
 import { useMemo } from 'react';
+import { IBridgeToken } from '@bnb-chain/canonical-bridge-sdk';
+import { parseUnits } from 'viem';
 
 import { useTokenPrice } from '@/modules/aggregator/providers/TokenPricesProvider';
-import { useAppSelector } from '@/modules/store/StoreProvider';
-import { UPPER_DOLLAR_LIMIT } from '@/core/constants';
+import { useBridgeConfig } from '@/index';
 
-export function useTokenUpperLimit() {
-  const selectedToken = useAppSelector((state) => state.transfer.selectedToken);
-
+export function useTokenUpperLimit(token?: IBridgeToken) {
   const { getTokenPrice } = useTokenPrice();
 
-  const upperLimit = useMemo(() => {
-    const price = getTokenPrice(selectedToken);
-    if (price) {
-      return UPPER_DOLLAR_LIMIT / price;
-    }
-  }, [getTokenPrice, selectedToken]);
+  const bridgeConfig = useBridgeConfig();
 
-  return upperLimit;
+  const result = useMemo(() => {
+    if (!token) return;
+
+    const price = getTokenPrice(token);
+    if (price) {
+      const upperLimit = bridgeConfig.transfer.dollarUpperLimit / price;
+      const value = parseUnits(String(upperLimit), token.decimals);
+
+      return {
+        upperLimit,
+        value,
+        price,
+        decimals: token.decimals,
+      };
+    }
+  }, [bridgeConfig.transfer.dollarUpperLimit, getTokenPrice, token]);
+
+  return result;
 }

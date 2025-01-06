@@ -114,7 +114,7 @@ export interface IDebridgeChain {
 
 export interface IDebridgeConfig {
   chains: IDebridgeChain[];
-  tokens: Record<number, Record<string, IDebridgeToken>>;
+  tokens: Record<number, IDebridgeToken[]>;
 }
 
 export interface IAssetPlatform {
