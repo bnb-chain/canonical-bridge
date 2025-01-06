@@ -429,12 +429,6 @@ export const useLoadingBridgeFees = () => {
           const lastValue = valueArr.find(
             (e) => !e.isDisplayError && e.type === selectedBridgeTypeRef.current,
           );
-          // eslint-disable-next-line no-console
-          console.log('lastValue', lastValue);
-          if (lastValue?.type === 'stargate' && isSummaryModalOpenRef.current === true) {
-            dispatch(setIsSummaryModalOpen(false));
-            onOpenFailedGetQuoteModal();
-          }
           const highestValue = valueArr.reduce(
             (max, entry) =>
               Number(entry['value']) > Number(max['value']) &&
@@ -445,6 +439,11 @@ export const useLoadingBridgeFees = () => {
             { value: '0', type: '' },
           );
 
+          // Can not find selected route fee info
+          if (triggerType === 'refresh' && isSummaryModalOpenRef.current === true && !lastValue) {
+            dispatch(setIsSummaryModalOpen(false));
+            onOpenFailedGetQuoteModal();
+          }
           if (triggerType === 'refresh' && lastValue) {
             preSelectRoute(response, lastValue.type as BridgeType);
           } else if (Number(highestValue?.value) > 0) {
