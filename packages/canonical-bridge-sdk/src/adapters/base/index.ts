@@ -48,8 +48,6 @@ export abstract class BaseAdapter<G extends object, C = unknown, T = unknown> {
     this.displayTokenSymbols = options?.displayTokenSymbols ?? {};
     this.chainConfigs = options?.chainConfigs ?? [];
     this.nativeCurrencies = options?.nativeCurrencies ?? {};
-
-    this.init();
   }
 
   public init() {
@@ -57,6 +55,7 @@ export abstract class BaseAdapter<G extends object, C = unknown, T = unknown> {
     this.initTokens();
     this.initTransferMap();
     this.filterTransferMap();
+    return this;
   }
 
   protected abstract initChains(): void;
@@ -192,15 +191,15 @@ export abstract class BaseAdapter<G extends object, C = unknown, T = unknown> {
 
     let toTokens = tokenMap?.get(fromTokenSymbol);
     if (!toTokens) {
-      // const bridgedGroup = this.bridgedTokenGroups.find((group) =>
-      //   group.includes(fromTokenSymbol)
-      // );
-      // const nextToken = bridgedGroup?.find(
-      //   (item) => item.toUpperCase() !== fromTokenSymbol
-      // );
-      // if (nextToken) {
-      //   toTokens = tokenMap?.get(nextToken?.toUpperCase());
-      // }
+      const bridgedGroup = this.bridgedTokenGroups.find((group) =>
+        group.includes(fromTokenSymbol)
+      );
+      const nextToken = bridgedGroup?.find(
+        (item) => item.toUpperCase() !== fromTokenSymbol
+      );
+      if (nextToken) {
+        toTokens = tokenMap?.get(nextToken?.toUpperCase());
+      }
     }
 
     return toTokens;

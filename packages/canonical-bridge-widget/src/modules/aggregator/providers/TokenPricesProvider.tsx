@@ -57,7 +57,7 @@ export function useTokenPrice() {
 
   const getTokenPrice = useCallback(
     (params: IBridgeToken | { symbol?: string; address?: string } = {}) => {
-      const tokenSymbol = (params as IBridgeToken).displaySymbol ?? params.symbol;
+      const tokenSymbol = (params as IBridgeToken).displaySymbol;
       const tokenAddress = params.address;
 
       if (tokenSymbol && tokenAddress) {

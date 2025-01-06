@@ -75,6 +75,10 @@ export const dark = {
       hover: '#EF2A37',
       active: '#FF7A84',
     },
+    exchange: {
+      default: '#373943',
+      hover: '#E1E2E5',
+    },
     disabled: rgba('#F7F7F8', 0.45),
   },
   modal: {

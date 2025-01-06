@@ -112,7 +112,7 @@ export const useLoadingBridgeFees = () => {
       const { triggerType = 'new' } = params ?? {};
 
       dispatch(setRouteFees(undefined));
-      if (!selectedToken || !fromChain || !toChain || !debouncedSendValue) {
+      if (!selectedToken || !fromChain || !toChain || !debouncedSendValue || !toToken) {
         dispatch(setIsGlobalFeeLoading(false));
         return;
       }
@@ -144,6 +144,7 @@ export const useLoadingBridgeFees = () => {
           fromChainId: fromChain.id,
           fromAccount: address || DEFAULT_ADDRESS,
           toChainId: toChain?.id,
+          toToken,
           sendValue: amount,
           fromTokenSymbol: selectedToken.symbol,
           publicClient,

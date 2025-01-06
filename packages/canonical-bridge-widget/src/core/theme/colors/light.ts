@@ -77,6 +77,10 @@ export const light: ColorType = {
       hover: '#A91E27',
       active: '#821119',
     },
+    exchange: {
+      default: '#F7F7F8',
+      hover: '#373943',
+    },
     disabled: rgba('#181A1E', 0.4),
   },
   receive: {

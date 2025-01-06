@@ -29,6 +29,7 @@ export interface ITransferState {
     address?: string;
   };
   isRoutesModalOpen: boolean;
+  toTokens: IBridgeToken[];
 }
 
 const initStates: ITransferState = {
@@ -53,6 +54,7 @@ const initStates: ITransferState = {
     address: '',
   },
   isRoutesModalOpen: false,
+  toTokens: [],
 };
 
 export default createReducer(initStates, (builder) => {
@@ -137,5 +139,10 @@ export default createReducer(initStates, (builder) => {
   builder.addCase(actions.setIsRoutesModalOpen, (state, { payload }) => ({
     ...state,
     isRoutesModalOpen: payload,
+  }));
+
+  builder.addCase(actions.setToTokens, (state, { payload }) => ({
+    ...state,
+    toTokens: payload,
   }));
 });

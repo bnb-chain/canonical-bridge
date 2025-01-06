@@ -1,15 +1,13 @@
 import { Flex, Typography, useColorMode, useIntl, useTheme } from '@bnb-chain/space';
 
-import { TransferToIcon } from '@/core/components/icons/TransferToIcon';
 import { FromSection } from '@/modules/transfer/components/FromSection';
 import { ToSection } from '@/modules/transfer/components/ToSection';
-import { useSelection } from '@/modules/aggregator/hooks/useSelection';
+import { ExchangeChainButton } from '@/modules/transfer/components/Button/ExchangeChainButton';
 
 export const NetWorkSection = () => {
   const { formatMessage } = useIntl();
   const { colorMode } = useColorMode();
   const theme = useTheme();
-  const { exchange } = useSelection();
 
   return (
     <Flex className="bccb-widget-network" flexDir={'column'} gap={'8px'}>
@@ -50,17 +48,10 @@ export const NetWorkSection = () => {
         flexDir={['column', 'column', 'row']}
         justifyContent={'space-between'}
         alignItems={'center'}
-        gap={{ base: '8px', md: '12px' }}
         minW={0}
       >
         <FromSection />
-        <TransferToIcon
-          w={'24px'}
-          h={'24px'}
-          mb={{ base: '-8px', md: 0 }}
-          transform={{ base: 'rotate(90deg)', md: 'none' }}
-          onClick={() => exchange()}
-        />
+        <ExchangeChainButton />
         <ToSection />
       </Flex>
     </Flex>

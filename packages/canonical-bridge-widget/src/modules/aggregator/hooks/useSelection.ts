@@ -17,7 +17,13 @@ import { useSolanaAccount } from '@/modules/wallet/hooks/useSolanaAccount';
 import { useTronAccount } from '@/modules/wallet/hooks/useTronAccount';
 import { useTokenPrice } from '@/modules/aggregator/providers/TokenPricesProvider';
 import { useBridgeConfig } from '@/index';
-import { setFromChain, setSelectedToken, setToChain, setToToken } from '@/modules/transfer/action';
+import {
+  setFromChain,
+  setSelectedToken,
+  setToChain,
+  setToToken,
+  setToTokens,
+} from '@/modules/transfer/action';
 
 export function useSelection() {
   const aggregator = useAggregator();
@@ -26,7 +32,6 @@ export function useSelection() {
   const toChain = useAppSelector((state) => state.transfer.toChain);
   const selectedToken = useAppSelector((state) => state.transfer.selectedToken);
   const dispatch = useAppDispatch();
-  const toToken = useAppSelector((state) => state.transfer.toToken);
 
   const updateSelectedInfo = (params: {
     fromChainId: number;
@@ -62,8 +67,18 @@ export function useSelection() {
       updateToTokenInfo(params.toTokenAddress);
     } else {
       const toTokens = aggregator.getToTokens(options);
+      if (toTokens.length > 1) {
+        // eslint-disable-next-line no-console
+        console.log('[aggregator]', `has multiple toTokens (${toTokens.length})`);
+        dispatch(setToTokens(toTokens));
+      } else {
+        dispatch(setToTokens([]));
+      }
+
       if (toTokens.length === 1) {
         updateToTokenInfo(toTokens[0].address);
+      } else {
+        dispatch(setToToken(undefined));
       }
     }
   };

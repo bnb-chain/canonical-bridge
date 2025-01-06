@@ -14,7 +14,7 @@ import { Stargate } from '@/adapters/stargate';
 import { Hash, type PublicClient, type WalletClient } from 'viem';
 import { Meson } from '@/adapters/meson';
 import { IGetMesonEstimateFeeInput } from '@/adapters/meson/types';
-import { BridgeType } from '@/shared/types';
+import { BridgeType, IBridgeToken } from '@/shared/types';
 import { IDeBridgeEstimatedFeesInput } from '@/adapters/deBridge/types';
 import { ICBridgePeggedPairConfig } from '@/adapters/cBridge/types';
 
@@ -194,6 +194,7 @@ export class CanonicalBridgeSDK {
     slippage,
     mesonOpts,
     deBridgeOpts,
+    toToken,
   }: {
     bridgeType: BridgeType[];
     fromChainId: number;
@@ -208,17 +209,28 @@ export class CanonicalBridgeSDK {
     slippage?: number;
     mesonOpts?: IGetMesonEstimateFeeInput;
     deBridgeOpts?: IDeBridgeEstimatedFeesInput;
+    toToken?: IBridgeToken;
   }) {
     // deBridge
     const promiseArr = [];
-    if (this.deBridge && deBridgeOpts && bridgeType.includes('deBridge')) {
+    if (
+      this.deBridge &&
+      deBridgeOpts &&
+      bridgeType.includes('deBridge') &&
+      toToken?.deBridge
+    ) {
       const debridgeFeeAPICall = this.deBridge.getEstimatedFees(deBridgeOpts);
       promiseArr.push(debridgeFeeAPICall);
     } else {
       promiseArr.push(new Promise((reject) => reject(null)));
     }
     // cBridge
-    if (this.cBridge && slippage && bridgeType.includes('cBridge')) {
+    if (
+      this.cBridge &&
+      slippage &&
+      bridgeType.includes('cBridge') &&
+      toToken?.cBridge
+    ) {
       const cBridgeFeeAPICall = this.cBridge.getEstimatedAmount({
         src_chain_id: fromChainId,
         dst_chain_id: toChainId,
@@ -238,7 +250,8 @@ export class CanonicalBridgeSDK {
       bridgeAddress?.stargate &&
       endPointId?.layerZeroV2 &&
       bridgeType.includes('stargate') &&
-      !!publicClient
+      !!publicClient &&
+      toToken?.stargate
     ) {
       const stargateFeeAPICall = this.stargate.getQuoteOFT({
         publicClient: publicClient,
@@ -257,7 +270,8 @@ export class CanonicalBridgeSDK {
       bridgeAddress?.layerZero &&
       endPointId?.layerZeroV1 &&
       bridgeType.includes('layerZero') &&
-      !!publicClient
+      !!publicClient &&
+      toToken?.layerZero
     ) {
       const layerZeroFeeAPICall = this.layerZero.getEstimateFee({
         bridgeAddress: bridgeAddress.layerZero,
@@ -271,7 +285,12 @@ export class CanonicalBridgeSDK {
       promiseArr.push(new Promise((reject) => reject(null)));
     }
     // meson
-    if (this.meson && mesonOpts && bridgeType.includes('meson')) {
+    if (
+      this.meson &&
+      mesonOpts &&
+      bridgeType.includes('meson') &&
+      toToken?.meson
+    ) {
       const mesonFeeAPICall = this.meson.getEstimatedFees(mesonOpts);
       promiseArr.push(mesonFeeAPICall);
     } else {

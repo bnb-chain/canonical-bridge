@@ -10,6 +10,7 @@ import { ToAccount } from '@/modules/transfer/components/ToAccount';
 import { SvgDefs } from '@/core/components/icons/defs.tsx';
 import { useAppDispatch } from '@/modules/store/StoreProvider';
 import { setIsRoutesModalOpen } from '@/modules/transfer/action';
+import { ToTokenSection } from '@/modules/transfer/components/ToTokenSection';
 
 export function BridgeTransfer() {
   useDefaultSelect();
@@ -53,6 +54,8 @@ export function BridgeTransfer() {
 
         <NetWorkSection />
         <SendInput />
+        <ToTokenSection />
+
         <ToAccount />
         <ReceiveInfo onOpen={() => dispatch(setIsRoutesModalOpen(true))} />
         <Flex flexDir="column">

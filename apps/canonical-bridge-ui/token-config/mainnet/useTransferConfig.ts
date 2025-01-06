@@ -41,17 +41,17 @@ export function useTransferConfig() {
         defaultAmount: '',
         chainConfigs: chains,
         providers: [
-          // cBridge({
-          //   config: cBridgeConfig,
-          //   excludedChains: [],
-          //   excludedTokens: {
-          //     56: ['0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c'],
-          //     42161: [
-          //       '0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9',
-          //       '0xFF970A61A04b1cA14834A43f5dE4533eBDDB5CC8',
-          //     ], // ['USDT', 'USDC.e']
-          //   },
-          // }),
+          cBridge({
+            config: cBridgeConfig,
+            excludedChains: [],
+            excludedTokens: {
+              56: ['0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c'],
+              42161: [
+                '0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9',
+                '0xFF970A61A04b1cA14834A43f5dE4533eBDDB5CC8',
+              ], // ['USDT', 'USDC.e']
+            },
+          }),
           deBridge({
             config: handleDeBridgeConfig(deBridgeConfig),
             excludedChains: [],

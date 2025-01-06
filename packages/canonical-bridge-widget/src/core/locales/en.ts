@@ -21,6 +21,7 @@ export const en = {
 
     'you.send.title': 'You Send',
     'you.receive.title': 'You Receive',
+    'select.received-token.title': 'Select Received Token',
     'route.button.change-routes': 'Change Routes',
     'route.title.select.routes': 'Select Bridge Routes',
     'route.fees.title': 'Fees:',

@@ -12,6 +12,8 @@ import { DeBridgeAdapter } from '@/adapters/deBridge/adapter';
 import { LayerZeroAdapter } from '@/adapters/layerZero/adapter';
 import { MesonAdapter } from '@/adapters/meson/adapter';
 import { StargateAdapter } from '@/adapters/stargate/adapter';
+import { DISPLAY_TOKEN_SYMBOLS } from '@/constants/displayTokenSymbols';
+import { isEmpty } from '@/shared/object';
 import {
   BridgeType,
   IBridgeChain,
@@ -62,26 +64,31 @@ export class Aggregator {
     const { providers, chainSorter, tokenSorter, ...commonOptions } =
       this.options;
 
+    const displayTokenSymbols = isEmpty(commonOptions.displayTokenSymbols)
+      ? DISPLAY_TOKEN_SYMBOLS
+      : commonOptions.displayTokenSymbols;
+
     this.adapters = providers
       .filter((item) => !!item.config)
       .map((item) => {
         const adapterOptions: IBaseAdapterOptions<any> = {
-          nativeCurrencies: this.nativeCurrencies,
           ...commonOptions,
           ...item,
+          nativeCurrencies: this.nativeCurrencies,
+          displayTokenSymbols,
         };
 
         switch (item.id) {
           case 'cBridge':
-            return new CBridgeAdapter(adapterOptions);
+            return new CBridgeAdapter(adapterOptions).init();
           case 'deBridge':
-            return new DeBridgeAdapter(adapterOptions);
+            return new DeBridgeAdapter(adapterOptions).init();
           case 'layerZero':
-            return new LayerZeroAdapter(adapterOptions);
+            return new LayerZeroAdapter(adapterOptions).init();
           case 'meson':
-            return new MesonAdapter(adapterOptions);
+            return new MesonAdapter(adapterOptions).init();
           default:
-            return new StargateAdapter(adapterOptions);
+            return new StargateAdapter(adapterOptions).init();
         }
       });
   }

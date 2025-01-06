@@ -30,10 +30,7 @@ export class CBridgeAdapter extends BaseAdapter<
     this.initTransferMap();
     this.filterTransferMap();
 
-    console.log(this.id, 'xxxx');
-    setTimeout(() => {
-      console.log(this.id, '=======');
-    }, 100);
+    return this;
   }
 
   protected initChains() {
@@ -105,8 +102,6 @@ export class CBridgeAdapter extends BaseAdapter<
   }
 
   protected initTransferMap() {
-    console.log(this.id, '===');
-
     const transferMap = new Map<
       number,
       Map<number, Map<string, ITokenPair<ICBridgeToken>[]>>
