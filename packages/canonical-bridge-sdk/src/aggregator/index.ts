@@ -61,18 +61,18 @@ export class Aggregator {
   }
 
   private initAdapters() {
-    const { providers, chainSorter, tokenSorter, ...commonOptions } =
+    const { providers, chainSorter, tokenSorter, ...customizedOptions } =
       this.options;
 
-    const displayTokenSymbols = isEmpty(commonOptions.displayTokenSymbols)
+    const displayTokenSymbols = isEmpty(customizedOptions.displayTokenSymbols)
       ? DISPLAY_TOKEN_SYMBOLS
-      : commonOptions.displayTokenSymbols;
+      : customizedOptions.displayTokenSymbols;
 
     this.adapters = providers
       .filter((item) => !!item.config)
       .map((item) => {
         const adapterOptions: IBaseAdapterOptions<any> = {
-          ...commonOptions,
+          ...customizedOptions,
           ...item,
           nativeCurrencies: this.nativeCurrencies,
           displayTokenSymbols,

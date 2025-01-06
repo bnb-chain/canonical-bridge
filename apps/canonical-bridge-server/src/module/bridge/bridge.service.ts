@@ -21,6 +21,68 @@ export class BridgeService {
     private databaseService: DatabaseService,
   ) {}
 
+  private updateDeBridgeConfigManually(config?: IDebridgeConfig) {
+    if (!config) return;
+
+    const finalConfig = {
+      tokens: [],
+      ...config,
+    };
+
+    const extraConfigs: Record<number, any[]> = {
+      1: [
+        {
+          action: 'replace',
+          target: '0xebd9d99a3982d547c5bb4db7e3b1f9f14b67eb83',
+          data: {
+            address: '0x2dfF88A56767223A5529eA5960Da7A3F5f766406',
+            symbol: 'ID',
+            decimals: 18,
+            name: 'SPACE ID',
+            logoURI: '',
+            eip2612: false,
+            tags: ['tokens'],
+          },
+        },
+        {
+          action: 'append',
+          data: {
+            address: '0x152649eA73beAb28c5b49B26eb48f7EAD6d4c898',
+            symbol: 'Cake',
+            decimals: 18,
+            name: 'PancakeSwap Token',
+            logoURI: '',
+            eip2612: false,
+            tags: ['tokens'],
+          },
+        },
+      ],
+    };
+
+    Object.entries(finalConfig.tokens).forEach(([key, value]) => {
+      const chainId = Number(key);
+      const extraConfig = extraConfigs[chainId];
+
+      if (extraConfig) {
+        extraConfig.forEach((item) => {
+          const { action, target, data } = item;
+          if (!value[data.address]) {
+            if (action === 'replace') {
+              const index = value.findIndex((item) => item.address === target);
+              if (index > -1) {
+                value[index] = data;
+              }
+            } else if (action === 'append') {
+              (value as any).push(data);
+            }
+          }
+        });
+      }
+    });
+
+    return finalConfig;
+  }
+
   public async getPriceConfig() {
     const [cmcRes, llamaRes] = await Promise.allSettled([
       this.cache.get<ITokenPriceRecord>(CACHE_KEY.CMC_CONFIG),
@@ -96,7 +158,8 @@ export class BridgeService {
     return finalConfig;
   }
 
-  public async removeDeBridgeNoPriceTokens(config?: IDebridgeConfig) {
+  public async removeDeBridgeNoPriceTokens(_config?: IDebridgeConfig) {
+    const config = this.updateDeBridgeConfigManually(_config);
     if (!config) return;
 
     const prices = await this.getPriceConfig();
