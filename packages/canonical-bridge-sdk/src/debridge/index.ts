@@ -290,10 +290,23 @@ export class DeBridge {
         fromTokenList.status === 'fulfilled' &&
         toTokenList.status === 'fulfilled'
       ) {
-        const fromToken =
-          fromTokenList?.value?.data.tokens[fromTokenAddress.toLowerCase()];
-        const toToken =
-          toTokenList?.value?.data.tokens[toTokenAddress.toLowerCase()];
+        const fromTokenAddr =
+          fromChainType === 'solana'
+            ? fromTokenAddress
+            : fromTokenAddress.toLowerCase();
+        const toTokenAddr =
+          toChainType === 'solana'
+            ? toTokenAddress
+            : toTokenAddress.toLowerCase();
+        const fromToken = fromTokenList?.value?.data.tokens[fromTokenAddr];
+        const toToken = toTokenList?.value?.data.tokens[toTokenAddr];
+
+        if (!toToken) {
+          console.log('Can not find toToken info');
+        }
+        if (!fromToken) {
+          console.log('Can not find fromToken info');
+        }
         if (
           !!fromToken &&
           fromToken?.address.toLowerCase() === fromTokenAddress.toLowerCase() &&
