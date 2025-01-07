@@ -1,5 +1,11 @@
 # @bnb-chain/canonical-bridge-sdk
 
+## 0.4.7
+
+### Patch Changes
+
+- 7c2e201: Confirmation popup
+
 ## 0.4.6
 
 ### Patch Changes
