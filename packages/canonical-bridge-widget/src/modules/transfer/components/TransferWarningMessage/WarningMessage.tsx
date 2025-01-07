@@ -22,6 +22,7 @@ export const WarningMessage = ({ text, ...restProps }: { text: React.ReactNode }
       {...restProps}
     >
       <InfoIcon
+        transform={'rotate(180deg)'}
         w={'16px'}
         h={'16px'}
         iconcolor={theme.colors[colorMode].text.warning}

@@ -36,8 +36,7 @@ export function useEvmSwitchChain(props?: UseEvmSwitchChainProps) {
           connector?.id === 'walletConnect' ||
           connector?.id === 'trust' ||
           connector?.id === 'binanceWeb3Wallet' ||
-          connector?.id === 'BinanceW3WSDK' ||
-          connector?.id === 'binanceWallet'
+          connector?.id === 'BinanceW3WSDK'
         ) {
           if (
             err?.message?.includes('The JSON sent is not a valid Request object') ||

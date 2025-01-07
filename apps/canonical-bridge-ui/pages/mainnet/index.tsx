@@ -28,6 +28,7 @@ export const bridgeConfig: ICanonicalBridgeConfig = {
     refetchingInterval: 30 * 1000, // 30s
     apiTimeOut: 60 * 1000, // 60s
     deBridgeAccessToken: '',
+    deBridgeReferralCode: '30229',
     serverEndpoint: env.SERVER_ENDPOINT,
   },
 };

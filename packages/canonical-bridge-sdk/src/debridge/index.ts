@@ -81,6 +81,7 @@ export class DeBridge {
     toUserAddress,
     affiliateFeePercent = 0,
     accesstoken = '',
+    referralCode = '30229',
     prependOperatingExpenses = false,
   }: IDeBridgeEstimatedFeesInput): Promise<DeBridgeCreateQuoteResponse> {
     try {
@@ -97,6 +98,9 @@ export class DeBridge {
         srcChainOrderAuthorityAddress: userAddress,
       } as any;
 
+      if (referralCode) {
+        deBridgeParams.referralCode = referralCode;
+      }
       if (accesstoken) {
         deBridgeParams.accesstoken = accesstoken;
       }
