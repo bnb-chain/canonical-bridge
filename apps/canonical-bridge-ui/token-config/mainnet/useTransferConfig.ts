@@ -149,6 +149,8 @@ export function useTransferConfig() {
                   7565164: [
                     'So11111111111111111111111111111111111111112',
                     'FmqVMWXBESyu4g6FT1uz1GABKdJ4j6wbuuLFwPJtqpmu',
+                    '2kaRSuDcz1V1kqq1sDmP23Wy98jutHQQgr5fGDWRpump',
+                    '2FPyTwcZLUg1MDrwsyoP4D6s1tM7hAkHYRjkNb5w6Pxk',
                   ],
                 },
               },
