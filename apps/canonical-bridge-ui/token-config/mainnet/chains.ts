@@ -641,7 +641,7 @@ export const chains: IChainConfig[] = [
       symbol: 'KLAY',
       decimals: 18,
     },
-    rpcUrl: 'https://1rpc.io/klay',
+    rpcUrl: 'https://public-en-cypress.klaytn.net',
     explorer: {
       name: 'Klaytnscope',
       url: 'https://scope.klaytn.com',
