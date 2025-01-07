@@ -15,7 +15,7 @@
     "@emotion/css": "~11.13.0",
     "@emotion/react": "~11.13.3",
     "@emotion/styled": "~11.13.0",
-    "@node-real/walletkit": "2.7.3",
+    "@node-real/walletkit": "2.7.4",
     "@solana/spl-token": "~0.4.9",
     "@solana/wallet-adapter-react": "~0.15.35",
     "@solana/web3.js": "~1.95.4",
