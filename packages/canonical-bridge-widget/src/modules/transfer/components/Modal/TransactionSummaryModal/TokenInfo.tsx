@@ -46,7 +46,7 @@ export const TokenInfo = ({
           />
           <IconImage boxSize="32px" src={chainIconUrl} flexShrink={0} />
         </Flex>
-        <Box fontSize={'16px'} py={'8px'} fontWeight={700} maxW={'103px'} whiteSpace={'wrap'}>
+        <Box fontSize={'16px'} py={'8px'} fontWeight={700} maxW={'142px'} whiteSpace={'wrap'}>
           {chainName}
         </Box>
       </Flex>
