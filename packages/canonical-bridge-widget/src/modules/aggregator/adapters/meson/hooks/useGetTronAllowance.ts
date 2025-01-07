@@ -52,7 +52,11 @@ export const useGetTronAllowance = () => {
     let mount = true;
     if (!mount) return;
     getAllowance();
+    const interval = setInterval(() => {
+      getAllowance();
+    }, 5000);
     return () => {
+      interval && clearInterval(interval);
       mount = false;
     };
   }, [getAllowance]);
