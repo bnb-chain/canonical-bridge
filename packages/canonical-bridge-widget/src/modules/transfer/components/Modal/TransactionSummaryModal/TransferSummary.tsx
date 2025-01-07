@@ -52,7 +52,7 @@ export const TransferSummary = () => {
         chainIconUrl={fromChain?.icon}
         tokenIconUrl={selectedToken?.icon}
         chainName={fromChain?.name}
-        amount={!!sendValue ? `-${sendValue}` : ''}
+        amount={!!sendValue ? `- ${sendValue}` : ''}
         tokenSymbol={selectedToken?.symbol ?? ''}
       />
       <TransferToIcon
@@ -66,7 +66,7 @@ export const TransferSummary = () => {
         chainIconUrl={toChain?.icon}
         tokenIconUrl={toTokenInfo?.icon}
         chainName={toChain?.name}
-        amount={!!receiveAmt ? `+${receiveAmt}` : ''}
+        amount={!!receiveAmt ? `+ ${receiveAmt}` : ''}
         tokenSymbol={toTokenInfo?.symbol ?? ''}
       />
       <WarningMessage

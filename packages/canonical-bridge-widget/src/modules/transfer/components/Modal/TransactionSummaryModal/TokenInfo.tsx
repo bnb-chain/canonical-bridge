@@ -20,8 +20,14 @@ export const TokenInfo = ({
   const isGlobalFeeLoading = useAppSelector((state) => state.transfer.isGlobalFeeLoading);
 
   return (
-    <Flex flexDir={'row'} justifyContent={'space-between'} w={'100%'} alignItems={'center'}>
-      <Flex flexDir={'row'} alignItems={'center'} gap={'14px'}>
+    <Flex
+      flexDir={'row'}
+      justifyContent={'space-between'}
+      w={'100%'}
+      alignItems={'center'}
+      gap={'16px'}
+    >
+      <Flex flexShrink={1} flexDir={'row'} alignItems={'center'} gap={'14px'}>
         <Flex
           justifyContent={'center'}
           alignItems={'center'}
@@ -40,24 +46,28 @@ export const TokenInfo = ({
           />
           <IconImage boxSize="32px" src={chainIconUrl} flexShrink={0} />
         </Flex>
-        <Box fontSize={'16px'} py={'8px'} fontWeight={700}>
+        <Box fontSize={'16px'} py={'8px'} fontWeight={700} maxW={'103px'} whiteSpace={'wrap'}>
           {chainName}
         </Box>
       </Flex>
       {isGlobalFeeLoading ? (
         <Skeleton height="24px" maxW="120px" w={'100%'} borderRadius={'4px'} />
       ) : (
-        <Box
+        <Flex
+          flex={1}
           wordBreak={'break-all'}
           py={'8px'}
+          textAlign={'right'}
+          alignItems={'center'}
+          justifyContent={'flex-end'}
           color={
-            Number(amount) < 0
+            Number(amount?.replace(' ', '')) < 0
               ? theme.colors[colorMode].support.danger[3]
               : theme.colors[colorMode].support.success[3]
           }
         >
           {amount ?? '--'} {tokenSymbol}
-        </Box>
+        </Flex>
       )}
     </Flex>
   );
