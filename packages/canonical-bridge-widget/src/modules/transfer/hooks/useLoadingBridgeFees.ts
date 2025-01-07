@@ -54,7 +54,7 @@ export const useLoadingBridgeFees = () => {
 
   const bridgeSDK = useBridgeSDK();
   const {
-    http: { deBridgeAccessToken },
+    http: { deBridgeAccessToken, deBridgeReferralCode },
   } = useBridgeConfig();
   const nativeToken = useGetNativeToken();
   const { deBridgeFeeSorting: _deBridgeFeeSorting } = useGetDeBridgeFees();
@@ -180,6 +180,7 @@ export const useLoadingBridgeFees = () => {
             toChainId: toChain?.id,
             toTokenAddress: toToken?.deBridge?.raw?.address as `0x${string}`,
             accesstoken: deBridgeAccessToken,
+            referralCode: deBridgeReferralCode,
             userAddress:
               fromChain.chainType === 'solana'
                 ? solanaAddress || DEFAULT_SOLANA_ADDRESS
@@ -474,6 +475,7 @@ export const useLoadingBridgeFees = () => {
       max_slippage,
       tronAddress,
       deBridgeAccessToken,
+      deBridgeReferralCode,
       solanaAddress,
       isSolanaAvailableToAccount,
       formatMessage,

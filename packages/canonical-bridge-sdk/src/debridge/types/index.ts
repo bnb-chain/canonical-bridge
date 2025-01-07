@@ -85,6 +85,7 @@ export interface IDeBridgeEstimatedFeesInput {
   affiliateFeePercent?: number;
   prependOperatingExpenses?: boolean;
   accesstoken?: string;
+  referralCode?: string;
 }
 
 export interface ISendDebridgeTokenInput {

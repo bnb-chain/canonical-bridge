@@ -33,6 +33,7 @@ export interface ICanonicalBridgeConfig {
     refetchingInterval?: number;
     apiTimeOut?: number;
     deBridgeAccessToken?: string;
+    deBridgeReferralCode?: string;
     serverEndpoint: string;
     mesonEndpoint?: string;
   };
