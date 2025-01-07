@@ -1,12 +1,18 @@
 import { Icon, IconProps } from '@bnb-chain/space';
-import { keyframes } from '@emotion/react';
 
 import { useAppSelector } from '@/modules/store/StoreProvider';
+
+const circumference = 2 * Math.PI * 20.5;
 
 export const RefreshingIcon = (props: IconProps) => {
   const isGlobalFeeLoading = useAppSelector((state) => state.transfer.isGlobalFeeLoading);
   const isRefreshing = useAppSelector((state) => state.transfer.isRefreshing);
+  const refreshAnimationProgress = useAppSelector(
+    (state) => state.transfer.refreshAnimationProgress,
+  );
   const randomStr = Math.random().toString(36).substring(7);
+  const currentOffset = circumference - refreshAnimationProgress * circumference;
+
   return (
     <Icon
       xmlns="http://www.w3.org/2000/svg"
@@ -14,11 +20,6 @@ export const RefreshingIcon = (props: IconProps) => {
       height="42px"
       viewBox="0 0 42 42"
       fill="none"
-      sx={{
-        '.refreshBorder': {
-          animation: `${dash} 32s forwards infinite`,
-        },
-      }}
       {...props}
     >
       <circle
@@ -28,8 +29,8 @@ export const RefreshingIcon = (props: IconProps) => {
         r="20.5"
         fill="currentColor"
         stroke="#FFE900"
-        strokeDasharray={128.76}
-        strokeDashoffset={128.76}
+        strokeDasharray={circumference}
+        strokeDashoffset={currentOffset}
       />
       <mask
         id={`mask0_28149_328880_${randomStr}`}
@@ -51,12 +52,3 @@ export const RefreshingIcon = (props: IconProps) => {
     </Icon>
   );
 };
-
-const dash = keyframes`
-  from {
-    stroke-dashoffset: 128.76;
-  }
-  to {
-    stroke-dashoffset: 0;
-  }
-`;

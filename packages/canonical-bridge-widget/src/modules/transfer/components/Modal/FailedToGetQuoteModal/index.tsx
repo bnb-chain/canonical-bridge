@@ -13,6 +13,13 @@ export const FailedToGetQuoteModal = (props: Omit<StateModalProps, 'title'>) => 
       title={formatMessage({ id: 'modal.quote.error.title' })}
       description={formatMessage({ id: 'modal.quote.error.desc' })}
       buttonText={formatMessage({ id: 'modal.quote.error.button.close' })}
+      bodyProps={{
+        px: ['16px', '16px', '40px'],
+      }}
+      footerProps={{
+        pb: ['32px', '32px', '40px'],
+        px: ['16px', '16px', '40px'],
+      }}
       {...restProps}
     />
   );

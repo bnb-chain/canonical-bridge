@@ -9,6 +9,7 @@ import { useAppDispatch, useAppSelector } from '@/modules/store/StoreProvider';
 import {
   setEstimatedAmount,
   setIsGlobalFeeLoading,
+  setIsSummaryModalOpen,
   setRouteError,
   setRouteFees,
 } from '@/modules/transfer/action';
@@ -34,6 +35,7 @@ import { formatNumber } from '@/core/utils/number';
 import { useSolanaAccount } from '@/modules/wallet/hooks/useSolanaAccount';
 import { useSolanaTransferInfo } from '@/modules/transfer/hooks/solana/useSolanaTransferInfo';
 import { useIsWalletCompatible } from '@/modules/wallet/hooks/useIsWalletCompatible';
+import { useFailGetQuoteModal } from '@/modules/transfer/hooks/modal/useFailGetQuoteModal';
 
 let lastTime = Date.now();
 
@@ -52,7 +54,7 @@ export const useLoadingBridgeFees = () => {
 
   const bridgeSDK = useBridgeSDK();
   const {
-    http: { deBridgeAccessToken },
+    http: { deBridgeAccessToken, deBridgeReferralCode },
   } = useBridgeConfig();
   const nativeToken = useGetNativeToken();
   const { deBridgeFeeSorting: _deBridgeFeeSorting } = useGetDeBridgeFees();
@@ -77,6 +79,7 @@ export const useLoadingBridgeFees = () => {
   layerZeroFeeSorting.current = _layerZeroFeeSorting;
 
   const { mesonFeeSorting: _mesonFeeSorting } = useGetMesonFees();
+  const { onOpenFailedGetQuoteModal } = useFailGetQuoteModal();
   const mesonFeeSorting = useRef(_mesonFeeSorting);
   mesonFeeSorting.current = _mesonFeeSorting;
 
@@ -89,6 +92,7 @@ export const useLoadingBridgeFees = () => {
   const toChain = useAppSelector((state) => state.transfer.toChain);
   const max_slippage = useAppSelector((state) => state.transfer.slippage);
   const toAccount = useAppSelector((state) => state.transfer.toAccount);
+  const isSummaryModalOpen = useAppSelector((state) => state.transfer.isSummaryModalOpen);
 
   // Avoid `loadBridgeFees` to be repeatedly executed during toAccount input
   const toAccountRef = useRef<string | undefined>(toAccount.address);
@@ -102,6 +106,9 @@ export const useLoadingBridgeFees = () => {
   const transferActionInfo = useAppSelector((state) => state.transfer.transferActionInfo);
   const selectedBridgeTypeRef = useRef<BridgeType | undefined>(transferActionInfo?.bridgeType);
   selectedBridgeTypeRef.current = transferActionInfo?.bridgeType;
+
+  const isSummaryModalOpenRef = useRef(isSummaryModalOpen);
+  isSummaryModalOpenRef.current = isSummaryModalOpen;
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const publicClient = usePublicClient({ chainId: fromChain?.id }) as any;
@@ -173,6 +180,7 @@ export const useLoadingBridgeFees = () => {
             toChainId: toChain?.id,
             toTokenAddress: toToken?.deBridge?.raw?.address as `0x${string}`,
             accesstoken: deBridgeAccessToken,
+            referralCode: deBridgeReferralCode,
             userAddress:
               fromChain.chainType === 'solana'
                 ? solanaAddress || DEFAULT_SOLANA_ADDRESS
@@ -407,12 +415,21 @@ export const useLoadingBridgeFees = () => {
           dispatch(setEstimatedAmount({ layerZero: undefined }));
         }
 
+        // Check if pre select route is failed
+        if (
+          selectedBridgeTypeRef.current &&
+          valueArr.length === 0 &&
+          isSummaryModalOpenRef.current === true
+        ) {
+          dispatch(setIsSummaryModalOpen(false));
+          onOpenFailedGetQuoteModal();
+        }
+
         // pre-select best route
         if (valueArr.length > 0) {
           const lastValue = valueArr.find(
             (e) => !e.isDisplayError && e.type === selectedBridgeTypeRef.current,
           );
-
           const highestValue = valueArr.reduce(
             (max, entry) =>
               Number(entry['value']) > Number(max['value']) &&
@@ -423,6 +440,11 @@ export const useLoadingBridgeFees = () => {
             { value: '0', type: '' },
           );
 
+          // Can not find selected route fee info
+          if (triggerType === 'refresh' && isSummaryModalOpenRef.current === true && !lastValue) {
+            dispatch(setIsSummaryModalOpen(false));
+            onOpenFailedGetQuoteModal();
+          }
           if (triggerType === 'refresh' && lastValue) {
             preSelectRoute(response, lastValue.type as BridgeType);
           } else if (Number(highestValue?.value) > 0) {
@@ -453,6 +475,7 @@ export const useLoadingBridgeFees = () => {
       max_slippage,
       tronAddress,
       deBridgeAccessToken,
+      deBridgeReferralCode,
       solanaAddress,
       isSolanaAvailableToAccount,
       formatMessage,
@@ -460,6 +483,7 @@ export const useLoadingBridgeFees = () => {
       isWalletCompatible,
       nativeToken,
       preSelectRoute,
+      onOpenFailedGetQuoteModal,
     ],
   );
 

@@ -635,16 +635,16 @@ export const chains: IChainConfig[] = [
   },
   {
     id: 8217,
-    name: 'Klaytn',
+    name: 'Kaia',
     nativeCurrency: {
-      name: 'KLAY',
-      symbol: 'KLAY',
+      name: 'KAIA',
+      symbol: 'KAIA',
       decimals: 18,
     },
-    rpcUrl: 'https://1rpc.io/klay',
+    rpcUrl: 'https://public-en.node.kaia.io',
     explorer: {
-      name: 'Klaytnscope',
-      url: 'https://scope.klaytn.com',
+      name: 'Kaiascope',
+      url: 'https://kaiascope.com',
     },
   },
   {
