@@ -21,7 +21,7 @@ export const useToTokenInfo = () => {
       deBridge: toTokenInfo?.deBridge?.raw?.address || '',
       stargate: toTokenInfo?.stargate?.raw?.token?.address || '',
       layerZero: toTokenInfo?.layerZero?.raw?.address || '',
-      meson: toTokenInfo?.meson?.raw?.addr || 0,
+      meson: toTokenInfo?.meson?.raw?.addr || '',
     };
   }, [toTokenInfo]);
 
