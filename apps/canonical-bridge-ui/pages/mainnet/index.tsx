@@ -4,7 +4,7 @@ import {
   BridgeRoutes,
   ICustomizedBridgeConfig,
 } from '@bnb-chain/canonical-bridge-widget';
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo } from 'react';
 
 import { useTransferConfig } from '@/token-config/mainnet/useTransferConfig';
 import { chains } from '@/token-config/mainnet/chains';
@@ -16,14 +16,6 @@ import { light } from '@/core/theme/light';
 import { dark } from '@/core/theme/dark';
 
 export default function MainnetPage() {
-  const [isMounted, setIsMounted] = useState(false);
-
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
-
-  if (!isMounted) return null;
-
   return (
     <WalletProvider chainConfigs={chains}>
       <BridgeWidget />
@@ -46,7 +38,7 @@ function BridgeWidget() {
       },
       http: {
         serverEndpoint: env.SERVER_ENDPOINT,
-        deBridgeReferralCode: '30229',
+        deBridgeReferralCode: env.DEBRIDGE_REFERRAL_CODE,
       },
       transfer: transferConfig,
       onClickConnectWalletButton: onOpen,
