@@ -1,5 +1,18 @@
 # @bnb-chain/canonical-bridge-widget
 
+## 0.5.18
+
+### Patch Changes
+
+- eb0917b: feat: Confirmation popup
+
+## 0.5.17
+
+### Patch Changes
+
+- 2179e93: feat: Send confirm popup
+- 7c2e201: Confirmation popup
+
 ## 0.5.17-alpha.0
 
 ### Patch Changes

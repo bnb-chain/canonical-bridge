@@ -1,5 +1,6 @@
 import { Flex, Link, useBreakpointValue, useColorMode, useIntl, useTheme } from '@bnb-chain/space';
 import { useMemo } from 'react';
+import { BridgeType } from '@bnb-chain/canonical-bridge-sdk';
 
 import { useAppSelector } from '@/modules/store/StoreProvider';
 import { useGetReceiveAmount } from '@/modules/transfer/hooks/useGetReceiveAmount';
@@ -22,21 +23,28 @@ export const TransferSummary = () => {
   const selectedToken = useAppSelector((state) => state.transfer.selectedToken);
   const sendValue = useAppSelector((state) => state.transfer.sendValue);
   const transferActionInfo = useAppSelector((state) => state.transfer.transferActionInfo);
-  const { toTokenInfo } = useToTokenInfo();
+  const { getToTokenAddress, toTokenInfo, getToTokenSymbol } = useToTokenInfo();
 
+  const bridgeType = useMemo(
+    () => transferActionInfo?.bridgeType,
+    [transferActionInfo],
+  ) as BridgeType;
   const receiveAmt = useMemo(() => {
     if (!Number(sendValue)) return null;
-    if (transferActionInfo && transferActionInfo.bridgeType) {
-      const bridgeType = transferActionInfo.bridgeType;
+    if (bridgeType) {
       const receiveValue = getSortedReceiveAmount();
       return Number(receiveValue[bridgeType].value);
     }
     return null;
-  }, [getSortedReceiveAmount, transferActionInfo, sendValue]);
+  }, [getSortedReceiveAmount, bridgeType, sendValue]);
+
+  const toTokenAddress = useMemo(() => {
+    return bridgeType ? getToTokenAddress()[bridgeType] : '';
+  }, [bridgeType, getToTokenAddress]);
 
   const isNative = useMemo(
-    () => isNativeToken(toTokenInfo?.address, toChain?.chainType),
-    [toTokenInfo?.address, toChain?.chainType],
+    () => isNativeToken(toTokenAddress, toChain?.chainType),
+    [toTokenAddress, toChain?.chainType],
   );
 
   return (
@@ -77,25 +85,27 @@ export const TransferSummary = () => {
                 <span style={{ marginRight: '2px' }}>
                   {formatMessage({ id: 'transfer.warning.confirm.to.address' })}
                 </span>
-                <Link
-                  isExternal
-                  href={formatTokenUrl(toChain?.tokenUrlPattern, toTokenInfo?.address)}
-                  display="inline-block"
-                  overflowWrap={'break-word'}
-                  pointerEvents={'all'}
-                  color="currentColor"
-                >
-                  {isBase
-                    ? formatAppAddress({ address: toTokenInfo?.address, isTruncated: true })
-                    : toTokenInfo?.address}
-                </Link>
+                {toTokenAddress ? (
+                  <Link
+                    isExternal
+                    href={formatTokenUrl(toChain?.tokenUrlPattern, toTokenAddress)}
+                    display="inline-block"
+                    overflowWrap={'break-word'}
+                    pointerEvents={'all'}
+                    color="currentColor"
+                  >
+                    {isBase
+                      ? formatAppAddress({ address: toTokenAddress, isTruncated: true })
+                      : toTokenAddress}
+                  </Link>
+                ) : null}
               </>
             ) : (
               <>
                 <span style={{ marginRight: '2px' }}>
                   {formatMessage({ id: 'transfer.warning.confirm.to.native.token.address' })}
                 </span>
-                <span>{toTokenInfo?.symbol?.toUpperCase()}</span>
+                <span>{getToTokenSymbol()?.[bridgeType]?.toUpperCase() ?? ''}</span>
               </>
             )}
           </span>
