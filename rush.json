@@ -24,22 +24,6 @@
   },
   "projects": [
     {
-      "packageName": "@bnb-chain/eslint-config",
-      "projectFolder": "packages/eslint-config"
-    },
-    {
-      "packageName": "@bnb-chain/prettier-config",
-      "projectFolder": "packages/prettier-config"
-    },
-    {
-      "packageName": "@bnb-chain/icons",
-      "projectFolder": "packages/icons"
-    },
-    {
-      "packageName": "@bnb-chain/space",
-      "projectFolder": "packages/space"
-    },
-    {
       "packageName": "@bnb-chain/canonical-bridge-sdk",
       "projectFolder": "packages/canonical-bridge-sdk"
     },

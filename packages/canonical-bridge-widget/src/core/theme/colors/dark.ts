@@ -1,8 +1,6 @@
 import { rgba } from 'polished';
 
-import { ColorType } from '@/core/theme/colors/types';
-
-export const dark: ColorType = {
+export const dark = {
   primitives: {
     logo: '#F0B90B',
     white: '#FFFFFF',
@@ -29,6 +27,9 @@ export const dark: ColorType = {
     warning: '#FFEADB',
     danger: '#F8545F',
     route: { title: '#8C8F9B' },
+    network: {
+      title: '#8C8F9B',
+    },
     on: {
       color: {
         primary: '#181A1E',
@@ -73,6 +74,10 @@ export const dark: ColorType = {
       subtle: rgba('#541C20', 0.45),
       hover: '#EF2A37',
       active: '#FF7A84',
+    },
+    exchange: {
+      default: '#373943',
+      hover: '#E1E2E5',
     },
     disabled: rgba('#F7F7F8', 0.45),
   },
@@ -194,3 +199,5 @@ export const dark: ColorType = {
     separator: '#5C5F6A',
   },
 };
+
+export type ColorType = typeof dark;

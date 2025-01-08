@@ -48,7 +48,6 @@ const queryClient = new QueryClient({
 });
 
 const config: ICanonicalBridgeConfig = {
-  appName: env.APP_NAME,
   assetPrefix: env.ASSET_PREFIX,
   appearance: {
     bridgeTitle: 'Widget Title',

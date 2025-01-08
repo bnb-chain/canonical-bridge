@@ -1,7 +1,7 @@
 import { useCallback, useRef } from 'react';
 import { formatUnits, parseUnits } from 'viem';
 import { useAccount, useBalance, usePublicClient } from 'wagmi';
-import { BridgeType, DeBridgeCreateQuoteResponse } from '@bnb-chain/canonical-bridge-sdk';
+import { BridgeType, IDeBridgeCreateQuoteResponse } from '@bnb-chain/canonical-bridge-sdk';
 import { useWallet as useTronWallet } from '@tronweb3/tronwallet-adapter-react-hooks';
 import { useIntl } from '@bnb-chain/space';
 
@@ -119,7 +119,7 @@ export const useLoadingBridgeFees = () => {
       const { triggerType = 'new' } = params ?? {};
 
       dispatch(setRouteFees(undefined));
-      if (!selectedToken || !fromChain || !toChain || !debouncedSendValue) {
+      if (!selectedToken || !fromChain || !toChain || !debouncedSendValue || !toToken) {
         dispatch(setIsGlobalFeeLoading(false));
         return;
       }
@@ -138,7 +138,7 @@ export const useLoadingBridgeFees = () => {
 
       const availableBridgeTypes = bridgeSDK.getSupportedBridges();
       availableBridgeTypes.forEach((bridge) => {
-        if (selectedToken[bridge]?.isMatched) {
+        if (selectedToken[bridge]) {
           bridgeTypeList.push(bridge);
         }
       });
@@ -151,6 +151,7 @@ export const useLoadingBridgeFees = () => {
           fromChainId: fromChain.id,
           fromAccount: address || DEFAULT_ADDRESS,
           toChainId: toChain?.id,
+          toToken,
           sendValue: amount,
           fromTokenSymbol: selectedToken.symbol,
           publicClient,
@@ -277,17 +278,17 @@ export const useLoadingBridgeFees = () => {
         // deBridge
         if (debridgeEst.status === 'fulfilled' && debridgeEst?.value) {
           const feeSortingRes = await deBridgeFeeSorting.current(
-            debridgeEst.value as DeBridgeCreateQuoteResponse,
+            debridgeEst.value as IDeBridgeCreateQuoteResponse,
           );
           if (!feeSortingRes?.isFailedToGetGas) {
             dispatch(
-              setEstimatedAmount({ deBridge: debridgeEst.value as DeBridgeCreateQuoteResponse }),
+              setEstimatedAmount({ deBridge: debridgeEst.value as IDeBridgeCreateQuoteResponse }),
             );
             valueArr.push({
               type: 'deBridge',
               value: formatUnits(
                 BigInt(
-                  (debridgeEst.value as DeBridgeCreateQuoteResponse)?.estimation.dstChainTokenOut
+                  (debridgeEst.value as IDeBridgeCreateQuoteResponse)?.estimation.dstChainTokenOut
                     .amount,
                 ),
                 getToDecimals()['deBridge'],

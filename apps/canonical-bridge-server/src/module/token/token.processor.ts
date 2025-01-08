@@ -57,7 +57,7 @@ export class TokenProcessor extends WorkerHost {
         return r;
       }, {});
 
-    await this.cache.set(`${CACHE_KEY.LLAMA_CONFIG}`, config, TIME.MONTH);
+    await this.cache.set(`${CACHE_KEY.LLAMA_CONFIG}`, config, TIME.DAY);
     return config;
   }
 
@@ -79,7 +79,7 @@ export class TokenProcessor extends WorkerHost {
         return r;
       }, {});
 
-    await this.cache.set(`${CACHE_KEY.CMC_CONFIG}`, config, TIME.MONTH);
+    await this.cache.set(`${CACHE_KEY.CMC_CONFIG}`, config, TIME.DAY);
     return config;
   }
 
@@ -101,7 +101,7 @@ export class TokenProcessor extends WorkerHost {
         {} as Record<string, string>,
       );
 
-    await this.cache.set(`${CACHE_KEY.PLATFORM_MAPPING}`, mapping, TIME.MONTH);
+    await this.cache.set(`${CACHE_KEY.PLATFORM_MAPPING}`, mapping, TIME.DAY);
     this.tokenService.syncCoingeckoTokens(coins, platforms);
   }
 

@@ -1,7 +1,6 @@
 import { rgba } from 'polished';
 
-import { ColorType } from '@/core/theme/colors/types';
-import { dark } from '@/core/theme/colors/dark';
+import { ColorType, dark } from '@/core/theme/colors/dark';
 
 export const light: ColorType = {
   primitives: {
@@ -30,7 +29,9 @@ export const light: ColorType = {
     warning: '#BC4E00',
     danger: '#EF2A37',
     route: { title: '#5C5F6A' },
-
+    network: {
+      title: '#8C8F9B',
+    },
     on: {
       color: {
         primary: '#FFFFFF',
@@ -75,6 +76,10 @@ export const light: ColorType = {
       subtle: '#FDE2E4',
       hover: '#A91E27',
       active: '#821119',
+    },
+    exchange: {
+      default: '#F7F7F8',
+      hover: '#373943',
     },
     disabled: rgba('#181A1E', 0.4),
   },

@@ -1,4 +1,4 @@
-import { CBridge } from '../../src/cbridge';
+import { CBridge } from '../../src/adapters/cBridge';
 declare global {
   interface BigInt {
     toJSON(): Number;

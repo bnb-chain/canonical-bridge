@@ -1,6 +1,7 @@
 import { ChakraProvider, ColorMode, createLocalStorageManager, theme } from '@bnb-chain/space';
 
 import { env } from '@/core/env';
+import { walletStyles } from '@/core/theme/walletStyles';
 
 interface ThemeProviderProps {
   children: React.ReactNode;
@@ -28,6 +29,7 @@ export const ThemeProvider = ({ children }: ThemeProviderProps) => {
             opacity: '0.88 !important',
           },
         },
+        ...walletStyles(colorMode),
       }),
     },
   };

@@ -1,4 +1,4 @@
-import { Meson } from '../../src/meson';
+import { Meson } from '../../src/adapters/meson';
 
 describe('Meson SDK validation', () => {
   let bridge: Meson;

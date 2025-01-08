@@ -4,21 +4,22 @@ import { TransferButtonGroup } from '@/modules/transfer/components/TransferButto
 import { NetWorkSection } from '@/modules/transfer/components/NetWorkSection';
 import { SendInput } from '@/modules/transfer/components/SendInput';
 import { ReceiveInfo } from '@/modules/transfer/components/ReceiveInfo';
-import { useDefaultSelectedInfo } from '@/modules/aggregator/hooks/useDefaultSelectedInfo';
+import { useDefaultSelect } from '@/modules/aggregator/hooks/useDefaultSelect';
 import { useBridgeConfig } from '@/CanonicalBridgeProvider';
 import { ToAccount } from '@/modules/transfer/components/ToAccount';
 import { SvgDefs } from '@/core/components/icons/defs.tsx';
 import { useAppDispatch } from '@/modules/store/StoreProvider';
 import { setIsRoutesModalOpen } from '@/modules/transfer/action';
+import { ToTokenSection } from '@/modules/transfer/components/ToTokenSection';
 
 export function BridgeTransfer() {
+  useDefaultSelect();
+
   const { colorMode } = useColorMode();
   const dispatch = useAppDispatch();
   const theme = useTheme();
 
-  useDefaultSelectedInfo();
-
-  const { appearance, routeContentBottom } = useBridgeConfig();
+  const bridgeConfig = useBridgeConfig();
 
   return (
     <>
@@ -37,7 +38,7 @@ export function BridgeTransfer() {
         gap={'24px'}
         position="relative"
       >
-        {appearance.bridgeTitle && (
+        {bridgeConfig.bridgeTitle && (
           <Typography
             className="bccb-widget-transfer-widget-title"
             variant={'heading'}
@@ -47,19 +48,23 @@ export function BridgeTransfer() {
             textAlign={'center'}
             mb={'-4px'}
           >
-            {appearance.bridgeTitle}
+            {bridgeConfig.bridgeTitle}
           </Typography>
         )}
 
         <NetWorkSection />
         <SendInput />
+        <ToTokenSection />
+
         <ToAccount />
         <ReceiveInfo onOpen={() => dispatch(setIsRoutesModalOpen(true))} />
         <Flex flexDir="column">
           <TransferButtonGroup />
         </Flex>
-        {routeContentBottom && (
-          <Box display={{ base: 'block', lg: 'none' }}>{routeContentBottom}</Box>
+        {bridgeConfig.components.routeContentBottom && (
+          <Box display={{ base: 'block', lg: 'none' }}>
+            {bridgeConfig.components.routeContentBottom}
+          </Box>
         )}
       </Flex>
     </>

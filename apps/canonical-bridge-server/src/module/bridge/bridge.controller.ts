@@ -27,4 +27,36 @@ export class BridgeController {
   getMesonConfig() {
     return this.cache.get(CACHE_KEY.MESON_CONFIG);
   }
+
+  @Get('/v2/cbridge')
+  async getCbridgeConfigV2() {
+    const config = await this.cache.get(CACHE_KEY.FIELDED_CBRIDGE_CONFIG);
+    if (config) return config;
+
+    return this.cache.get(CACHE_KEY.CBRIDGE_CONFIG);
+  }
+
+  @Get('/v2/debridge')
+  async getDeBridgeConfigV2() {
+    const config = await this.cache.get(CACHE_KEY.FIELDED_DEBRIDGE_CONFIG);
+    if (config) return config;
+
+    return this.cache.get(CACHE_KEY.DEBRIDGE_CONFIG);
+  }
+
+  @Get('/v2/stargate')
+  async getStargateConfigV2() {
+    const config = await this.cache.get(CACHE_KEY.FIELDED_STARGATE_CONFIG);
+    if (config) return config;
+
+    return this.cache.get(CACHE_KEY.STARGATE_CONFIG);
+  }
+
+  @Get('/v2/meson')
+  async getMesonConfigV2() {
+    const config = await this.cache.get(CACHE_KEY.FIELDED_MESON_CONFIG);
+    if (config) return config;
+
+    return this.cache.get(CACHE_KEY.MESON_CONFIG);
+  }
 }

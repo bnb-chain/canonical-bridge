@@ -4,7 +4,6 @@ Bridge configuration allows user to config title, theme color, multi-language an
 
 ```javascript
 const bridgeConfig: ICanonicalBridgeConfig = {
-  appName: 'Your-App-Name',
   assetPrefix: '',
   appearance: {
     bridgeTitle: 'Bridge Title',
@@ -32,11 +31,6 @@ const bridgeConfig: ICanonicalBridgeConfig = {
   },
 };
 ```
-
-## appName
-
-This is the prefix of images url. The default token and chain images can be found in
-canonical-bridge-ui. Please copy these images to your /images folder.
 
 ## appearance
 
