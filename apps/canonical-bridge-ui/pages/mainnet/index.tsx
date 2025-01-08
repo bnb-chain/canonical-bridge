@@ -46,6 +46,7 @@ function BridgeWidget() {
       },
       http: {
         serverEndpoint: env.SERVER_ENDPOINT,
+        deBridgeReferralCode: '30229',
       },
       transfer: transferConfig,
       onClickConnectWalletButton: onOpen,

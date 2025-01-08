@@ -45,7 +45,8 @@ export interface IBridgeConfig {
   http: {
     refetchingInterval: number;
     apiTimeOut: number;
-    deBridgeAccessToken: string;
+    deBridgeAccessToken?: string;
+    deBridgeReferralCode?: string;
     serverEndpoint?: string;
     mesonEndpoint: string;
   };
@@ -135,7 +136,6 @@ export function CanonicalBridgeProvider(props: CanonicalBridgeProviderProps) {
       http: {
         refetchingInterval: 30000,
         apiTimeOut: 60000,
-        deBridgeAccessToken: '',
         mesonEndpoint: 'https://relayer.meson.fi/api/v1',
         ...http,
       },

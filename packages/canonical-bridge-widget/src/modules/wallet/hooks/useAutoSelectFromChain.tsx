@@ -5,7 +5,7 @@ import { useSelection } from '@/modules/aggregator/hooks/useSelection';
 import { useEvmSwitchChain } from '@/modules/wallet/hooks/useEvmSwitchChain';
 import { useSolanaAccount } from '@/modules/wallet/hooks/useSolanaAccount';
 import { useTronSwitchChain } from '@/modules/wallet/hooks/useTronSwitchChain';
-import { useBridgeConfig } from '@/CanonicalBrideProvider';
+import { useBridgeConfig } from '@/CanonicalBridgeProvider';
 import { useTronAccount } from '@/modules/wallet/hooks/useTronAccount';
 
 interface UseAutoSelectFromChainProps {

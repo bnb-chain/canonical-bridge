@@ -1,72 +1,25 @@
-import { useEffect, useState } from 'react';
-import { Box, BoxProps, useColorMode, useTheme } from '@bnb-chain/space';
+import { Box, BoxProps, IconProps, useColorMode, useTheme } from '@bnb-chain/space';
 
 import { useAppDispatch, useAppSelector } from '@/modules/store/StoreProvider';
-import { setIsGlobalFeeLoading, setIsRefreshing } from '@/modules/transfer/action';
-import { TriggerType, useLoadingBridgeFees } from '@/modules/transfer/hooks/useLoadingBridgeFees';
+import { setIsManuallyReload, setIsRefreshing } from '@/modules/transfer/action';
 import { RefreshingIcon } from '@/modules/transfer/components/LoadingImg/RefreshingIcon';
 import { useBridgeConfig } from '@/index';
 
-export const RefreshingButton = (props: BoxProps) => {
+export const RefreshingButton = ({
+  iconProps,
+  boxProps,
+}: {
+  iconProps?: IconProps;
+  boxProps?: BoxProps;
+}) => {
   const { colorMode } = useColorMode();
-  const isGlobalFeeLoading = useAppSelector((state) => state.transfer.isGlobalFeeLoading);
-  const isRefreshing = useAppSelector((state) => state.transfer.isRefreshing);
-  const transferActionInfo = useAppSelector((state) => state.transfer.transferActionInfo);
   const theme = useTheme();
   const dispatch = useAppDispatch();
-  const [isButtonPressed, setIsButtonPressed] = useState(false);
+  const isGlobalFeeLoading = useAppSelector((state) => state.transfer.isGlobalFeeLoading);
+  const transferActionInfo = useAppSelector((state) => state.transfer.transferActionInfo);
+  const isRefreshing = useAppSelector((state) => state.transfer.isRefreshing);
 
-  const { loadingBridgeFees } = useLoadingBridgeFees();
   const bridgeConfig = useBridgeConfig();
-
-  // Load estimated bridge fees every 30 seconds when there is bridge route available
-  useEffect(() => {
-    let mount = true;
-    if (!mount) return;
-    if (transferActionInfo) {
-      const params = {
-        triggerType: 'refresh' as TriggerType,
-      };
-
-      let interval = setInterval(() => {
-        dispatch(setIsGlobalFeeLoading(true));
-        loadingBridgeFees(params);
-      }, bridgeConfig.http.refetchingInterval ?? 30000);
-
-      // Stop and restart fee loading
-      if (isButtonPressed === true) {
-        dispatch(setIsRefreshing(true));
-        if (interval) {
-          clearInterval(interval);
-          dispatch(setIsGlobalFeeLoading(true));
-          loadingBridgeFees(params);
-          dispatch(setIsRefreshing(false));
-          interval = setInterval(() => {
-            dispatch(setIsGlobalFeeLoading(true));
-            loadingBridgeFees(params);
-          }, bridgeConfig.http?.refetchingInterval ?? 30000);
-        }
-        setIsButtonPressed(false);
-      }
-
-      return () => {
-        mount = false;
-        interval && clearInterval(interval);
-        setIsButtonPressed(false);
-      };
-    } else {
-      return () => {
-        mount = false;
-        setIsButtonPressed(false);
-      };
-    }
-  }, [
-    transferActionInfo,
-    loadingBridgeFees,
-    dispatch,
-    isButtonPressed,
-    bridgeConfig.http.refetchingInterval,
-  ]);
 
   return transferActionInfo ? (
     <Box
@@ -80,12 +33,12 @@ export const RefreshingButton = (props: BoxProps) => {
             : theme.colors[colorMode].button.refresh.text,
       }}
       onClick={() => {
-        setIsButtonPressed(true);
+        dispatch(setIsManuallyReload(true));
         dispatch(setIsRefreshing(true));
       }}
-      {...props}
+      {...boxProps}
     >
-      {bridgeConfig.components.refreshingIcon ?? <RefreshingIcon />}
+      {bridgeConfig.components.refreshingIcon ?? <RefreshingIcon {...iconProps} />}
     </Box>
   ) : null;
 };

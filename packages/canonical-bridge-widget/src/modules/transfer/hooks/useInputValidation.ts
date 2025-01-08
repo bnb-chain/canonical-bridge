@@ -32,15 +32,18 @@ export const useInputValidation = () => {
         if (!decimal || !value) {
           return null;
         }
+        // check if send amount is smaller than lowest possible token amount
         if (Number(value) < Math.pow(10, -decimal)) {
           return {
             text: `The amount is too small. Please enter a valid amount to transfer.`,
             isError: true,
           };
         }
+        // check if send amount is greater than token balance
         if (!!balance && value > balance) {
           return { text: `You have insufficient balance`, isError: true };
         }
+        // check Stargate max amount
         if (estimatedAmount?.stargate && bridgeType === 'stargate' && value) {
           const stargateMax = formatUnits(estimatedAmount.stargate[0].maxAmountLD, decimal);
           if (value > Number(stargateMax)) {
@@ -54,7 +57,7 @@ export const useInputValidation = () => {
         if (!!balance) {
           if (fromChain?.chainType === 'solana' && solBalance < MIN_SOL_TO_ENABLED_TX) {
             return {
-              text: `You should have at least ${MIN_SOL_TO_ENABLED_TX} SOL in your balance to perform this trade.`,
+              text: ``, // Error message has been moved to send button section
               isError: true,
             };
           } else {

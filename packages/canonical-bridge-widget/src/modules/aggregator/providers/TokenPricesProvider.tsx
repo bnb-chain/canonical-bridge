@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useCallback, useEffect } from 'react';
 import { IBridgeToken } from '@bnb-chain/canonical-bridge-sdk';
 
-import { useBridgeConfig } from '@/CanonicalBrideProvider';
+import { useBridgeConfig } from '@/CanonicalBridgeProvider';
 import { TIME } from '@/core/constants';
 import { useAppDispatch, useAppSelector } from '@/modules/store/StoreProvider';
 import { setIsLoadingTokenPrices, setTokenPrices } from '@/modules/aggregator/action';

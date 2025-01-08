@@ -49,3 +49,18 @@ export const setIsRoutesModalOpen = createAction<ITransferState['isRoutesModalOp
 );
 
 export const setToTokens = createAction<ITransferState['toTokens']>('transfer/toTokens');
+
+export const setIsManuallyReload = createAction<ITransferState['isManuallyReload']>(
+  'transfer/setIsManuallyReload',
+);
+
+export const setIsFailedGetQuoteModalOpen = createAction<
+  ITransferState['isFailedGetQuoteModalOpen']
+>('transfer/setIsFailedGetQuoteModalOpen');
+export const setIsSummaryModalOpen = createAction<ITransferState['isSummaryModalOpen']>(
+  'transfer/setIsSummaryModalOpen',
+);
+
+export const setRefreshAnimationProgress = createAction<ITransferState['refreshAnimationProgress']>(
+  'transfer/setRefreshAnimationProgress',
+);

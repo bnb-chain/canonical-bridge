@@ -568,11 +568,16 @@ export const chains: IChainConfig[] = [
   {
     chainType: 'evm',
     id: 8217,
-    name: 'Klaytn',
-    nativeCurrency: { name: 'KLAY', symbol: 'KLAY', decimals: 18 },
-    rpcUrls: { default: { http: ['https://1rpc.io/klay'] } },
-    blockExplorers: {
-      default: { name: 'Klaytnscope', url: 'https://scope.klaytn.com' },
+    name: 'Kaia',
+    nativeCurrency: {
+      name: 'KAIA',
+      symbol: 'KAIA',
+      decimals: 18,
+    },
+    rpcUrls: { default: { http: 'https://public-en.node.kaia.io' } },
+    explorer: {
+      name: 'Kaiascope',
+      url: 'https://kaiascope.com',
     },
   },
   {

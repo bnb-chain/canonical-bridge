@@ -5,7 +5,7 @@ import { NetWorkSection } from '@/modules/transfer/components/NetWorkSection';
 import { SendInput } from '@/modules/transfer/components/SendInput';
 import { ReceiveInfo } from '@/modules/transfer/components/ReceiveInfo';
 import { useDefaultSelect } from '@/modules/aggregator/hooks/useDefaultSelect';
-import { useBridgeConfig } from '@/CanonicalBrideProvider';
+import { useBridgeConfig } from '@/CanonicalBridgeProvider';
 import { ToAccount } from '@/modules/transfer/components/ToAccount';
 import { SvgDefs } from '@/core/components/icons/defs.tsx';
 import { useAppDispatch } from '@/modules/store/StoreProvider';

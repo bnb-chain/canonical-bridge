@@ -23,7 +23,6 @@ export const DeBridgeOption = ({}: DeBridgeOptionProps) => {
   const transferActionInfo = useAppSelector((state) => state.transfer.transferActionInfo);
   const estimatedAmount = useAppSelector((state) => state.transfer.estimatedAmount);
   const routeError = useAppSelector((state) => state.transfer.routeError);
-  const routeFees = useAppSelector((state) => state.transfer.routeFees);
 
   const receiveAmt = useMemo(() => {
     return estimatedAmount?.['deBridge'] &&
@@ -79,12 +78,7 @@ export const DeBridgeOption = ({}: DeBridgeOptionProps) => {
         toTokenInfo={toTokenInfo?.['deBridge']}
       />
       <EstimatedArrivalTime isError={isError} bridgeType={'deBridge'} />
-      <FeesInfo
-        isError={isError}
-        bridgeType="deBridge"
-        summary={routeFees?.['deBridge']?.summary ?? '--'}
-        breakdown={routeFees?.['deBridge']?.breakdown}
-      />
+      <FeesInfo isError={isError} bridgeType="deBridge" />
       <OtherRouteError bridgeType={'deBridge'} />
     </RouteWrapper>
   );

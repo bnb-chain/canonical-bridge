@@ -8,7 +8,6 @@ import { useCBridgeTransferParams } from '@/modules/aggregator/adapters/cBridge/
 export const usePreSelectRoute = () => {
   const dispatch = useAppDispatch();
   const { bridgeAddress: cBridgeAddress } = useCBridgeTransferParams();
-
   const selectedToken = useAppSelector((state) => state.transfer.selectedToken);
   const fromChain = useAppSelector((state) => state.transfer.fromChain);
 
