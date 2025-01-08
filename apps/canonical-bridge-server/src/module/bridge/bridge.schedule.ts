@@ -31,8 +31,30 @@ export class BridgeSchedule implements OnModuleInit {
     });
   }
 
+  @Cron(CronExpression.EVERY_5_MINUTES)
+  async syncFilteredBridgeInfo() {
+    this.logger.log('syncFilteredBridgeInfo');
+    await this.syncBridge.add(Tasks.filterCBridge, null, {
+      jobId: Tasks.filterCBridge,
+      removeOnComplete: true,
+    });
+    await this.syncBridge.add(Tasks.filterDeBridge, null, {
+      jobId: Tasks.filterDeBridge,
+      removeOnComplete: true,
+    });
+    await this.syncBridge.add(Tasks.filterStargate, null, {
+      jobId: Tasks.filterStargate,
+      removeOnComplete: true,
+    });
+    await this.syncBridge.add(Tasks.filterMeson, null, {
+      jobId: Tasks.filterMeson,
+      removeOnComplete: true,
+    });
+  }
+
   async onModuleInit() {
     await this.syncBridgeInfo();
+    await this.syncFilteredBridgeInfo();
     const jobs = await this.syncBridge.getFailed();
     jobs.forEach((job) => job?.retry());
     if (!jobs.length) return;

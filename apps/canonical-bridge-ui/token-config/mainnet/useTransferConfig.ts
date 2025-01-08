@@ -23,10 +23,14 @@ export function useTransferConfig() {
   useEffect(() => {
     const initConfig = async () => {
       const [cBridgeRes, deBridgeRes, stargateRes, mesonRes] = await Promise.all([
-        axios.get<{ data: ICBridgeTransferConfig }>(`${env.SERVER_ENDPOINT}/api/bridge/cbridge`),
-        axios.get<{ data: IDeBridgeTransferConfig }>(`${env.SERVER_ENDPOINT}/api/bridge/debridge`),
-        axios.get<{ data: IStargateTransferConfig }>(`${env.SERVER_ENDPOINT}/api/bridge/stargate`),
-        axios.get<{ data: IMesonTransferConfig }>(`${env.SERVER_ENDPOINT}/api/bridge/meson`),
+        axios.get<{ data: ICBridgeTransferConfig }>(`${env.SERVER_ENDPOINT}/api/bridge/v2/cbridge`),
+        axios.get<{ data: IDeBridgeTransferConfig }>(
+          `${env.SERVER_ENDPOINT}/api/bridge/v2/debridge`,
+        ),
+        axios.get<{ data: IStargateTransferConfig }>(
+          `${env.SERVER_ENDPOINT}/api/bridge/v2/stargate`,
+        ),
+        axios.get<{ data: IMesonTransferConfig }>(`${env.SERVER_ENDPOINT}/api/bridge/v2/meson`),
       ]);
 
       const cBridgeConfig = cBridgeRes.data.data;

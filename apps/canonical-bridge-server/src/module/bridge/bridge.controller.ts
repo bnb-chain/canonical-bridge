@@ -1,44 +1,62 @@
 import { Controller, Get, Inject, Logger } from '@nestjs/common';
 import { CACHE_MANAGER, Cache } from '@nestjs/cache-manager';
 import { CACHE_KEY } from '@/common/constants';
-import { BridgeService } from '@/module/bridge/bridge.service';
-import {
-  IDebridgeConfig,
-  IMesonChain,
-  IStargateBridgeTokenInfo,
-  ITransferConfigsForAll,
-} from '@/shared/web3/web3.interface';
 
 @Controller('bridge')
 export class BridgeController {
   private logger = new Logger(BridgeController.name);
 
-  constructor(
-    @Inject(CACHE_MANAGER) private cache: Cache,
-    private bridgeService: BridgeService,
-  ) {}
+  constructor(@Inject(CACHE_MANAGER) private cache: Cache) {}
 
   @Get('/cbridge')
-  async getCbridgeConfig() {
-    const config = await this.cache.get<ITransferConfigsForAll>(CACHE_KEY.CBRIDGE_CONFIG);
-    return this.bridgeService.removeCBridgeNoPriceTokens(config);
+  getCbridgeConfig() {
+    return this.cache.get(CACHE_KEY.CBRIDGE_CONFIG);
   }
 
   @Get('/debridge')
-  async getDeBridgeConfig() {
-    const config = await this.cache.get<IDebridgeConfig>(CACHE_KEY.DEBRIDGE_CONFIG);
-    return this.bridgeService.removeDeBridgeNoPriceTokens(config);
+  getDeBridgeConfig() {
+    return this.cache.get(CACHE_KEY.DEBRIDGE_CONFIG);
   }
 
   @Get('/stargate')
-  async getStargateConfig() {
-    const config = await this.cache.get<IStargateBridgeTokenInfo[]>(CACHE_KEY.STARGATE_CONFIG);
-    return this.bridgeService.removeStargateNoPriceTokens(config);
+  getStargateConfig() {
+    return this.cache.get(CACHE_KEY.STARGATE_CONFIG);
   }
 
   @Get('/meson')
-  async getMesonConfig() {
-    const config = await this.cache.get<IMesonChain[]>(CACHE_KEY.MESON_CONFIG);
-    return this.bridgeService.removeMesonNoPriceTokens(config);
+  getMesonConfig() {
+    return this.cache.get(CACHE_KEY.MESON_CONFIG);
+  }
+
+  @Get('/v2/cbridge')
+  async getCbridgeConfigV2() {
+    const config = await this.cache.get(CACHE_KEY.FIELDED_CBRIDGE_CONFIG);
+    if (config) return config;
+
+    return this.cache.get(CACHE_KEY.CBRIDGE_CONFIG);
+  }
+
+  @Get('/v2/debridge')
+  async getDeBridgeConfigV2() {
+    const config = await this.cache.get(CACHE_KEY.FIELDED_DEBRIDGE_CONFIG);
+    if (config) return config;
+
+    return this.cache.get(CACHE_KEY.DEBRIDGE_CONFIG);
+  }
+
+  @Get('/v2/stargate')
+  async getStargateConfigV2() {
+    const config = await this.cache.get(CACHE_KEY.FIELDED_STARGATE_CONFIG);
+    if (config) return config;
+
+    return this.cache.get(CACHE_KEY.STARGATE_CONFIG);
+  }
+
+  @Get('/v2/meson')
+  async getMesonConfigV2() {
+    const config = await this.cache.get(CACHE_KEY.FIELDED_MESON_CONFIG);
+    if (config) return config;
+
+    return this.cache.get(CACHE_KEY.MESON_CONFIG);
   }
 }
