@@ -574,10 +574,12 @@ export const chains: IChainConfig[] = [
       symbol: 'KAIA',
       decimals: 18,
     },
-    rpcUrls: { default: { http: 'https://public-en.node.kaia.io' } },
-    explorer: {
-      name: 'Kaiascope',
-      url: 'https://kaiascope.com',
+    rpcUrls: { default: { http: ['https://public-en.node.kaia.io'] } },
+    blockExplorers: {
+      default: {
+        name: 'Kaiascope',
+        url: 'https://kaiascope.com',
+      },
     },
   },
   {

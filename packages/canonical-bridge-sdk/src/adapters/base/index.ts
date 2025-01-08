@@ -124,7 +124,7 @@ export abstract class BaseAdapter<G extends object, C = unknown, T = unknown> {
     return {
       id: chainId,
       name: chainConfig?.name ?? '',
-      icon: `${this.assetPrefix}/images/chains/${chainId}.png`,
+      icon: `${this.assetPrefix}/images/chains/${chainId}.png?v=${__APP_VERSION__}`,
       explorerUrl,
       tokenUrlPattern,
       chainType,
@@ -149,7 +149,7 @@ export abstract class BaseAdapter<G extends object, C = unknown, T = unknown> {
 
     const displaySymbol = target?.[1] ?? defaultSymbol;
     const iconSymbol = displaySymbol?.toUpperCase();
-    const icon = `${this.assetPrefix}/images/tokens/${iconSymbol}.png`;
+    const icon = `${this.assetPrefix}/images/tokens/${iconSymbol}.png?v=${__APP_VERSION__}`;
 
     return {
       displaySymbol,
