@@ -62,7 +62,7 @@ export const CACHE_KEY = {
   DEBRIDGE_CONFIG: 'bridge:debridge',
   STARGATE_CONFIG: 'bridge:stargate',
   MESON_CONFIG: 'bridge:meson',
-  LAYER_ZERO_CONFIG: 'bridge:layer_zero',
+  LAYER_ZERO_CONFIG: 'bridge:layerZero',
 
   CMC_CONFIG: 'cmc:config',
   LLAMA_CONFIG: 'llama:config',
@@ -72,10 +72,10 @@ export const CACHE_KEY = {
   FIELDED_DEBRIDGE_CONFIG: 'bridge:filtered:debridge',
   FIELDED_STARGATE_CONFIG: 'bridge:filtered:stargate',
   FIELDED_MESON_CONFIG: 'bridge:filtered:meson',
-  FIELDED_LAYER_ZERO_CONFIG: 'bridge:filtered:layer_zero',
+  FIELDED_LAYER_ZERO_CONFIG: 'bridge:filtered:layerZero',
 
   CHAINS_CONFIG: 'config:chains',
-  TRANSFER_CONFIG: 'config:transfer_config',
+  TRANSFER_CONFIG: 'config:transferConfig',
 };
 
 export const JOB_KEY = {
