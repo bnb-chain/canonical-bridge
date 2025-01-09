@@ -1,6 +1,22 @@
-export * from './cbridge';
-export * from './core';
-export * from './debridge';
-export * from './layerZero';
-export * from './stargate';
-export * from './meson';
+// adapters
+export * from './adapters/base/exports';
+export * from './adapters/cBridge/exports';
+export * from './adapters/deBridge/exports';
+export * from './adapters/layerZero/exports';
+export * from './adapters/stargate/exports';
+export * from './adapters/meson/exports';
+
+// aggregator
+export * from './aggregator/exports';
+
+// shared
+export * from './shared/exports';
+
+// api
+export * from './abi/erc20Token';
+
+// constants
+export * from './constants/index';
+
+// core
+export * from './core/index';

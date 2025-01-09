@@ -6,13 +6,13 @@ import {
   ButtonProps,
   useDisclosure,
 } from '@bnb-chain/space';
+import { isMobile } from '@bnb-chain/canonical-bridge-sdk';
 
 import { reportEvent } from '@/core/utils/gtm';
 import { useAppSelector } from '@/modules/store/StoreProvider';
 import { useEvmSwitchChain } from '@/modules/wallet/hooks/useEvmSwitchChain';
 import { useTronSwitchChain } from '@/modules/wallet/hooks/useTronSwitchChain';
 import { SwitchingTipsModal } from '@/modules/wallet/components/SwitchingTipsModal';
-import { isMobile } from '@/core/utils/mobile';
 
 export const SwitchNetworkButton = (props: ButtonProps) => {
   const { formatMessage } = useIntl();

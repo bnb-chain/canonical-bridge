@@ -33,7 +33,6 @@ import { useTransferConfig } from '@/token-config/mainnet/useTransferConfig';
 import { en as messages } from '@/core/locales/en';
 
 export const bridgeConfig: ICanonicalBridgeConfig = {
-  appName: 'YOUR-APP-NAME',
   assetPrefix: '',
   appearance: {
     bridgeTitle: 'Widget Title',

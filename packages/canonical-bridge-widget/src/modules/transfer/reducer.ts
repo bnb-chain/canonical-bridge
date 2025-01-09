@@ -1,6 +1,7 @@
+import { IBridgeChain, IBridgeToken } from '@bnb-chain/canonical-bridge-sdk';
+
 import * as actions from '@/modules/transfer/action';
 import { createReducer } from '@/modules/store/createReducer';
-import { IBridgeChain, IBridgeToken } from '@/modules/aggregator/types';
 import {
   IBridgeError,
   IEstimatedAmount,
@@ -29,6 +30,7 @@ export interface ITransferState {
     address?: string;
   };
   isRoutesModalOpen: boolean;
+  toTokens: IBridgeToken[];
   isFailedGetQuoteModalOpen: boolean;
   isSummaryModalOpen: boolean;
   refreshAnimationProgress: number;
@@ -56,6 +58,7 @@ const initStates: ITransferState = {
     address: '',
   },
   isRoutesModalOpen: false,
+  toTokens: [],
   isManuallyReload: false,
   isFailedGetQuoteModalOpen: false,
   isSummaryModalOpen: false,
@@ -145,6 +148,12 @@ export default createReducer(initStates, (builder) => {
     ...state,
     isRoutesModalOpen: payload,
   }));
+
+  builder.addCase(actions.setToTokens, (state, { payload }) => ({
+    ...state,
+    toTokens: payload,
+  }));
+
   builder.addCase(actions.setIsManuallyReload, (state, { payload }) => ({
     ...state,
     isManuallyReload: payload,

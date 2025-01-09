@@ -2,12 +2,12 @@ import { useAccount } from 'wagmi';
 import { useMemo } from 'react';
 import { parseUnits } from 'viem';
 import { ethers } from 'ethers';
+import { IStargateParams } from '@bnb-chain/canonical-bridge-sdk';
 
 import { useAppSelector } from '@/modules/store/StoreProvider';
 import { useDebounce } from '@/core/hooks/useDebounce';
 import { DEBOUNCE_DELAY, DEFAULT_ADDRESS } from '@/core/constants';
 import { useToTokenInfo } from '@/modules/transfer/hooks/useToTokenInfo';
-import { IStargateParams } from '@/modules/aggregator/adapters/stargate/types';
 
 export const useStargateTransferParams = (): { args: IStargateParams | null } => {
   const { address } = useAccount();

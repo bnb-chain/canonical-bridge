@@ -1,21 +1,23 @@
-export * from '@/modules/aggregator';
+// sdk
+export * from '@bnb-chain/canonical-bridge-sdk';
+
+// provider
 export * from '@/CanonicalBridgeProvider';
-
-export * from '@/modules/transfer/BridgeTransfer';
-export * from '@/modules/transfer/BridgeRoutes';
-
 export { useBridge } from '@/ExportsProvider';
 
-// gtm
+// components
+export * from '@/modules/transfer/BridgeTransfer';
+export * from '@/modules/transfer/BridgeRoutes';
+export * from '@/core/components/StateModal';
+
+// utils
 export * from '@/core/utils/gtm';
 
-// locales
-export * from '@/core/locales';
-
+// constants
 export * from '@/core/constants/error';
 
-// components
-export * from '@/core/components/StateModal';
+// locales
+export * from '@/core/locales/en';
 
 // wallet
 export * from '@/modules/wallet/components/ConnectButton';

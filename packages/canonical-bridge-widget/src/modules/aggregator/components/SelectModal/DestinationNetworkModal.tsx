@@ -1,9 +1,7 @@
 import { Flex, useColorMode, useIntl, useTheme, Text } from '@bnb-chain/space';
 
 import { VirtualList } from '@/core/components/VirtualList';
-import { isChainOrTokenCompatible } from '@/modules/aggregator/shared/isChainOrTokenCompatible';
 import { useAppSelector } from '@/modules/store/StoreProvider';
-import { useToChains } from '@/modules/aggregator/hooks/useToChains';
 import { useSelection } from '@/modules/aggregator/hooks/useSelection';
 import { ExLinkIcon } from '@/core/components/icons/ExLinkIcon';
 import { openLink } from '@/core/utils/common';
@@ -11,6 +9,7 @@ import { reportEvent } from '@/core/utils/gtm';
 import { useSearch } from '@/modules/aggregator/components/SelectModal/hooks/useSearch';
 import { BaseModal } from '@/modules/aggregator/components/SelectModal/components/BaseModal';
 import { ListItem } from '@/modules/aggregator/components/SelectModal/components/ListItem';
+import { useToChains } from '@/modules/aggregator/hooks/useToChains';
 
 interface DestinationNetworkModalProps {
   isOpen: boolean;
@@ -21,18 +20,13 @@ export function DestinationNetworkModal(props: DestinationNetworkModalProps) {
   const { isOpen, onClose } = props;
   const { formatMessage } = useIntl();
 
-  const fromChain = useAppSelector((state) => state.transfer.fromChain);
   const toChain = useAppSelector((state) => state.transfer.toChain);
-  const selectedToken = useAppSelector((state) => state.transfer.selectedToken);
 
   const { selectToChain } = useSelection();
   const theme = useTheme();
   const { colorMode } = useColorMode();
 
-  const toChains = useToChains({
-    fromChainId: fromChain?.id,
-    token: selectedToken,
-  });
+  const toChains = useToChains();
 
   const { isNoResult, result, onSearch } = useSearch({
     filter: (item, keyword) => item.name.toLowerCase().includes(keyword?.toLowerCase()),
@@ -59,7 +53,7 @@ export function DestinationNetworkModal(props: DestinationNetworkModalProps) {
             key={item.id}
             iconUrl={item.icon}
             isActive={toChain?.id === item.id}
-            isDisabled={!isChainOrTokenCompatible(item)}
+            isDisabled={!item.isCompatible}
             incompatibleTooltip={formatMessage({
               id: 'select-modal.destination.incompatible.tooltip',
             })}
@@ -74,7 +68,7 @@ export function DestinationNetworkModal(props: DestinationNetworkModalProps) {
               if (item.chainType === 'link') {
                 openLink(item.externalBridgeUrl);
               } else {
-                selectToChain(item);
+                selectToChain(item.id);
                 onClose();
               }
             }}

@@ -48,6 +48,8 @@ export const setIsRoutesModalOpen = createAction<ITransferState['isRoutesModalOp
   'transfer/setIsRoutesModalOpen',
 );
 
+export const setToTokens = createAction<ITransferState['toTokens']>('transfer/toTokens');
+
 export const setIsManuallyReload = createAction<ITransferState['isManuallyReload']>(
   'transfer/setIsManuallyReload',
 );

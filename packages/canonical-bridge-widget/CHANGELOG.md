@@ -6,6 +6,12 @@
 
 - chore: Update confirmation popup amount styling
 
+## 0.5.19
+
+### Patch Changes
+
+- e57b843: fix: Fix to token display issue
+
 ## 0.5.18
 
 ### Patch Changes
