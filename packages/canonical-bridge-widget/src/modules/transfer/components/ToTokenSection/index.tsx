@@ -9,7 +9,7 @@ import {
   Link,
   Center,
 } from '@bnb-chain/space';
-import { IBridgeToken, isSameAddress } from '@bnb-chain/canonical-bridge-sdk';
+import { IBridgeToken, isNativeToken, isSameAddress } from '@bnb-chain/canonical-bridge-sdk';
 
 import { useAppSelector } from '@/modules/store/StoreProvider';
 import { IconImage } from '@/core/components/IconImage';
@@ -129,26 +129,39 @@ function ToTokenItem({ token, isSelected }: { token: IBridgeToken; isSelected: b
             {token.displaySymbol}
           </Text>
 
-          {isMobile ? (
-            <Flex alignItems="center" gap="4px" textDecoration={{ base: 'underline', md: 'unset' }}>
-              {formatAppAddress({
-                address: token.address,
-              })}
-              <Center boxSize="16px">
-                {isSelected && (
-                  <Link isExternal href={tokenUrl} color="inherit" _hover={{ color: 'inherit' }}>
-                    <ExLinkIcon boxSize="100%" />
-                  </Link>
-                )}
-              </Center>
-            </Flex>
-          ) : (
-            <Link isExternal href={tokenUrl} color="inherit" _hover={{ color: 'inherit' }}>
-              {formatAppAddress({
-                address: token.address,
-                headLen: 4,
-              })}
-            </Link>
+          {!isNativeToken(token.address, fromChain?.chainType) && (
+            <>
+              {isMobile ? (
+                <Flex
+                  alignItems="center"
+                  gap="4px"
+                  textDecoration={{ base: 'underline', md: 'unset' }}
+                >
+                  {formatAppAddress({
+                    address: token.address,
+                  })}
+                  <Center boxSize="16px">
+                    {isSelected && (
+                      <Link
+                        isExternal
+                        href={tokenUrl}
+                        color="inherit"
+                        _hover={{ color: 'inherit' }}
+                      >
+                        <ExLinkIcon boxSize="100%" />
+                      </Link>
+                    )}
+                  </Center>
+                </Flex>
+              ) : (
+                <Link isExternal href={tokenUrl} color="inherit" _hover={{ color: 'inherit' }}>
+                  {formatAppAddress({
+                    address: token.address,
+                    headLen: 4,
+                  })}
+                </Link>
+              )}
+            </>
           )}
         </Flex>
       </Flex>
