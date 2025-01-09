@@ -19,6 +19,7 @@ export const FeeSummary = () => {
       h={['auto', 'auto', '60px']}
       borderRadius={'8px'}
       bg={theme.colors[colorMode].background.modal}
+      className="bccb-widget-transaction-summary-modal-fee-summary"
     >
       {isGlobalFeeLoading ? (
         <Flex flexDir={'column'} gap={'8px'}>

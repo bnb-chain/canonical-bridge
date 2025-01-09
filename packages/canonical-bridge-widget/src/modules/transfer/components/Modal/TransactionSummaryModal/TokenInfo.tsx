@@ -1,4 +1,4 @@
-import { Box, Flex, Skeleton, theme, useColorMode } from '@bnb-chain/space';
+import { Flex, Skeleton, useColorMode, useTheme } from '@bnb-chain/space';
 
 import { IconImage } from '@/core/components/IconImage';
 import { useAppSelector } from '@/modules/store/StoreProvider';
@@ -9,14 +9,15 @@ export const TokenInfo = ({
   chainName,
   amount,
   tokenSymbol,
+  isLongText,
 }: {
   chainIconUrl?: string;
   tokenIconUrl?: string;
   chainName?: string;
   amount?: string;
   tokenSymbol?: string;
+  isLongText: boolean;
 }) => {
-  const { colorMode } = useColorMode();
   const isGlobalFeeLoading = useAppSelector((state) => state.transfer.isGlobalFeeLoading);
 
   return (
@@ -26,6 +27,7 @@ export const TokenInfo = ({
       w={'100%'}
       alignItems={'center'}
       gap={'16px'}
+      className="bccb-widget-transaction-summary-modal-token-info"
     >
       <Flex flexShrink={1} flexDir={'row'} alignItems={'center'} gap={'14px'}>
         <Flex
@@ -43,32 +45,65 @@ export const TokenInfo = ({
             boxSize="16px"
             src={tokenIconUrl}
             flexShrink={0}
+            className="bccb-widget-transaction-summary-modal-token-icon"
           />
-          <IconImage boxSize="32px" src={chainIconUrl} flexShrink={0} />
+          <IconImage
+            boxSize="32px"
+            src={chainIconUrl}
+            flexShrink={0}
+            className="bccb-widget-transaction-summary-modal-chain-icon"
+          />
         </Flex>
-        <Box fontSize={'16px'} py={'8px'} fontWeight={700} maxW={'142px'} whiteSpace={'wrap'}>
-          {chainName}
-        </Box>
-      </Flex>
-      {isGlobalFeeLoading ? (
-        <Skeleton height="24px" maxW="120px" w={'100%'} borderRadius={'4px'} />
-      ) : (
         <Flex
-          flex={1}
-          wordBreak={'break-all'}
-          py={'8px'}
-          textAlign={'right'}
-          alignItems={'center'}
-          justifyContent={'flex-end'}
-          color={
-            Number(amount?.replace(' ', '')) < 0
-              ? theme.colors[colorMode].support.danger[3]
-              : theme.colors[colorMode].support.success[3]
-          }
+          flexDir={'column'}
+          justifyContent={isLongText ? 'flex-start' : 'center'}
+          whiteSpace={'wrap'}
+          className="bccb-widget-transaction-summary-modal-chain-name"
         >
-          {amount ?? '--'} {tokenSymbol}
+          <Flex fontSize={'16px'} fontWeight={700}>
+            {chainName}
+          </Flex>
+          {isLongText && !isGlobalFeeLoading && (
+            <TokenAmount amount={amount ?? '--'} tokenSymbol={tokenSymbol ?? ''} />
+          )}
         </Flex>
+      </Flex>
+      {!isLongText && !isGlobalFeeLoading && (
+        <TokenAmount amount={amount ?? '--'} tokenSymbol={tokenSymbol ?? ''} />
       )}
+      {isGlobalFeeLoading && (
+        <Skeleton
+          className="bccb-widget-transaction-summary-modal-loading-skeleton"
+          height="24px"
+          maxW="120px"
+          w={'100%'}
+          borderRadius={'4px'}
+        />
+      )}
+    </Flex>
+  );
+};
+
+const TokenAmount = ({ amount, tokenSymbol }: { amount: string; tokenSymbol: string }) => {
+  const { colorMode } = useColorMode();
+  const theme = useTheme();
+  return (
+    <Flex
+      flex={1}
+      wordBreak={'break-all'}
+      alignItems={'center'}
+      justifyContent={'flex-end'}
+      fontSize={'14px'}
+      lineHeight={'14px'}
+      fontWeight={700}
+      className="bccb-widget-transaction-summary-modal-token-amount"
+      color={
+        Number(amount?.replace(' ', '')) < 0
+          ? theme.colors[colorMode].support.danger[3]
+          : theme.colors[colorMode].support.success[3]
+      }
+    >
+      {amount} {tokenSymbol}
     </Flex>
   );
 };

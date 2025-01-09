@@ -47,6 +47,26 @@ export const TransferSummary = () => {
     [toTokenAddress, toChain?.chainType],
   );
 
+  const isLongFromAmount = useMemo(() => {
+    if (isBase) return true;
+    try {
+      if (sendValue && selectedToken?.symbol) {
+        return sendValue.length + selectedToken.symbol.length - 1 > 16;
+      }
+    } catch {}
+    return false;
+  }, [sendValue, selectedToken?.symbol, isBase]);
+
+  const isLongToAmount = useMemo(() => {
+    if (isBase) return true;
+    try {
+      if (receiveAmt && toTokenInfo?.symbol) {
+        return String(receiveAmt).length + toTokenInfo?.symbol.length - 1 > 16;
+      }
+    } catch {}
+    return false;
+  }, [receiveAmt, toTokenInfo?.symbol, isBase]);
+
   return (
     <Flex
       flexDir={'column'}
@@ -55,6 +75,7 @@ export const TransferSummary = () => {
       gap={'4px'}
       borderRadius={'8px'}
       bg={theme.colors[colorMode].background.modal}
+      className="bccb-widget-transaction-summary-modal-summary-wrapper"
     >
       <TokenInfo
         chainIconUrl={fromChain?.icon}
@@ -62,6 +83,7 @@ export const TransferSummary = () => {
         chainName={fromChain?.name}
         amount={!!sendValue ? `- ${sendValue}` : ''}
         tokenSymbol={selectedToken?.symbol ?? ''}
+        isLongText={isLongFromAmount || isLongToAmount}
       />
       <TransferToIcon
         w={'24px'}
@@ -76,6 +98,7 @@ export const TransferSummary = () => {
         chainName={toChain?.name}
         amount={!!receiveAmt ? `+ ${receiveAmt}` : ''}
         tokenSymbol={toTokenInfo?.symbol ?? ''}
+        isLongText={isLongFromAmount || isLongToAmount}
       />
       <WarningMessage
         text={
