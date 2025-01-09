@@ -6,6 +6,7 @@ export function meson<T = IMesonTransferConfig>(
 ): IBridgeProvider<T> {
   return {
     id: 'meson',
+    enabled: true,
     ...params,
   };
 }

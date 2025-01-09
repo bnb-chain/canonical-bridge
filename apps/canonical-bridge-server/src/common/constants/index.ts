@@ -1,6 +1,6 @@
 export const ENDPOINT_PREFIX = 'api';
 export const SERVER_PORT = parseInt(process.env.SERVER_PORT, 10) || 3000;
-export const SERVER_TIMEOUT = parseInt(process.env.SERVER_TIMEOUT, 10) || 5000;
+export const SERVER_TIMEOUT = parseInt(process.env.SERVER_TIMEOUT, 10) || 10000;
 export const REDIS_URL = process.env.REDIS_URL;
 
 export const CMC_API_KEY = process.env.CMC_API_KEY;
@@ -13,6 +13,7 @@ export const STARGATE_ENDPOINT =
 export const MESON_ENDPOINT = process.env.MESON_ENDPOINT || 'https://relayer.meson.fi/api/v1';
 export const LLAMA_COINS_ENDPOINT = process.env.LLMA_COINS__ENDPOINT || 'https://coins.llama.fi';
 export const COINGECKO_ENDPOINT = process.env.COINGECKO_ENDPOINT || 'https://api.coingecko.com/api';
+export const CMS_API_ENDPOINT = process.env.CMS_API_ENDPOINT;
 
 const redisURL = new URL(REDIS_URL);
 
@@ -22,6 +23,7 @@ export const REDIS_PORT = Number(redisURL.port);
 export enum Queues {
   SyncToken = 'SyncToken',
   SyncBridge = 'SyncBridge',
+  SyncConfig = 'SyncConfig',
 }
 
 export enum Tasks {
@@ -40,6 +42,9 @@ export enum Tasks {
   filterDeBridge = 'filterDeBridge',
   filterStargate = 'filterStargate',
   filterMeson = 'filterMeson',
+
+  fetchCmsChains = 'fetchCmsChains',
+  fetchCmsTransferConfig = 'fetchCmsTransferConfig',
 }
 
 export const TOKEN_REQUEST_LIMIT = 1000;
@@ -63,6 +68,9 @@ export const CACHE_KEY = {
   FIELDED_DEBRIDGE_CONFIG: 'bridge:filtered:debridge',
   FIELDED_STARGATE_CONFIG: 'bridge:filtered:stargate',
   FIELDED_MESON_CONFIG: 'bridge:filtered:meson',
+
+  CHAINS_CONFIG: 'config:chains',
+  TRANSFER_CONFIG: 'config:transfer_config',
 };
 
 export const JOB_KEY = {

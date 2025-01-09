@@ -6,6 +6,7 @@ export function stargate<T = IStargateTransferConfig>(
 ): IBridgeProvider<T> {
   return {
     id: 'stargate',
+    enabled: true,
     ...params,
   };
 }

@@ -35,6 +35,7 @@ export class BridgeController {
       return config;
     }
 
+    this.logger.log('[cBridge] filtered config is empty');
     return this.cache.get(CACHE_KEY.CBRIDGE_CONFIG);
   }
 
@@ -45,6 +46,7 @@ export class BridgeController {
       return config;
     }
 
+    this.logger.log('[debridge] filtered config is empty');
     return this.cache.get(CACHE_KEY.DEBRIDGE_CONFIG);
   }
 
@@ -55,6 +57,7 @@ export class BridgeController {
       return config;
     }
 
+    this.logger.log('[stargate] filtered config is empty');
     return this.cache.get(CACHE_KEY.STARGATE_CONFIG);
   }
 
@@ -65,6 +68,7 @@ export class BridgeController {
       return config;
     }
 
+    this.logger.log('[meson] filtered config is empty');
     return this.cache.get(CACHE_KEY.MESON_CONFIG);
   }
 }

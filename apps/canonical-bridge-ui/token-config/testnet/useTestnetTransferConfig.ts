@@ -7,7 +7,7 @@ export function useTestnetTransferConfig() {
   const [transferConfig, setTransferConfig] = useState<ICustomizedBridgeConfig['transfer']>();
 
   useEffect(() => {
-    const initConfig = async () => {
+    const initTransferConfig = async () => {
       const transferConfig: ICustomizedBridgeConfig['transfer'] = {
         defaultFromChainId: 97,
         defaultToChainId: 3448148188,
@@ -25,7 +25,7 @@ export function useTestnetTransferConfig() {
       setTransferConfig(transferConfig);
     };
 
-    initConfig();
+    initTransferConfig();
   }, []);
 
   return transferConfig;

@@ -24,6 +24,7 @@ import {
   LLAMA_COINS_ENDPOINT,
   TOKEN_REQUEST_LIMIT,
   STARGATE_CHAIN_INFO,
+  CMS_API_ENDPOINT,
 } from '@/common/constants';
 import { values } from 'lodash';
 
@@ -149,5 +150,28 @@ export class Web3Service {
       `${LLAMA_COINS_ENDPOINT}/prices/current/${ids}`,
     );
     return data;
+  }
+
+  async getCmsChains() {
+    try {
+      const { data } = await this.httpService.axiosRef.get(`${CMS_API_ENDPOINT}/items/chains`);
+      return data;
+    } catch (e) {
+      console.error(`[cms] Failed to retrieve chains at ${new Date().getTime()}`, e.message);
+    }
+  }
+
+  async getCmsTransferConfig() {
+    try {
+      const { data } = await this.httpService.axiosRef.get(
+        `${CMS_API_ENDPOINT}/items/transfer_config`,
+      );
+      return data;
+    } catch (e) {
+      console.error(
+        `[cms] Failed to retrieve transfer config at ${new Date().getTime()}`,
+        e.message,
+      );
+    }
   }
 }

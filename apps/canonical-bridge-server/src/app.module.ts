@@ -14,14 +14,16 @@ import { AllExceptionFilter } from './common/filters/all-exception.filter';
 import { HttpExceptionFilter } from './common/filters/http-exception.filter';
 import { TransformInterceptor } from './common/interceptors/transform.interceptor';
 import { TimeoutInterceptor } from './common/interceptors/timeout.interceptor';
-import { REDIS_HOST, REDIS_PORT } from './common/constants';
+import { CMS_API_ENDPOINT, REDIS_HOST, REDIS_PORT } from './common/constants';
 import { TokenModule } from './module/token/token.module';
 import { BullModule } from '@nestjs/bullmq';
 import { Web3Module } from '@/shared/web3/web3.module';
 import { BridgeModule } from '@/module/bridge/bridge.module';
+import { ConfigModule } from '@/module/config/config.module';
 
 @Module({
   imports: [
+    CMS_API_ENDPOINT ? ConfigModule : null,
     BridgeModule,
     Web3Module,
     TokenModule,
@@ -43,7 +45,7 @@ import { BridgeModule } from '@/module/bridge/bridge.module';
         removeOnFail: 10,
       },
     }),
-  ],
+  ].filter(Boolean),
   providers: [
     { provide: APP_FILTER, useClass: AllExceptionFilter },
     { provide: APP_FILTER, useClass: HttpExceptionFilter },

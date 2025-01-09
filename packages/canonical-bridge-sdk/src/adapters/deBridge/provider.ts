@@ -6,6 +6,7 @@ export function deBridge<T = IDeBridgeTransferConfig>(
 ): IBridgeProvider<T> {
   return {
     id: 'deBridge',
+    enabled: true,
     ...params,
   };
 }

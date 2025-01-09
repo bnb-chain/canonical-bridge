@@ -31,11 +31,13 @@ export interface IBaseAdapterOptions<G>
 
 export interface IBridgeProviderOptions<T = unknown> {
   config: T;
+  enabled?: boolean;
   excludedTokens?: Record<number, string[]>;
   excludedChains?: number[];
 }
 
 export interface IBridgeProvider<T = unknown>
   extends IBridgeProviderOptions<T> {
+  enabled: boolean;
   id: BridgeType;
 }

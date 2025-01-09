@@ -6,6 +6,7 @@ export function cBridge<T = ICBridgeTransferConfig>(
 ): IBridgeProvider<T> {
   return {
     id: 'cBridge',
+    enabled: true,
     ...params,
   };
 }

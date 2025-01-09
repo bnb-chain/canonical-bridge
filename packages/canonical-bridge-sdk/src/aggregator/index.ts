@@ -69,7 +69,7 @@ export class Aggregator {
       : customizedOptions.displayTokenSymbols;
 
     this.adapters = providers
-      .filter((item) => !!item.config)
+      .filter((item) => !!item.config && item.enabled)
       .map((item) => {
         const adapterOptions: IBaseAdapterOptions<any> = {
           ...customizedOptions,

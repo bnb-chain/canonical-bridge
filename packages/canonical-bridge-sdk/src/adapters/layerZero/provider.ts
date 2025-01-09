@@ -6,6 +6,7 @@ export function layerZero<T = ILayerZeroConfig>(
 ): IBridgeProvider<T> {
   return {
     id: 'layerZero',
+    enabled: true,
     ...params,
   };
 }
