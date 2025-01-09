@@ -35,6 +35,45 @@ export function AggregatorProvider(props: AggregatorProviderProps) {
       tokenSorter,
     });
 
+    // output all token pairs
+    // const result: any[] = [];
+    // const fromChains = aggregator.getFromChains();
+    // fromChains.forEach((fromChain) => {
+    //   const toChains = aggregator.getToChains({ fromChainId: fromChain.id });
+    //   toChains.forEach((toChain) => {
+    //     if (fromChain.id !== toChain.id) {
+    //       const tokens = aggregator.getTokens({
+    //         fromChainId: fromChain.id,
+    //         toChainId: toChain.id,
+    //       });
+    //       tokens.forEach((token) => {
+    //         if (token.isCompatible) {
+    //           const toTokens = aggregator.getToTokens({
+    //             fromChainId: fromChain.id,
+    //             toChainId: toChain.id,
+    //             tokenAddress: token.address,
+    //           });
+
+    //           result.push({
+    //             fromChainId: fromChain.id,
+    //             fromChainName: fromChain.name,
+    //             toChainId: toChain.id,
+    //             toChainName: toChain.name,
+    //             toTokenCount: toTokens.length,
+    //             fromToken: token.symbol,
+    //             fromTokenAddress: token.address,
+    //             toTokens: toTokens.map((e) => ({
+    //               symbol: e.symbol,
+    //               address: e.address,
+    //             })),
+    //           });
+    //         }
+    //       });
+    //     }
+    //   });
+    // });
+    // console.log(JSON.stringify(result));
+
     return {
       aggregator,
     };
