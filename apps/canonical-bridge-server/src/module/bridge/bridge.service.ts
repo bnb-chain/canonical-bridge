@@ -7,6 +7,8 @@ import { isEmpty } from 'lodash';
 import {
   IDebridgeConfig,
   IDebridgeToken,
+  ILayerZeroToken,
+  ILayerZeroTransferConfigs,
   IMesonChain,
   IStargateBridgeTokenInfo,
   ITransferConfigsForAll,
@@ -227,6 +229,31 @@ export class BridgeService {
       }
     });
 
+    return finalConfig;
+  }
+
+  async getFilteredLayerZeroConfig() {
+    const config = await this.cache.get<ILayerZeroTransferConfigs>(CACHE_KEY.LAYER_ZERO_CONFIG);
+    if (!config) return config;
+
+    const prices = await this.getPriceConfig();
+    const chainTokens: Record<number, ILayerZeroToken[]> = {};
+
+    Object.entries(config.tokens).forEach(([key, tokens]) => {
+      const chainId = Number(key);
+      chainTokens[chainId] = tokens.filter((e) => {
+        return this.hasTokenPrice({
+          prices,
+          tokenAddress: e.address,
+          tokenSymbol: e.symbol,
+        });
+      });
+    });
+
+    const finalConfig: ILayerZeroTransferConfigs = {
+      ...config,
+      tokens: chainTokens,
+    };
     return finalConfig;
   }
 }

@@ -34,6 +34,7 @@ export interface ILayerZeroToken {
   bridgeAddress: string;
   decimals: number;
   symbol: string;
+  name: string;
   endpointID: number;
   version: number; // LayerZero version
 }

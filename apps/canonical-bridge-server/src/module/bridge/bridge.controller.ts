@@ -71,4 +71,15 @@ export class BridgeController {
     this.logger.log('[meson] filtered config is empty');
     return this.cache.get(CACHE_KEY.MESON_CONFIG);
   }
+
+  @Get('/v2/layer_zero')
+  async getLayerZeroConfigV2() {
+    const config = await this.cache.get(CACHE_KEY.FIELDED_LAYER_ZERO_CONFIG);
+    if (config) {
+      return config;
+    }
+
+    this.logger.log('[layerZero] filtered config is empty');
+    return this.cache.get(CACHE_KEY.LAYER_ZERO_CONFIG);
+  }
 }

@@ -29,6 +29,8 @@ export class BridgeProcessor extends WorkerHost {
         return this.fetchMeson();
       case Tasks.fetchStargate:
         return this.fetchStargate();
+      case Tasks.fetchLayerZero:
+        return this.fetchLayerZero();
 
       case Tasks.filterCBridge:
         return this.filterCBridge();
@@ -38,6 +40,8 @@ export class BridgeProcessor extends WorkerHost {
         return this.filterStargate();
       case Tasks.filterMeson:
         return this.filterMeson();
+      case Tasks.filterLayerZero:
+        return this.filterLayerZero();
       default:
     }
   }
@@ -77,6 +81,12 @@ export class BridgeProcessor extends WorkerHost {
     await this.cache.set(`${CACHE_KEY.MESON_CONFIG}`, config, TIME.DAY);
   }
 
+  async fetchLayerZero() {
+    const config = await this.web3Service.getCmsLayerZeroConfig();
+    if (!config) return;
+    await this.cache.set(`${CACHE_KEY.LAYER_ZERO_CONFIG}`, config, TIME.DAY);
+  }
+
   async filterCBridge() {
     const config = await this.bridgeService.getFilteredCBridgeConfig();
     if (!config) return;
@@ -99,5 +109,11 @@ export class BridgeProcessor extends WorkerHost {
     const config = await this.bridgeService.getFilteredMesonConfig();
     if (!config) return;
     await this.cache.set(`${CACHE_KEY.FIELDED_MESON_CONFIG}`, config, TIME.DAY);
+  }
+
+  async filterLayerZero() {
+    const config = await this.bridgeService.getFilteredLayerZeroConfig();
+    if (!config) return;
+    await this.cache.set(`${CACHE_KEY.FIELDED_LAYER_ZERO_CONFIG}`, config, TIME.DAY);
   }
 }

@@ -7,6 +7,7 @@ import {
   IChainConfig,
   ICustomizedBridgeConfig,
   IDeBridgeTransferConfig,
+  ILayerZeroConfig,
   IMesonTransferConfig,
   IStargateTransferConfig,
   layerZero,
@@ -15,14 +16,13 @@ import {
 } from '@bnb-chain/canonical-bridge-widget';
 
 import { env } from '@/core/env';
-import layerZeroConfig from '@/token-config/mainnet/layerZero/config.json';
 
 export function useTransferConfig() {
   const [transferConfig, setTransferConfig] = useState<ICustomizedBridgeConfig['transfer']>();
 
   useEffect(() => {
     const initTransferConfig = async () => {
-      const [cBridgeRes, deBridgeRes, stargateRes, mesonRes, transferRes, chainsRes] =
+      const [cBridgeRes, deBridgeRes, stargateRes, layerZeroRes, mesonRes, transferRes, chainsRes] =
         await Promise.all([
           axios.get<{ data: ICBridgeTransferConfig }>(
             `${env.SERVER_ENDPOINT}/api/bridge/v2/cbridge`,
@@ -33,7 +33,9 @@ export function useTransferConfig() {
           axios.get<{ data: IStargateTransferConfig }>(
             `${env.SERVER_ENDPOINT}/api/bridge/v2/stargate`,
           ),
+          axios.get<{ data: ILayerZeroConfig }>(`${env.SERVER_ENDPOINT}/api/bridge/v2/layer_zero`),
           axios.get<{ data: IMesonTransferConfig }>(`${env.SERVER_ENDPOINT}/api/bridge/v2/meson`),
+
           axios.get<{ data: ICustomizedBridgeConfig['transfer'] }>(
             `${env.SERVER_ENDPOINT}/api/config/transfer`,
           ),
@@ -44,6 +46,8 @@ export function useTransferConfig() {
       const deBridgeConfig = deBridgeRes.data.data;
       const mesonConfig = mesonRes.data.data;
       const stargateConfig = stargateRes.data.data;
+      const layerZeroConfig = layerZeroRes.data.data;
+
       const transfer = transferRes.data.data;
       const chainConfigs = chainsRes.data.data;
 
@@ -70,23 +74,19 @@ export function useTransferConfig() {
                 ...e,
                 config: mesonConfig,
               });
+            case 'layerZero':
+              return layerZero({
+                ...e,
+                config: layerZeroConfig,
+              });
           }
         }) ?? [];
 
-      const transferConfig: ICustomizedBridgeConfig['transfer'] = {
+      setTransferConfig({
         ...transfer,
         chainConfigs,
-        providers: [
-          ...providers,
-          layerZero({
-            config: layerZeroConfig,
-            excludedChains: [],
-            excludedTokens: {},
-          }),
-        ],
-      };
-
-      setTransferConfig(transferConfig);
+        providers,
+      });
     };
 
     initTransferConfig();

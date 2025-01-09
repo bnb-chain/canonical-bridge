@@ -169,7 +169,21 @@ export class Web3Service {
       return data;
     } catch (e) {
       console.error(
-        `[cms] Failed to retrieve transfer config at ${new Date().getTime()}`,
+        `[cms] Failed to retrieve transferConfig at ${new Date().getTime()}`,
+        e.message,
+      );
+    }
+  }
+
+  async getCmsLayerZeroConfig() {
+    try {
+      const { data } = await this.httpService.axiosRef.get(
+        `${CMS_API_ENDPOINT}/items/layer_zero_config`,
+      );
+      return data;
+    } catch (e) {
+      console.error(
+        `[cms] Failed to retrieve layerZeroConfig at ${new Date().getTime()}`,
         e.message,
       );
     }

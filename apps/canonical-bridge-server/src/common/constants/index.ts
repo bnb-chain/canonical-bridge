@@ -35,6 +35,7 @@ export enum Tasks {
   fetchDebridge = 'fetchDebridge',
   fetchStargate = 'fetchStargate',
   fetchMeson = 'fetchMeson',
+  fetchLayerZero = 'fetchLayerZero',
   cacheCmcConfig = 'cacheCmcConfig',
   cacheLlamaConfig = 'cacheLlamaConfig',
 
@@ -42,6 +43,7 @@ export enum Tasks {
   filterDeBridge = 'filterDeBridge',
   filterStargate = 'filterStargate',
   filterMeson = 'filterMeson',
+  filterLayerZero = 'filterLayerZero',
 
   fetchCmsChains = 'fetchCmsChains',
   fetchCmsTransferConfig = 'fetchCmsTransferConfig',
@@ -60,6 +62,8 @@ export const CACHE_KEY = {
   DEBRIDGE_CONFIG: 'bridge:debridge',
   STARGATE_CONFIG: 'bridge:stargate',
   MESON_CONFIG: 'bridge:meson',
+  LAYER_ZERO_CONFIG: 'bridge:layer_zero',
+
   CMC_CONFIG: 'cmc:config',
   LLAMA_CONFIG: 'llama:config',
   PLATFORM_MAPPING: 'llama:platform',
@@ -68,6 +72,7 @@ export const CACHE_KEY = {
   FIELDED_DEBRIDGE_CONFIG: 'bridge:filtered:debridge',
   FIELDED_STARGATE_CONFIG: 'bridge:filtered:stargate',
   FIELDED_MESON_CONFIG: 'bridge:filtered:meson',
+  FIELDED_LAYER_ZERO_CONFIG: 'bridge:filtered:layer_zero',
 
   CHAINS_CONFIG: 'config:chains',
   TRANSFER_CONFIG: 'config:transfer_config',

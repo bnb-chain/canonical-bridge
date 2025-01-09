@@ -196,3 +196,24 @@ export interface IMesonChain {
   address: string;
   tokens: IMesonToken[];
 }
+
+export interface ILayerZeroToken {
+  address: string;
+  bridgeAddress: string;
+  decimals: number;
+  symbol: string;
+  name: string;
+  endpointID: number;
+  version: number; // LayerZero version
+}
+
+export interface ILayerZeroChain {
+  chainId: number;
+  chainName: string;
+  network?: string;
+}
+
+export interface ILayerZeroTransferConfigs {
+  chains: ILayerZeroChain[];
+  tokens: Record<number, ILayerZeroToken[]>;
+}
