@@ -3,8 +3,8 @@ import { useConnection } from '@solana/wallet-adapter-react';
 import { PublicKey } from '@solana/web3.js';
 import { useQuery } from '@tanstack/react-query';
 import { useBytecode } from 'wagmi';
+import { isEvmAddress, isSolanaAddress } from '@bnb-chain/canonical-bridge-sdk';
 
-import { isEvmAddress, isSolanaAddress } from '@/core/utils/address';
 import { useAppSelector } from '@/modules/store/StoreProvider';
 
 export function useSolanaTransferInfo() {

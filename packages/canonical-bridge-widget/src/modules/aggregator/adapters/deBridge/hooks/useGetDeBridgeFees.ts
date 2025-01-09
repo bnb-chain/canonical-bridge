@@ -1,31 +1,33 @@
 import { useCallback } from 'react';
 import { formatUnits, parseUnits } from 'viem';
-import { DeBridgeCreateQuoteResponse } from '@bnb-chain/canonical-bridge-sdk';
+import { IDeBridgeCreateQuoteResponse } from '@bnb-chain/canonical-bridge-sdk';
 import { useAccount, useBalance, usePublicClient } from 'wagmi';
 import { useIntl } from '@bnb-chain/space';
 
 import { formatNumber } from '@/core/utils/number';
 import { useAppDispatch, useAppSelector } from '@/modules/store/StoreProvider';
-import { DeBridgeAdapter } from '@/modules/aggregator/adapters/deBridge/DeBridgeAdapter';
 import { formatRouteFees } from '@/core/utils/string';
-import { useAdapter } from '@/modules/aggregator/hooks/useAdapter';
 import { setRouteError, setRouteFees } from '@/modules/transfer/action';
 import { useToTokenInfo } from '@/modules/transfer/hooks/useToTokenInfo';
 import { useGetTokenBalance } from '@/core/contract/hooks/useGetTokenBalance';
 import { ERC20_TOKEN } from '@/core/contract/abi';
-import { useNativeCurrency } from '@/modules/aggregator/hooks/useNativeCurrency';
 import { useSolanaBalance } from '@/modules/wallet/hooks/useSolanaBalance';
-import { IFeeDetails } from '@/modules/aggregator';
+import { useAggregator } from '@/modules/aggregator/providers/AggregatorProvider';
+import { IFeeDetails } from '@/modules/aggregator/types';
 
 export const useGetDeBridgeFees = () => {
   const dispatch = useAppDispatch();
-  const deBridgeAdapter = useAdapter<DeBridgeAdapter>('deBridge');
+
   const { formatMessage } = useIntl();
 
   const fromChain = useAppSelector((state) => state.transfer.fromChain);
   const selectedToken = useAppSelector((state) => state.transfer.selectedToken);
   const sendValue = useAppSelector((state) => state.transfer.sendValue);
   const toChain = useAppSelector((state) => state.transfer.toChain);
+
+  const aggregator = useAggregator();
+  const deBridgeAdapter = aggregator.getAdapter('deBridge');
+  const nativeCurrency = aggregator.getNativeCurrency(fromChain?.id);
 
   const { address, chain } = useAccount();
   const { data: nativeEvmBalance } = useBalance({
@@ -38,7 +40,6 @@ export const useGetDeBridgeFees = () => {
     tokenAddress: selectedToken?.address as `0x${string}`,
   });
 
-  const nativeCurrency = useNativeCurrency(fromChain?.id);
   const { data: nativeSolanaBalance } = useSolanaBalance();
 
   const nativeTokenBalance =
@@ -48,7 +49,7 @@ export const useGetDeBridgeFees = () => {
   const publicClient = usePublicClient({ chainId: fromChain?.id }) as any;
 
   const deBridgeFeeSorting = useCallback(
-    async (fees: DeBridgeCreateQuoteResponse) => {
+    async (fees: IDeBridgeCreateQuoteResponse) => {
       const nativeToken = nativeCurrency?.symbol;
       const nativeDecimals = nativeCurrency?.decimals ?? 18;
 
@@ -121,7 +122,7 @@ export const useGetDeBridgeFees = () => {
           });
         } else if (estimatedOperatingExpenses) {
           const { chain, tokenIn } = estimatedOperatingExpenses ?? {};
-          const token = deBridgeAdapter.getTokenByAddress({
+          const token = deBridgeAdapter?.getTokenByAddress({
             chainId: chain,
             address: tokenIn,
           });

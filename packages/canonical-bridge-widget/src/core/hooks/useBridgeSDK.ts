@@ -1,8 +1,12 @@
 import { CanonicalBridgeSDK } from '@bnb-chain/canonical-bridge-sdk';
 import { useMemo } from 'react';
 
-import { env } from '@/core/configs/env';
-import { STARGATE_QUEUE_URL } from '@/core/constants';
+import {
+  CBRIDGE_ENDPOINT,
+  DEBRIDGE_ENDPOINT,
+  DEBRIDGE_STATS_ENDPOINT,
+  STARGATE_QUEUE_URL,
+} from '@/core/constants';
 import { useBridgeConfig } from '@/index';
 
 /**
@@ -19,13 +23,13 @@ export const useBridgeSDK = () => {
       bridgeConfigs: [
         {
           bridgeType: 'cBridge',
-          endpoint: env.CBRIDGE_ENDPOINT,
+          endpoint: CBRIDGE_ENDPOINT,
           timeout,
         },
         {
           bridgeType: 'deBridge',
-          endpoint: env.DEBRIDGE_ENDPOINT,
-          statsEndpoint: env.DEBRIDGE_STATS_ENDPOINT,
+          endpoint: DEBRIDGE_ENDPOINT,
+          statsEndpoint: DEBRIDGE_STATS_ENDPOINT,
           timeout,
         },
         {

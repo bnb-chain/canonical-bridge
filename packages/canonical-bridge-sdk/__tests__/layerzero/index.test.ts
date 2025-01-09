@@ -1,5 +1,5 @@
 import { createPublicClient, defineChain, http } from 'viem';
-import { LayerZero } from '../../src/layerZero';
+import { LayerZero } from '../../src/adapters/layerZero';
 
 describe('LayerZero test cases', () => {
   let bridge: LayerZero;

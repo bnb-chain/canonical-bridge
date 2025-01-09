@@ -8,6 +8,9 @@ import cssInjectedByJsPlugin from 'vite-plugin-css-injected-by-js';
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  define: {
+    __APP_VERSION__: new Date().getTime(),
+  },
   plugins: [
     react(),
     cssInjectedByJsPlugin({

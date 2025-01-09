@@ -11,7 +11,7 @@ export function WalletButtonWrapper(props: PropsWithChildren) {
   const { needSwitchChain } = useNeedSwitchChain();
   const isWalletCompatible = useIsWalletCompatible();
 
-  const { connectWalletButton } = useBridgeConfig();
+  const bridgeConfig = useBridgeConfig();
 
   // const isReady = useDelay();
   // if (!isReady) {
@@ -26,5 +26,5 @@ export function WalletButtonWrapper(props: PropsWithChildren) {
     return <>{children}</>;
   }
 
-  return connectWalletButton;
+  return bridgeConfig.components.connectWalletButton;
 }

@@ -1,7 +1,6 @@
 import { Flex, useColorMode, useIntl, useTheme } from '@bnb-chain/space';
 
 import { useAppDispatch, useAppSelector } from '@/modules/store/StoreProvider';
-import { useFromChains } from '@/modules/aggregator/hooks/useFromChains';
 import { VirtualList } from '@/core/components/VirtualList';
 import { useSelection } from '@/modules/aggregator/hooks/useSelection';
 import { openLink } from '@/core/utils/common';
@@ -11,6 +10,7 @@ import { useSearch } from '@/modules/aggregator/components/SelectModal/hooks/use
 import { ListItem } from '@/modules/aggregator/components/SelectModal/components/ListItem';
 import { reportEvent } from '@/core/utils/gtm';
 import { setToAccount } from '@/modules/transfer/action';
+import { useFromChains } from '@/modules/aggregator/hooks/useFromChains';
 
 interface SourceNetworkModalProps {
   isOpen: boolean;
@@ -23,17 +23,12 @@ export function SourceNetworkModal(props: SourceNetworkModalProps) {
   const dispatch = useAppDispatch();
 
   const fromChain = useAppSelector((state) => state.transfer.fromChain);
-  const toChain = useAppSelector((state) => state.transfer.toChain);
-  const selectedToken = useAppSelector((state) => state.transfer.selectedToken);
 
   const { selectFromChain } = useSelection();
   const theme = useTheme();
   const { colorMode } = useColorMode();
 
-  const fromChains = useFromChains({
-    toChainId: toChain?.id,
-    token: selectedToken,
-  });
+  const fromChains = useFromChains();
 
   const { isNoResult, result, onSearch } = useSearch({
     filter: (item, keyword) => item.name.toLowerCase().includes(keyword?.toLowerCase()),
@@ -72,7 +67,7 @@ export function SourceNetworkModal(props: SourceNetworkModalProps) {
               if (item.chainType === 'link') {
                 openLink(item.externalBridgeUrl);
               } else {
-                selectFromChain(item);
+                selectFromChain(item.id);
                 dispatch(setToAccount({ address: '' }));
                 onClose();
               }

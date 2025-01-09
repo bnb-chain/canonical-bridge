@@ -8,4 +8,5 @@ module.exports = {
   images: {
     unoptimized: true,
   },
+  transpilePackages: ['@bnb-chain/space'],
 };

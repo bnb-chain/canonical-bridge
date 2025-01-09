@@ -1,5 +1,5 @@
 import { createPublicClient, defineChain, http } from 'viem';
-import { Stargate } from '../../src/stargate';
+import { Stargate } from '../../src/adapters/stargate';
 
 describe('Meson SDK validation', () => {
   let bridge: Stargate;

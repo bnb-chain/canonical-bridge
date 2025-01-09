@@ -19,7 +19,7 @@ export const RefreshingButton = ({
   const transferActionInfo = useAppSelector((state) => state.transfer.transferActionInfo);
   const isRefreshing = useAppSelector((state) => state.transfer.isRefreshing);
 
-  const { refreshingIcon } = useBridgeConfig();
+  const bridgeConfig = useBridgeConfig();
 
   return transferActionInfo ? (
     <Box
@@ -38,7 +38,7 @@ export const RefreshingButton = ({
       }}
       {...boxProps}
     >
-      {refreshingIcon ?? <RefreshingIcon {...iconProps} />}
+      {bridgeConfig.components.refreshingIcon ?? <RefreshingIcon {...iconProps} />}
     </Box>
   ) : null;
 };

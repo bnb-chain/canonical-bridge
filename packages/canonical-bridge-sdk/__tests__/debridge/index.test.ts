@@ -1,5 +1,5 @@
 // import { CBridge } from '../../src/cbridge';
-import { DeBridge } from '../../src/debridge';
+import { DeBridge } from '../../src/adapters/deBridge';
 
 describe('deBridge test cases', () => {
   let bridge: DeBridge;

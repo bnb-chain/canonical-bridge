@@ -1,20 +1,20 @@
 import { useMemo } from 'react';
+import {
+  IBridgeToken,
+  IBridgeTokenWithBalance,
+  isSameAddress,
+} from '@bnb-chain/canonical-bridge-sdk';
 
-import { IBridgeToken, IBridgeTokenWithBalance } from '@/modules/aggregator/types';
-import { useTokenPrice } from '@/modules/aggregator/hooks/useTokenPrice';
 import { useAppSelector } from '@/modules/store/StoreProvider';
-import { isSameAddress } from '@/core/utils/address';
-import { useTokenBalance } from '@/modules/aggregator/hooks/useTokenBalance';
 import { sortTokens } from '@/modules/aggregator/shared/sortTokens';
-import { useAggregator } from '@/modules/aggregator/components/AggregatorProvider';
-import { isChainOrTokenCompatible } from '@/modules/aggregator/shared/isChainOrTokenCompatible';
+import { useTokenBalance } from '@/modules/aggregator/providers/TokenBalancesProvider';
+import { useTokenPrice } from '@/modules/aggregator/providers/TokenPricesProvider';
 
 export function useTokenList(tokens: IBridgeToken[] = [], keyword?: string) {
   const selectedToken = useAppSelector((state) => state.transfer.selectedToken);
   const isLoadingTokenBalances = useAppSelector((state) => state.aggregator.isLoadingTokenBalances);
   const isLoadingTokenPrices = useAppSelector((state) => state.aggregator.isLoadingTokenPrices);
 
-  const { transferConfig } = useAggregator();
   const { getTokenBalance } = useTokenBalance();
   const { getTokenPrice } = useTokenPrice();
 
@@ -37,21 +37,12 @@ export function useTokenList(tokens: IBridgeToken[] = [], keyword?: string) {
 
     const sortedTokens = sortTokens({
       tokens: tmpTokens,
-      orders: transferConfig.order?.tokens,
     }).sort((a) => {
-      return isSameAddress(a.address, selectedToken?.address) && isChainOrTokenCompatible(a)
-        ? -1
-        : 0;
+      return isSameAddress(a.address, selectedToken?.address) && a.isCompatible ? -1 : 0;
     });
 
     return sortedTokens;
-  }, [
-    tokens,
-    transferConfig.order?.tokens,
-    getTokenBalance,
-    getTokenPrice,
-    selectedToken?.address,
-  ]);
+  }, [tokens, getTokenBalance, getTokenPrice, selectedToken?.address]);
 
   return { data: sortedTokens, isLoading: isLoadingTokenBalances || isLoadingTokenPrices };
 }

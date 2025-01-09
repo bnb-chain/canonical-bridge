@@ -12,6 +12,7 @@ import { useWallet as useSolanaWallet } from '@solana/wallet-adapter-react';
 import { useWallet as useTronWallet } from '@tronweb3/tronwallet-adapter-react-hooks';
 import { useAccount, useDisconnect } from 'wagmi';
 import React from 'react';
+import { ChainType } from '@bnb-chain/canonical-bridge-sdk';
 
 import { CopyAddress } from '@/core/components/CopyAddress';
 import { formatNumber } from '@/core/utils/number';
@@ -23,7 +24,6 @@ import { useSolanaAccount } from '@/modules/wallet/hooks/useSolanaAccount';
 import { useEvmBalance } from '@/modules/wallet/hooks/useEvmBalance';
 import { useTronBalance } from '@/modules/wallet/hooks/useTronBalance';
 import { useSolanaBalance } from '@/modules/wallet/hooks/useSolanaBalance';
-import { ChainType } from '@/modules/aggregator';
 import { useAppSelector } from '@/modules/store/StoreProvider';
 import { LogoutIcon } from '@/core/components/icons/LogoutIcon';
 import { useTronAccount } from '@/modules/wallet/hooks/useTronAccount';

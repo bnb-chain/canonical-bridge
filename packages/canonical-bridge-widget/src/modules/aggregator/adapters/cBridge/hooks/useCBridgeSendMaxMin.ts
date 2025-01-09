@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
 import { usePublicClient } from 'wagmi';
 import { formatUnits } from 'viem';
+import { ICBridgeMaxMinSendAmt } from '@bnb-chain/canonical-bridge-sdk';
 
 import { useAppSelector } from '@/modules/store/StoreProvider';
 import { useCBridgeTransferParams } from '@/modules/aggregator/adapters/cBridge/hooks/useCBridgeTransferParams';
-import { ICBridgeMaxMinSendAmt } from '@/modules/aggregator/adapters/cBridge/types';
 import { useBridgeSDK } from '@/core/hooks/useBridgeSDK';
 
 export const useCBridgeSendMaxMin = (isDisabled = false) => {

@@ -1,37 +1,19 @@
 import {
   CanonicalBridgeProvider,
-  ICanonicalBridgeConfig,
   BridgeTransfer,
   BridgeRoutes,
+  ICustomizedBridgeConfig,
 } from '@bnb-chain/canonical-bridge-widget';
+import { useMemo } from 'react';
 
 import { useTransferConfig } from '@/token-config/mainnet/useTransferConfig';
 import { chains } from '@/token-config/mainnet/chains';
 import { env } from '@/core/env';
-import { dark } from '@/core/theme/dark';
-import { light } from '@/core/theme/light';
 import { useWalletModal } from '@/core/wallet/hooks/useWalletModal';
 import { WalletProvider } from '@/core/wallet/WalletProvider';
 import { Layout } from '@/core/components/Layout';
-
-export const bridgeConfig: ICanonicalBridgeConfig = {
-  appName: env.APP_NAME,
-  assetPrefix: env.ASSET_PREFIX,
-  appearance: {
-    bridgeTitle: 'BNB Chain Cross-Chain Bridge',
-    theme: {
-      dark: dark,
-      light: light,
-    },
-  },
-  http: {
-    refetchingInterval: 30 * 1000, // 30s
-    apiTimeOut: 60 * 1000, // 60s
-    deBridgeAccessToken: '',
-    deBridgeReferralCode: '30229',
-    serverEndpoint: env.SERVER_ENDPOINT,
-  },
-};
+import { light } from '@/core/theme/light';
+import { dark } from '@/core/theme/dark';
 
 export default function MainnetPage() {
   return (
@@ -45,13 +27,27 @@ function BridgeWidget() {
   const transferConfig = useTransferConfig();
   const { onOpen } = useWalletModal();
 
+  const config: ICustomizedBridgeConfig = useMemo(
+    () => ({
+      theme: {
+        colorMode: 'dark',
+        colors: {
+          light,
+          dark,
+        },
+      },
+      http: {
+        serverEndpoint: env.SERVER_ENDPOINT,
+        deBridgeReferralCode: env.DEBRIDGE_REFERRAL_CODE,
+      },
+      transfer: transferConfig,
+      onClickConnectWalletButton: onOpen,
+    }),
+    [onOpen, transferConfig],
+  );
+
   return (
-    <CanonicalBridgeProvider
-      config={bridgeConfig}
-      transferConfig={transferConfig}
-      chains={chains}
-      onClickConnectWalletButton={onOpen}
-    >
+    <CanonicalBridgeProvider config={config}>
       <Layout>
         <BridgeTransfer />
         <BridgeRoutes />

@@ -4,8 +4,8 @@ import { useAppDispatch, useAppSelector } from '@/modules/store/StoreProvider';
 import { setSendValue } from '@/modules/transfer/action';
 import { formatNumber } from '@/core/utils/number';
 import { reportEvent } from '@/core/utils/gtm';
-import { useTokenPrice } from '@/modules/aggregator/hooks/useTokenPrice';
-import { useTokenBalance } from '@/modules/aggregator/hooks/useTokenBalance';
+import { useTokenBalance } from '@/modules/aggregator/providers/TokenBalancesProvider';
+import { useTokenPrice } from '@/modules/aggregator/providers/TokenPricesProvider';
 
 export const MaxLink: React.FC = () => {
   const theme = useTheme();

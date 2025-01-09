@@ -4,7 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 
 import { FormattedBalance } from '@/modules/wallet/hooks/useEvmBalance';
 import { useSolanaAccount } from '@/modules/wallet/hooks/useSolanaAccount';
-import { REFETCH_INTERVAL } from '@/core/constants';
+import { UPDATE_INTERVAL } from '@/core/constants';
 
 export function useSolanaBalance() {
   const { connection } = useConnection();
@@ -12,7 +12,7 @@ export function useSolanaBalance() {
 
   return useQuery<FormattedBalance>({
     queryKey: ['useSolanaBalance', publicKey],
-    refetchInterval: REFETCH_INTERVAL,
+    refetchInterval: UPDATE_INTERVAL,
     enabled: !!publicKey,
     queryFn: async () => {
       const balance = await connection.getBalance(publicKey!);

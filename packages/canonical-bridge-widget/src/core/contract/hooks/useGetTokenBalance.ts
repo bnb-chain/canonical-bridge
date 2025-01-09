@@ -1,7 +1,7 @@
 import { useAccount, useBalance, useReadContract } from 'wagmi';
+import { isNativeToken } from '@bnb-chain/canonical-bridge-sdk';
 
 import { useAppSelector } from '@/modules/store/StoreProvider';
-import { isNativeToken } from '@/core/utils/address';
 import { ERC20_TOKEN } from '@/core/contract/abi';
 
 export const useGetTokenBalance = ({ tokenAddress }: { tokenAddress: `0x${string}` }) => {

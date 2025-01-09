@@ -1,17 +1,18 @@
 import { useMemo } from 'react';
 
-import { useSavedValue } from '@/core/hooks/useSavedValue';
-import { useAggregator } from '@/modules/aggregator/components/AggregatorProvider';
-import { IGetToChainsParams } from '@/modules/aggregator/shared/aggregateChains';
+import { useAggregator } from '@/modules/aggregator/providers/AggregatorProvider';
+import { useAppSelector } from '@/modules/store/StoreProvider';
 
-export function useToChains(props: IGetToChainsParams) {
-  const { getToChains } = useAggregator();
-
-  const params = useSavedValue(props);
+export function useToChains() {
+  const fromChain = useAppSelector((state) => state.transfer.fromChain);
+  const aggregator = useAggregator();
 
   const toChains = useMemo(() => {
-    return getToChains(params);
-  }, [getToChains, params]);
+    if (fromChain?.id) {
+      return aggregator.getToChains({ fromChainId: fromChain.id });
+    }
+    return [];
+  }, [aggregator, fromChain?.id]);
 
   return toChains;
 }

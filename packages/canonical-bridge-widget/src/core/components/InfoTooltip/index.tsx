@@ -27,7 +27,10 @@ export const InfoTooltip = (props: InfoTooltipProps) => {
       ...(isBase && {
         onMouseEnter: onOpen,
         onMouseLeave: onClose,
-        onClick: onToggle,
+        onClick: (e: any) => {
+          onToggle();
+          element.props.onClick?.(e);
+        },
       }),
     });
   }, [children, iconProps, isBase, onClose, onOpen, onToggle]);

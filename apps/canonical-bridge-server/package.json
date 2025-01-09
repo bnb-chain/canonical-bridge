@@ -42,7 +42,7 @@
     "rxjs": "^7.8.1"
   },
   "devDependencies": {
-    "@bnb-chain/prettier-config": "workspace:*",
+    "@bnb-chain/prettier-config": "^1",
     "@nestjs/cli": "^10.0.0",
     "@nestjs/schematics": "^10.0.0",
     "@types/express": "^4.17.17",

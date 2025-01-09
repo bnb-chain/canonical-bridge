@@ -35,6 +35,11 @@ export enum Tasks {
   fetchMeson = 'fetchMeson',
   cacheCmcConfig = 'cacheCmcConfig',
   cacheLlamaConfig = 'cacheLlamaConfig',
+
+  filterCBridge = 'filterCBridge',
+  filterDeBridge = 'filterDeBridge',
+  filterStargate = 'filterStargate',
+  filterMeson = 'filterMeson',
 }
 
 export const TOKEN_REQUEST_LIMIT = 1000;
@@ -53,6 +58,11 @@ export const CACHE_KEY = {
   CMC_CONFIG: 'cmc:config',
   LLAMA_CONFIG: 'llama:config',
   PLATFORM_MAPPING: 'llama:platform',
+
+  FIELDED_CBRIDGE_CONFIG: 'bridge:filtered:cbridge',
+  FIELDED_DEBRIDGE_CONFIG: 'bridge:filtered:debridge',
+  FIELDED_STARGATE_CONFIG: 'bridge:filtered:stargate',
+  FIELDED_MESON_CONFIG: 'bridge:filtered:meson',
 };
 
 export const JOB_KEY = {

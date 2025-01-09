@@ -1,6 +1,6 @@
 import { MIN_FEE } from '@/core/constants';
 import { formatNumber } from '@/core/utils/number';
-import { IFeeDetails } from '@/modules/aggregator';
+import { IFeeDetails } from '@/modules/aggregator/types';
 
 export function truncateStr(str: string, headLen = 6, tailLen = 6) {
   if (!str) {

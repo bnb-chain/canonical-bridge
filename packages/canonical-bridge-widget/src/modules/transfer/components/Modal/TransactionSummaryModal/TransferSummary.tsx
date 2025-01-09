@@ -1,6 +1,6 @@
 import { Flex, Link, useBreakpointValue, useColorMode, useIntl, useTheme } from '@bnb-chain/space';
 import { useMemo } from 'react';
-import { BridgeType } from '@bnb-chain/canonical-bridge-sdk';
+import { BridgeType, isNativeToken } from '@bnb-chain/canonical-bridge-sdk';
 
 import { useAppSelector } from '@/modules/store/StoreProvider';
 import { useGetReceiveAmount } from '@/modules/transfer/hooks/useGetReceiveAmount';
@@ -9,7 +9,7 @@ import { TransferToIcon } from '@/core/components/icons/TransferToIcon';
 import { TokenInfo } from '@/modules/transfer/components/Modal/TransactionSummaryModal/TokenInfo';
 import { formatTokenUrl } from '@/core/utils/string';
 import { WarningMessage } from '@/modules/transfer/components/TransferWarningMessage/WarningMessage';
-import { formatAppAddress, isNativeToken } from '@/core/utils/address';
+import { formatAppAddress } from '@/core/utils/address';
 
 export const TransferSummary = () => {
   const { colorMode } = useColorMode();

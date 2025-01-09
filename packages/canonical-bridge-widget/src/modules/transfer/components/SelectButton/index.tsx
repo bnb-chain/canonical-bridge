@@ -1,8 +1,8 @@
 import { ButtonProps, Flex, Text, useColorMode, Button, useTheme } from '@bnb-chain/space';
 import { CaretDownIcon } from '@bnb-chain/icons';
+import { IBridgeChain } from '@bnb-chain/canonical-bridge-sdk';
 
 import { IconImage } from '@/core/components/IconImage';
-import { IBridgeChain } from '@/modules/aggregator/types';
 
 export interface SelectButtonProps extends Omit<ButtonProps, 'value'> {
   isActive: boolean;

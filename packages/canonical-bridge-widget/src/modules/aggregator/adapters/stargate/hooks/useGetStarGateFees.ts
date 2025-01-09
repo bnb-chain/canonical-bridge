@@ -16,7 +16,7 @@ import { formatRouteFees } from '@/core/utils/string';
 import { useGetNativeToken } from '@/modules/transfer/hooks/useGetNativeToken';
 import { ERC20_TOKEN } from '@/core/contract/abi';
 import { useIsWalletCompatible } from '@/modules/wallet/hooks/useIsWalletCompatible';
-import { IFeeDetails } from '@/modules/aggregator';
+import { IFeeDetails } from '@/modules/aggregator/types';
 
 export const useGetStargateFees = () => {
   const dispatch = useAppDispatch();

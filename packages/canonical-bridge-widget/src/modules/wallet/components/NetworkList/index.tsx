@@ -2,6 +2,7 @@ import { Flex, useColorMode, useIntl, useTheme, Text, Typography, Box } from '@b
 import { TickIcon, InfoCircleIcon } from '@bnb-chain/icons';
 import { useAccount } from 'wagmi';
 import { useMemo, useRef } from 'react';
+import { ChainType } from '@bnb-chain/canonical-bridge-sdk';
 
 import { IconImage } from '@/core/components/IconImage';
 import { useAppSelector } from '@/modules/store/StoreProvider';
@@ -9,16 +10,16 @@ import { Dropdown } from '@/modules/wallet/components/Dropdown/Dropdown';
 import { DropdownButton } from '@/modules/wallet/components/Dropdown/DropdownButton';
 import { DropdownList } from '@/modules/wallet/components/Dropdown/DropdownList';
 import { DropdownItem } from '@/modules/wallet/components/Dropdown/DropdownItem';
-import { useFromChains } from '@/modules/aggregator/hooks/useFromChains';
 import { TransferToIcon } from '@/core/components/icons/TransferToIcon';
 import { SwitchNetworkButton } from '@/modules/transfer/components/Button/SwitchNetworkButton';
 import { WarningIcon } from '@/core/components/icons/WarningIcon.tsx';
 import { ExLinkIcon } from '@/core/components/icons/ExLinkIcon.tsx';
 import { openLink } from '@/core/utils/common.ts';
 import { WalletConnectButton } from '@/modules/transfer/components/Button/WalletConnectButton';
-import { ChainType, useSolanaAccount, useTronAccount } from '@/index';
+import { useSolanaAccount, useTronAccount } from '@/index';
 import { useNeedSwitchChain } from '@/modules/wallet/hooks/useNeedSwitchChain';
 import { useAutoSelectFromChain } from '@/modules/wallet/hooks/useAutoSelectFromChain';
+import { useFromChains } from '@/modules/aggregator/hooks/useFromChains';
 
 export interface NetworkListProps {
   onClickNetwork?: (params: { chainType: ChainType; chainId: number }) => void;
@@ -32,6 +33,7 @@ export function NetworkList(props: NetworkListProps) {
   const { formatMessage } = useIntl();
   const theme = useTheme();
   const { colorMode } = useColorMode();
+
   const supportedChains = useFromChains();
 
   const { needSwitchChain } = useNeedSwitchChain();

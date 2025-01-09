@@ -1,19 +1,19 @@
 import { useMemo } from 'react';
 import { TronWeb } from 'tronweb';
 
-import { useAggregator } from '@/modules/aggregator/components/AggregatorProvider';
+import { useBridgeConfig } from '@/index';
 
 export function useTronWeb() {
-  const { chainConfigs } = useAggregator();
+  const bridgeConfig = useBridgeConfig();
 
   const tronWeb = useMemo(() => {
-    const tron = chainConfigs.find((e) => e.chainType === 'tron');
+    const tron = bridgeConfig.transfer.chainConfigs.find((e) => e.chainType === 'tron');
     if (tron) {
       return new TronWeb({
-        fullHost: tron.rpcUrl,
+        fullHost: tron.rpcUrls.default.http?.[0],
       });
     }
-  }, [chainConfigs]);
+  }, [bridgeConfig.transfer.chainConfigs]);
 
   return tronWeb;
 }
