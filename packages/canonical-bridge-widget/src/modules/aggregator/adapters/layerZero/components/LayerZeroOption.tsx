@@ -32,7 +32,6 @@ export const LayerZeroOption = () => {
       ? `${formatNumber(
           Number(formatUnits(BigInt(estimatedAmount?.['layerZero']), getToDecimals()['layerZero'])),
           8,
-          false,
         )}`
       : '--';
   }, [estimatedAmount, toTokenInfo, sendValue, getToDecimals]);
