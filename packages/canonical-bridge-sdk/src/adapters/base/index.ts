@@ -137,10 +137,12 @@ export abstract class BaseAdapter<G extends object, C = unknown, T = unknown> {
     chainId,
     defaultSymbol,
     tokenAddress,
+    icon,
   }: {
     chainId: number;
     defaultSymbol: string;
     tokenAddress: string;
+    icon?: string | null;
   }) {
     const symbolMap = this.displayTokenSymbols[chainId] ?? {};
 
@@ -150,11 +152,11 @@ export abstract class BaseAdapter<G extends object, C = unknown, T = unknown> {
 
     const displaySymbol = target?.[1] ?? defaultSymbol;
     const iconSymbol = displaySymbol?.toUpperCase();
-    const icon = `${this.assetPrefix}/images/tokens/${iconSymbol}.png?v=${__APP_VERSION__}`;
+    const commonTokenIcon = `${this.assetPrefix}/images/tokens/${iconSymbol}.png?v=${__APP_VERSION__}`;
 
     return {
       displaySymbol,
-      icon,
+      icon: icon || commonTokenIcon,
     };
   }
 
