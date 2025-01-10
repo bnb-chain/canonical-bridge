@@ -1,5 +1,6 @@
 import { IBaseAdapterOptions, ITokenPair } from '@/adapters/base/types';
 import { isSameAddress } from '@/shared/address';
+import { uniqueArr } from '@/shared/object';
 import {
   BridgeType,
   ChainType,
@@ -157,9 +158,6 @@ export abstract class BaseAdapter<G extends object, C = unknown, T = unknown> {
     };
   }
 
-  // 1. Native currency is ETH -> Native currency is ETH, all transfer to ETH
-  // 2. Native currency is ETH -> Native currency is NOT ETH, transfer to ETH first, if not, WETH
-  // 3. Native currency is NOT ETH -> Native currency is ETH, all transfer to ETH
   protected getToTokensForPair({
     fromChainId,
     toChainId,
@@ -175,34 +173,30 @@ export abstract class BaseAdapter<G extends object, C = unknown, T = unknown> {
       this.nativeCurrencies[toChainId].symbol.toUpperCase();
     const tokenMap = this.symbolMap.get(toChainId);
 
-    if (['ETH', 'WETH'].includes(fromTokenSymbol)) {
-      if (fromNativeSymbol === 'ETH') {
-        if (toNativeSymbol === 'ETH') {
-          return tokenMap?.get(fromTokenSymbol);
-        } else {
-          return tokenMap?.get('ETH') || tokenMap?.get('WETH');
-        }
-      } else {
-        if (toNativeSymbol === 'ETH') {
-          return tokenMap?.get('ETH');
-        }
-      }
+    const toTokens = [...(tokenMap?.get(fromTokenSymbol) ?? [])];
+    if (
+      ['ETH', 'WETH'].includes(fromTokenSymbol) &&
+      (fromNativeSymbol === 'ETH' || toNativeSymbol === 'ETH') &&
+      this.id === 'deBridge'
+    ) {
+      const ethTokens = tokenMap?.get('ETH') ?? [];
+      const wethTokens = tokenMap?.get('WETH') ?? [];
+
+      toTokens.push(...ethTokens);
+      toTokens.push(...wethTokens);
     }
 
-    let toTokens = tokenMap?.get(fromTokenSymbol);
-    if (!toTokens) {
-      const bridgedGroup = this.bridgedTokenGroups.find((group) =>
-        group.includes(fromTokenSymbol)
-      );
-      const nextToken = bridgedGroup?.find(
-        (item) => item.toUpperCase() !== fromTokenSymbol
-      );
-      if (nextToken) {
-        toTokens = tokenMap?.get(nextToken?.toUpperCase());
+    const bridgedGroup = this.bridgedTokenGroups.find((e) =>
+      e.includes(fromTokenSymbol)
+    );
+    bridgedGroup?.forEach((anotherTokenSymbol) => {
+      const anotherToTokens = tokenMap?.get(anotherTokenSymbol.toUpperCase());
+      if (anotherToTokens?.length) {
+        toTokens.push(...anotherToTokens);
       }
-    }
+    });
 
-    return toTokens;
+    return uniqueArr(toTokens);
   }
 
   protected getTokenSymbolByTokenAddress({
