@@ -55,9 +55,11 @@ export function TransferOverview(props: TransferOverviewProps) {
   const toTokenInfo = useAppSelector((state) => state.transfer.toToken);
   const debouncedSendValue = useDebounce(sendValue, DEBOUNCE_DELAY);
   const isBase = useBreakpointValue({ base: true, lg: false }) ?? false;
+  const toToken = useAppSelector((state) => state.transfer.toToken);
 
   useEffect(() => {
-    if (isBase) return;
+    if (isBase || !toToken) return;
+
     if (sendValue === debouncedSendValue) {
       dispatch(setTransferActionInfo(undefined));
       if (!selectedToken || !Number(debouncedSendValue)) {
@@ -73,7 +75,7 @@ export function TransferOverview(props: TransferOverviewProps) {
     } else {
       dispatch(setIsGlobalFeeLoading(true));
     }
-  }, [selectedToken, debouncedSendValue, dispatch, sendValue, loadingBridgeFees, isBase]);
+  }, [selectedToken, debouncedSendValue, dispatch, sendValue, loadingBridgeFees, isBase, toToken]);
 
   const sortedReceivedAmt = useMemo(() => getSortedReceiveAmount(), [getSortedReceiveAmount]);
   const options = useMemo(() => {

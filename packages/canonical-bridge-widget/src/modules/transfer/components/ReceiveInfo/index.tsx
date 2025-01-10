@@ -54,6 +54,7 @@ export const ReceiveInfo = ({ onOpen }: ReceiveInfoProps) => {
   const selectedToken = useAppSelector((state) => state.transfer.selectedToken);
   const estimatedAmount = useAppSelector((state) => state.transfer.estimatedAmount);
   const isBase = useBreakpointValue({ base: true, lg: false }) ?? false;
+  const toToken = useAppSelector((state) => state.transfer.toToken);
 
   const receiveAmt = useMemo(() => {
     if (!Number(sendValue)) return null;
@@ -84,7 +85,8 @@ export const ReceiveInfo = ({ onOpen }: ReceiveInfoProps) => {
   const debouncedSendValue = useDebounce(sendValue, DEBOUNCE_DELAY);
 
   useEffect(() => {
-    if (!isBase) return;
+    if (!isBase || !toToken) return;
+
     // On mobile
     if (sendValue === debouncedSendValue) {
       dispatch(setTransferActionInfo(undefined));
@@ -101,10 +103,11 @@ export const ReceiveInfo = ({ onOpen }: ReceiveInfoProps) => {
     } else {
       dispatch(setIsGlobalFeeLoading(true));
     }
-  }, [selectedToken, debouncedSendValue, dispatch, sendValue, loadingBridgeFees, isBase]);
+  }, [selectedToken, debouncedSendValue, dispatch, sendValue, loadingBridgeFees, isBase, toToken]);
 
   const isHideSection = useMemo(() => {
     // no receive amount and some routes are displayed
+    if (!toToken) return true;
     if (!Number(sendValue)) return true;
     if (isGlobalFeeLoading) return false;
     return (
@@ -114,7 +117,7 @@ export const ReceiveInfo = ({ onOpen }: ReceiveInfoProps) => {
         !Object.values(estimatedAmount).every((element) => element === undefined) &&
         !receiveAmt)
     );
-  }, [sendValue, estimatedAmount, receiveAmt, isGlobalFeeLoading, isBase]);
+  }, [toToken, sendValue, isGlobalFeeLoading, isBase, estimatedAmount, receiveAmt]);
 
   const isHideRouteButton = useMemo(() => {
     return (

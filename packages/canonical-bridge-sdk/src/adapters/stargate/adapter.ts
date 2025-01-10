@@ -162,12 +162,15 @@ export class StargateAdapter extends BaseAdapter<
                   toChainId: toChain.chainId,
                   fromToken,
                   toToken,
-                  fromTokenAddress: fromToken.address,
-                  toTokenAddress: toToken.address,
+                  fromTokenAddress: fromToken.token.address,
+                  toTokenAddress: toToken.token.address,
                 });
               });
 
-              tokenPairsMap.set(fromToken.address?.toLowerCase(), tokenPairs);
+              tokenPairsMap.set(
+                fromToken.token.address?.toLowerCase(),
+                tokenPairs
+              );
             }
           });
 
