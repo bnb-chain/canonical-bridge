@@ -154,8 +154,10 @@ export class Web3Service {
 
   async getCmsChains() {
     try {
-      const { data } = await this.httpService.axiosRef.get(`${CMS_API_ENDPOINT}/items/chains`);
-      return data;
+      const { data } = await this.httpService.axiosRef.get(
+        `${CMS_API_ENDPOINT}/items/bnbchain_bridge_chains`,
+      );
+      return data?.chains;
     } catch (e) {
       console.error(`[cms] Failed to retrieve chains at ${new Date().getTime()}`, e.message);
     }
@@ -164,9 +166,9 @@ export class Web3Service {
   async getCmsTransferConfig() {
     try {
       const { data } = await this.httpService.axiosRef.get(
-        `${CMS_API_ENDPOINT}/items/transfer_config`,
+        `${CMS_API_ENDPOINT}/items/bnbchain_bridge_transfer_config`,
       );
-      return data;
+      return data?.transfer_config;
     } catch (e) {
       console.error(
         `[cms] Failed to retrieve transferConfig at ${new Date().getTime()}`,
@@ -178,9 +180,9 @@ export class Web3Service {
   async getCmsLayerZeroConfig() {
     try {
       const { data } = await this.httpService.axiosRef.get(
-        `${CMS_API_ENDPOINT}/items/layer_zero_config`,
+        `${CMS_API_ENDPOINT}/items/bnbchain_bridge_layer_zero_config`,
       );
-      return data;
+      return data?.layer_zero_config;
     } catch (e) {
       console.error(
         `[cms] Failed to retrieve layerZeroConfig at ${new Date().getTime()}`,

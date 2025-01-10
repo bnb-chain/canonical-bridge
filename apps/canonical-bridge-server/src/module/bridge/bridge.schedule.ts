@@ -29,6 +29,10 @@ export class BridgeSchedule implements OnModuleInit {
       jobId: Tasks.fetchMeson,
       removeOnComplete: true,
     });
+    await this.syncBridge.add(Tasks.fetchLayerZero, null, {
+      jobId: Tasks.fetchLayerZero,
+      removeOnComplete: true,
+    });
   }
 
   @Cron(CronExpression.EVERY_5_MINUTES)
@@ -48,6 +52,10 @@ export class BridgeSchedule implements OnModuleInit {
     });
     await this.syncBridge.add(Tasks.filterMeson, null, {
       jobId: Tasks.filterMeson,
+      removeOnComplete: true,
+    });
+    await this.syncBridge.add(Tasks.filterLayerZero, null, {
+      jobId: Tasks.filterLayerZero,
       removeOnComplete: true,
     });
   }

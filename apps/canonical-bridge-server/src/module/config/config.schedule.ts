@@ -12,13 +12,13 @@ export class ConfigSchedule implements OnModuleInit {
 
   @Cron(CronExpression.EVERY_10_SECONDS)
   async syncCmsConfig() {
-    this.logger.log('syncCmsConfig');
-    await this.syncConfig.add(Tasks.fetchCbridge, null, {
+    // this.logger.log('syncCmsConfig');
+    await this.syncConfig.add(Tasks.fetchCmsChains, null, {
       jobId: Tasks.fetchCmsChains,
       removeOnComplete: true,
     });
     await this.syncConfig.add(Tasks.fetchCmsTransferConfig, null, {
-      jobId: Tasks.fetchDebridge,
+      jobId: Tasks.fetchCmsTransferConfig,
       removeOnComplete: true,
     });
   }

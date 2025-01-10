@@ -3,11 +3,11 @@ import {
   BridgeTransfer,
   BridgeRoutes,
   ICustomizedBridgeConfig,
+  IChainConfig,
 } from '@bnb-chain/canonical-bridge-widget';
 import { useMemo } from 'react';
 
 import { useTransferConfig } from '@/token-config/mainnet/useTransferConfig';
-import { chains } from '@/token-config/mainnet/chains';
 import { env } from '@/core/env';
 import { useWalletModal } from '@/core/wallet/hooks/useWalletModal';
 import { WalletProvider } from '@/core/wallet/WalletProvider';
@@ -16,15 +16,20 @@ import { light } from '@/core/theme/light';
 import { dark } from '@/core/theme/dark';
 
 export default function MainnetPage() {
+  const transferConfig = useTransferConfig();
+
+  if (!transferConfig?.chainConfigs) {
+    return null;
+  }
+
   return (
-    <WalletProvider chainConfigs={chains}>
-      <BridgeWidget />
+    <WalletProvider chainConfigs={transferConfig?.chainConfigs as IChainConfig[]}>
+      <BridgeWidget transferConfig={transferConfig} />
     </WalletProvider>
   );
 }
 
-function BridgeWidget() {
-  const transferConfig = useTransferConfig();
+function BridgeWidget({ transferConfig }: { transferConfig: ICustomizedBridgeConfig['transfer'] }) {
   const { onOpen } = useWalletModal();
 
   const config: ICustomizedBridgeConfig = useMemo(
