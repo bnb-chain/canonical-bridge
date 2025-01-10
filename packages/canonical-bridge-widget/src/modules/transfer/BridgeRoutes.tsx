@@ -24,13 +24,15 @@ export function BridgeRoutes() {
   const isRoutesModalOpen = useAppSelector((state) => state.transfer.isRoutesModalOpen);
   const transferActionInfo = useAppSelector((state) => state.transfer.transferActionInfo);
   const isManuallyReload = useAppSelector((state) => state.transfer.isManuallyReload);
+  const toToken = useAppSelector((state) => state.transfer.toToken);
 
   useFeeRefreshProgress();
 
   // Load estimated bridge fees every 30 seconds when there is bridge route available
   useEffect(() => {
     let mount = true;
-    if (!mount) return;
+    if (!mount || !toToken) return;
+
     if (transferActionInfo) {
       const params = {
         triggerType: 'refresh' as TriggerType,
