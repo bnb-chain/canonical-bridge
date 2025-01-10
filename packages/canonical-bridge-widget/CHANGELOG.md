@@ -1,5 +1,11 @@
 # @bnb-chain/canonical-bridge-widget
 
+## 0.5.19-alpha.0
+
+### Patch Changes
+
+- chore: Update confirmation popup amount styling
+
 ## 0.5.19
 
 ### Patch Changes

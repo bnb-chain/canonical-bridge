@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useCallback, useEffect } from 'react';
 import { IBridgeToken } from '@bnb-chain/canonical-bridge-sdk';
 
-import { useBridgeConfig } from '@/CanonicalBridgeProvider';
+import { IBridgeConfig, useBridgeConfig } from '@/CanonicalBridgeProvider';
 import { TIME } from '@/core/constants';
 import { useAppDispatch, useAppSelector } from '@/modules/store/StoreProvider';
 import { setIsLoadingTokenPrices, setTokenPrices } from '@/modules/aggregator/action';
@@ -21,27 +21,13 @@ interface ITokenPricesResponse {
 export function TokenPricesProvider() {
   const bridgeConfig = useBridgeConfig();
   const dispatch = useAppDispatch();
+  const { fetchApiTokenPrices } = useTokenPrice();
 
   const { isLoading, data } = useQuery<TokenPricesContextProps>({
     staleTime: TIME.MINUTE * 5,
     refetchInterval: TIME.MINUTE * 5,
     queryKey: ['tokenPrices'],
-    queryFn: async () => {
-      const { serverEndpoint } = bridgeConfig.http;
-
-      const [cmcRes, llamaRes] = await Promise.allSettled([
-        axios.get<ITokenPricesResponse>(`${serverEndpoint}/api/token/cmc`),
-        axios.get<ITokenPricesResponse>(`${serverEndpoint}/api/token/llama`),
-      ]);
-
-      const cmcPrices = cmcRes.status === 'fulfilled' ? cmcRes.value.data.data : {};
-      const llamaPrices = llamaRes.status === 'fulfilled' ? llamaRes.value.data.data : {};
-
-      return {
-        cmcPrices,
-        llamaPrices,
-      };
-    },
+    queryFn: async () => fetchApiTokenPrices(bridgeConfig),
   });
 
   useEffect(() => {
@@ -85,7 +71,25 @@ export function useTokenPrice() {
     [tokenPrices],
   );
 
+  const fetchApiTokenPrices = useCallback(async (bridgeConfig: IBridgeConfig) => {
+    const { serverEndpoint } = bridgeConfig.http;
+
+    const [cmcRes, llamaRes] = await Promise.allSettled([
+      axios.get<ITokenPricesResponse>(`${serverEndpoint}/api/token/cmc`),
+      axios.get<ITokenPricesResponse>(`${serverEndpoint}/api/token/llama`),
+    ]);
+
+    const cmcPrices = cmcRes.status === 'fulfilled' ? cmcRes.value.data.data : {};
+    const llamaPrices = llamaRes.status === 'fulfilled' ? llamaRes.value.data.data : {};
+
+    return {
+      cmcPrices,
+      llamaPrices,
+    };
+  }, []);
+
   return {
     getTokenPrice,
+    fetchApiTokenPrices,
   };
 }
