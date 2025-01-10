@@ -18,7 +18,7 @@ export const formatNumber = (
   useGrouping = true
 ) => {
   const num = removeAfterDecimals(value, decimals);
-  return num.toLocaleString('fullwide', {
+  return Number(num).toLocaleString('fullwide', {
     maximumFractionDigits: decimals,
     useGrouping,
   });

@@ -25,6 +25,7 @@ import {
   STARGATE_ENDPOINT,
 } from '@/core/constants';
 import { useHandleTxFailure } from '@/modules/aggregator/hooks/useHandleTxFailure';
+import { usePriceValidation } from '@/modules/transfer/hooks/usePriceValidation';
 
 export const TransferConfirmButton = ({
   onClose,
@@ -49,6 +50,7 @@ export const TransferConfirmButton = ({
   const { formatMessage } = useIntl();
   const theme = useTheme();
   const { colorMode } = useColorMode();
+  const { validateTokenPrice } = usePriceValidation();
 
   const { address } = useAccount();
   const { address: tronAddress, signTransaction } = useTronWallet();
@@ -104,6 +106,17 @@ export const TransferConfirmButton = ({
     }
 
     try {
+      // Check whether token price exists
+      const result = await validateTokenPrice({
+        tokenSymbol: selectedToken.symbol,
+        tokenAddress: selectedToken.address,
+      });
+      if (!result) {
+        throw new Error(
+          `Can not get token price from API server: ${sendValue} ${selectedToken.symbol}`,
+        );
+      }
+
       setHash(null);
       setChosenBridge('');
       setIsLoading(true);
@@ -537,6 +550,7 @@ export const TransferConfirmButton = ({
     signMessageAsync,
     signTransaction,
     handleFailure,
+    validateTokenPrice,
   ]);
 
   const isFeeLoading = isLoading || isGlobalFeeLoading || !transferActionInfo || !isTransferable;
