@@ -16,10 +16,10 @@ export function useDefaultSelect() {
   const { defaultAmount, defaultFromChainId, defaultToChainId, defaultTokenAddress } =
     bridgeConfig.transfer;
 
-  const hasAvailableAdapter = !!aggregator;
+  const isReady = !!aggregator;
 
   useEffect(() => {
-    if (hasAvailableAdapter) {
+    if (isReady) {
       selectDefault({
         fromChainId: defaultFromChainId,
         toChainId: defaultToChainId,
@@ -28,11 +28,5 @@ export function useDefaultSelect() {
       dispatch(setSendValue(defaultAmount));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [
-    defaultAmount,
-    defaultFromChainId,
-    defaultToChainId,
-    defaultTokenAddress,
-    hasAvailableAdapter,
-  ]);
+  }, [defaultAmount, defaultFromChainId, defaultToChainId, defaultTokenAddress, isReady]);
 }
