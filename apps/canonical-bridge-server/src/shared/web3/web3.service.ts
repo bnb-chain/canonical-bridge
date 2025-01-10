@@ -190,4 +190,15 @@ export class Web3Service {
       );
     }
   }
+
+  async getCmsGlobalConfig() {
+    try {
+      const { data } = await this.httpService.axiosRef.get(
+        `${CMS_API_ENDPOINT}/items/bnbchain_bridge_global_config`,
+      );
+      return data?.global_config;
+    } catch (e) {
+      console.error(`[cms] Failed to retrieve globalConfig at ${new Date().getTime()}`, e.message);
+    }
+  }
 }

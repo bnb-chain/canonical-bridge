@@ -7,8 +7,8 @@ export const useGetNativeToken = () => {
   const fromChain = useAppSelector((state) => state.transfer.fromChain);
 
   if (fromChain?.id) {
-    if (aggregator.nativeCurrencies[fromChain.id]) {
-      return aggregator.nativeCurrencies[fromChain.id].symbol;
+    if (aggregator?.nativeCurrencies[fromChain.id]) {
+      return aggregator?.nativeCurrencies[fromChain.id].symbol;
     }
 
     const nativeToken = fromChain?.cBridge?.raw?.gas_token_symbol;

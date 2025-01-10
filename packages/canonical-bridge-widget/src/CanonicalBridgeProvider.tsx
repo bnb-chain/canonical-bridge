@@ -66,7 +66,7 @@ export interface IBridgeConfig {
     dollarUpperLimit: number;
     providers: IBridgeProvider[];
     chainConfigs: IChainConfig[];
-    displayTokenSymbols: Record<number, Record<string, string>>;
+    displayTokenSymbols?: Record<number, Record<string, string>>;
     brandChains: number[];
     externalChains: IExternalChain[];
     chainOrders: number[];
@@ -151,7 +151,6 @@ export function CanonicalBridgeProvider(props: CanonicalBridgeProviderProps) {
         defaultTokenAddress: '0xdac17f958d2ee523a2206206994597c13d831ec7',
         defaultAmount: '',
 
-        displayTokenSymbols: {},
         brandChains: [],
         externalChains: [],
 

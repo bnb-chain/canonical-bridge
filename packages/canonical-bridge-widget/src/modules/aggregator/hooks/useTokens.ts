@@ -11,7 +11,7 @@ export function useTokens() {
 
   const tokens = useMemo(() => {
     if (fromChain?.id && toChain?.id) {
-      return aggregator.getTokens({ fromChainId: fromChain.id, toChainId: toChain.id });
+      return aggregator?.getTokens({ fromChainId: fromChain.id, toChainId: toChain.id });
     }
     return [];
   }, [aggregator, fromChain?.id, toChain?.id]);

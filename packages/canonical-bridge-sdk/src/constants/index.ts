@@ -17,3 +17,8 @@ export const EVM_NATIVE_TOKEN_ADDRESS =
 export const SOLANA_NATIVE_TOKEN_ADDRESS = '11111111111111111111111111111111';
 
 export const TRON_CHAIN_ID = 728126428;
+
+export const DEFAULT_CONFIG_API_ENDPOINT =
+  'https://canonical-bridge-api.bnbchain.world';
+
+export const CONFIG_API_TIME_OUT = 10 * 1000;

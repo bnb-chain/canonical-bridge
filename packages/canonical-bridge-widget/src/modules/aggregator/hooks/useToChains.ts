@@ -9,7 +9,7 @@ export function useToChains() {
 
   const toChains = useMemo(() => {
     if (fromChain?.id) {
-      return aggregator.getToChains({ fromChainId: fromChain.id });
+      return aggregator?.getToChains({ fromChainId: fromChain.id });
     }
     return [];
   }, [aggregator, fromChain?.id]);

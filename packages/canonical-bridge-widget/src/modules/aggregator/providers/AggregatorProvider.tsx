@@ -1,4 +1,4 @@
-import React, { useContext, useMemo } from 'react';
+import React, { useContext, useEffect, useMemo, useState } from 'react';
 import { Aggregator } from '@bnb-chain/canonical-bridge-sdk';
 
 import { useBridgeConfig } from '@/index';
@@ -11,29 +11,37 @@ export function AggregatorProvider(props: AggregatorProviderProps) {
   const { children } = props;
 
   const bridgeConfig = useBridgeConfig();
+  const [aggregator, setAggregator] = useState<Aggregator>();
 
-  const value = useMemo(() => {
-    const { assetPrefix, transfer } = bridgeConfig;
-    const {
-      chainConfigs,
-      providers,
-      brandChains,
-      externalChains,
-      displayTokenSymbols,
-      chainSorter,
-      tokenSorter,
-    } = transfer;
+  useEffect(() => {
+    const createAggregator = async () => {
+      const { assetPrefix, transfer, http } = bridgeConfig;
+      const {
+        chainConfigs,
+        providers,
+        brandChains,
+        externalChains,
+        displayTokenSymbols,
+        chainSorter,
+        tokenSorter,
+      } = transfer;
 
-    const aggregator = new Aggregator({
-      providers,
-      brandChains,
-      externalChains,
-      displayTokenSymbols,
-      assetPrefix,
-      chainConfigs,
-      chainSorter,
-      tokenSorter,
-    });
+      const instance = await Aggregator.create({
+        providers,
+        brandChains,
+        externalChains,
+        displayTokenSymbols,
+        assetPrefix,
+        chainConfigs,
+        configApiEndpoint: http.serverEndpoint,
+        chainSorter,
+        tokenSorter,
+      });
+
+      setAggregator(instance);
+    };
+
+    createAggregator();
 
     // output all token pairs
     // const result: any[] = [];
@@ -73,17 +81,19 @@ export function AggregatorProvider(props: AggregatorProviderProps) {
     //   });
     // });
     // console.log(JSON.stringify(result));
+  }, [bridgeConfig]);
 
+  const value = useMemo<AggregatorContextProps>(() => {
     return {
       aggregator,
     };
-  }, [bridgeConfig]);
+  }, [aggregator]);
 
   return <AggregatorContext.Provider value={value}>{children}</AggregatorContext.Provider>;
 }
 
 interface AggregatorContextProps {
-  aggregator: Aggregator;
+  aggregator?: Aggregator;
 }
 
 const AggregatorContext = React.createContext({} as AggregatorContextProps);

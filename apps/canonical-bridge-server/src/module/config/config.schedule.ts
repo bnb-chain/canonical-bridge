@@ -21,6 +21,10 @@ export class ConfigSchedule implements OnModuleInit {
       jobId: Tasks.fetchCmsTransferConfig,
       removeOnComplete: true,
     });
+    await this.syncConfig.add(Tasks.fetchCmsGlobalConfig, null, {
+      jobId: Tasks.fetchCmsGlobalConfig,
+      removeOnComplete: true,
+    });
   }
 
   async onModuleInit() {

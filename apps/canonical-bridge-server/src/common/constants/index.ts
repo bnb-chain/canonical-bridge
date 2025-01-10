@@ -47,6 +47,7 @@ export enum Tasks {
 
   fetchCmsChains = 'fetchCmsChains',
   fetchCmsTransferConfig = 'fetchCmsTransferConfig',
+  fetchCmsGlobalConfig = 'fetchCmsGlobalConfig',
 }
 
 export const TOKEN_REQUEST_LIMIT = 1000;
@@ -76,6 +77,7 @@ export const CACHE_KEY = {
 
   CHAINS_CONFIG: 'config:chains',
   TRANSFER_CONFIG: 'config:transferConfig',
+  GLOBAL_CONFIG: 'config:globalConfig',
 };
 
 export const JOB_KEY = {

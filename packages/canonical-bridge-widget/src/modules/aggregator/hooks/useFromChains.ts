@@ -6,7 +6,7 @@ export function useFromChains() {
   const aggregator = useAggregator();
 
   const fromChains = useMemo(() => {
-    return aggregator.getFromChains();
+    return aggregator?.getFromChains();
   }, [aggregator]);
 
   return fromChains;

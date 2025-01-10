@@ -39,6 +39,8 @@ export function useSelection() {
     tokenAddress: string;
     toTokenAddress?: string;
   }) => {
+    if (!aggregator) return;
+
     const options = {
       fromChainId: params.fromChainId,
       toChainId: params.toChainId,
@@ -88,6 +90,8 @@ export function useSelection() {
     toChainId: number;
     tokenAddress: string;
   }) => {
+    if (!aggregator) return;
+
     const { fromChainId, toChainId, tokenAddress } = params;
 
     const fromChains = aggregator.getFromChains();
@@ -121,6 +125,8 @@ export function useSelection() {
   };
 
   const selectFromChain = async (fromChainId: number) => {
+    if (!aggregator) return;
+
     const fromChains = aggregator.getFromChains();
     const newFromChain = fromChains.find((e) => e.id === fromChainId)!;
 
@@ -153,6 +159,8 @@ export function useSelection() {
   };
 
   const selectToChain = async (toChainId: number) => {
+    if (!aggregator) return;
+
     const fromChainId = fromChain!.id;
 
     const sortedTokens = await getSortedTokens({
@@ -178,6 +186,8 @@ export function useSelection() {
   };
 
   const selectToken = async (tokenAddress: string) => {
+    if (!aggregator) return;
+
     const fromChainId = fromChain!.id;
     const toChainId = toChain!.id;
 
@@ -189,6 +199,8 @@ export function useSelection() {
   };
 
   const selectToToken = async (toTokenAddress: string) => {
+    if (!aggregator) return;
+
     const fromChainId = fromChain!.id;
     const toChainId = toChain!.id;
     const tokenAddress = selectedToken!.address;
@@ -202,6 +214,8 @@ export function useSelection() {
   };
 
   const exchange = async () => {
+    if (!aggregator) return;
+
     const fromChainId = toChain!.id;
     const toChainId = fromChain!.id;
 

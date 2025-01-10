@@ -12,7 +12,7 @@ export function useToTokens() {
 
   const toTokens = useMemo(() => {
     if (fromChain?.id && toChain?.id && selectedToken?.address) {
-      return aggregator.getToTokens({
+      return aggregator?.getToTokens({
         fromChainId: fromChain.id,
         toChainId: toChain.id,
         tokenAddress: selectedToken.address,

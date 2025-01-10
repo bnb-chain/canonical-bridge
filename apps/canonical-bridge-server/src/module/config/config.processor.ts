@@ -22,19 +22,27 @@ export class ConfigProcessor extends WorkerHost {
         return this.fetchCmsChains();
       case Tasks.fetchCmsTransferConfig:
         return this.fetchCmsTransferConfig();
+      case Tasks.fetchCmsGlobalConfig:
+        return this.fetchCmsGlobalConfig();
       default:
     }
   }
 
   async fetchCmsChains() {
-    const chains = await this.web3Service.getCmsChains();
-    if (!chains) return;
-    await this.cache.set(`${CACHE_KEY.CHAINS_CONFIG}`, chains, TIME.DAY);
+    const config = await this.web3Service.getCmsChains();
+    if (!config) return;
+    await this.cache.set(`${CACHE_KEY.CHAINS_CONFIG}`, config, TIME.DAY);
   }
 
   async fetchCmsTransferConfig() {
-    const transferConfig = await this.web3Service.getCmsTransferConfig();
-    if (!transferConfig) return;
-    await this.cache.set(`${CACHE_KEY.TRANSFER_CONFIG}`, transferConfig, TIME.DAY);
+    const config = await this.web3Service.getCmsTransferConfig();
+    if (!config) return;
+    await this.cache.set(`${CACHE_KEY.TRANSFER_CONFIG}`, config, TIME.DAY);
+  }
+
+  async fetchCmsGlobalConfig() {
+    const config = await this.web3Service.getCmsGlobalConfig();
+    if (!config) return;
+    await this.cache.set(`${CACHE_KEY.GLOBAL_CONFIG}`, config, TIME.DAY);
   }
 }

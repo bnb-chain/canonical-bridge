@@ -38,6 +38,6 @@ export interface IBridgeProviderOptions<T = unknown> {
 
 export interface IBridgeProvider<T = unknown>
   extends IBridgeProviderOptions<T> {
-  enabled: boolean;
   id: BridgeType;
+  enabled: boolean;
 }

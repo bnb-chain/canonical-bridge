@@ -12,8 +12,8 @@ import { DeBridgeAdapter } from '@/adapters/deBridge/adapter';
 import { LayerZeroAdapter } from '@/adapters/layerZero/adapter';
 import { MesonAdapter } from '@/adapters/meson/adapter';
 import { StargateAdapter } from '@/adapters/stargate/adapter';
-import { DISPLAY_TOKEN_SYMBOLS } from '@/constants/displayTokenSymbols';
-import { isEmpty } from '@/shared/object';
+import { IGlobalConfig } from '@/aggregator/types';
+import { CONFIG_API_TIME_OUT, DEFAULT_CONFIG_API_ENDPOINT } from '@/constants';
 import {
   BridgeType,
   IBridgeChain,
@@ -21,6 +21,7 @@ import {
   INativeCurrency,
   ValueOf,
 } from '@/shared/types';
+import axios from 'axios';
 
 export interface Adapters {
   cBridge: CBridgeAdapter;
@@ -30,20 +31,53 @@ export interface Adapters {
   stargate: StargateAdapter;
 }
 
+export interface AggregatorCreateParams
+  extends Omit<AggregatorOptions, 'globalConfig'> {}
+
 export interface AggregatorOptions
   extends Omit<IBaseAdapterCommonOptions, 'nativeCurrencies'> {
   providers: IBridgeProvider[];
+  configApiEndpoint?: string;
+  globalConfig?: IGlobalConfig;
   chainSorter?: (a: IBridgeChain, b: IBridgeChain) => number;
   tokenSorter?: (a: IBridgeToken, b: IBridgeToken) => number;
 }
 
 export class Aggregator {
   private options: AggregatorOptions;
+
   public adapters: Array<ValueOf<Adapters>> = [];
   public nativeCurrencies: Record<string, INativeCurrency> = {};
 
-  constructor(options: AggregatorOptions) {
+  public static async create(options: AggregatorCreateParams) {
+    const configApiEndpoint =
+      options.configApiEndpoint || DEFAULT_CONFIG_API_ENDPOINT;
+
+    try {
+      const { data } = await axios.get<{ data: IGlobalConfig }>(
+        `${configApiEndpoint}/api/config/global`,
+        {
+          timeout: CONFIG_API_TIME_OUT,
+        }
+      );
+
+      return new Aggregator({
+        globalConfig: data.data,
+        configApiEndpoint,
+        ...options,
+      });
+    } catch (err) {
+      // eslint-disable-next-line no-console
+      console.log('[sdk aggregator] create aggregator failed', err);
+    }
+  }
+
+  private constructor(options: AggregatorOptions) {
     this.options = {
+      globalConfig: {
+        displayTokenSymbols: {},
+        providers: [],
+      },
       ...options,
     };
 
@@ -61,15 +95,24 @@ export class Aggregator {
   }
 
   private initAdapters() {
-    const { providers, chainSorter, tokenSorter, ...customizedOptions } =
-      this.options;
+    const {
+      providers,
+      chainSorter,
+      tokenSorter,
+      globalConfig,
+      ...customizedOptions
+    } = this.options;
 
-    const displayTokenSymbols = isEmpty(customizedOptions.displayTokenSymbols)
-      ? DISPLAY_TOKEN_SYMBOLS
-      : customizedOptions.displayTokenSymbols;
+    const displayTokenSymbols =
+      customizedOptions.displayTokenSymbols ||
+      globalConfig?.displayTokenSymbols;
 
     this.adapters = providers
-      .filter((item) => !!item.config && item.enabled)
+      .filter((item) => {
+        const target = globalConfig?.providers.find((e) => e.id === item.id);
+        const isGlobalEnabled = target ? target.enabled : true;
+        return !!item.config && item.enabled && isGlobalEnabled;
+      })
       .map((item) => {
         const adapterOptions: IBaseAdapterOptions<any> = {
           ...customizedOptions,

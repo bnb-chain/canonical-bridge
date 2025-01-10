@@ -26,8 +26,8 @@ export const useGetDeBridgeFees = () => {
   const toChain = useAppSelector((state) => state.transfer.toChain);
 
   const aggregator = useAggregator();
-  const deBridgeAdapter = aggregator.getAdapter('deBridge');
-  const nativeCurrency = aggregator.getNativeCurrency(fromChain?.id);
+  const deBridgeAdapter = aggregator?.getAdapter('deBridge');
+  const nativeCurrency = aggregator?.getNativeCurrency(fromChain?.id);
 
   const { address, chain } = useAccount();
   const { data: nativeEvmBalance } = useBalance({

@@ -4,20 +4,22 @@ import { useAppDispatch } from '@/modules/store/StoreProvider';
 import { setSendValue } from '@/modules/transfer/action';
 import { useSelection } from '@/modules/aggregator/hooks/useSelection';
 import { useBridgeConfig } from '@/index';
+import { useAggregator } from '@/modules/aggregator/providers/AggregatorProvider';
 
 export function useDefaultSelect() {
   const { selectDefault } = useSelection();
   const dispatch = useAppDispatch();
 
+  const aggregator = useAggregator();
   const bridgeConfig = useBridgeConfig();
 
-  const { defaultAmount, defaultFromChainId, defaultToChainId, defaultTokenAddress, providers } =
+  const { defaultAmount, defaultFromChainId, defaultToChainId, defaultTokenAddress } =
     bridgeConfig.transfer;
 
-  const hasAvailableProvider = providers?.some((e) => !!e.config);
+  const hasAvailableAdapter = !!aggregator;
 
   useEffect(() => {
-    if (hasAvailableProvider) {
+    if (hasAvailableAdapter) {
       selectDefault({
         fromChainId: defaultFromChainId,
         toChainId: defaultToChainId,
@@ -31,6 +33,6 @@ export function useDefaultSelect() {
     defaultFromChainId,
     defaultToChainId,
     defaultTokenAddress,
-    hasAvailableProvider,
+    hasAvailableAdapter,
   ]);
 }

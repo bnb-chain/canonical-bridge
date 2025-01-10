@@ -1,13 +1,13 @@
 import { useMemo, useState } from 'react';
 
 interface UseSearchProps<T = unknown> {
-  data: T[];
+  data?: T[];
   filter: (item: T, keyword: string) => boolean;
   sorter?: (a: T, b: T) => number;
 }
 
 export function useSearch<T>(props: UseSearchProps<T>) {
-  const { data, filter, sorter = () => 0 } = props;
+  const { data = [], filter, sorter = () => 0 } = props;
   const [keyword, setKeyword] = useState('');
 
   const onSearch = (keyword: string) => {

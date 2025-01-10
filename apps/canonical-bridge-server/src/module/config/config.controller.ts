@@ -17,4 +17,9 @@ export class ConfigController {
   getTransferConfigs() {
     return this.cache.get(CACHE_KEY.TRANSFER_CONFIG);
   }
+
+  @Get('/global')
+  getGlobalConfig() {
+    return this.cache.get(CACHE_KEY.GLOBAL_CONFIG);
+  }
 }

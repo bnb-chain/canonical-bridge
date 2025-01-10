@@ -177,7 +177,7 @@ export function TransferOverview(props: TransferOverviewProps) {
     </Box>
   );
 
-  const cBridgeSupport = !!aggregator.getAdapter('cBridge');
+  const cBridgeSupport = !!aggregator?.getAdapter('cBridge');
   const showOverview = showRoute || !!routeContentBottom;
 
   return (
