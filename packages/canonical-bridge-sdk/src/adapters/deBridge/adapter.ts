@@ -162,6 +162,7 @@ export class DeBridgeAdapter extends BaseAdapter<
         chainId,
         tokenAddress: token.address,
         defaultSymbol: token.symbol,
+        icon: token.logoURI,
       }),
     };
   }
