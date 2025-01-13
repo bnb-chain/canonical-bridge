@@ -66,10 +66,10 @@ function ToTokenItem({ token, isSelected }: { token: IBridgeToken; isSelected: b
   const { selectToToken } = useSelection();
   const { isMobile } = useResponsive();
 
-  const fromChain = useAppSelector((state) => state.transfer.fromChain);
+  const toChain = useAppSelector((state) => state.transfer.toChain);
   const isGlobalFeeLoading = useAppSelector((state) => state.transfer.isGlobalFeeLoading);
 
-  const tokenUrl = formatTokenUrl(fromChain?.tokenUrlPattern, token.address);
+  const tokenUrl = formatTokenUrl(toChain?.tokenUrlPattern, token.address);
 
   return (
     <InfoTooltip label={token.name}>
@@ -129,7 +129,7 @@ function ToTokenItem({ token, isSelected }: { token: IBridgeToken; isSelected: b
             {token.displaySymbol}
           </Text>
 
-          {!isNativeToken(token.address, fromChain?.chainType) && (
+          {!isNativeToken(token.address, toChain?.chainType) && (
             <>
               {isMobile ? (
                 <Flex
