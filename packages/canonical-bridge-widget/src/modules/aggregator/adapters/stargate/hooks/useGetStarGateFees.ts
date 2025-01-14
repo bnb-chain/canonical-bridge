@@ -87,7 +87,7 @@ export const useGetStargateFees = () => {
         if (sendValue.split('.')[1]?.length > maxDecimals) {
           dispatch(
             setRouteError({
-              stargate: `The amount exceeds the maximum of ${maxDecimals} decimals`,
+              stargate: `The send amount must be less than ${maxDecimals} digits`,
             }),
           );
           return { isDisplayError: true };
