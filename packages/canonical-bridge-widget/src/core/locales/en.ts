@@ -99,6 +99,10 @@ export const en = {
       'We’ve encountered an unknown issue on this route. Please try again later.',
     'modal.quote.error.button.close': 'OK',
 
+    'modal.fee-timeout.error.title': 'Failed to Find the Route!',
+    'modal.fee-timeout.error.desc': 'We’ve encountered an unknown issue. Please try again later.',
+    'modal.fee-timeout.error.button.close': 'OK',
+
     'select-modal.tag.incompatible': 'Incompatible',
     'select-modal.search.no-result.title': 'No result found',
     'select-modal.search.no-result.warning':

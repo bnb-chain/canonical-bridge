@@ -14,3 +14,5 @@ export function formatEstimatedTime(value?: string | number) {
 
   return `${finalMinutes}${finalMinutes > 1 ? ' mins' : ' min'}`;
 }
+
+export const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
