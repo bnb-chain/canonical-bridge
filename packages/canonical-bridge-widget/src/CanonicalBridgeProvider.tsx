@@ -45,6 +45,7 @@ export interface IBridgeConfig {
   http: {
     refetchingInterval: number;
     apiTimeOut: number;
+    feeReloadMaxTime?: number;
     deBridgeAccessToken?: string;
     deBridgeReferralCode?: string;
     serverEndpoint?: string;

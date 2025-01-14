@@ -32,6 +32,7 @@ export interface ITransferState {
   isRoutesModalOpen: boolean;
   toTokens: IBridgeToken[];
   isFailedGetQuoteModalOpen: boolean;
+  isFeeTimeoutModalOpen: boolean;
   isSummaryModalOpen: boolean;
   refreshAnimationProgress: number;
 }
@@ -61,6 +62,7 @@ const initStates: ITransferState = {
   toTokens: [],
   isManuallyReload: false,
   isFailedGetQuoteModalOpen: false,
+  isFeeTimeoutModalOpen: false,
   isSummaryModalOpen: false,
   refreshAnimationProgress: 0,
 };
@@ -162,6 +164,10 @@ export default createReducer(initStates, (builder) => {
   builder.addCase(actions.setIsFailedGetQuoteModalOpen, (state, { payload }) => ({
     ...state,
     isFailedGetQuoteModalOpen: payload,
+  }));
+  builder.addCase(actions.setIsFeeTimeoutModalOpen, (state, { payload }) => ({
+    ...state,
+    isFeeTimeoutModalOpen: payload,
   }));
   builder.addCase(actions.setIsSummaryModalOpen, (state, { payload }) => ({
     ...state,
