@@ -61,6 +61,10 @@ export const setIsSummaryModalOpen = createAction<ITransferState['isSummaryModal
   'transfer/setIsSummaryModalOpen',
 );
 
+export const setIsFeeTimeoutModalOpen = createAction<ITransferState['isFeeTimeoutModalOpen']>(
+  'transfer/setIsFeeTimeoutModalOpen',
+);
+
 export const setRefreshAnimationProgress = createAction<ITransferState['refreshAnimationProgress']>(
   'transfer/setRefreshAnimationProgress',
 );

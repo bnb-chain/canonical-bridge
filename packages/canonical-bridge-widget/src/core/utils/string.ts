@@ -75,3 +75,11 @@ export function capitalizeFirst(text: string) {
   if (typeof text !== 'string') return '';
   return text.charAt(0).toUpperCase() + text.slice(1).toLowerCase();
 }
+
+export function checkResponseResult(response: any) {
+  return response.every(
+    (route: any) =>
+      (route.status === 'rejected' && route?.reason?.message?.includes('timeout')) ||
+      (route.status === 'fulfilled' && route.value === null),
+  );
+}
