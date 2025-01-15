@@ -841,19 +841,19 @@ export const chains: IChainConfig[] = [
       default: { name: 'Blastscan', url: 'https://blastscan.io' },
     },
   },
-  {
-    chainType: 'evm',
-    id: 112358,
-    name: 'Metachain One',
-    nativeCurrency: { name: 'Metao', symbol: 'METAO', decimals: 18 },
-    rpcUrls: { default: { http: ['https://rpc.metachain.one'] } },
-    blockExplorers: {
-      default: {
-        name: 'blockscout',
-        url: 'https://explorer.metachain.one',
-      },
-    },
-  },
+  // {
+  //   chainType: 'evm',
+  //   id: 112358,
+  //   name: 'Metachain One',
+  //   nativeCurrency: { name: 'Metao', symbol: 'METAO', decimals: 18 },
+  //   rpcUrls: { default: { http: ['https://rpc.metachain.one'] } },
+  //   blockExplorers: {
+  //     default: {
+  //       name: 'blockscout',
+  //       url: 'https://explorer.metachain.one',
+  //     },
+  //   },
+  // },
   {
     chainType: 'evm',
     id: 167000,

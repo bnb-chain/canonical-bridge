@@ -1,6 +1,6 @@
 {
   "name": "@bnb-chain/canonical-bridge-sdk",
-  "version": "0.4.7",
+  "version": "0.5.0-alpha.8",
   "description": "canonical bridge sdk",
   "author": "bnb-chain",
   "private": false,
@@ -13,7 +13,6 @@
   "keywords": [
     "bridge"
   ],
-  "type": "module",
   "files": [
     "dist"
   ],
@@ -21,6 +20,7 @@
     "access": "public"
   },
   "sideEffects": false,
+  "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "scripts": {

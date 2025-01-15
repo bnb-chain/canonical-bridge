@@ -6,6 +6,7 @@
     "@bnb-chain/canonical-bridge-widget": "0.5.18"
   },
   "changesets": [
-    "blue-goats-shave"
+    "blue-goats-shave",
+    "thick-donkeys-kneel"
   ]
 }

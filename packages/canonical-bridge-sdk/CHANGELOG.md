@@ -1,5 +1,11 @@
 # @bnb-chain/canonical-bridge-sdk
 
+## 0.5.0-alpha.8
+
+### Patch Changes
+
+- Remove unused code
+
 ## 0.4.7
 
 ### Patch Changes
