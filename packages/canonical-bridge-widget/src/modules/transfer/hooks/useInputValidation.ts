@@ -20,7 +20,7 @@ export const useInputValidation = () => {
   const fromChain = useAppSelector((state) => state.transfer.fromChain);
   const selectedToken = useAppSelector((state) => state.transfer.selectedToken);
 
-  const priceInfo = useTokenUpperLimit(selectedToken);
+  const priceInfo = useTokenUpperLimit();
   const validateInput = useCallback(
     ({
       balance,

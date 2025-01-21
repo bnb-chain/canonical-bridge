@@ -20,6 +20,7 @@ import { useBridgeConfig } from '@/index';
 import {
   setFromChain,
   setSelectedToken,
+  setSendValue,
   setToChain,
   setToToken,
   setToTokens,
@@ -202,6 +203,8 @@ export function useSelection() {
   };
 
   const exchange = async () => {
+    dispatch(setSendValue(''));
+
     const fromChainId = toChain!.id;
     const toChainId = fromChain!.id;
 
@@ -303,7 +306,11 @@ function useSortedTokens() {
 
       const tmpTokens = tokens.map((item) => {
         const balance = balances[item.address?.toLowerCase()];
-        const price = getTokenPrice(item);
+        const price = getTokenPrice({
+          chainId: fromChainId,
+          chainType,
+          tokenAddress: item?.address,
+        });
 
         let value: number | undefined;
         if (balance !== undefined && price !== undefined) {
