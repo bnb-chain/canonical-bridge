@@ -13,12 +13,19 @@ export function useTokenUpperLimit() {
   const bridgeConfig = useBridgeConfig();
   const fromChain = useAppSelector((state) => state.transfer.fromChain);
   const selectedToken = useAppSelector((state) => state.transfer.selectedToken);
+  const sendValue = useAppSelector((state) => state.transfer.sendValue);
 
-  const { data: price } = useQuery({
+  const { data: price, isError } = useQuery({
     staleTime: TIME.MINUTE * 5,
-    queryKey: ['tokenPrice', fromChain?.id, fromChain?.chainType, selectedToken?.address],
+    queryKey: [
+      'tokenPrice',
+      fromChain?.id,
+      fromChain?.chainType,
+      selectedToken?.address,
+      !!sendValue,
+    ],
     queryFn: async () => {
-      if (fromChain && selectedToken) {
+      if (fromChain && selectedToken && sendValue) {
         return (
           await fetchTokenPrice({
             chainId: fromChain?.id,
@@ -31,18 +38,25 @@ export function useTokenUpperLimit() {
   });
 
   const result = useMemo(() => {
-    if (price !== undefined && selectedToken) {
+    if (!selectedToken) return;
+
+    if (isError) {
+      return {
+        isError: true,
+      };
+    } else if (price !== undefined) {
       const upperLimit = bridgeConfig.transfer.dollarUpperLimit / price;
       const value = parseUnits(String(upperLimit), selectedToken.decimals);
 
       return {
+        isError: false,
         upperLimit,
         value,
         price,
         decimals: selectedToken.decimals,
       };
     }
-  }, [bridgeConfig.transfer.dollarUpperLimit, price, selectedToken]);
+  }, [bridgeConfig.transfer.dollarUpperLimit, isError, price, selectedToken]);
 
   return result;
 }

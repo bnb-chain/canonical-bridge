@@ -47,7 +47,15 @@ export const useInputValidation = () => {
             isError: true,
           };
         }
+
         // Check upper limit
+        if (priceInfo?.isError) {
+          return {
+            text: `This token is not available at the moment. Please try again later.`,
+            isError: true,
+          };
+        }
+
         if (priceInfo?.upperLimit && Number(value) >= Number(priceInfo?.upperLimit)) {
           return {
             text: `Transfer value over $${formatNumber(dollarUpperLimit)} (${formatNumber(
