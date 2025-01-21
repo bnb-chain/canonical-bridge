@@ -20,9 +20,14 @@
     "access": "public"
   },
   "sideEffects": false,
-  "type": "module",
-  "main": "./dist/index.js",
+  "main": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
+  "exports": {
+    "types": "./dist/index.d.ts",
+    "import": "./dist/index.mjs",
+    "require": "./dist/index.js",
+    "default": "./dist/index.mjs"
+  },
   "scripts": {
     "build": "vite build",
     "watch": "vite build --watch --emptyOutDir=false",

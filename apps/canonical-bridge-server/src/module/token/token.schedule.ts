@@ -19,7 +19,7 @@ export class TokenSchedule implements OnModuleInit {
   async syncCmcTokens() {
     this.logger.log('syncCmcTokens');
     await this.syncToken.add(
-      Tasks.fetchToken,
+      Tasks.fetchCmcTokens,
       { start: 1 },
       { jobId: `${JOB_KEY.CORN_TOKEN_PREFIX}1`, removeOnComplete: true },
     );
@@ -28,8 +28,8 @@ export class TokenSchedule implements OnModuleInit {
   @Cron(CronExpression.EVERY_DAY_AT_11PM)
   async syncCoingeckoTokens() {
     this.logger.log('syncCoingeckoTokens');
-    await this.syncToken.add(Tasks.fetchCoingeckoToken, null, {
-      jobId: Tasks.fetchCoingeckoToken,
+    await this.syncToken.add(Tasks.fetchCoingeckoTokens, null, {
+      jobId: Tasks.fetchCoingeckoTokens,
       removeOnComplete: true,
     });
   }
@@ -37,10 +37,11 @@ export class TokenSchedule implements OnModuleInit {
   @Cron(CronExpression.EVERY_5_MINUTES)
   async syncCmcTokenPrice() {
     this.logger.log('syncCmcTokenPrice');
-    const ids = await this.tokensService.getJobIds();
-    if (!ids) return;
+    const ids = await this.tokensService.getCmcTokenIdsForPriceJob();
+
+    if (!ids?.length) return;
     await this.syncToken.add(
-      Tasks.fetchPrice,
+      Tasks.fetchCmcPrice,
       { ids },
       { jobId: `${JOB_KEY.CORN_PRICE_PREFIX}${ids}`, removeOnComplete: true },
     );
@@ -49,8 +50,9 @@ export class TokenSchedule implements OnModuleInit {
   @Cron(CronExpression.EVERY_5_MINUTES)
   async syncCoingeckoTokenPrice() {
     this.logger.log('syncCoingeckoTokenPrice');
-    const { tokens, keyMap } = await this.tokensService.getLlamaJobIds();
-    if (!tokens) return;
+    const { tokens, keyMap } = await this.tokensService.getLlamaTokenIdsForPriceJob();
+
+    if (!tokens?.length) return;
     await this.syncToken.add(
       Tasks.fetchLlamaPrice,
       { ids: tokens, keyMap },
@@ -71,10 +73,24 @@ export class TokenSchedule implements OnModuleInit {
     });
   }
 
+  @Cron(CronExpression.EVERY_10_MINUTES)
+  async syncTokenConfigV2() {
+    this.logger.log('syncTokenConfigV2');
+    await this.syncToken.add(Tasks.cacheCmcConfigV2, null, {
+      jobId: Tasks.cacheCmcConfigV2,
+      removeOnComplete: true,
+    });
+    await this.syncToken.add(Tasks.cacheLlamaConfigV2, null, {
+      jobId: Tasks.cacheLlamaConfigV2,
+      removeOnComplete: true,
+    });
+  }
+
   async onModuleInit() {
     await this.syncCmcTokens();
     await this.syncCoingeckoTokens();
     await this.syncTokenConfig();
+    await this.syncTokenConfigV2();
     const jobs = await this.syncToken.getFailed();
     jobs.forEach((job) => job?.retry());
     if (!jobs.length) return;
