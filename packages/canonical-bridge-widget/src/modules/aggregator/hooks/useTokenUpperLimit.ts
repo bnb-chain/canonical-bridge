@@ -16,7 +16,6 @@ export function useTokenUpperLimit() {
 
   const { data: price } = useQuery({
     staleTime: TIME.MINUTE * 5,
-    refetchInterval: TIME.MINUTE * 5,
     queryKey: ['tokenPrice', fromChain?.id, fromChain?.chainType, selectedToken?.address],
     queryFn: async () => {
       if (fromChain && selectedToken) {
