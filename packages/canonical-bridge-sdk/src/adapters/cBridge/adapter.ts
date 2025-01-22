@@ -325,6 +325,7 @@ export class CBridgeAdapter extends BaseAdapter<
         chainId,
         tokenAddress: token.token.address,
         defaultSymbol: token.token.symbol,
+        icon: token.icon,
       }),
     };
   }

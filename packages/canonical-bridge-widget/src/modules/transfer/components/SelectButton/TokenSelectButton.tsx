@@ -52,12 +52,7 @@ export function TokenSelectButton(props: SelectButtonProps) {
           data-display-symbol={token?.displaySymbol}
         >
           <Box>
-            <IconImage
-              src={token?.icon}
-              w={'24px'}
-              h={'24px'}
-              fallbackBgColor={theme.colors[colorMode].support.primary[4]}
-            />
+            <IconImage src={token?.icon} w={'24px'} h={'24px'} />
           </Box>
         </TokenInfoTooltip>
         <Flex

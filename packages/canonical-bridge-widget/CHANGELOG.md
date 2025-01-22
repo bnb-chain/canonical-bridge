@@ -1,5 +1,20 @@
 # @bnb-chain/canonical-bridge-widget
 
+## 0.6.0-alpha.13
+
+### Patch Changes
+
+- d5065a6: chore: Update confirmation popup amount styling
+- Remove unused code
+- Updated dependencies
+  - @bnb-chain/canonical-bridge-sdk@0.5.0-alpha.8
+
+## 0.5.19-alpha.0
+
+### Patch Changes
+
+- chore: Update confirmation popup amount styling
+
 ## 0.5.19
 
 ### Patch Changes

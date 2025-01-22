@@ -17,7 +17,7 @@ export * from '@/core/utils/gtm';
 export * from '@/core/constants/error';
 
 // locales
-export * from '@/core/locales/en';
+export * from '@/core/locales';
 
 // wallet
 export * from '@/modules/wallet/components/ConnectButton';

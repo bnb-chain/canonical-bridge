@@ -145,7 +145,7 @@ export class LayerZeroAdapter extends BaseAdapter<
     token: ILayerZeroToken;
   }) {
     return {
-      name: (token as any).name, // TODO
+      name: token.name, // TODO
       symbol: token.symbol,
       address: token.address,
       decimals: token.decimals,

@@ -25,6 +25,7 @@ import {
   STARGATE_ENDPOINT,
 } from '@/core/constants';
 import { useHandleTxFailure } from '@/modules/aggregator/hooks/useHandleTxFailure';
+import { usePriceValidation } from '@/modules/transfer/hooks/usePriceValidation';
 
 export const TransferConfirmButton = ({
   onClose,
@@ -49,6 +50,7 @@ export const TransferConfirmButton = ({
   const { formatMessage } = useIntl();
   const theme = useTheme();
   const { colorMode } = useColorMode();
+  const { validateTokenPrice } = usePriceValidation();
 
   const { address } = useAccount();
   const { address: tronAddress, signTransaction } = useTronWallet();
@@ -86,6 +88,7 @@ export const TransferConfirmButton = ({
 
   const sendTx = useCallback(async () => {
     if (
+      !fromChain ||
       !selectedToken ||
       !transferActionInfo?.bridgeType ||
       (!transferActionInfo?.bridgeAddress && fromChain?.chainType !== 'solana') ||
@@ -104,6 +107,18 @@ export const TransferConfirmButton = ({
     }
 
     try {
+      // Check whether token price exists
+      const result = await validateTokenPrice({
+        chainId: fromChain.id,
+        chainType: fromChain.chainType,
+        tokenAddress: selectedToken.address,
+      });
+      if (result === undefined) {
+        throw new Error(
+          `Can not get token price from API server: ${sendValue} ${selectedToken.symbol}`,
+        );
+      }
+
       setHash(null);
       setChosenBridge('');
       setIsLoading(true);
@@ -537,6 +552,7 @@ export const TransferConfirmButton = ({
     signMessageAsync,
     signTransaction,
     handleFailure,
+    validateTokenPrice,
   ]);
 
   const isFeeLoading = isLoading || isGlobalFeeLoading || !transferActionInfo || !isTransferable;

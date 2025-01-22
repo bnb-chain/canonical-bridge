@@ -11,6 +11,7 @@ import { useTokenBalance } from '@/modules/aggregator/providers/TokenBalancesPro
 import { useTokenPrice } from '@/modules/aggregator/providers/TokenPricesProvider';
 
 export function useTokenList(tokens: IBridgeToken[] = [], keyword?: string) {
+  const fromChain = useAppSelector((state) => state.transfer.fromChain);
   const selectedToken = useAppSelector((state) => state.transfer.selectedToken);
   const isLoadingTokenBalances = useAppSelector((state) => state.aggregator.isLoadingTokenBalances);
   const isLoadingTokenPrices = useAppSelector((state) => state.aggregator.isLoadingTokenPrices);
@@ -21,7 +22,11 @@ export function useTokenList(tokens: IBridgeToken[] = [], keyword?: string) {
   const sortedTokens = useMemo(() => {
     const tmpTokens = tokens.map((item) => {
       const balance = getTokenBalance(item);
-      const price = getTokenPrice(item);
+      const price = getTokenPrice({
+        chainId: fromChain?.id,
+        chainType: fromChain?.chainType,
+        tokenAddress: selectedToken?.address,
+      });
 
       let value: number | undefined;
       if (balance !== undefined && price !== undefined) {
@@ -42,7 +47,14 @@ export function useTokenList(tokens: IBridgeToken[] = [], keyword?: string) {
     });
 
     return sortedTokens;
-  }, [tokens, getTokenBalance, getTokenPrice, selectedToken?.address]);
+  }, [
+    tokens,
+    getTokenBalance,
+    getTokenPrice,
+    fromChain?.id,
+    fromChain?.chainType,
+    selectedToken?.address,
+  ]);
 
   return { data: sortedTokens, isLoading: isLoadingTokenBalances || isLoadingTokenPrices };
 }

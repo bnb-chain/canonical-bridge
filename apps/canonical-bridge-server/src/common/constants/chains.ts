@@ -1,6 +1,13 @@
-import { IChainConfig } from '@bnb-chain/canonical-bridge-widget';
+import { IChainConfig } from '@bnb-chain/canonical-bridge-sdk';
 
-export const chains: IChainConfig[] = [
+export interface IServerChainConfig extends IChainConfig {
+  extra?: {
+    cmcPlatform?: string; // cmc
+    llamaPlatform?: string; // llama
+  };
+}
+
+export const chains: IServerChainConfig[] = [
   {
     chainType: 'evm',
     id: 56,
@@ -14,6 +21,9 @@ export const chains: IChainConfig[] = [
     blockExplorers: {
       default: { name: 'bscscan', url: 'https://bscscan.com' },
     },
+    extra: {
+      cmcPlatform: 'bnb',
+    },
   },
   {
     chainType: 'evm',
@@ -25,6 +35,9 @@ export const chains: IChainConfig[] = [
     },
     blockExplorers: {
       default: { name: 'Etherscan', url: 'https://etherscan.io' },
+    },
+    extra: {
+      cmcPlatform: 'ethereum',
     },
   },
   {
@@ -39,6 +52,9 @@ export const chains: IChainConfig[] = [
         url: 'https://optimistic.etherscan.io',
       },
     },
+    extra: {
+      cmcPlatform: 'optimism-ethereum',
+    },
   },
   {
     chainType: 'evm',
@@ -51,6 +67,9 @@ export const chains: IChainConfig[] = [
     blockExplorers: {
       default: { name: 'Flare Scan', url: 'https://flarescan.com/' },
     },
+    extra: {
+      cmcPlatform: 'flare',
+    },
   },
   {
     chainType: 'evm',
@@ -60,6 +79,9 @@ export const chains: IChainConfig[] = [
     rpcUrls: { default: { http: ['https://evm.cronos.org'] } },
     blockExplorers: {
       default: { name: 'Crono Scan', url: 'https://cronoscan.com/' },
+    },
+    extra: {
+      cmcPlatform: 'cronos',
     },
   },
   {
@@ -78,6 +100,9 @@ export const chains: IChainConfig[] = [
         url: 'https://crab-scan.darwinia.network',
       },
     },
+    extra: {
+      cmcPlatform: 'darwinia-crab-network',
+    },
   },
   {
     chainType: 'evm',
@@ -91,6 +116,9 @@ export const chains: IChainConfig[] = [
         url: 'https://explorer.syscoin.org',
       },
     },
+    extra: {
+      cmcPlatform: 'syscoin',
+    },
   },
   {
     chainType: 'evm',
@@ -100,6 +128,9 @@ export const chains: IChainConfig[] = [
     rpcUrls: { default: { http: ['https://dappnode1.ont.io:10339'] } },
     blockExplorers: {
       default: { name: 'explorer', url: 'https://explorer.ont.io' },
+    },
+    extra: {
+      cmcPlatform: 'ontology-gas',
     },
   },
   {
@@ -164,6 +195,9 @@ export const chains: IChainConfig[] = [
     rpcUrls: { default: { http: ['https://polygon-rpc.com'] } },
     blockExplorers: {
       default: { name: 'polygonscan', url: 'https://polygonscan.com' },
+    },
+    extra: {
+      cmcPlatform: 'polygon',
     },
   },
   {
@@ -246,6 +280,9 @@ export const chains: IChainConfig[] = [
     blockExplorers: {
       default: { name: 'ftmscan', url: 'https://ftmscan.com' },
     },
+    extra: {
+      cmcPlatform: 'fantom',
+    },
   },
   {
     chainType: 'evm',
@@ -289,6 +326,9 @@ export const chains: IChainConfig[] = [
         url: 'https://explorer.zksync.io',
         tokenUrlPattern: 'https://explorer.zksync.io/address/{0}',
       },
+    },
+    extra: {
+      cmcPlatform: 'zksync',
     },
   },
   {
@@ -397,6 +437,9 @@ export const chains: IChainConfig[] = [
     blockExplorers: {
       default: { name: 'moonscan', url: 'https://moonbeam.moonscan.io' },
     },
+    extra: {
+      cmcPlatform: 'moonbeam',
+    },
   },
   {
     chainType: 'evm',
@@ -408,6 +451,9 @@ export const chains: IChainConfig[] = [
     },
     blockExplorers: {
       default: { name: 'moonscan', url: 'https://moonriver.moonscan.io' },
+    },
+    extra: {
+      cmcPlatform: 'moonriver',
     },
   },
   {
@@ -581,6 +627,9 @@ export const chains: IChainConfig[] = [
         url: 'https://kaiascope.com',
       },
     },
+    extra: {
+      cmcPlatform: 'kaia',
+    },
   },
   {
     chainType: 'evm',
@@ -590,6 +639,9 @@ export const chains: IChainConfig[] = [
     rpcUrls: { default: { http: ['https://mainnet.base.org'] } },
     blockExplorers: {
       default: { name: 'basescan', url: 'https://basescan.org' },
+    },
+    extra: {
+      cmcPlatform: 'base',
     },
   },
   {
@@ -665,6 +717,9 @@ export const chains: IChainConfig[] = [
         url: 'https://explorer.evm.eosnetwork.com',
       },
     },
+    extra: {
+      cmcPlatform: 'eos',
+    },
   },
   {
     chainType: 'evm',
@@ -715,6 +770,9 @@ export const chains: IChainConfig[] = [
     blockExplorers: {
       default: { name: 'Arbiscan', url: 'https://arbiscan.io' },
     },
+    extra: {
+      cmcPlatform: 'arbitrum',
+    },
   },
   {
     chainType: 'evm',
@@ -728,6 +786,9 @@ export const chains: IChainConfig[] = [
         url: 'https://nova-explorer.arbitrum.io',
       },
     },
+    extra: {
+      cmcPlatform: 'arbitrum-nova',
+    },
   },
   {
     chainType: 'evm',
@@ -737,6 +798,9 @@ export const chains: IChainConfig[] = [
     rpcUrls: { default: { http: ['https://forno.celo.org'] } },
     blockExplorers: {
       default: { name: 'Celoscan', url: 'https://celoscan.io' },
+    },
+    extra: {
+      cmcPlatform: 'celo',
     },
   },
   {
@@ -776,6 +840,9 @@ export const chains: IChainConfig[] = [
     },
     blockExplorers: {
       default: { name: 'snowtrace', url: 'https://snowtrace.io' },
+    },
+    extra: {
+      cmcPlatform: 'avalanche',
     },
   },
   {
@@ -840,20 +907,10 @@ export const chains: IChainConfig[] = [
     blockExplorers: {
       default: { name: 'Blastscan', url: 'https://blastscan.io' },
     },
+    extra: {
+      cmcPlatform: 'blast',
+    },
   },
-  // {
-  //   chainType: 'evm',
-  //   id: 112358,
-  //   name: 'Metachain One',
-  //   nativeCurrency: { name: 'Metao', symbol: 'METAO', decimals: 18 },
-  //   rpcUrls: { default: { http: ['https://rpc.metachain.one'] } },
-  //   blockExplorers: {
-  //     default: {
-  //       name: 'blockscout',
-  //       url: 'https://explorer.metachain.one',
-  //     },
-  //   },
-  // },
   {
     chainType: 'evm',
     id: 167000,
@@ -1004,6 +1061,9 @@ export const chains: IChainConfig[] = [
         url: 'https://explorer.harmony.one',
       },
     },
+    extra: {
+      cmcPlatform: 'harmony',
+    },
   },
   {
     chainType: 'evm',
@@ -1035,6 +1095,10 @@ export const chains: IChainConfig[] = [
         tokenUrlPattern: 'https://tronscan.io/#/token20/{0}',
       },
     },
+    extra: {
+      cmcPlatform: 'tron',
+      llamaPlatform: 'tron',
+    },
   },
   {
     chainType: 'solana',
@@ -1050,6 +1114,10 @@ export const chains: IChainConfig[] = [
         url: 'https://explorer.solana.com',
         tokenUrlPattern: 'https://explorer.solana.com/address/{0}',
       },
+    },
+    extra: {
+      cmcPlatform: 'solana',
+      llamaPlatform: 'solana',
     },
   },
 ];

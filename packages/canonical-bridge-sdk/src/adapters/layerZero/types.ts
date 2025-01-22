@@ -36,6 +36,7 @@ export interface ILayerZeroToken {
   symbol: string;
   endpointID: number;
   version: number; // LayerZero version
+  name: string;
 }
 
 export interface ILayerZeroChain {

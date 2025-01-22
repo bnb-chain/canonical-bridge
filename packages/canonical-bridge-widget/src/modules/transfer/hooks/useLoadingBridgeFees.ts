@@ -21,7 +21,7 @@ import {
   DEFAULT_SOLANA_ADDRESS,
   DEFAULT_TRON_ADDRESS,
 } from '@/core/constants';
-import { toObject } from '@/core/utils/string';
+import { checkResponseResult, toObject } from '@/core/utils/string';
 import { useGetCBridgeFees } from '@/modules/aggregator/adapters/cBridge/hooks/useGetCBridgeFees';
 import { useGetDeBridgeFees } from '@/modules/aggregator/adapters/deBridge/hooks/useGetDeBridgeFees';
 import { useGetStargateFees } from '@/modules/aggregator/adapters/stargate/hooks/useGetStarGateFees';
@@ -36,6 +36,8 @@ import { useSolanaAccount } from '@/modules/wallet/hooks/useSolanaAccount';
 import { useSolanaTransferInfo } from '@/modules/transfer/hooks/solana/useSolanaTransferInfo';
 import { useIsWalletCompatible } from '@/modules/wallet/hooks/useIsWalletCompatible';
 import { useFailGetQuoteModal } from '@/modules/transfer/hooks/modal/useFailGetQuoteModal';
+import { delay } from '@/core/utils/time';
+import { useFeeLoadTimeout } from '@/modules/transfer/hooks/modal/useFeeLoadTimeout';
 
 let lastTime = Date.now();
 
@@ -54,7 +56,7 @@ export const useLoadingBridgeFees = () => {
 
   const bridgeSDK = useBridgeSDK();
   const {
-    http: { deBridgeAccessToken, deBridgeReferralCode },
+    http: { deBridgeAccessToken, deBridgeReferralCode, feeReloadMaxTime = 15000 },
   } = useBridgeConfig();
   const nativeToken = useGetNativeToken();
   const { deBridgeFeeSorting: _deBridgeFeeSorting } = useGetDeBridgeFees();
@@ -80,6 +82,7 @@ export const useLoadingBridgeFees = () => {
 
   const { mesonFeeSorting: _mesonFeeSorting } = useGetMesonFees();
   const { onOpenFailedGetQuoteModal } = useFailGetQuoteModal();
+  const { onOpenFeeTimeoutModal } = useFeeLoadTimeout();
   const mesonFeeSorting = useRef(_mesonFeeSorting);
   mesonFeeSorting.current = _mesonFeeSorting;
 
@@ -143,61 +146,66 @@ export const useLoadingBridgeFees = () => {
         }
       });
       try {
+        const loadFeeCoreFn = async () => {
+          return await bridgeSDK.loadBridgeFees({
+            bridgeType: bridgeTypeList,
+            fromChainId: fromChain.id,
+            fromAccount: address || DEFAULT_ADDRESS,
+            toChainId: toChain?.id,
+            toToken,
+            sendValue: amount,
+            fromTokenSymbol: selectedToken.symbol,
+            publicClient,
+            endPointId: {
+              layerZeroV1: toToken?.layerZero?.raw?.endpointID,
+              layerZeroV2: toToken?.stargate?.raw?.endpointID,
+            },
+            bridgeAddress: {
+              stargate: selectedToken?.stargate?.raw?.address as `0x${string}`,
+              layerZero: selectedToken?.layerZero?.raw?.bridgeAddress as `0x${string}`,
+            },
+            isPegged: selectedToken?.isPegged,
+            slippage: max_slippage,
+            mesonOpts: {
+              fromToken: `${fromChain?.meson?.raw?.id}:${selectedToken?.meson?.raw?.id}`,
+              toToken: `${toChain?.meson?.raw?.id}:${toToken?.meson?.raw?.id}`,
+              amount: debouncedSendValue,
+              fromAddr:
+                fromChain?.chainType === 'tron'
+                  ? tronAddress ?? DEFAULT_TRON_ADDRESS
+                  : address ?? DEFAULT_ADDRESS,
+            },
+            deBridgeOpts: {
+              fromChainId: fromChain.id,
+              fromTokenAddress: selectedToken.deBridge?.raw?.address as `0x${string}`,
+              amount,
+              toChainId: toChain?.id,
+              toTokenAddress: toToken?.deBridge?.raw?.address as `0x${string}`,
+              accesstoken: deBridgeAccessToken,
+              referralCode: deBridgeReferralCode,
+              userAddress:
+                fromChain.chainType === 'solana'
+                  ? solanaAddress || DEFAULT_SOLANA_ADDRESS
+                  : address || DEFAULT_ADDRESS,
+              toUserAddress:
+                fromChain.chainType === 'solana'
+                  ? isSolanaAvailableToAccount
+                    ? toAccountRef.current
+                    : DEFAULT_ADDRESS
+                  : toChain.chainType === 'solana'
+                  ? isSolanaAvailableToAccount
+                    ? toAccountRef.current
+                    : DEFAULT_SOLANA_ADDRESS
+                  : undefined,
+            },
+          });
+        };
+
         const amount = parseUnits(debouncedSendValue, selectedToken.decimals);
         const now = Date.now();
         lastTime = now;
-        const response = await bridgeSDK.loadBridgeFees({
-          bridgeType: bridgeTypeList,
-          fromChainId: fromChain.id,
-          fromAccount: address || DEFAULT_ADDRESS,
-          toChainId: toChain?.id,
-          toToken,
-          sendValue: amount,
-          fromTokenSymbol: selectedToken.symbol,
-          publicClient,
-          endPointId: {
-            layerZeroV1: toToken?.layerZero?.raw?.endpointID,
-            layerZeroV2: toToken?.stargate?.raw?.endpointID,
-          },
-          bridgeAddress: {
-            stargate: selectedToken?.stargate?.raw?.address as `0x${string}`,
-            layerZero: selectedToken?.layerZero?.raw?.bridgeAddress as `0x${string}`,
-          },
-          isPegged: selectedToken?.isPegged,
-          slippage: max_slippage,
-          mesonOpts: {
-            fromToken: `${fromChain?.meson?.raw?.id}:${selectedToken?.meson?.raw?.id}`,
-            toToken: `${toChain?.meson?.raw?.id}:${toToken?.meson?.raw?.id}`,
-            amount: debouncedSendValue,
-            fromAddr:
-              fromChain?.chainType === 'tron'
-                ? tronAddress ?? DEFAULT_TRON_ADDRESS
-                : address ?? DEFAULT_ADDRESS,
-          },
-          deBridgeOpts: {
-            fromChainId: fromChain.id,
-            fromTokenAddress: selectedToken.deBridge?.raw?.address as `0x${string}`,
-            amount,
-            toChainId: toChain?.id,
-            toTokenAddress: toToken?.deBridge?.raw?.address as `0x${string}`,
-            accesstoken: deBridgeAccessToken,
-            referralCode: deBridgeReferralCode,
-            userAddress:
-              fromChain.chainType === 'solana'
-                ? solanaAddress || DEFAULT_SOLANA_ADDRESS
-                : address || DEFAULT_ADDRESS,
-            toUserAddress:
-              fromChain.chainType === 'solana'
-                ? isSolanaAvailableToAccount
-                  ? toAccountRef.current
-                  : DEFAULT_ADDRESS
-                : toChain.chainType === 'solana'
-                ? isSolanaAvailableToAccount
-                  ? toAccountRef.current
-                  : DEFAULT_SOLANA_ADDRESS
-                : undefined,
-          },
-        });
+        let response = undefined;
+        response = await loadFeeCoreFn();
         // eslint-disable-next-line no-console
         console.log(
           'API response deBridge[0], cBridge[1], stargate[2], layerZero[3], meson[4]',
@@ -205,6 +213,26 @@ export const useLoadingBridgeFees = () => {
         );
         if (lastTime > now) {
           return;
+        }
+
+        const allFailedOrNull = checkResponseResult(response);
+
+        // if all API return null or timeout, retry fee loading
+        if (allFailedOrNull) {
+          const startLoadingTime = Date.now();
+          while (true) {
+            // eslint-disable-next-line
+            console.log(`reload start after ${Date.now() - startLoadingTime} seconds`);
+            response = await loadFeeCoreFn();
+            const allFailedOrNull = checkResponseResult(response);
+            if (!allFailedOrNull) break;
+            if (Date.now() - startLoadingTime >= feeReloadMaxTime) {
+              onOpenFeeTimeoutModal();
+              throw new Error(`Exceeded maximum retry time of ${feeReloadMaxTime / 1000} seconds`);
+            }
+            // Wait a bit before retrying
+            await delay(2000);
+          }
         }
 
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -458,6 +486,15 @@ export const useLoadingBridgeFees = () => {
         // eslint-disable-next-line no-console
         console.log(error, error.message);
         dispatch(setIsGlobalFeeLoading(false));
+        dispatch(
+          setEstimatedAmount({
+            deBridge: undefined,
+            cBridge: undefined,
+            stargate: undefined,
+            layerZero: undefined,
+            meson: undefined,
+          }),
+        );
       }
     },
     [
@@ -485,6 +522,8 @@ export const useLoadingBridgeFees = () => {
       nativeToken,
       preSelectRoute,
       onOpenFailedGetQuoteModal,
+      onOpenFeeTimeoutModal,
+      feeReloadMaxTime,
     ],
   );
 
