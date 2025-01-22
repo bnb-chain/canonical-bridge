@@ -31,8 +31,8 @@ export class TokenProcessor extends WorkerHost {
 
   async process(job: Job<ITokenJob>) {
     switch (job.name) {
-      // case Tasks.fetchCoingeckoTokens:
-      //   return this.fetchCoingeckoTokens();
+      case Tasks.fetchCoingeckoTokens:
+        return this.fetchCoingeckoTokens();
       case Tasks.fetchCmcTokens:
         return this.fetchCmcTokens(job);
 
