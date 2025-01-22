@@ -68,7 +68,7 @@ export class Web3Service {
       );
       return data;
     } catch (e) {
-      console.error(`Failed to retrieve cBridge data at ${new Date().getTime()}`, e.message);
+      this.logger.log(`Failed to retrieve cBridge data at ${new Date().getTime()}, ${e.message}`);
     }
   }
 
@@ -80,7 +80,10 @@ export class Web3Service {
 
       return data;
     } catch (e) {
-      console.error(`Failed to retrieve DeBridge chain data at ${new Date().getTime()}`, e.message);
+      this.logger.log(
+        `Failed to retrieve DeBridge chain data at ${new Date().getTime()},
+        ${e.message}`,
+      );
     }
   }
 
@@ -92,9 +95,9 @@ export class Web3Service {
 
       return data;
     } catch (e) {
-      console.error(
-        `Failed to retrieve DeBridge token data from ${chainId} at ${new Date().getTime()}`,
-        e.message,
+      this.logger.log(
+        `Failed to retrieve DeBridge token data from ${chainId} at ${new Date().getTime()},
+        ${e.message}`,
       );
     }
   }
@@ -120,7 +123,9 @@ export class Web3Service {
       });
       return processedTokenList;
     } catch (e) {
-      console.error(`Failed to retrieve Stargate API data at ${new Date().getTime()}`, e.message);
+      this.logger.log(
+        `Failed to retrieve Stargate API data at ${new Date().getTime()}, ${e.message}`,
+      );
     }
   }
 
@@ -131,7 +136,7 @@ export class Web3Service {
       );
       return data;
     } catch (e) {
-      console.log(`Failed to retrieve Meson API data at ${new Date().getTime()}`, e);
+      this.logger.log(`Failed to retrieve Meson API data at ${new Date().getTime()}, ${e}`);
       return [];
     }
   }

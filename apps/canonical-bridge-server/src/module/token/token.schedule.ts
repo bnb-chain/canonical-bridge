@@ -47,7 +47,7 @@ export class TokenSchedule implements OnModuleInit {
     );
   }
 
-  @Cron(CronExpression.EVERY_5_MINUTES)
+  @Cron(CronExpression.EVERY_MINUTE)
   async syncCoingeckoTokenPrice() {
     this.logger.log('syncCoingeckoTokenPrice');
     const { tokens, keyMap } = await this.tokensService.getLlamaTokenIdsForPriceJob();
