@@ -74,6 +74,7 @@ export function BridgeRoutes() {
     dispatch,
     bridgeConfig.http.refetchingInterval,
     isManuallyReload,
+    toToken,
   ]);
 
   if (isBase) {
