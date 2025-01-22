@@ -34,7 +34,7 @@
     "bullmq": "~5.12.14",
     "cache-manager": "~5.7.6",
     "cache-manager-ioredis-yet": "~2.1.1",
-    "express-prom-bundle": "~7.0.0",
+    "express-prom-bundle": "~8.0.0",
     "ioredis": "~5.4.1",
     "lodash": "~4.17.21",
     "prisma": "~5.19.1",

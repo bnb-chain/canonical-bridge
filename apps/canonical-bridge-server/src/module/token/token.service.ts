@@ -188,7 +188,7 @@ export class TokenService {
       return cmcRes.value?.[0]?.quote.USD?.price;
     }
     if (llamaRes.status === 'fulfilled' && llamaRes.value.coins) {
-      return Object.values<ICoinPrice>(llamaRes.value.coins ?? {})?.[0].price;
+      return Object.values<ICoinPrice>(llamaRes.value.coins ?? {})?.[0]?.price;
     }
   }
 
@@ -208,6 +208,10 @@ export class TokenService {
     return chains.find((e) => e.extra?.llamaPlatform === platform);
   }
 
+  public getChainConfigByChainId(chainId: number) {
+    return chains.find((e) => e.id === chainId);
+  }
+
   public getChainCmcPlatforms() {
     return chains.filter((e) => e.extra?.cmcPlatform).map((e) => e.extra?.cmcPlatform);
   }
@@ -218,9 +222,5 @@ export class TokenService {
 
   public getChainIds() {
     return chains.map((e) => e.id);
-  }
-
-  public getChainConfigByChainId(chainId: number) {
-    return chains.find((e) => e.id === chainId);
   }
 }
