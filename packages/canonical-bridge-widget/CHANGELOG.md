@@ -1,5 +1,11 @@
 # @bnb-chain/canonical-bridge-widget
 
+## 0.6.0-alpha.16
+
+### Patch Changes
+
+- Fix distorted price info in token list
+
 ## 0.6.0-alpha.15
 
 ### Patch Changes
