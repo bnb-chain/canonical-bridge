@@ -1,12 +1,16 @@
 import { Controller, Get, Inject, Logger } from '@nestjs/common';
 import { CACHE_MANAGER, Cache } from '@nestjs/cache-manager';
 import { CACHE_KEY } from '@/common/constants';
+import { BridgeService } from '@/module/bridge/bridge.service';
 
 @Controller('bridge')
 export class BridgeController {
   private logger = new Logger(BridgeController.name);
 
-  constructor(@Inject(CACHE_MANAGER) private cache: Cache) {}
+  constructor(
+    private bridgeService: BridgeService,
+    @Inject(CACHE_MANAGER) private cache: Cache,
+  ) {}
 
   @Get('/cbridge')
   getCbridgeConfig() {
@@ -66,5 +70,10 @@ export class BridgeController {
     }
 
     return this.cache.get(CACHE_KEY.MESON_CONFIG);
+  }
+
+  @Get('/v2/stat')
+  async getStatInfo() {
+    return this.bridgeService.getStatInfo();
   }
 }

@@ -130,7 +130,7 @@ export const chains: IServerChainConfig[] = [
       default: { name: 'explorer', url: 'https://explorer.ont.io' },
     },
     extra: {
-      cmcPlatform: 'ontology-gas',
+      cmcPlatform: 'ontology',
     },
   },
   {
@@ -146,6 +146,9 @@ export const chains: IServerChainConfig[] = [
     blockExplorers: {
       default: { name: 'oklink', url: 'https://www.oklink.com/oktc' },
     },
+    extra: {
+      cmcPlatform: 'okt',
+    },
   },
   {
     chainType: 'evm',
@@ -156,6 +159,9 @@ export const chains: IServerChainConfig[] = [
     blockExplorers: {
       default: { name: 'fncy scan', url: 'https://fncyscan.fncy.world' },
     },
+    extra: {
+      cmcPlatform: 'fncy',
+    },
   },
   {
     chainType: 'evm',
@@ -165,6 +171,9 @@ export const chains: IServerChainConfig[] = [
     rpcUrls: { default: { http: ['https://rpc.gnosischain.com'] } },
     blockExplorers: {
       default: { name: 'gnosisscan', url: 'https://gnosisscan.io' },
+    },
+    extra: {
+      cmcPlatform: 'xdaistable',
     },
   },
   {
@@ -186,6 +195,9 @@ export const chains: IServerChainConfig[] = [
         tokenUrlPattern: 'https://hecoscan.io/#/token20/{0}',
       },
     },
+    extra: {
+      cmcPlatform: 'htx-token',
+    },
   },
   {
     chainType: 'evm',
@@ -197,7 +209,7 @@ export const chains: IServerChainConfig[] = [
       default: { name: 'polygonscan', url: 'https://polygonscan.com' },
     },
     extra: {
-      cmcPlatform: 'polygon',
+      cmcPlatform: 'polygon-ecosystem-token',
     },
   },
   {
@@ -213,6 +225,9 @@ export const chains: IServerChainConfig[] = [
         name: 'manta-pacific Explorer',
         url: 'https://pacific-explorer.manta.network',
       },
+    },
+    extra: {
+      cmcPlatform: 'manta-network',
     },
   },
   {
@@ -362,6 +377,9 @@ export const chains: IServerChainConfig[] = [
     rpcUrls: { default: { http: ['https://evm.astar.network'] } },
     blockExplorers: {
       default: { name: 'subscan', url: 'https://astar.subscan.io' },
+    },
+    extra: {
+      cmcPlatform: 'astar',
     },
   },
   {
@@ -880,6 +898,9 @@ export const chains: IServerChainConfig[] = [
     rpcUrls: { default: { http: ['https://rpc.linea.build'] } },
     blockExplorers: {
       default: { name: 'Etherscan', url: 'https://lineascan.build' },
+    },
+    extra: {
+      cmcPlatform: 'linea',
     },
   },
   {
