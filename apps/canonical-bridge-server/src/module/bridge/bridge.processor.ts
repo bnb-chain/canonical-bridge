@@ -18,7 +18,7 @@ import {
   isNativeToken,
   EVM_NATIVE_TOKEN_ADDRESS,
 } from '@bnb-chain/canonical-bridge-sdk';
-import { chains } from '@/common/constants/chains';
+import { UtilService } from '@/shared/util/util.service';
 
 @Processor(Queues.SyncBridge)
 export class BridgeProcessor extends WorkerHost {
@@ -26,6 +26,7 @@ export class BridgeProcessor extends WorkerHost {
 
   constructor(
     private web3Service: Web3Service,
+    private utilService: UtilService,
     @Inject(CACHE_MANAGER) private cache: Cache,
   ) {
     super();
@@ -178,14 +179,24 @@ export class BridgeProcessor extends WorkerHost {
       return true;
     }
 
-    const chainInfo = chains.find((e) => e.id === chainId);
+    const chainInfo = this.utilService.getChainConfigByChainId(chainId);
     if (!chainInfo) {
       return false;
     }
 
+    let key: string | undefined;
     const isNative = isNativeToken(tokenAddress, chainInfo.chainType);
-    const key = isNative ? `${chainId}` : `${chainId}:${tokenAddress}`;
+    if (isNative) {
+      key = `${chainId}`;
+    } else {
+      if (chainInfo.chainType === 'evm') {
+        key = `${chainId}:${tokenAddress.toLowerCase()}`;
+      } else {
+        key = `${chainId}:${tokenAddress}`;
+      }
+    }
     const price = cmcPrices[key] ?? llamaPrices[key];
+
     return !!price;
   }
 

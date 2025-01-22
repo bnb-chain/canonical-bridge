@@ -72,8 +72,10 @@ export function useSelection() {
         // eslint-disable-next-line no-console
         console.log('[aggregator]', `has multiple toTokens (${toTokens.length})`);
         dispatch(setToTokens(toTokens));
+        dispatch(setToToken(undefined));
       } else {
         dispatch(setToTokens([]));
+        dispatch(setToToken(undefined));
       }
 
       if (toTokens.length === 1) {

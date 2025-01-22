@@ -1,5 +1,17 @@
 # @bnb-chain/canonical-bridge-sdk
 
+## 0.5.0-alpha.10
+
+### Patch Changes
+
+- Fix the issue of to token cannot be selected after exchange chain
+
+## 0.5.0-alpha.9
+
+### Patch Changes
+
+- Use `chainId` + `tokenAddress` to get token price
+
 ## 0.5.0-alpha.8
 
 ### Patch Changes

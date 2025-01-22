@@ -85,7 +85,7 @@ export const ReceiveInfo = ({ onOpen }: ReceiveInfoProps) => {
   const debouncedSendValue = useDebounce(sendValue, DEBOUNCE_DELAY);
 
   useEffect(() => {
-    if (!isBase || !toToken) return;
+    if (!isBase || !toToken || !sendValue) return;
 
     // On mobile
     if (sendValue === debouncedSendValue) {

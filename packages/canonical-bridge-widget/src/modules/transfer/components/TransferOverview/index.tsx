@@ -58,7 +58,7 @@ export function TransferOverview(props: TransferOverviewProps) {
   const toToken = useAppSelector((state) => state.transfer.toToken);
 
   useEffect(() => {
-    if (isBase || !toToken) return;
+    if (isBase || !toToken || !sendValue) return;
 
     if (sendValue === debouncedSendValue) {
       dispatch(setTransferActionInfo(undefined));
