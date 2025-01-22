@@ -1,5 +1,11 @@
 # @bnb-chain/canonical-bridge-sdk
 
+## 0.5.0-alpha.9
+
+### Patch Changes
+
+- Use `chainId` + `tokenAddress` to get token price
+
 ## 0.5.0-alpha.8
 
 ### Patch Changes
