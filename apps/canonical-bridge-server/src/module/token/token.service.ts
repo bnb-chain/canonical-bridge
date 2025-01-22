@@ -174,21 +174,21 @@ export class TokenService {
     if (cmcToken) {
       reqArr.push(this.web3Service.getCryptoCurrencyQuotes(cmcToken.id.toString()));
     } else {
-      reqArr.push(Promise.reject());
+      reqArr.push(Promise.resolve());
     }
 
     if (llamaToken) {
       const { tokens } = await this.getLlamaTokenIds([llamaToken]);
       reqArr.push(this.web3Service.getLlamaTokenPrice(tokens));
     } else {
-      reqArr.push(Promise.reject());
+      reqArr.push(Promise.resolve());
     }
 
     const [cmcRes, llamaRes] = await Promise.allSettled(reqArr);
-    if (cmcRes.status === 'fulfilled' && cmcRes.value?.[0]?.quote.USD?.price !== undefined) {
+    if (cmcRes.status === 'fulfilled' && cmcRes.value?.[0]?.quote?.USD?.price !== undefined) {
       return cmcRes.value?.[0]?.quote.USD?.price;
     }
-    if (llamaRes.status === 'fulfilled' && llamaRes.value.coins) {
+    if (llamaRes.status === 'fulfilled' && llamaRes.value?.coins) {
       return Object.values<ICoinPrice>(llamaRes.value.coins ?? {})?.[0]?.price;
     }
   }
