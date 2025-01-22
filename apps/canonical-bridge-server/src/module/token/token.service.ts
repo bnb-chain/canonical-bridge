@@ -11,8 +11,8 @@ import { CACHE_KEY, CMC_PRICE_REQUEST_LIMIT, LLAMA_PRICE_REQUEST_LIMIT } from '@
 import { get, isEmpty } from 'lodash';
 import { Prisma } from '@prisma/client';
 import { Cache, CACHE_MANAGER } from '@nestjs/cache-manager';
-import { chains } from '@/common/constants/chains';
 import { Web3Service } from '@/shared/web3/web3.service';
+import { UtilService } from '@/shared/util/util.service';
 
 @Injectable()
 export class TokenService {
@@ -24,6 +24,7 @@ export class TokenService {
   constructor(
     private web3Service: Web3Service,
     private databaseService: DatabaseService,
+    private utilService: UtilService,
     @Inject(CACHE_MANAGER) private cache: Cache,
   ) {}
 
@@ -93,7 +94,7 @@ export class TokenService {
   }
 
   async getCmcTokenIdsForPriceJob() {
-    const platforms = this.getChainCmcPlatforms();
+    const platforms = this.utilService.getChainCmcPlatforms();
 
     const tokens = await this.databaseService.getTokens(
       this.cmcTokenStart,
@@ -131,8 +132,8 @@ export class TokenService {
   }
 
   async getLlamaTokenIdsForPriceJob() {
-    const chainIds = this.getChainIds();
-    const platforms = this.getChainLlamaPlatforms();
+    const chainIds = this.utilService.getChainIds();
+    const platforms = this.utilService.getChainLlamaPlatforms();
 
     const tokens = await this.databaseService.getCoingeckoTokens(
       this.llamaTokenStart,
@@ -159,10 +160,10 @@ export class TokenService {
   }
 
   async getTokenPrice(chainId: number, tokenAddress?: string) {
-    const cmcPlatform = this.getChainConfigByChainId(chainId)?.extra?.cmcPlatform;
+    const cmcPlatform = this.utilService.getChainConfigByChainId(chainId)?.extra?.cmcPlatform;
     const cmcToken = await this.databaseService.getToken(cmcPlatform, tokenAddress);
 
-    const llamaPlatform = this.getChainConfigByChainId(chainId)?.extra?.llamaPlatform;
+    const llamaPlatform = this.utilService.getChainConfigByChainId(chainId)?.extra?.llamaPlatform;
     const llamaToken = await this.databaseService.getCoingeckoToken(
       chainId,
       llamaPlatform,
@@ -190,37 +191,5 @@ export class TokenService {
     if (llamaRes.status === 'fulfilled' && llamaRes.value.coins) {
       return Object.values<ICoinPrice>(llamaRes.value.coins ?? {})?.[0]?.price;
     }
-  }
-
-  public getFormattedAddress(chainId?: number, address?: string) {
-    const chainInfo = chains.find((e) => e.id === chainId);
-    if (chainInfo?.chainType !== 'evm') {
-      return address;
-    }
-    return address?.toLowerCase();
-  }
-
-  public getChainConfigByCmcPlatform(platform: string) {
-    return chains.find((e) => e.extra?.cmcPlatform === platform);
-  }
-
-  public getChainConfigByLlamaPlatform(platform: string) {
-    return chains.find((e) => e.extra?.llamaPlatform === platform);
-  }
-
-  public getChainConfigByChainId(chainId: number) {
-    return chains.find((e) => e.id === chainId);
-  }
-
-  public getChainCmcPlatforms() {
-    return chains.filter((e) => e.extra?.cmcPlatform).map((e) => e.extra?.cmcPlatform);
-  }
-
-  public getChainLlamaPlatforms() {
-    return chains.filter((e) => e.extra?.llamaPlatform).map((e) => e.extra?.llamaPlatform);
-  }
-
-  public getChainIds() {
-    return chains.map((e) => e.id);
   }
 }
