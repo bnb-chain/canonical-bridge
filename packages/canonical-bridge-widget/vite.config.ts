@@ -30,7 +30,7 @@ export default defineConfig({
   build: {
     target: 'esnext',
     lib: {
-      formats: ['es'],
+      formats: ['es', 'cjs'],
       entry: {
         index: 'src/index.tsx',
       },

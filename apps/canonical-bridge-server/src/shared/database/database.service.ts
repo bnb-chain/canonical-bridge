@@ -38,17 +38,45 @@ export class DatabaseService {
     );
   }
 
-  async getTokens(limit: number) {
+  async getTokens(start: number, limit: number, platforms: string[]) {
     return this.prismaService.token.findMany({
+      skip: (start - 1) * limit,
       take: limit,
-      orderBy: { updateAt: 'asc' },
+      where: {
+        OR: [
+          {
+            slug: {
+              in: platforms,
+            },
+          },
+          {
+            platformSlug: {
+              in: platforms,
+            },
+          },
+        ],
+      },
     });
   }
 
-  async getCoingeckoTokens(limit: number) {
+  async getCoingeckoTokens(start: number, limit: number, chainIds: number[], platforms: string[]) {
     return this.prismaService.llamaToken.findMany({
+      skip: (start - 1) * limit,
       take: limit,
-      orderBy: { updateAt: 'asc' },
+      where: {
+        OR: [
+          {
+            chainId: {
+              in: chainIds,
+            },
+          },
+          {
+            platform: {
+              in: platforms,
+            },
+          },
+        ],
+      },
     });
   }
 
@@ -58,5 +86,55 @@ export class DatabaseService {
 
   async getAllCoingeckoTokens() {
     return this.prismaService.llamaToken.findMany();
+  }
+
+  async getToken(platform: string, tokenAddress?: string) {
+    if (platform && tokenAddress) {
+      return this.prismaService.token.findFirst({
+        where: {
+          platformSlug: platform,
+          address: tokenAddress,
+        },
+      });
+    }
+
+    if (platform) {
+      return this.prismaService.token.findFirst({
+        where: {
+          slug: platform,
+          platformSlug: null,
+          address: null,
+        },
+      });
+    }
+  }
+
+  async getCoingeckoToken(chainId: number, platform?: string, tokenAddress?: string) {
+    if (tokenAddress && chainId) {
+      return this.prismaService.llamaToken.findFirst({
+        where: {
+          chainId,
+          address: tokenAddress,
+        },
+      });
+    }
+
+    if (tokenAddress && platform) {
+      return this.prismaService.llamaToken.findFirst({
+        where: {
+          platform,
+          address: tokenAddress,
+        },
+      });
+    }
+
+    if (chainId) {
+      return this.prismaService.llamaToken.findFirst({
+        where: {
+          chainId,
+          address: null,
+        },
+      });
+    }
   }
 }

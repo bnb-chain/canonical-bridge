@@ -7,11 +7,6 @@ import {
   ICryptoCurrencyMapEntity,
   ICryptoCurrencyMapPayload,
   ICryptoCurrencyQuoteEntity,
-  IDebridgeChain,
-  IDebridgeToken,
-  IMesonChain,
-  IStargateTokenList,
-  ITransferConfigsForAll,
 } from '@/shared/web3/web3.interface';
 import {
   CBRIDGE_ENDPOINT,
@@ -22,10 +17,17 @@ import {
   STARGATE_ENDPOINT,
   MESON_ENDPOINT,
   LLAMA_COINS_ENDPOINT,
-  TOKEN_REQUEST_LIMIT,
+  CMC_TOKEN_REQUEST_LIMIT,
   STARGATE_CHAIN_INFO,
 } from '@/common/constants';
 import { values } from 'lodash';
+import {
+  ICBridgeTransferConfig,
+  IDeBridgeChain,
+  IDeBridgeToken,
+  IMesonTransferConfig,
+  IStargateTokenList,
+} from '@bnb-chain/canonical-bridge-sdk';
 
 @Injectable()
 export class Web3Service {
@@ -35,7 +37,7 @@ export class Web3Service {
 
   async getCryptoCurrencyMap(payload: Partial<ICryptoCurrencyMapPayload>) {
     const query = new URLSearchParams({
-      limit: String(TOKEN_REQUEST_LIMIT),
+      limit: String(CMC_TOKEN_REQUEST_LIMIT),
       start: String(payload.start),
     }).toString();
 
@@ -61,38 +63,41 @@ export class Web3Service {
 
   async getTransferConfigsForAll() {
     try {
-      const { data } = await this.httpService.axiosRef.get<ITransferConfigsForAll>(
+      const { data } = await this.httpService.axiosRef.get<ICBridgeTransferConfig>(
         `${CBRIDGE_ENDPOINT}/v2/getTransferConfigsForAll`,
       );
       return data;
     } catch (e) {
-      console.error(`Failed to retrieve cBridge data at ${new Date().getTime()}`, e.message);
+      this.logger.log(`Failed to retrieve cBridge data at ${new Date().getTime()}, ${e.message}`);
     }
   }
 
   async getDebridgeChains() {
     try {
-      const { data } = await this.httpService.axiosRef.get<{ chains: IDebridgeChain[] }>(
+      const { data } = await this.httpService.axiosRef.get<{ chains: IDeBridgeChain[] }>(
         `${DEBRIDGE_ENDPOINT}/supported-chains-info`,
       );
 
       return data;
     } catch (e) {
-      console.error(`Failed to retrieve DeBridge chain data at ${new Date().getTime()}`, e.message);
+      this.logger.log(
+        `Failed to retrieve DeBridge chain data at ${new Date().getTime()},
+        ${e.message}`,
+      );
     }
   }
 
   async getDebridgeChainTokens(chainId: number) {
     try {
       const { data } = await this.httpService.axiosRef.get<{
-        tokens: Record<string, IDebridgeToken>;
+        tokens: Record<string, IDeBridgeToken>;
       }>(`${DEBRIDGE_ENDPOINT}/token-list?chainId=${chainId}`);
 
       return data;
     } catch (e) {
-      console.error(
-        `Failed to retrieve DeBridge token data from ${chainId} at ${new Date().getTime()}`,
-        e.message,
+      this.logger.log(
+        `Failed to retrieve DeBridge token data from ${chainId} at ${new Date().getTime()},
+        ${e.message}`,
       );
     }
   }
@@ -109,23 +114,29 @@ export class Web3Service {
           (chain) => chain.chainName.toUpperCase() === token.chainKey.toUpperCase(),
         );
         if (chainInfo && chainInfo.length > 0) {
-          processedTokenList.push({ ...token, endpointID: chainInfo[0].endpointID });
+          processedTokenList.push({
+            ...token,
+            chainId: chainInfo[0].chainId,
+            endpointID: chainInfo[0].endpointID,
+          });
         }
       });
       return processedTokenList;
     } catch (e) {
-      console.error(`Failed to retrieve Stargate API data at ${new Date().getTime()}`, e.message);
+      this.logger.log(
+        `Failed to retrieve Stargate API data at ${new Date().getTime()}, ${e.message}`,
+      );
     }
   }
 
   async getMesonConfigs() {
     try {
-      const { data } = await this.httpService.axiosRef.get<{ result: IMesonChain[] }>(
+      const { data } = await this.httpService.axiosRef.get<{ result: IMesonTransferConfig }>(
         `${MESON_ENDPOINT}/limits`,
       );
       return data;
     } catch (e) {
-      console.log(`Failed to retrieve Meson API data at ${new Date().getTime()}`, e);
+      this.logger.log(`Failed to retrieve Meson API data at ${new Date().getTime()}, ${e}`);
       return [];
     }
   }

@@ -88,6 +88,7 @@ export const TransferConfirmButton = ({
 
   const sendTx = useCallback(async () => {
     if (
+      !fromChain ||
       !selectedToken ||
       !transferActionInfo?.bridgeType ||
       (!transferActionInfo?.bridgeAddress && fromChain?.chainType !== 'solana') ||
@@ -108,10 +109,11 @@ export const TransferConfirmButton = ({
     try {
       // Check whether token price exists
       const result = await validateTokenPrice({
-        tokenSymbol: selectedToken.symbol,
+        chainId: fromChain.id,
+        chainType: fromChain.chainType,
         tokenAddress: selectedToken.address,
       });
-      if (!result) {
+      if (result === undefined) {
         throw new Error(
           `Can not get token price from API server: ${sendValue} ${selectedToken.symbol}`,
         );

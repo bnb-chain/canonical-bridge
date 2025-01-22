@@ -20,6 +20,7 @@
     "prisma:migrate:div": "npx dotenv -e .env -- npx prisma migrate dev"
   },
   "dependencies": {
+    "@bnb-chain/canonical-bridge-sdk": "workspace:*",
     "@nestjs/axios": "~3.0.3",
     "@nestjs/bullmq": "~10.2.1",
     "@nestjs/cache-manager": "~2.2.2",

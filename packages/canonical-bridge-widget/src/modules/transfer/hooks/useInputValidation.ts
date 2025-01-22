@@ -20,7 +20,7 @@ export const useInputValidation = () => {
   const fromChain = useAppSelector((state) => state.transfer.fromChain);
   const selectedToken = useAppSelector((state) => state.transfer.selectedToken);
 
-  const priceInfo = useTokenUpperLimit(selectedToken);
+  const priceInfo = useTokenUpperLimit();
   const validateInput = useCallback(
     ({
       balance,
@@ -47,7 +47,15 @@ export const useInputValidation = () => {
             isError: true,
           };
         }
+
         // Check upper limit
+        if (priceInfo?.isError) {
+          return {
+            text: `This token is not available at the moment. Please try again later.`,
+            isError: true,
+          };
+        }
+
         if (priceInfo?.upperLimit && Number(value) >= Number(priceInfo?.upperLimit)) {
           return {
             text: `Transfer value over $${formatNumber(dollarUpperLimit)} (${formatNumber(

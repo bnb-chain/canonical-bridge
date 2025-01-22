@@ -4,16 +4,21 @@ import { Inject, Logger } from '@nestjs/common';
 import { Job } from 'bullmq';
 import { Web3Service } from '@/shared/web3/web3.service';
 import { Cache, CACHE_MANAGER } from '@nestjs/cache-manager';
-import {
-  IDebridgeConfig,
-  IDebridgeToken,
-  IMesonChain,
-  IStargateBridgeTokenInfo,
-  ITransferConfigsForAll,
-  ITransferToken,
-} from '@/shared/web3/web3.interface';
 import { ITokenPriceRecord } from '@/module/token/token.interface';
 import { isEmpty } from 'lodash';
+import {
+  IMesonChain,
+  IDeBridgeToken,
+  IDeBridgeTransferConfig,
+  ICBridgeTransferConfig,
+  ICBridgeToken,
+  IStargateTransferConfig,
+  IMesonTransferConfig,
+  TRON_CHAIN_ID,
+  isNativeToken,
+  EVM_NATIVE_TOKEN_ADDRESS,
+} from '@bnb-chain/canonical-bridge-sdk';
+import { chains } from '@/common/constants/chains';
 
 @Processor(Queues.SyncBridge)
 export class BridgeProcessor extends WorkerHost {
@@ -54,7 +59,7 @@ export class BridgeProcessor extends WorkerHost {
 
     if (!config) return;
 
-    const tokenMap: Record<string, IDebridgeToken[]> = {};
+    const tokenMap: Record<string, IDeBridgeToken[]> = {};
 
     for (const chain of config.chains) {
       const data = await this.web3Service.getDebridgeChainTokens(chain.chainId);
@@ -84,7 +89,7 @@ export class BridgeProcessor extends WorkerHost {
     await this.cache.set(`${CACHE_KEY.MESON_CONFIG}`, config, TIME.DAY);
   }
 
-  private updateDeBridgeConfigManually(config?: IDebridgeConfig) {
+  private updateDeBridgeConfigManually(config?: IDeBridgeTransferConfig) {
     if (!config) return config;
 
     const finalConfig = {
@@ -148,75 +153,79 @@ export class BridgeProcessor extends WorkerHost {
 
   public async getPriceConfig() {
     const [cmcRes, llamaRes] = await Promise.allSettled([
-      this.cache.get<ITokenPriceRecord>(CACHE_KEY.CMC_CONFIG),
-      this.cache.get<ITokenPriceRecord>(CACHE_KEY.LLAMA_CONFIG),
+      this.cache.get<ITokenPriceRecord>(CACHE_KEY.CMC_CONFIG_V2),
+      this.cache.get<ITokenPriceRecord>(CACHE_KEY.LLAMA_CONFIG_V2),
     ]);
+
     return {
-      cmc: cmcRes.status === 'fulfilled' ? cmcRes.value : {},
-      llama: llamaRes.status === 'fulfilled' ? llamaRes.value : {},
+      cmcPrices: cmcRes.status === 'fulfilled' ? cmcRes.value : {},
+      llamaPrices: llamaRes.status === 'fulfilled' ? llamaRes.value : {},
     };
   }
 
-  public hasTokenPrice(params: {
-    prices: { cmc?: ITokenPriceRecord; llama?: ITokenPriceRecord };
-    tokenSymbol: string;
+  public hasTokenPrice({
+    cmcPrices = {},
+    llamaPrices = {},
+    chainId,
+    tokenAddress,
+  }: {
+    cmcPrices: ITokenPriceRecord;
+    llamaPrices: ITokenPriceRecord;
+    chainId: number;
     tokenAddress: string;
   }) {
-    if (isEmpty(params.prices.cmc) && isEmpty(params.prices.llama)) {
+    if (isEmpty(cmcPrices) && isEmpty(llamaPrices)) {
       return true;
     }
-    const key1 = `${params.tokenSymbol?.toLowerCase()}:${params.tokenAddress?.toLowerCase()}`;
-    const key3 = params.tokenSymbol?.toLowerCase();
-    const key2 = `ethereum:${key3}`;
 
-    const price =
-      params.prices.cmc?.[key1]?.price ??
-      params.prices.llama?.[key1]?.price ??
-      params.prices.cmc?.[key2]?.price ??
-      params.prices.llama?.[key2]?.price ??
-      params.prices.cmc?.[key3]?.price ??
-      params.prices.llama?.[key3]?.price;
+    const chainInfo = chains.find((e) => e.id === chainId);
+    if (!chainInfo) {
+      return false;
+    }
 
+    const isNative = isNativeToken(tokenAddress, chainInfo.chainType);
+    const key = isNative ? `${chainId}` : `${chainId}:${tokenAddress}`;
+    const price = cmcPrices[key] ?? llamaPrices[key];
     return !!price;
   }
 
   async filterCBridge() {
-    const config = await this.cache.get<ITransferConfigsForAll>(CACHE_KEY.CBRIDGE_CONFIG);
+    const config = await this.cache.get<ICBridgeTransferConfig>(CACHE_KEY.CBRIDGE_CONFIG);
     if (!config) return;
 
-    const prices = await this.getPriceConfig();
+    const priceConfig = await this.getPriceConfig();
 
-    const chainToken: Record<number, { token: ITransferToken[] }> = {};
+    const chainToken: Record<number, { token: ICBridgeToken[] }> = {};
     Object.entries(config.chain_token).forEach(([key, { token }]) => {
       const chainId = Number(key);
       chainToken[chainId] = { token: [] };
       chainToken[chainId].token = token.filter((e) => {
         return this.hasTokenPrice({
-          prices,
+          ...priceConfig,
           tokenAddress: e.token.address,
-          tokenSymbol: e.token.symbol,
+          chainId,
         });
       });
     });
 
-    const peggedPairConfigs: ITransferConfigsForAll['pegged_pair_configs'] =
+    const peggedPairConfigs: ICBridgeTransferConfig['pegged_pair_configs'] =
       config.pegged_pair_configs.filter((e) => {
         const orgHasPrice = this.hasTokenPrice({
-          prices,
-          tokenSymbol: e.org_token.token.symbol,
+          ...priceConfig,
           tokenAddress: e.org_token.token.address,
+          chainId: e.org_chain_id,
         });
 
         const peggedHasPrice = this.hasTokenPrice({
-          prices,
-          tokenSymbol: e.pegged_token.token.symbol,
+          ...priceConfig,
           tokenAddress: e.pegged_token.token.address,
+          chainId: e.pegged_chain_id,
         });
 
         return orgHasPrice && peggedHasPrice;
       });
 
-    const finalConfig: ITransferConfigsForAll = {
+    const finalConfig: ICBridgeTransferConfig = {
       ...config,
       chain_token: chainToken,
       pegged_pair_configs: peggedPairConfigs,
@@ -226,25 +235,25 @@ export class BridgeProcessor extends WorkerHost {
   }
 
   async filterDeBridge() {
-    const _config = await this.cache.get<IDebridgeConfig>(CACHE_KEY.DEBRIDGE_CONFIG);
+    const _config = await this.cache.get<IDeBridgeTransferConfig>(CACHE_KEY.DEBRIDGE_CONFIG);
     const config = this.updateDeBridgeConfigManually(_config);
     if (!config) return config;
 
-    const prices = await this.getPriceConfig();
-    const chainTokens: Record<number, IDebridgeToken[]> = {};
+    const priceConfig = await this.getPriceConfig();
+    const chainTokens: Record<number, IDeBridgeToken[]> = {};
 
     Object.entries(config.tokens).forEach(([key, tokens]) => {
       const chainId = Number(key);
       chainTokens[chainId] = tokens.filter((e) => {
         return this.hasTokenPrice({
-          prices,
+          ...priceConfig,
           tokenAddress: e.address,
-          tokenSymbol: e.symbol,
+          chainId,
         });
       });
     });
 
-    const finalConfig: IDebridgeConfig = {
+    const finalConfig: IDeBridgeTransferConfig = {
       ...config,
       tokens: chainTokens,
     };
@@ -253,16 +262,16 @@ export class BridgeProcessor extends WorkerHost {
   }
 
   async filterStargate() {
-    const config = await this.cache.get<IStargateBridgeTokenInfo[]>(CACHE_KEY.STARGATE_CONFIG);
+    const config = await this.cache.get<IStargateTransferConfig>(CACHE_KEY.STARGATE_CONFIG);
     if (!config) return config;
 
-    const prices = await this.getPriceConfig();
+    const priceConfig = await this.getPriceConfig();
 
     const finalConfig = config.filter((e) => {
       return this.hasTokenPrice({
-        prices,
+        ...priceConfig,
         tokenAddress: e.token.address,
-        tokenSymbol: e.token.symbol,
+        chainId: e.chainId,
       });
     });
 
@@ -270,20 +279,21 @@ export class BridgeProcessor extends WorkerHost {
   }
 
   async filterMeson() {
-    const config = await this.cache.get<IMesonChain[]>(CACHE_KEY.MESON_CONFIG);
+    const config = await this.cache.get<IMesonTransferConfig>(CACHE_KEY.MESON_CONFIG);
     if (!config) return config;
 
-    const prices = await this.getPriceConfig();
+    const priceConfig = await this.getPriceConfig();
 
     const finalConfig: IMesonChain[] = [];
     config.forEach((chain) => {
       const tokens = chain.tokens.filter((e) => {
         return this.hasTokenPrice({
-          prices,
-          tokenAddress: e.addr,
-          tokenSymbol: e.symbol,
+          ...priceConfig,
+          tokenAddress: e.addr ?? EVM_NATIVE_TOKEN_ADDRESS,
+          chainId: chain.chainId === 'tron' ? TRON_CHAIN_ID : Number(chain.chainId),
         });
       });
+
       if (tokens?.length) {
         finalConfig.push({
           ...chain,

@@ -20,7 +20,11 @@ export const MaxLink: React.FC = () => {
   const { getTokenPrice } = useTokenPrice();
 
   const balance = getTokenBalance(selectedToken);
-  const tokenPrice = getTokenPrice(selectedToken);
+  const tokenPrice = getTokenPrice({
+    chainId: fromChain?.id,
+    chainType: fromChain?.chainType,
+    tokenAddress: selectedToken?.address,
+  });
 
   const setMaxAmount = () => {
     if (!!balance && selectedToken) {

@@ -106,6 +106,7 @@ export interface IStargateBridgeTokenInfo {
   assetId: string;
   chainKey: string;
   chainName: string;
+  chainId: number;
   tokenMessaging: `0x${string}`;
   sharedDecimals: number;
 }

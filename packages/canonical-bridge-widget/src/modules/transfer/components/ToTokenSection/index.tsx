@@ -75,10 +75,10 @@ function ToTokenItem({ token, isSelected }: { token: IBridgeToken; isSelected: b
     <InfoTooltip label={token.name}>
       <Flex
         className="bccb-widget-to-token-item"
-        data-to-name={token.name}
-        data-to-address={token.address}
-        data-to-symbol={token.symbol}
-        data-to-display-symbol={token.displaySymbol}
+        data-available-to-name={token.name}
+        data-available-to-address={token.address}
+        data-available-to-symbol={token.symbol}
+        data-available-to-display-symbol={token.displaySymbol}
         p={{ base: '8px', md: '8px 12px' }}
         h="48px"
         alignItems="center"
