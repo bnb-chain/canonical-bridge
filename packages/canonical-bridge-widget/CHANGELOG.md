@@ -1,5 +1,13 @@
 # @bnb-chain/canonical-bridge-widget
 
+## 0.6.0-alpha.15
+
+### Patch Changes
+
+- Fix the issue of to token cannot be selected after exchange chain
+- Updated dependencies
+  - @bnb-chain/canonical-bridge-sdk@0.5.0-alpha.10
+
 ## 0.6.0-alpha.14
 
 ### Patch Changes
