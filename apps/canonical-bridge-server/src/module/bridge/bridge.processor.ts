@@ -184,9 +184,19 @@ export class BridgeProcessor extends WorkerHost {
       return false;
     }
 
+    let key: string | undefined;
     const isNative = isNativeToken(tokenAddress, chainInfo.chainType);
-    const key = isNative ? `${chainId}` : `${chainId}:${tokenAddress}`;
+    if (isNative) {
+      key = `${chainId}`;
+    } else {
+      if (chainInfo.chainType === 'evm') {
+        key = `${chainId}:${tokenAddress.toLowerCase()}`;
+      } else {
+        key = `${chainId}:${tokenAddress}`;
+      }
+    }
     const price = cmcPrices[key] ?? llamaPrices[key];
+
     return !!price;
   }
 
