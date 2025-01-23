@@ -1,5 +1,13 @@
 # @bnb-chain/canonical-bridge-widget
 
+## 0.6.0-alpha.17
+
+### Patch Changes
+
+- use token price on ethereum if can not get the token price on specified chain
+- Updated dependencies
+  - @bnb-chain/canonical-bridge-sdk@0.5.0-alpha.11
+
 ## 0.6.0-alpha.16
 
 ### Patch Changes

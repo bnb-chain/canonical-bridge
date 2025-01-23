@@ -48,7 +48,13 @@ export function useTokenPrice() {
       chainId,
       chainType,
       tokenAddress,
-    }: { chainId?: number; chainType?: ChainType; tokenAddress?: string } = {}) => {
+      tokenSymbol,
+    }: {
+      chainId?: number;
+      chainType?: ChainType;
+      tokenAddress?: string;
+      tokenSymbol?: string;
+    } = {}) => {
       if (chainId && chainType && tokenAddress) {
         const { cmcPrices, llamaPrices } = tokenPrices;
 
@@ -64,7 +70,13 @@ export function useTokenPrice() {
           }
         }
 
-        let price = cmcPrices?.[key]?.price ?? llamaPrices[key]?.price;
+        const symbolKey = `1:${tokenSymbol?.toLowerCase()}`;
+        let price =
+          cmcPrices[key]?.price ??
+          llamaPrices[key]?.price ??
+          cmcPrices[symbolKey]?.price ??
+          llamaPrices[symbolKey]?.price;
+
         if (price !== undefined) {
           price = Number(price);
         }
@@ -95,15 +107,18 @@ export function useTokenPrice() {
       chainId,
       chainType,
       tokenAddress,
+      tokenSymbol,
     }: {
       chainId: number;
       chainType: ChainType;
       tokenAddress: string;
+      tokenSymbol: string;
     }) => {
       const { data } = await axios.get<{ data: number }>(`${serverEndpoint}/api/token/v2/price`, {
         params: {
           chainId,
           tokenAddress: isNativeToken(tokenAddress, chainType) ? undefined : tokenAddress,
+          tokenSymbol,
         },
       });
       return data;

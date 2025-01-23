@@ -24,6 +24,7 @@ export const MaxLink: React.FC = () => {
     chainId: fromChain?.id,
     chainType: fromChain?.chainType,
     tokenAddress: selectedToken?.address,
+    tokenSymbol: selectedToken?.symbol,
   });
 
   const setMaxAmount = () => {

@@ -159,7 +159,7 @@ export class TokenService {
     return this.databaseService.getAllCoingeckoTokens();
   }
 
-  async getTokenPrice(chainId: number, tokenAddress?: string) {
+  async getTokenPrice(chainId: number, tokenAddress?: string, tokenSymbol?: string) {
     const cmcPlatform = this.utilService.getChainConfigByChainId(chainId)?.extra?.cmcPlatform;
     const cmcToken = await this.databaseService.getToken(cmcPlatform, tokenAddress);
 
@@ -191,5 +191,11 @@ export class TokenService {
     if (llamaRes.status === 'fulfilled' && llamaRes.value?.coins) {
       return Object.values<ICoinPrice>(llamaRes.value.coins ?? {})?.[0]?.price;
     }
+
+    const cmcPrices = await this.cache.get(`${CACHE_KEY.CMC_CONFIG_V2}`);
+    const llamaPrices = await this.cache.get(`${CACHE_KEY.CMC_CONFIG_V2}`);
+    const key = `${chainId}:${tokenSymbol}`;
+
+    return cmcPrices?.[key] ?? llamaPrices?.[key];
   }
 }

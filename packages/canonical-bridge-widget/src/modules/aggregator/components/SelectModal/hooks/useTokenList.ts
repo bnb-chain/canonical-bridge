@@ -26,6 +26,7 @@ export function useTokenList(tokens: IBridgeToken[] = [], keyword?: string) {
         chainId: fromChain?.id,
         chainType: fromChain?.chainType,
         tokenAddress: item?.address,
+        tokenSymbol: item.symbol,
       });
 
       let value: number | undefined;
