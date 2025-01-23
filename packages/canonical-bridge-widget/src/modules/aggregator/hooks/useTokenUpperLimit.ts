@@ -31,6 +31,7 @@ export function useTokenUpperLimit() {
             chainId: fromChain?.id,
             chainType: fromChain?.chainType,
             tokenAddress: selectedToken?.address,
+            tokenSymbol: selectedToken?.symbol,
           })
         ).data;
       }
