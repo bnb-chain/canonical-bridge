@@ -169,11 +169,13 @@ export class BridgeProcessor extends WorkerHost {
     llamaPrices = {},
     chainId,
     tokenAddress,
+    tokenSymbol,
   }: {
     cmcPrices: ITokenPriceRecord;
     llamaPrices: ITokenPriceRecord;
     chainId: number;
     tokenAddress: string;
+    tokenSymbol: string;
   }) {
     if (isEmpty(cmcPrices) && isEmpty(llamaPrices)) {
       return true;
@@ -195,7 +197,10 @@ export class BridgeProcessor extends WorkerHost {
         key = `${chainId}:${tokenAddress}`;
       }
     }
-    const price = cmcPrices[key] ?? llamaPrices[key];
+
+    const symbolKey = `1:${tokenSymbol?.toLowerCase()}`;
+    const price =
+      cmcPrices[key] ?? llamaPrices[key] ?? cmcPrices[symbolKey] ?? llamaPrices[symbolKey];
 
     return !!price;
   }
@@ -214,6 +219,7 @@ export class BridgeProcessor extends WorkerHost {
         return this.hasTokenPrice({
           ...priceConfig,
           tokenAddress: e.token.address,
+          tokenSymbol: e.token.symbol,
           chainId,
         });
       });
@@ -224,12 +230,14 @@ export class BridgeProcessor extends WorkerHost {
         const orgHasPrice = this.hasTokenPrice({
           ...priceConfig,
           tokenAddress: e.org_token.token.address,
+          tokenSymbol: e.org_token.token.symbol,
           chainId: e.org_chain_id,
         });
 
         const peggedHasPrice = this.hasTokenPrice({
           ...priceConfig,
           tokenAddress: e.pegged_token.token.address,
+          tokenSymbol: e.pegged_token.token.symbol,
           chainId: e.pegged_chain_id,
         });
 
@@ -259,6 +267,7 @@ export class BridgeProcessor extends WorkerHost {
         return this.hasTokenPrice({
           ...priceConfig,
           tokenAddress: e.address,
+          tokenSymbol: e.symbol,
           chainId,
         });
       });
@@ -282,6 +291,7 @@ export class BridgeProcessor extends WorkerHost {
       return this.hasTokenPrice({
         ...priceConfig,
         tokenAddress: e.token.address,
+        tokenSymbol: e.token.symbol,
         chainId: e.chainId,
       });
     });
@@ -301,6 +311,7 @@ export class BridgeProcessor extends WorkerHost {
         return this.hasTokenPrice({
           ...priceConfig,
           tokenAddress: e.addr ?? EVM_NATIVE_TOKEN_ADDRESS,
+          tokenSymbol: e.symbol,
           chainId: chain.chainId === 'tron' ? TRON_CHAIN_ID : Number(chain.chainId),
         });
       });

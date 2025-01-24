@@ -25,7 +25,8 @@ export function useTokenList(tokens: IBridgeToken[] = [], keyword?: string) {
       const price = getTokenPrice({
         chainId: fromChain?.id,
         chainType: fromChain?.chainType,
-        tokenAddress: selectedToken?.address,
+        tokenAddress: item?.address,
+        tokenSymbol: item.symbol,
       });
 
       let value: number | undefined;

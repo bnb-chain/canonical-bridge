@@ -159,7 +159,7 @@ export class TokenService {
     return this.databaseService.getAllCoingeckoTokens();
   }
 
-  async getTokenPrice(chainId: number, tokenAddress?: string) {
+  async getTokenPrice(chainId: number, tokenAddress?: string, tokenSymbol?: string) {
     const cmcPlatform = this.utilService.getChainConfigByChainId(chainId)?.extra?.cmcPlatform;
     const cmcToken = await this.databaseService.getToken(cmcPlatform, tokenAddress);
 
@@ -185,11 +185,23 @@ export class TokenService {
     }
 
     const [cmcRes, llamaRes] = await Promise.allSettled(reqArr);
-    if (cmcRes.status === 'fulfilled' && cmcRes.value?.[0]?.quote?.USD?.price !== undefined) {
-      return cmcRes.value?.[0]?.quote.USD?.price;
+    if (cmcRes.status === 'fulfilled') {
+      const price = cmcRes.value?.[0]?.quote?.USD?.price;
+      if (price !== undefined) {
+        return Number(price);
+      }
     }
     if (llamaRes.status === 'fulfilled' && llamaRes.value?.coins) {
-      return Object.values<ICoinPrice>(llamaRes.value.coins ?? {})?.[0]?.price;
+      const price = Object.values<ICoinPrice>(llamaRes.value.coins ?? {})?.[0]?.price;
+      if (price !== undefined) {
+        return Number(price);
+      }
     }
+
+    const cmcPrices = await this.cache.get(`${CACHE_KEY.CMC_CONFIG_V2}`);
+    const llamaPrices = await this.cache.get(`${CACHE_KEY.CMC_CONFIG_V2}`);
+    const key = `${chainId}:${tokenSymbol}`;
+
+    return cmcPrices?.[key] ?? llamaPrices?.[key];
   }
 }

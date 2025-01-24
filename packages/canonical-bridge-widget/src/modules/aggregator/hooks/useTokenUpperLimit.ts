@@ -31,9 +31,11 @@ export function useTokenUpperLimit() {
             chainId: fromChain?.id,
             chainType: fromChain?.chainType,
             tokenAddress: selectedToken?.address,
+            tokenSymbol: selectedToken?.symbol,
           })
         ).data;
       }
+      return null;
     },
   });
 
@@ -44,7 +46,7 @@ export function useTokenUpperLimit() {
       return {
         isError: true,
       };
-    } else if (price !== undefined) {
+    } else if (price) {
       const upperLimit = bridgeConfig.transfer.dollarUpperLimit / price;
       const value = parseUnits(String(upperLimit), selectedToken.decimals);
 

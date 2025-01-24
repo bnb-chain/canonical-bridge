@@ -11,15 +11,18 @@ export const usePriceValidation = () => {
       chainId,
       chainType,
       tokenAddress,
+      tokenSymbol,
     }: {
       chainId: number;
       chainType: ChainType;
       tokenAddress: string;
+      tokenSymbol: string;
     }) => {
       const { data: price } = await fetchTokenPrice({
         chainId,
         chainType,
         tokenAddress,
+        tokenSymbol,
       });
       return price;
     },

@@ -23,9 +23,13 @@ export class TokenController {
   }
 
   @Get('/v2/price')
-  getTokenPrice(@Query('chainId') _chainId: string, @Query('tokenAddress') tokenAddress?: string) {
+  getTokenPrice(
+    @Query('chainId') _chainId: string,
+    @Query('tokenAddress') tokenAddress?: string,
+    @Query('tokenSymbol') tokenSymbol?: string,
+  ) {
     const chainId = Number(_chainId);
-    return this.tokenService.getTokenPrice(chainId, tokenAddress);
+    return this.tokenService.getTokenPrice(chainId, tokenAddress, tokenSymbol);
   }
 
   @Get('/v2/cmc')

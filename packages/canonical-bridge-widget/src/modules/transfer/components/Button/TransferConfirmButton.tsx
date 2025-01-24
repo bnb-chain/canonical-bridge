@@ -112,6 +112,7 @@ export const TransferConfirmButton = ({
         chainId: fromChain.id,
         chainType: fromChain.chainType,
         tokenAddress: selectedToken.address,
+        tokenSymbol: selectedToken.symbol,
       });
       if (result === undefined) {
         throw new Error(

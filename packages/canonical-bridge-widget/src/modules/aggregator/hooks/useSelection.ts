@@ -312,6 +312,7 @@ function useSortedTokens() {
           chainId: fromChainId,
           chainType,
           tokenAddress: item?.address,
+          tokenSymbol: item?.symbol,
         });
 
         let value: number | undefined;
