@@ -275,16 +275,6 @@ export const chains: IServerChainConfig[] = [
   },
   {
     chainType: 'evm',
-    id: 255,
-    name: 'Kroma',
-    nativeCurrency: { name: 'ETH', symbol: 'ETH', decimals: 18 },
-    rpcUrls: { default: { http: ['https://api.kroma.network'] } },
-    blockExplorers: {
-      default: { name: 'Kroma Scan', url: 'https://kromascan.com' },
-    },
-  },
-  {
-    chainType: 'evm',
     id: 288,
     name: 'Boba Network',
     nativeCurrency: { name: 'Ether', symbol: 'ETH', decimals: 18 },
@@ -510,23 +500,6 @@ export const chains: IServerChainConfig[] = [
       default: {
         name: 'Mantle Mainnet Explorer',
         url: 'https://explorer.mantle.xyz/',
-      },
-    },
-  },
-  {
-    chainType: 'evm',
-    id: 7000,
-    name: 'ZetaChain',
-    nativeCurrency: { name: 'ZETA', symbol: 'ZETA', decimals: 18 },
-    rpcUrls: {
-      default: {
-        http: ['https://zetachain-evm.blockpi.network:443/v1/rpc/public'],
-      },
-    },
-    blockExplorers: {
-      default: {
-        name: 'Zeta Chain Explorer',
-        url: 'https://explorer.zetachain.com/',
       },
     },
   },
