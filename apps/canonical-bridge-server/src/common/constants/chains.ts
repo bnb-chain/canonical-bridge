@@ -73,19 +73,6 @@ export const chains: IServerChainConfig[] = [
   },
   {
     chainType: 'evm',
-    id: 25,
-    name: 'Cronos',
-    nativeCurrency: { name: 'CRO', symbol: 'CRO', decimals: 18 },
-    rpcUrls: { default: { http: ['https://evm.cronos.org'] } },
-    blockExplorers: {
-      default: { name: 'Crono Scan', url: 'https://cronoscan.com/' },
-    },
-    extra: {
-      cmcPlatform: 'cronos',
-    },
-  },
-  {
-    chainType: 'evm',
     id: 44,
     name: 'Crab Network',
     nativeCurrency: {
@@ -262,19 +249,6 @@ export const chains: IServerChainConfig[] = [
   },
   {
     chainType: 'evm',
-    id: 223,
-    name: 'b2',
-    nativeCurrency: { name: 'BTC', symbol: 'BTC', decimals: 18 },
-    rpcUrls: { default: { http: ['https://rpc.bsquared.network'] } },
-    blockExplorers: {
-      default: {
-        name: 'B2 Network Explorer',
-        url: 'https://explorer.bsquared.network',
-      },
-    },
-  },
-  {
-    chainType: 'evm',
     id: 248,
     name: 'Oasys',
     nativeCurrency: { name: 'OAS', symbol: 'OAS', decimals: 18 },
@@ -297,16 +271,6 @@ export const chains: IServerChainConfig[] = [
     },
     extra: {
       cmcPlatform: 'fantom',
-    },
-  },
-  {
-    chainType: 'evm',
-    id: 255,
-    name: 'Kroma',
-    nativeCurrency: { name: 'ETH', symbol: 'ETH', decimals: 18 },
-    rpcUrls: { default: { http: ['https://api.kroma.network'] } },
-    blockExplorers: {
-      default: { name: 'Kroma Scan', url: 'https://kromascan.com' },
     },
   },
   {
@@ -438,16 +402,6 @@ export const chains: IServerChainConfig[] = [
   },
   {
     chainType: 'evm',
-    id: 1116,
-    name: 'Core',
-    nativeCurrency: { name: 'CORE', symbol: 'CORE', decimals: 18 },
-    rpcUrls: { default: { http: ['https://rpc.coredao.org'] } },
-    blockExplorers: {
-      default: { name: 'Core Explorer', url: 'https://scan.coredao.org' },
-    },
-  },
-  {
-    chainType: 'evm',
     id: 1284,
     name: 'Moonbeam',
     nativeCurrency: { name: 'Glimmer', symbol: 'GLMR', decimals: 18 },
@@ -538,44 +492,6 @@ export const chains: IServerChainConfig[] = [
   },
   {
     chainType: 'evm',
-    id: 2525,
-    name: 'inEVM',
-    nativeCurrency: { name: 'INJ', symbol: 'INJ', decimals: 18 },
-    rpcUrls: {
-      default: { http: ['https://mainnet.rpc.inevm.com/http'] },
-    },
-    blockExplorers: {
-      default: {
-        name: 'inEVM Explorer',
-        url: 'https://explorer.inevm.com',
-      },
-    },
-  },
-  {
-    chainType: 'evm',
-    id: 2649,
-    name: 'AILayer',
-    nativeCurrency: { name: 'BTC', symbol: 'BTC', decimals: 18 },
-    rpcUrls: { default: { http: ['https://mainnet-rpc.ailayer.xyz'] } },
-    blockExplorers: {
-      default: {
-        name: 'AI Layer Explorer',
-        url: 'https://mainnet-explorer.ailayer.xyz',
-      },
-    },
-  },
-  {
-    chainType: 'evm',
-    id: 4200,
-    name: 'Merlin',
-    nativeCurrency: { name: 'BTC', symbol: 'BTC', decimals: 18 },
-    rpcUrls: { default: { http: ['https://rpc.merlinchain.io'] } },
-    blockExplorers: {
-      default: { name: 'Merlin Scan', url: 'https://scan.merlinchain.io' },
-    },
-  },
-  {
-    chainType: 'evm',
     id: 5000,
     name: 'Mantle',
     nativeCurrency: { name: 'Mantle', symbol: 'MNT', decimals: 18 },
@@ -584,35 +500,6 @@ export const chains: IServerChainConfig[] = [
       default: {
         name: 'Mantle Mainnet Explorer',
         url: 'https://explorer.mantle.xyz/',
-      },
-    },
-  },
-  {
-    chainType: 'evm',
-    id: 6001,
-    name: 'BB',
-    nativeCurrency: { name: 'BB', symbol: 'BB', decimals: 18 },
-    rpcUrls: {
-      default: { http: ['https://fullnode-mainnet.bouncebitapi.com'] },
-    },
-    blockExplorers: {
-      default: { name: 'BB Scan', url: 'https://bbscan.io' },
-    },
-  },
-  {
-    chainType: 'evm',
-    id: 7000,
-    name: 'ZetaChain',
-    nativeCurrency: { name: 'ZETA', symbol: 'ZETA', decimals: 18 },
-    rpcUrls: {
-      default: {
-        http: ['https://zetachain-evm.blockpi.network:443/v1/rpc/public'],
-      },
-    },
-    blockExplorers: {
-      default: {
-        name: 'Zeta Chain Explorer',
-        url: 'https://explorer.zetachain.com/',
       },
     },
   },
@@ -699,19 +586,6 @@ export const chains: IServerChainConfig[] = [
   },
   {
     chainType: 'evm',
-    id: 11501,
-    name: 'BEVM',
-    nativeCurrency: { name: 'BTC', symbol: 'BTC', decimals: 18 },
-    rpcUrls: { default: { http: ['https://rpc-mainnet-1.bevm.io'] } },
-    blockExplorers: {
-      default: {
-        name: 'BEVM Explorer',
-        url: 'https://scan-mainnet.bevm.io',
-      },
-    },
-  },
-  {
-    chainType: 'evm',
     id: 13000,
     name: 'SPS',
     nativeCurrency: { name: 'ECG', symbol: 'ECG', decimals: 18 },
@@ -721,32 +595,6 @@ export const chains: IServerChainConfig[] = [
         name: 'SPS Explorer',
         url: 'http://spsscan.ssquad.games',
       },
-    },
-  },
-  {
-    chainType: 'evm',
-    id: 17777,
-    name: 'EOS EVM',
-    nativeCurrency: { name: 'EOS', symbol: 'EOS', decimals: 18 },
-    rpcUrls: { default: { http: ['https://api.evm.eosnetwork.com'] } },
-    blockExplorers: {
-      default: {
-        name: 'EOS EVM Explorer',
-        url: 'https://explorer.evm.eosnetwork.com',
-      },
-    },
-    extra: {
-      cmcPlatform: 'eos',
-    },
-  },
-  {
-    chainType: 'evm',
-    id: 22776,
-    name: 'MAP Protocol',
-    nativeCurrency: { name: 'MAPO', symbol: 'MAPO', decimals: 18 },
-    rpcUrls: { default: { http: ['https://rpc.maplabs.io'] } },
-    blockExplorers: {
-      default: { name: 'MAPO Scan', url: 'https://maposcan.io' },
     },
   },
   {
@@ -763,19 +611,6 @@ export const chains: IServerChainConfig[] = [
       default: {
         name: 'Oasis Sapphire Explorer',
         url: 'https://explorer.oasis.io/mainnet/sapphire',
-      },
-    },
-  },
-  {
-    chainType: 'evm',
-    id: 34443,
-    name: 'Mode',
-    nativeCurrency: { name: 'ETH', symbol: 'ETH', decimals: 18 },
-    rpcUrls: { default: { http: ['https://mainnet.mode.network'] } },
-    blockExplorers: {
-      default: {
-        name: 'Mode Explorer',
-        url: 'https://explorer.mode.network',
       },
     },
   },
@@ -840,16 +675,6 @@ export const chains: IServerChainConfig[] = [
   },
   {
     chainType: 'evm',
-    id: 42766,
-    name: 'ZKFair',
-    nativeCurrency: { name: 'USDC', symbol: 'USDC', decimals: 18 },
-    rpcUrls: { default: { http: ['https://rpc.zkfair.io'] } },
-    blockExplorers: {
-      default: { name: 'Zkfair Scan', url: 'https://scan.zkfair.io' },
-    },
-  },
-  {
-    chainType: 'evm',
     id: 43114,
     name: 'Avalanche',
     nativeCurrency: { name: 'Avalanche', symbol: 'AVAX', decimals: 18 },
@@ -871,19 +696,6 @@ export const chains: IServerChainConfig[] = [
     rpcUrls: { default: { http: ['https://rpc.rei.network'] } },
     blockExplorers: {
       default: { name: 'rei-scan', url: 'https://scan.rei.network' },
-    },
-  },
-  {
-    chainType: 'evm',
-    id: 48900,
-    name: 'Zircuit',
-    nativeCurrency: { name: 'ETH', symbol: 'ETH', decimals: 18 },
-    rpcUrls: { default: { http: ['https://zircuit-mainnet.drpc.org'] } },
-    blockExplorers: {
-      default: {
-        name: 'Zircuit Explorer',
-        url: 'https://explorer.zircuit.com',
-      },
     },
   },
   {
@@ -944,16 +756,6 @@ export const chains: IServerChainConfig[] = [
   },
   {
     chainType: 'evm',
-    id: 200901,
-    name: 'Bitlayer Mainnet',
-    nativeCurrency: { name: 'BTC', symbol: 'BTC', decimals: 18 },
-    rpcUrls: { default: { http: ['https://rpc.bitlayer.org'] } },
-    blockExplorers: {
-      default: { name: 'Bitlayer Scan', url: 'https://www.btrscan.com' },
-    },
-  },
-  {
-    chainType: 'evm',
     id: 210425,
     name: 'PlatON',
     nativeCurrency: { name: 'LAT', symbol: 'lat', decimals: 18 },
@@ -976,39 +778,6 @@ export const chains: IServerChainConfig[] = [
     rpcUrls: { default: { http: ['https://rpc.scroll.io'] } },
     blockExplorers: {
       default: { name: 'Scrollscan', url: 'https://scrollscan.com' },
-    },
-  },
-  {
-    chainType: 'evm',
-    id: 60808,
-    name: 'BOB',
-    nativeCurrency: { name: 'ETH', symbol: 'ETH', decimals: 18 },
-    rpcUrls: { default: { http: ['https://rpc.gobob.xyz'] } },
-    blockExplorers: {
-      default: { name: 'BOB Explorer', url: 'https://explorer.gobob.xyz' },
-    },
-  },
-  {
-    chainType: 'evm',
-    id: 810180,
-    name: 'zkLink',
-    nativeCurrency: { name: 'ETH', symbol: 'ETH', decimals: 18 },
-    rpcUrls: { default: { http: ['https://rpc.zklink.io'] } },
-    blockExplorers: {
-      default: {
-        name: 'ZKLink Explorer',
-        url: 'https://explorer.zklink.io',
-      },
-    },
-  },
-  {
-    chainType: 'evm',
-    id: 888888888,
-    name: 'Ancient8',
-    nativeCurrency: { name: 'ETH', symbol: 'ETH', decimals: 18 },
-    rpcUrls: { default: { http: ['https://rpc.ancient8.gg'] } },
-    blockExplorers: {
-      default: { name: 'Ancient8 Scan', url: 'https://scan.ancient8.gg' },
     },
   },
   {
@@ -1038,40 +807,6 @@ export const chains: IServerChainConfig[] = [
   },
   {
     chainType: 'evm',
-    id: 1482601649,
-    name: 'SKALE Nebula Hub',
-    nativeCurrency: { name: 'sFUEL', symbol: 'sFUEL', decimals: 18 },
-    rpcUrls: {
-      default: {
-        http: ['https://mainnet.skalenodes.com/v1/green-giddy-denebola'],
-      },
-    },
-    blockExplorers: {
-      default: {
-        name: 'SKALE Nebula Explorer',
-        url: 'https://green-giddy-denebola.explorer.mainnet.skalenodes.com',
-      },
-    },
-  },
-  {
-    chainType: 'evm',
-    id: 1564830818,
-    name: 'SKALE Calypso',
-    nativeCurrency: { name: 'sFUEL', symbol: 'sFUEL', decimals: 18 },
-    rpcUrls: {
-      default: {
-        http: ['https://mainnet.skalenodes.com/v1/honorable-steel-rasalhague'],
-      },
-    },
-    blockExplorers: {
-      default: {
-        name: 'SKALE Calypso Hub Explorer',
-        url: 'https://honorable-steel-rasalhague.explorer.mainnet.skalenodes.com/',
-      },
-    },
-  },
-  {
-    chainType: 'evm',
     id: 1666600000,
     name: 'Harmony One',
     nativeCurrency: { name: 'ONE', symbol: 'ONE', decimals: 18 },
@@ -1084,23 +819,6 @@ export const chains: IServerChainConfig[] = [
     },
     extra: {
       cmcPlatform: 'harmony',
-    },
-  },
-  {
-    chainType: 'evm',
-    id: 2046399126,
-    name: 'SKALE Europa Hub',
-    nativeCurrency: { name: 'sFUEL', symbol: 'sFUEL', decimals: 18 },
-    rpcUrls: {
-      default: {
-        http: ['https://mainnet.skalenodes.com/v1/elated-tan-skat'],
-      },
-    },
-    blockExplorers: {
-      default: {
-        name: 'SKALE Europa Hub Explorer',
-        url: 'https://elated-tan-skat.explorer.mainnet.skalenodes.com',
-      },
     },
   },
   {

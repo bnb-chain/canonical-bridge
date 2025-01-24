@@ -185,11 +185,17 @@ export class TokenService {
     }
 
     const [cmcRes, llamaRes] = await Promise.allSettled(reqArr);
-    if (cmcRes.status === 'fulfilled' && cmcRes.value?.[0]?.quote?.USD?.price !== undefined) {
-      return cmcRes.value?.[0]?.quote.USD?.price;
+    if (cmcRes.status === 'fulfilled') {
+      const price = cmcRes.value?.[0]?.quote?.USD?.price;
+      if (price !== undefined) {
+        return Number(price);
+      }
     }
     if (llamaRes.status === 'fulfilled' && llamaRes.value?.coins) {
-      return Object.values<ICoinPrice>(llamaRes.value.coins ?? {})?.[0]?.price;
+      const price = Object.values<ICoinPrice>(llamaRes.value.coins ?? {})?.[0]?.price;
+      if (price !== undefined) {
+        return Number(price);
+      }
     }
 
     const cmcPrices = await this.cache.get(`${CACHE_KEY.CMC_CONFIG_V2}`);
