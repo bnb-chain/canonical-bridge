@@ -1,5 +1,13 @@
 # @bnb-chain/canonical-bridge-widget
 
+## 0.6.0-alpha.18
+
+### Patch Changes
+
+- Filter the tokens whose price is 0
+- Updated dependencies
+  - @bnb-chain/canonical-bridge-sdk@0.5.0-alpha.12
+
 ## 0.6.0-alpha.17
 
 ### Patch Changes
