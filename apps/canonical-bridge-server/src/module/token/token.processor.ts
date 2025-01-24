@@ -114,19 +114,24 @@ export class TokenProcessor extends WorkerHost {
         };
       })
       .filter((t) => {
-        return t.symbol && t.price && t.chainId && now - new Date(t.updateAt).getTime() < TIME.DAY;
+        return (
+          t.symbol &&
+          Number(t.price) &&
+          t.chainId &&
+          now - new Date(t.updateAt).getTime() < TIME.DAY
+        );
       })
       .reduce((r, c) => {
         const { symbol, address, chainId } = c;
 
         if (chainId === 1) {
           const key = `${chainId}:${symbol.toLowerCase()}`;
-          r[key] = { price: c.price, decimals: c.decimals };
+          r[key] = { price: Number(c.price), decimals: c.decimals };
         }
 
         const formattedAddr = this.utilService.getFormattedAddress(chainId, address);
         const key = formattedAddr ? `${chainId}:${formattedAddr}` : chainId;
-        r[key] = { price: c.price, decimals: c.decimals };
+        r[key] = { price: Number(c.price), decimals: c.decimals };
         return r;
       }, {});
 
@@ -151,20 +156,24 @@ export class TokenProcessor extends WorkerHost {
         };
       })
       .filter(
-        (t) => t.symbol && t.price && t.chainId && now - new Date(t.updateAt).getTime() < TIME.DAY,
+        (t) =>
+          t.symbol &&
+          Number(t.price) &&
+          t.chainId &&
+          now - new Date(t.updateAt).getTime() < TIME.DAY,
       )
       .reduce((r, c) => {
         const { symbol, address, chainId } = c;
 
         if (chainId === 1) {
           const key = `${chainId}:${symbol.toLowerCase()}`;
-          r[key] = { price: c.price, id: c.id };
+          r[key] = { price: Number(c.price), id: c.id };
         }
 
         const formattedAddr = this.utilService.getFormattedAddress(chainId, address);
         const key = formattedAddr ? `${chainId}:${formattedAddr}` : chainId;
 
-        r[key] = { price: c.price, id: c.id };
+        r[key] = { price: Number(c.price), id: c.id };
         return r;
       }, {});
 
