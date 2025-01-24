@@ -57,14 +57,15 @@ export class BridgeProcessor extends WorkerHost {
 
   async fetchDeBridge() {
     const config = await this.web3Service.getDebridgeChains();
-
     if (!config) return;
 
     const tokenMap: Record<string, IDeBridgeToken[]> = {};
 
     for (const chain of config.chains) {
       const data = await this.web3Service.getDebridgeChainTokens(chain.chainId);
-      tokenMap[chain.chainId] = Object.values(data.tokens);
+      if (data) {
+        tokenMap[chain.chainId] = Object.values(data.tokens);
+      }
     }
 
     const data = { chains: config.chains, tokens: tokenMap };
