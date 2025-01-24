@@ -200,7 +200,7 @@ export class TokenService {
 
     const cmcPrices = await this.cache.get(`${CACHE_KEY.CMC_CONFIG_V2}`);
     const llamaPrices = await this.cache.get(`${CACHE_KEY.CMC_CONFIG_V2}`);
-    const key = `${chainId}:${tokenSymbol}`;
+    const key = `1:${tokenSymbol}`;
 
     return cmcPrices?.[key] ?? llamaPrices?.[key];
   }
