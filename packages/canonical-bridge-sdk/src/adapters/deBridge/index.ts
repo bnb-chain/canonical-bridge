@@ -51,8 +51,7 @@ export class DeBridge {
   async createTxQuote(urlParams: any) {
     return (
       await this.client!.get<IDeBridgeCreateQuoteResponse>(
-        `/dln/order/create-tx?${urlParams.toString()}`,
-        { timeout: 1000 }
+        `/dln/order/create-tx?${urlParams.toString()}`
       )
     ).data;
   }
