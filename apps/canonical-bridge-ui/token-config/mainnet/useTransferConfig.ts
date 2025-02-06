@@ -26,7 +26,6 @@ export function useTransferConfig() {
         axios.get<{ data: ICBridgeTransferConfig }>(`${env.SERVER_ENDPOINT}/api/bridge/v2/cbridge`),
         axios.get<{ data: IDeBridgeTransferConfig }>(
           `${env.SERVER_ENDPOINT}/api/bridge/v2/debridge`,
-          { timeout: 1000 },
         ),
         axios.get<{ data: IStargateTransferConfig }>(
           `${env.SERVER_ENDPOINT}/api/bridge/v2/stargate`,
