@@ -6,6 +6,7 @@
     "@bnb-chain/canonical-bridge-widget": "0.5.18"
   },
   "changesets": [
+    "big-candles-breathe",
     "blue-goats-shave",
     "brown-suits-matter",
     "curvy-dingos-end",

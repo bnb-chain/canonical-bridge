@@ -1,5 +1,11 @@
 # @bnb-chain/canonical-bridge-widget
 
+## 0.6.0-alpha.20
+
+### Patch Changes
+
+- Clear input if timeout
+
 ## 0.6.0-alpha.19
 
 ### Patch Changes
