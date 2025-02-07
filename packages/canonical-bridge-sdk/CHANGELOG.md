@@ -1,5 +1,11 @@
 # @bnb-chain/canonical-bridge-sdk
 
+## 0.5.0-alpha.13
+
+### Patch Changes
+
+- Add timeout to meson api
+
 ## 0.5.0-alpha.12
 
 ### Patch Changes

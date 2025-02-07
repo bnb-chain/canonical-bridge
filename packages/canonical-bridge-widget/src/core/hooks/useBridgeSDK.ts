@@ -41,7 +41,11 @@ export const useBridgeSDK = () => {
           bridgeType: 'layerZero',
           endpoint: '',
         },
-        { bridgeType: 'meson', endpoint: bridgeConfig.http.mesonEndpoint! },
+        {
+          bridgeType: 'meson',
+          endpoint: bridgeConfig.http.mesonEndpoint!,
+          timeout,
+        },
       ],
     });
   }, [bridgeConfig.http.apiTimeOut, bridgeConfig.http.mesonEndpoint]);
