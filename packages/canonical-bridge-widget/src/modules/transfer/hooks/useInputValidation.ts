@@ -56,11 +56,11 @@ export const useInputValidation = () => {
           };
         }
 
-        if (priceInfo?.upperLimit && Number(value) >= Number(priceInfo?.upperLimit)) {
+        if (priceInfo?.upperLimit && Number(value) > Number(priceInfo?.upperLimit)) {
           return {
             text: `Transfer value over $${formatNumber(dollarUpperLimit)} (${formatNumber(
               priceInfo.upperLimit,
-            )} ${selectedToken?.symbol}) or equivalent is not allowed`,
+            )} ${selectedToken?.symbol}) is not allowed`,
             isError: true,
           };
         }

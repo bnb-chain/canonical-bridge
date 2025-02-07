@@ -156,7 +156,7 @@ export function CanonicalBridgeProvider(props: CanonicalBridgeProviderProps) {
         brandChains: [],
         externalChains: [],
 
-        dollarUpperLimit: 500000,
+        dollarUpperLimit: 200000,
 
         chainOrders: [],
         tokenOrders: [],
