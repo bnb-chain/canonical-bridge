@@ -21,6 +21,7 @@ import {
   setFromChain,
   setSelectedToken,
   setSendValue,
+  setToAccount,
   setToChain,
   setToToken,
   setToTokens,
@@ -206,6 +207,7 @@ export function useSelection() {
 
   const exchange = async () => {
     dispatch(setSendValue(''));
+    dispatch(setToAccount({ address: '' }));
 
     const fromChainId = toChain!.id;
     const toChainId = fromChain!.id;

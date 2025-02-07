@@ -1,5 +1,11 @@
 # @bnb-chain/canonical-bridge-widget
 
+## 0.6.0-alpha.19
+
+### Patch Changes
+
+- d70611c: Fix issues
+
 ## 0.6.0-alpha.18
 
 ### Patch Changes

@@ -13,9 +13,10 @@ import { MIN_SOL_TO_ENABLED_TX } from '@/core/constants';
 import { FailedToGetQuoteModal } from '@/modules/transfer/components/Modal/FailedToGetQuoteModal';
 import { FeeTimeoutModal } from '@/modules/transfer/components/Modal/FeeTimeoutModal';
 import { useFailGetQuoteModal } from '@/modules/transfer/hooks/modal/useFailGetQuoteModal';
-import { useAppSelector } from '@/modules/store/StoreProvider';
+import { useAppDispatch, useAppSelector } from '@/modules/store/StoreProvider';
 import { useSummaryModal } from '@/modules/transfer/hooks/modal/useSummaryModal';
 import { useFeeLoadTimeout } from '@/modules/transfer/hooks/modal/useFeeLoadTimeout';
+import { setSendValue } from '@/modules/transfer/action';
 
 export const TransferButtonGroup = () => {
   const [hash, setHash] = useState<string | null>(null);
@@ -27,6 +28,8 @@ export const TransferButtonGroup = () => {
   );
   const isFeeTimeoutModalOpen = useAppSelector((state) => state.transfer.isFeeTimeoutModalOpen);
   const isSummaryModalOpen = useAppSelector((state) => state.transfer.isSummaryModalOpen);
+
+  const dispatch = useAppDispatch();
 
   const {
     isOpen: isSubmittedModalOpen,
@@ -103,7 +106,13 @@ export const TransferButtonGroup = () => {
         isOpen={isFailedGetQuoteModalOpen}
         onClose={onCloseFailedGetQuoteModal}
       />
-      <FeeTimeoutModal isOpen={isFeeTimeoutModalOpen} onClose={onCloseFeeTimeoutModal} />
+      <FeeTimeoutModal
+        isOpen={isFeeTimeoutModalOpen}
+        onClose={() => {
+          dispatch(setSendValue(''));
+          onCloseFeeTimeoutModal();
+        }}
+      />
     </>
   );
 };
