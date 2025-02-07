@@ -170,6 +170,10 @@ export class TokenService {
       tokenAddress,
     );
 
+    this.logger.log(
+      `[token price] ${chainId} ${tokenAddress} ${tokenSymbol}, cmc platform: ${cmcPlatform}, llama platform: ${llamaPlatform}`,
+    );
+
     const reqArr: Promise<any>[] = [];
     if (cmcToken) {
       reqArr.push(this.web3Service.getCryptoCurrencyQuotes(cmcToken.id.toString()));
@@ -187,12 +191,14 @@ export class TokenService {
     const [cmcRes, llamaRes] = await Promise.allSettled(reqArr);
     if (cmcRes.status === 'fulfilled') {
       const price = cmcRes.value?.[0]?.quote?.USD?.price;
+      this.logger.log(`[cmc price] ${price}`);
       if (price !== undefined) {
         return Number(price);
       }
     }
     if (llamaRes.status === 'fulfilled' && llamaRes.value?.coins) {
       const price = Object.values<ICoinPrice>(llamaRes.value.coins ?? {})?.[0]?.price;
+      this.logger.log(`[llama price] ${price}`);
       if (price !== undefined) {
         return Number(price);
       }
@@ -203,6 +209,7 @@ export class TokenService {
     const key = `1:${tokenSymbol?.toLowerCase()}`;
 
     const price = cmcPrices?.[key]?.price ?? llamaPrices?.[key]?.price;
+    this.logger.log(`[cache price] ${price}`);
     return price;
   }
 }
