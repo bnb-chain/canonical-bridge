@@ -60,9 +60,7 @@ export function WalletProvider(props: WalletProviderProps) {
         gridLayoutThreshold: 10,
         onClickWallet(wallet: BaseWallet) {
           if (isMobile()) {
-            const isInDappBrowser = evmWallets.some(
-              (e) => e.isInstalled() && e.id !== walletConnect().id,
-            );
+            const isInDappBrowser = evmWallets.some((e) => e.isInstalled());
 
             if (isInDappBrowser) {
               if (
