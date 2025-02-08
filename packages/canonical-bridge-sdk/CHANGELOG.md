@@ -1,5 +1,11 @@
 # @bnb-chain/canonical-bridge-sdk
 
+## 0.5.0-alpha.16
+
+### Patch Changes
+
+- Modify polygon nativeCurrency
+
 ## 0.5.0-alpha.15
 
 ### Patch Changes

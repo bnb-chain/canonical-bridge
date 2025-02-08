@@ -1,5 +1,13 @@
 # @bnb-chain/canonical-bridge-widget
 
+## 0.6.0-alpha.24
+
+### Patch Changes
+
+- Modify polygon nativeCurrency
+- Updated dependencies
+  - @bnb-chain/canonical-bridge-sdk@0.5.0-alpha.16
+
 ## 0.6.0-alpha.23
 
 ### Patch Changes
