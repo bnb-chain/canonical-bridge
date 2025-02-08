@@ -1,5 +1,11 @@
 # @bnb-chain/canonical-bridge-sdk
 
+## 0.5.0-alpha.14
+
+### Patch Changes
+
+- Fix could not jump to the app & toToken requiring two clicks on mobile
+
 ## 0.5.0-alpha.13
 
 ### Patch Changes
