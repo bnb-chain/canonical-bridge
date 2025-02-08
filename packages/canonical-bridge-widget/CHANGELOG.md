@@ -1,5 +1,13 @@
 # @bnb-chain/canonical-bridge-widget
 
+## 0.6.0-alpha.23
+
+### Patch Changes
+
+- Fix verification error on cBridge
+- Updated dependencies
+  - @bnb-chain/canonical-bridge-sdk@0.5.0-alpha.15
+
 ## 0.6.0-alpha.22
 
 ### Patch Changes

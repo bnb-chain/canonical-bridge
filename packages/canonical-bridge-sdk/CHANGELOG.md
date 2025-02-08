@@ -1,5 +1,11 @@
 # @bnb-chain/canonical-bridge-sdk
 
+## 0.5.0-alpha.15
+
+### Patch Changes
+
+- Fix verification error on cBridge
+
 ## 0.5.0-alpha.14
 
 ### Patch Changes
