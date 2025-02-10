@@ -72,7 +72,7 @@ function ToTokenItem({ token, isSelected }: { token: IBridgeToken; isSelected: b
   const tokenUrl = formatTokenUrl(toChain?.tokenUrlPattern, token.address);
 
   return (
-    <InfoTooltip label={token.name}>
+    <InfoTooltip label={token.name} isDisabled={isMobile}>
       <Flex
         className="bccb-widget-to-token-item"
         data-available-to-name={token.name}

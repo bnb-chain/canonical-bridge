@@ -148,7 +148,7 @@ export const TransferConfirmButton = ({
             toTokenSymbol: toToken?.cBridge?.raw?.token.symbol,
             toTokenDecimals: toToken?.cBridge?.raw?.token.decimal as number,
             amount: Number(sendValue),
-            cBridgeEndpoint: `${CBRIDGE_ENDPOINT}/getTransferConfigsForAll`,
+            cBridgeEndpoint: `${CBRIDGE_ENDPOINT}/v2/getTransferConfigsForAll`,
           });
 
           if (!isValidToken) {

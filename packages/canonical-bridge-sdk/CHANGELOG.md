@@ -1,5 +1,29 @@
 # @bnb-chain/canonical-bridge-sdk
 
+## 0.5.0-alpha.16
+
+### Patch Changes
+
+- Modify polygon nativeCurrency
+
+## 0.5.0-alpha.15
+
+### Patch Changes
+
+- Fix verification error on cBridge
+
+## 0.5.0-alpha.14
+
+### Patch Changes
+
+- Fix could not jump to the app & toToken requiring two clicks on mobile
+
+## 0.5.0-alpha.13
+
+### Patch Changes
+
+- Add timeout to meson api
+
 ## 0.5.0-alpha.12
 
 ### Patch Changes
