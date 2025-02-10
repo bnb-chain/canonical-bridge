@@ -1,5 +1,11 @@
 # @bnb-chain/canonical-bridge-sdk
 
+## 0.5.0-alpha.17
+
+### Patch Changes
+
+- Use deBridge's own token symbol to prevent validation failures
+
 ## 0.5.0-alpha.16
 
 ### Patch Changes

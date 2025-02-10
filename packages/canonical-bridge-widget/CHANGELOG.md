@@ -1,5 +1,13 @@
 # @bnb-chain/canonical-bridge-widget
 
+## 0.6.0-alpha.25
+
+### Patch Changes
+
+- Use deBridge's own token symbol to prevent validation failures
+- Updated dependencies
+  - @bnb-chain/canonical-bridge-sdk@0.5.0-alpha.17
+
 ## 0.6.0-alpha.24
 
 ### Patch Changes
