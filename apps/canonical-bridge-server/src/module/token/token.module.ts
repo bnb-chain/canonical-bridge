@@ -5,11 +5,11 @@ import { TokenSchedule } from './token.schedule';
 import { BullModule } from '@nestjs/bullmq';
 import { Queues } from '@/common/constants';
 import { TokenProcessor } from '@/module/token/token.processor';
-import { UtilService } from '@/shared/util/util.service';
+import { ConfigService } from '@/module/config/config.service';
 
 @Module({
   imports: [BullModule.registerQueue({ name: Queues.SyncToken })],
   controllers: [TokenController],
-  providers: [TokenProcessor, TokenService, TokenSchedule, UtilService],
+  providers: [TokenProcessor, TokenService, TokenSchedule, ConfigService],
 })
 export class TokenModule {}

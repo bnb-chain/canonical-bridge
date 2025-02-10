@@ -111,4 +111,8 @@ export interface IChainConfig extends Chain {
         default: IChainBlockExplorer;
       }
     | undefined;
+  extra?: {
+    cmcPlatform?: string; // cmc
+    llamaPlatform?: string; // llama
+  };
 }

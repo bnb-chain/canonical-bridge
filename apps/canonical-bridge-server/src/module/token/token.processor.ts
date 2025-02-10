@@ -13,7 +13,7 @@ import { ITokenJob } from '@/module/token/token.interface';
 import { Web3Service } from '@/shared/web3/web3.service';
 import { TokenService } from '@/module/token/token.service';
 import { CACHE_MANAGER, Cache } from '@nestjs/cache-manager';
-import { UtilService } from '@/shared/util/util.service';
+import { ConfigService } from '@/module/config/config.service';
 
 @Processor(Queues.SyncToken)
 export class TokenProcessor extends WorkerHost {
@@ -22,7 +22,7 @@ export class TokenProcessor extends WorkerHost {
   constructor(
     private web3Service: Web3Service,
     private tokenService: TokenService,
-    private utilService: UtilService,
+    private configService: ConfigService,
     @Inject(CACHE_MANAGER) private cache: Cache,
     @InjectQueue(Queues.SyncToken) private syncToken: Queue<ITokenJob>,
   ) {
@@ -103,11 +103,12 @@ export class TokenProcessor extends WorkerHost {
   // v2
   async cacheLlamaConfigV2() {
     const tokens = await this.tokenService.getAllCoingeckoTokens();
+    const chains = await this.configService.getChains();
 
     const now = Date.now();
     const config = tokens
       .map((t) => {
-        const chainConfig = this.utilService.getChainConfigByLlamaPlatform(t.platform);
+        const chainConfig = this.configService.getChainConfigByLlamaPlatform(chains, t.platform);
         return {
           ...t,
           chainId: chainConfig?.id ?? t.chainId,
@@ -129,7 +130,7 @@ export class TokenProcessor extends WorkerHost {
           r[key] = { price: Number(c.price), decimals: c.decimals };
         }
 
-        const formattedAddr = this.utilService.getFormattedAddress(chainId, address);
+        const formattedAddr = this.configService.getFormattedAddress(chains, chainId, address);
         const key = formattedAddr ? `${chainId}:${formattedAddr}` : chainId;
         r[key] = { price: Number(c.price), decimals: c.decimals };
         return r;
@@ -142,13 +143,14 @@ export class TokenProcessor extends WorkerHost {
   // v2
   async cacheCmcConfigV2() {
     const tokens = await this.tokenService.getAllTokens();
+    const chains = await this.configService.getChains();
 
     const now = Date.now();
     const config = tokens
       .map((t) => {
         const chainConfig =
-          this.utilService.getChainConfigByCmcPlatform(t.platformSlug) ||
-          this.utilService.getChainConfigByCmcPlatform(t.slug);
+          this.configService.getChainConfigByCmcPlatform(chains, t.platformSlug) ||
+          this.configService.getChainConfigByCmcPlatform(chains, t.slug);
 
         return {
           ...t,
@@ -170,7 +172,7 @@ export class TokenProcessor extends WorkerHost {
           r[key] = { price: Number(c.price), id: c.id };
         }
 
-        const formattedAddr = this.utilService.getFormattedAddress(chainId, address);
+        const formattedAddr = this.configService.getFormattedAddress(chains, chainId, address);
         const key = formattedAddr ? `${chainId}:${formattedAddr}` : chainId;
 
         r[key] = { price: Number(c.price), id: c.id };

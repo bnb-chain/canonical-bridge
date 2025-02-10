@@ -12,7 +12,7 @@ import { get, isEmpty } from 'lodash';
 import { Prisma } from '@prisma/client';
 import { Cache, CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Web3Service } from '@/shared/web3/web3.service';
-import { UtilService } from '@/shared/util/util.service';
+import { ConfigService } from '@/module/config/config.service';
 
 @Injectable()
 export class TokenService {
@@ -24,7 +24,7 @@ export class TokenService {
   constructor(
     private web3Service: Web3Service,
     private databaseService: DatabaseService,
-    private utilService: UtilService,
+    private configService: ConfigService,
     @Inject(CACHE_MANAGER) private cache: Cache,
   ) {}
 
@@ -94,7 +94,7 @@ export class TokenService {
   }
 
   async getCmcTokenIdsForPriceJob() {
-    const platforms = this.utilService.getChainCmcPlatforms();
+    const platforms = await this.configService.getChainCmcPlatforms();
 
     const tokens = await this.databaseService.getTokens(
       this.cmcTokenStart,
@@ -132,8 +132,8 @@ export class TokenService {
   }
 
   async getLlamaTokenIdsForPriceJob() {
-    const chainIds = this.utilService.getChainIds();
-    const platforms = this.utilService.getChainLlamaPlatforms();
+    const chainIds = await this.configService.getChainIds();
+    const platforms = await this.configService.getChainLlamaPlatforms();
 
     const tokens = await this.databaseService.getCoingeckoTokens(
       this.llamaTokenStart,
@@ -160,10 +160,13 @@ export class TokenService {
   }
 
   async getTokenPrice(chainId: number, tokenAddress?: string, tokenSymbol?: string) {
-    const cmcPlatform = this.utilService.getChainConfigByChainId(chainId)?.extra?.cmcPlatform;
+    const chains = await this.configService.getChains();
+    const cmcPlatform = this.configService.getChainConfigByChainId(chains, chainId)?.extra
+      ?.cmcPlatform;
     const cmcToken = await this.databaseService.getToken(cmcPlatform, tokenAddress);
 
-    const llamaPlatform = this.utilService.getChainConfigByChainId(chainId)?.extra?.llamaPlatform;
+    const llamaPlatform = this.configService.getChainConfigByChainId(chains, chainId)?.extra
+      ?.llamaPlatform;
     const llamaToken = await this.databaseService.getCoingeckoToken(
       chainId,
       llamaPlatform,

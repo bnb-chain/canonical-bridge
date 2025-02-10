@@ -18,8 +18,11 @@ import {
   TRON_CHAIN_ID,
   isNativeToken,
   EVM_NATIVE_TOKEN_ADDRESS,
+  ILayerZeroTransferConfig,
+  ILayerZeroToken,
+  ILayerZeroTransferConfigs,
 } from '@bnb-chain/canonical-bridge-sdk';
-import { UtilService } from '@/shared/util/util.service';
+import { ConfigService } from '@/module/config/config.service';
 
 @Processor(Queues.SyncBridge)
 export class BridgeProcessor extends WorkerHost {
@@ -28,7 +31,7 @@ export class BridgeProcessor extends WorkerHost {
   constructor(
     private web3Service: Web3Service,
     private bridgeService: BridgeService,
-    private utilService: UtilService,
+    private configService: ConfigService,
     @Inject(CACHE_MANAGER) private cache: Cache,
   ) {
     super();
@@ -177,7 +180,7 @@ export class BridgeProcessor extends WorkerHost {
     };
   }
 
-  public hasTokenPrice({
+  async hasTokenPrice({
     cmcPrices = {},
     llamaPrices = {},
     chainId,
@@ -194,7 +197,8 @@ export class BridgeProcessor extends WorkerHost {
       return true;
     }
 
-    const chainInfo = this.utilService.getChainConfigByChainId(chainId);
+    const chains = await this.configService.getChains();
+    const chainInfo = this.configService.getChainConfigByChainId(chains, chainId);
     if (!chainInfo) {
       return false;
     }
@@ -341,8 +345,29 @@ export class BridgeProcessor extends WorkerHost {
   }
 
   async filterLayerZero() {
-    const config = await this.bridgeService.getFilteredLayerZeroConfig();
-    if (!config) return;
-    await this.cache.set(`${CACHE_KEY.FIELDED_LAYER_ZERO_CONFIG}`, config, TIME.DAY);
+    const config = await this.cache.get<ILayerZeroTransferConfig>(CACHE_KEY.LAYER_ZERO_CONFIG);
+    if (!config) return config;
+
+    const priceConfig = await this.getPriceConfig();
+    const chainTokens: Record<number, ILayerZeroToken[]> = {};
+
+    Object.entries(config.tokens).forEach(([key, tokens]) => {
+      const chainId = Number(key);
+      chainTokens[chainId] = tokens.filter((e) => {
+        return this.hasTokenPrice({
+          ...priceConfig,
+          tokenAddress: e.address,
+          tokenSymbol: e.symbol,
+          chainId,
+        });
+      });
+    });
+
+    const finalConfig: ILayerZeroTransferConfigs = {
+      ...config,
+      tokens: chainTokens,
+    };
+
+    await this.cache.set(`${CACHE_KEY.FIELDED_LAYER_ZERO_CONFIG}`, finalConfig, TIME.DAY);
   }
 }
