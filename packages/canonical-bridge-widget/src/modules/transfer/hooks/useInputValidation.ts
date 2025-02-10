@@ -7,12 +7,20 @@ import { useAppSelector } from '@/modules/store/StoreProvider';
 import { useSolanaBalance } from '@/modules/wallet/hooks/useSolanaBalance';
 import { MIN_SOL_TO_ENABLED_TX } from '@/core/constants';
 import { useIsWalletCompatible } from '@/modules/wallet/hooks/useIsWalletCompatible';
+import { useTokenUpperLimit } from '@/modules/aggregator/hooks/useTokenUpperLimit';
+import { useBridgeConfig } from '@/index';
 
 export const useInputValidation = () => {
   const { data } = useSolanaBalance();
   const isWalletCompatible = useIsWalletCompatible();
+  const {
+    transfer: { dollarUpperLimit },
+  } = useBridgeConfig();
   const solBalance = Number(data?.formatted);
   const fromChain = useAppSelector((state) => state.transfer.fromChain);
+  const selectedToken = useAppSelector((state) => state.transfer.selectedToken);
+
+  const priceInfo = useTokenUpperLimit();
   const validateInput = useCallback(
     ({
       balance,
@@ -36,6 +44,23 @@ export const useInputValidation = () => {
         if (Number(value) < Math.pow(10, -decimal)) {
           return {
             text: `The amount is too small. Please enter a valid amount to transfer.`,
+            isError: true,
+          };
+        }
+
+        // Check upper limit
+        if (priceInfo?.isError) {
+          return {
+            text: `This token is not available at the moment. Please try again later.`,
+            isError: true,
+          };
+        }
+
+        if (priceInfo?.upperLimit && Number(value) > Number(priceInfo?.upperLimit)) {
+          return {
+            text: `Transfer value over $${formatNumber(dollarUpperLimit)} (${formatNumber(
+              priceInfo.upperLimit,
+            )} ${selectedToken?.symbol}) is not allowed`,
             isError: true,
           };
         }
@@ -71,7 +96,14 @@ export const useInputValidation = () => {
         console.log(e);
       }
     },
-    [fromChain?.chainType, solBalance, isWalletCompatible],
+    [
+      fromChain?.chainType,
+      solBalance,
+      isWalletCompatible,
+      priceInfo,
+      dollarUpperLimit,
+      selectedToken?.symbol,
+    ],
   );
 
   return {

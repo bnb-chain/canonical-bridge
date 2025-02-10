@@ -19,19 +19,20 @@ export function BridgeRoutes() {
   const dispatch = useAppDispatch();
 
   const isBase = useBreakpointValue({ base: true, lg: false }) ?? false;
-  const { routeContentBottom } = useBridgeConfig();
   const { loadingBridgeFees } = useLoadingBridgeFees();
   const bridgeConfig = useBridgeConfig();
   const isRoutesModalOpen = useAppSelector((state) => state.transfer.isRoutesModalOpen);
   const transferActionInfo = useAppSelector((state) => state.transfer.transferActionInfo);
   const isManuallyReload = useAppSelector((state) => state.transfer.isManuallyReload);
+  const toToken = useAppSelector((state) => state.transfer.toToken);
 
   useFeeRefreshProgress();
 
   // Load estimated bridge fees every 30 seconds when there is bridge route available
   useEffect(() => {
     let mount = true;
-    if (!mount) return;
+    if (!mount || !toToken) return;
+
     if (transferActionInfo) {
       const params = {
         triggerType: 'refresh' as TriggerType,
@@ -73,6 +74,7 @@ export function BridgeRoutes() {
     dispatch,
     bridgeConfig.http.refetchingInterval,
     isManuallyReload,
+    toToken,
   ]);
 
   if (isBase) {
@@ -87,5 +89,5 @@ export function BridgeRoutes() {
     );
   }
 
-  return <TransferOverview routeContentBottom={routeContentBottom} />;
+  return <TransferOverview routeContentBottom={bridgeConfig.components.routeContentBottom} />;
 }

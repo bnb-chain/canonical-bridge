@@ -48,6 +48,8 @@ export const setIsRoutesModalOpen = createAction<ITransferState['isRoutesModalOp
   'transfer/setIsRoutesModalOpen',
 );
 
+export const setToTokens = createAction<ITransferState['toTokens']>('transfer/toTokens');
+
 export const setIsManuallyReload = createAction<ITransferState['isManuallyReload']>(
   'transfer/setIsManuallyReload',
 );
@@ -57,6 +59,10 @@ export const setIsFailedGetQuoteModalOpen = createAction<
 >('transfer/setIsFailedGetQuoteModalOpen');
 export const setIsSummaryModalOpen = createAction<ITransferState['isSummaryModalOpen']>(
   'transfer/setIsSummaryModalOpen',
+);
+
+export const setIsFeeTimeoutModalOpen = createAction<ITransferState['isFeeTimeoutModalOpen']>(
+  'transfer/setIsFeeTimeoutModalOpen',
 );
 
 export const setRefreshAnimationProgress = createAction<ITransferState['refreshAnimationProgress']>(

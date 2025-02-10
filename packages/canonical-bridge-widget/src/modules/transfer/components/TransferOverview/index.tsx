@@ -29,7 +29,7 @@ import { DeBridgeOption } from '@/modules/aggregator/adapters/deBridge/component
 import { StarGateOption } from '@/modules/aggregator/adapters/stargate/components/StarGateOption';
 import { LayerZeroOption } from '@/modules/aggregator/adapters/layerZero/components/LayerZeroOption';
 import { MesonOption } from '@/modules/aggregator/adapters/meson/components/MesonOption';
-import { useAggregator } from '@/modules/aggregator/components/AggregatorProvider';
+import { useAggregator } from '@/modules/aggregator/providers/AggregatorProvider';
 import { CBridgeSendMaxMin } from '@/modules/aggregator/adapters/cBridge/components/CBridgeSendMaxMin';
 
 export interface TransferOverviewProps extends FlexProps {
@@ -43,7 +43,7 @@ export function TransferOverview(props: TransferOverviewProps) {
   const { formatMessage } = useIntl();
   const { colorMode } = useColorMode();
   const theme = useTheme();
-  const { transferConfig } = useAggregator();
+  const aggregator = useAggregator();
 
   const { loadingBridgeFees } = useLoadingBridgeFees();
   const { getSortedReceiveAmount } = useGetReceiveAmount();
@@ -55,9 +55,11 @@ export function TransferOverview(props: TransferOverviewProps) {
   const toTokenInfo = useAppSelector((state) => state.transfer.toToken);
   const debouncedSendValue = useDebounce(sendValue, DEBOUNCE_DELAY);
   const isBase = useBreakpointValue({ base: true, lg: false }) ?? false;
+  const toToken = useAppSelector((state) => state.transfer.toToken);
 
   useEffect(() => {
-    if (isBase) return;
+    if (isBase || !toToken || !sendValue) return;
+
     if (sendValue === debouncedSendValue) {
       dispatch(setTransferActionInfo(undefined));
       if (!selectedToken || !Number(debouncedSendValue)) {
@@ -73,7 +75,7 @@ export function TransferOverview(props: TransferOverviewProps) {
     } else {
       dispatch(setIsGlobalFeeLoading(true));
     }
-  }, [selectedToken, debouncedSendValue, dispatch, sendValue, loadingBridgeFees, isBase]);
+  }, [selectedToken, debouncedSendValue, dispatch, sendValue, loadingBridgeFees, isBase, toToken]);
 
   const sortedReceivedAmt = useMemo(() => getSortedReceiveAmount(), [getSortedReceiveAmount]);
   const options = useMemo(() => {
@@ -175,7 +177,7 @@ export function TransferOverview(props: TransferOverviewProps) {
     </Box>
   );
 
-  const cBridgeSupport = 'cBridge' in transferConfig;
+  const cBridgeSupport = !!aggregator.getAdapter('cBridge');
   const showOverview = showRoute || !!routeContentBottom;
 
   return (

@@ -1,6 +1,7 @@
+import { IBridgeChain, IBridgeToken } from '@bnb-chain/canonical-bridge-sdk';
+
 import * as actions from '@/modules/transfer/action';
 import { createReducer } from '@/modules/store/createReducer';
-import { IBridgeChain, IBridgeToken } from '@/modules/aggregator/types';
 import {
   IBridgeError,
   IEstimatedAmount,
@@ -29,7 +30,9 @@ export interface ITransferState {
     address?: string;
   };
   isRoutesModalOpen: boolean;
+  toTokens: IBridgeToken[];
   isFailedGetQuoteModalOpen: boolean;
+  isFeeTimeoutModalOpen: boolean;
   isSummaryModalOpen: boolean;
   refreshAnimationProgress: number;
 }
@@ -56,8 +59,10 @@ const initStates: ITransferState = {
     address: '',
   },
   isRoutesModalOpen: false,
+  toTokens: [],
   isManuallyReload: false,
   isFailedGetQuoteModalOpen: false,
+  isFeeTimeoutModalOpen: false,
   isSummaryModalOpen: false,
   refreshAnimationProgress: 0,
 };
@@ -145,6 +150,12 @@ export default createReducer(initStates, (builder) => {
     ...state,
     isRoutesModalOpen: payload,
   }));
+
+  builder.addCase(actions.setToTokens, (state, { payload }) => ({
+    ...state,
+    toTokens: payload,
+  }));
+
   builder.addCase(actions.setIsManuallyReload, (state, { payload }) => ({
     ...state,
     isManuallyReload: payload,
@@ -153,6 +164,10 @@ export default createReducer(initStates, (builder) => {
   builder.addCase(actions.setIsFailedGetQuoteModalOpen, (state, { payload }) => ({
     ...state,
     isFailedGetQuoteModalOpen: payload,
+  }));
+  builder.addCase(actions.setIsFeeTimeoutModalOpen, (state, { payload }) => ({
+    ...state,
+    isFeeTimeoutModalOpen: payload,
   }));
   builder.addCase(actions.setIsSummaryModalOpen, (state, { payload }) => ({
     ...state,

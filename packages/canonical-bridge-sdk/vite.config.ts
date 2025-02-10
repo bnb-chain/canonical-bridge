@@ -6,6 +6,9 @@ import path from 'path';
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  define: {
+    __APP_VERSION__: new Date().getTime(),
+  },
   plugins: [
     react(),
     dts({
@@ -21,7 +24,7 @@ export default defineConfig({
     target: 'esnext',
     minify: false,
     lib: {
-      formats: ['es'],
+      formats: ['es', 'cjs'],
       entry: {
         index: 'src/index.ts',
       },

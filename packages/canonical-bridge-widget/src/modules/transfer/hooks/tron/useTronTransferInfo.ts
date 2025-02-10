@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
+import { isEvmAddress, isTronAddress } from '@bnb-chain/canonical-bridge-sdk';
 
-import { isEvmAddress, isTronAddress } from '@/core/utils/address';
 import { useAppSelector } from '@/modules/store/StoreProvider';
 
 export function useTronTransferInfo() {

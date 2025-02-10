@@ -1,5 +1,65 @@
 # @bnb-chain/canonical-bridge-sdk
 
+## 0.5.0-alpha.17
+
+### Patch Changes
+
+- Use deBridge's own token symbol to prevent validation failures
+
+## 0.5.0-alpha.16
+
+### Patch Changes
+
+- Modify polygon nativeCurrency
+
+## 0.5.0-alpha.15
+
+### Patch Changes
+
+- Fix verification error on cBridge
+
+## 0.5.0-alpha.14
+
+### Patch Changes
+
+- Fix could not jump to the app & toToken requiring two clicks on mobile
+
+## 0.5.0-alpha.13
+
+### Patch Changes
+
+- Add timeout to meson api
+
+## 0.5.0-alpha.12
+
+### Patch Changes
+
+- Filter the tokens whose price is 0
+
+## 0.5.0-alpha.11
+
+### Patch Changes
+
+- use token price on ethereum if can not get the token price on specified chain
+
+## 0.5.0-alpha.10
+
+### Patch Changes
+
+- Fix the issue of to token cannot be selected after exchange chain
+
+## 0.5.0-alpha.9
+
+### Patch Changes
+
+- Use `chainId` + `tokenAddress` to get token price
+
+## 0.5.0-alpha.8
+
+### Patch Changes
+
+- Remove unused code
+
 ## 0.4.7
 
 ### Patch Changes

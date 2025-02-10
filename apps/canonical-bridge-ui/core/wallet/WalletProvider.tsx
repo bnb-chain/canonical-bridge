@@ -18,6 +18,7 @@ import * as allChains from 'viem/chains';
 import { defaultTronConfig, tronLink } from '@node-real/walletkit/tron';
 import {
   defaultSolanaConfig,
+  phantomWallet,
   phantomWallet as solanaPhantomWallet,
   trustWallet as solanaTrustWallet,
 } from '@node-real/walletkit/solana';
@@ -62,11 +63,28 @@ export function WalletProvider(props: WalletProviderProps) {
             const isInDappBrowser = evmWallets.some((e) => e.isInstalled());
 
             if (isInDappBrowser) {
+              if (
+                binanceWeb3Wallet().isInstalled() &&
+                phantomWallet().isInstalled() &&
+                wallet.id === phantomWallet().id
+              ) {
+                onOpen();
+                return false;
+              }
+              if (
+                phantomWallet().isInstalled() &&
+                metaMask().isInstalled() &&
+                wallet.id === metaMask().id
+              ) {
+                onOpen();
+                return false;
+              }
+
               // Some wallets will set `isMetaMask=true`
               const counter = evmWallets.filter((e) => e.isInstalled()).length;
               if (
                 (counter === 1 && wallet.isInstalled()) ||
-                (counter > 1 && wallet.isInstalled() && wallet.id !== 'metaMask')
+                (counter > 1 && wallet.isInstalled() && wallet.id !== metaMask().id)
               ) {
                 return true;
               } else {
@@ -94,7 +112,7 @@ export function WalletProvider(props: WalletProviderProps) {
       solanaConfig: solana
         ? defaultSolanaConfig({
             autoConnect: true,
-            rpcUrl: solana?.rpcUrl,
+            rpcUrl: solana?.rpcUrls.default.http[0],
             wallets: solanaWallets,
           })
         : undefined,
@@ -104,7 +122,6 @@ export function WalletProvider(props: WalletProviderProps) {
   return (
     <WalletKitProvider config={config} mode="light">
       {children}
-
       <PreventingModal isOpen={isOpen} onClose={onClose} />
       <ConnectModal />
     </WalletKitProvider>
@@ -113,27 +130,11 @@ export function WalletProvider(props: WalletProviderProps) {
 
 function getEvmChains(chainConfigs: IChainConfig[]) {
   return chainConfigs
-    .filter((e) => !e.chainType || e.chainType === 'evm')
+    .filter((e) => e.chainType === 'evm')
     .map((item) => {
       const evmChain = Object.values(allChains).find((e) => e.id === item.id);
       return {
-        id: item.id as number,
-        name: item.name,
-        nativeCurrency: item.nativeCurrency,
-        rpcUrls: {
-          default: {
-            http: [item.rpcUrl],
-          },
-          public: {
-            http: [item.rpcUrl],
-          },
-        },
-        blockExplorers: {
-          default: {
-            name: item.explorer.name,
-            url: item.explorer.url,
-          },
-        },
+        ...item,
         contracts: {
           ...evmChain?.contracts,
           ...item.contracts,

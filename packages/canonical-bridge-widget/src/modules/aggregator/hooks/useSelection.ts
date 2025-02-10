@@ -1,222 +1,275 @@
 import { useAccount, useChains } from 'wagmi';
 import { useCallback } from 'react';
 import { useConnection } from '@solana/wallet-adapter-react';
-
-import { useAggregator } from '@/modules/aggregator/components/AggregatorProvider';
-import { isChainOrTokenCompatible } from '@/modules/aggregator/shared/isChainOrTokenCompatible';
 import {
   ChainType,
-  IBridgeChain,
   IBridgeToken,
   IBridgeTokenWithBalance,
-} from '@/modules/aggregator/types';
+  isSameAddress,
+} from '@bnb-chain/canonical-bridge-sdk';
+
+import { useAggregator } from '@/modules/aggregator/providers/AggregatorProvider';
 import { useAppDispatch, useAppSelector } from '@/modules/store/StoreProvider';
-import { setFromChain, setSelectedToken, setToChain, setToToken } from '@/modules/transfer/action';
-import { useTokenPrice } from '@/modules/aggregator/hooks/useTokenPrice';
 import { getTokenBalances } from '@/modules/aggregator/shared/getTokenBalances';
 import { sortTokens } from '@/modules/aggregator/shared/sortTokens';
 import { useTronWeb } from '@/core/hooks/useTronWeb';
 import { useSolanaAccount } from '@/modules/wallet/hooks/useSolanaAccount';
 import { useTronAccount } from '@/modules/wallet/hooks/useTronAccount';
-import { isSameAddress } from '@/core/utils/address';
+import { useTokenPrice } from '@/modules/aggregator/providers/TokenPricesProvider';
+import { useBridgeConfig } from '@/index';
+import {
+  setFromChain,
+  setSelectedToken,
+  setSendValue,
+  setToAccount,
+  setToChain,
+  setToToken,
+  setToTokens,
+} from '@/modules/transfer/action';
 
 export function useSelection() {
-  const { getFromChains, getToChains, getTokens, getToToken, adapters } = useAggregator();
+  const aggregator = useAggregator();
 
   const fromChain = useAppSelector((state) => state.transfer.fromChain);
   const toChain = useAppSelector((state) => state.transfer.toChain);
   const selectedToken = useAppSelector((state) => state.transfer.selectedToken);
   const dispatch = useAppDispatch();
 
-  const { getSortedTokens } = useSortedTokens();
-
-  const updateToToken = ({
-    fromChainId = fromChain?.id,
-    toChainId = toChain?.id,
-    token = selectedToken,
-  }: {
-    fromChainId?: number;
-    toChainId?: number;
-    token?: IBridgeToken;
+  const updateSelectedInfo = (params: {
+    fromChainId: number;
+    toChainId: number;
+    tokenAddress: string;
+    toTokenAddress?: string;
   }) => {
-    const newToToken = getToToken({
-      fromChainId: fromChainId!,
-      toChainId: toChainId!,
-      token: token!,
-    });
-    dispatch(setToToken(newToToken));
-  };
+    const options = {
+      fromChainId: params.fromChainId,
+      toChainId: params.toChainId,
+      tokenAddress: params.tokenAddress,
+    };
 
-  const updateSelectedInfo = ({
-    tmpFromChain = fromChain,
-    tmpToChain = toChain,
-    tmpToken = selectedToken,
-  }: {
-    tmpFromChain?: IBridgeChain;
-    tmpToChain?: IBridgeChain;
-    tmpToken?: IBridgeToken;
-  }) => {
-    const newToken = getTokens({
-      fromChainId: tmpFromChain?.id,
-      toChainId: tmpToChain?.id,
-    }).find((t) => isSameAddress(t.address, tmpToken?.address));
-
-    const newFromChain = getFromChains({
-      toChainId: tmpToChain?.id,
-      token: newToken,
-    }).find((c) => c.id === tmpFromChain?.id);
-
-    const newToChain = getToChains({
-      fromChainId: tmpFromChain?.id,
-      token: newToken,
-    }).find((c) => c.id === tmpToChain?.id);
+    const newFromChain = aggregator.getFromChainDetail(options);
+    const newToChain = aggregator.getToChainDetail(options);
+    const newToken = aggregator.getTokenDetail(options);
 
     dispatch(setFromChain(newFromChain));
     dispatch(setToChain(newToChain));
     dispatch(setSelectedToken(newToken));
 
-    updateToToken({
-      fromChainId: newFromChain?.id,
-      toChainId: newToChain?.id,
-      token: newToken,
+    const updateToTokenInfo = (toTokenAddress: string) => {
+      const newToToken = aggregator.getToTokenDetail({
+        fromChainId: params.fromChainId,
+        toChainId: params.toChainId,
+        fromTokenAddress: params.tokenAddress,
+        toTokenAddress,
+      });
+      dispatch(setToToken(newToToken));
+    };
+
+    if (params.toTokenAddress) {
+      updateToTokenInfo(params.toTokenAddress);
+    } else {
+      const toTokens = aggregator.getToTokens(options);
+      if (toTokens.length > 1) {
+        // eslint-disable-next-line no-console
+        console.log('[aggregator]', `has multiple toTokens (${toTokens.length})`);
+        dispatch(setToTokens(toTokens));
+        dispatch(setToToken(undefined));
+      } else {
+        dispatch(setToTokens([]));
+        dispatch(setToToken(undefined));
+      }
+
+      if (toTokens.length === 1) {
+        updateToTokenInfo(toTokens[0].address);
+      } else {
+        dispatch(setToToken(undefined));
+      }
+    }
+  };
+
+  const selectDefault = async (params: {
+    fromChainId: number;
+    toChainId: number;
+    tokenAddress: string;
+  }) => {
+    const { fromChainId, toChainId, tokenAddress } = params;
+
+    const fromChains = aggregator.getFromChains();
+    const toChains = aggregator.getToChains({ fromChainId });
+    const tokens = aggregator.getTokens({
+      fromChainId,
+      toChainId,
+    });
+
+    const newFromChain = fromChains.find((e) => e.id === fromChainId);
+    const newToChain = toChains.find((e) => e.id === toChainId);
+    const token = tokens.find((e) => isSameAddress(e.address, tokenAddress));
+
+    if (!newFromChain) {
+      if (fromChains?.[0]?.id) {
+        selectFromChain(fromChains?.[0].id);
+      }
+      return;
+    }
+
+    if (!newToChain || !token) {
+      selectFromChain(fromChainId);
+      return;
+    }
+
+    updateSelectedInfo({
+      fromChainId,
+      toChainId,
+      tokenAddress,
     });
   };
 
-  const selectFromChain = async (tmpFromChain: IBridgeChain) => {
-    // After selecting fromChain, if toChain becomes incompatible, reselect the first compatible network in toChain list.
-    const toChains = getToChains({
-      fromChainId: tmpFromChain.id,
-    });
-    const tmpToChain =
-      toChains.find((c) => isChainOrTokenCompatible(c) && c.id === toChain?.id) ??
-      toChains.find((c) => isChainOrTokenCompatible(c) && c.chainType !== 'link');
+  const selectFromChain = async (fromChainId: number) => {
+    const fromChains = aggregator.getFromChains();
+    const newFromChain = fromChains.find((e) => e.id === fromChainId)!;
 
-    const tmpTokens = await getSortedTokens({
-      chainType: tmpFromChain.chainType,
-      fromChainId: tmpFromChain.id,
-      tokens: getTokens({
-        fromChainId: tmpFromChain.id,
-        toChainId: tmpToChain?.id,
+    const toChains = aggregator.getToChains({ fromChainId });
+    const newToChain =
+      toChains.find((e) => e.isCompatible && e.id === toChain?.id) ??
+      toChains.find((e) => e.isCompatible && e.chainType !== 'link');
+
+    const sortedTokens = await getSortedTokens({
+      chainType: newFromChain.chainType,
+      fromChainId: newFromChain.id,
+      tokens: aggregator.getTokens({
+        fromChainId: newFromChain.id,
+        toChainId: newToChain!.id,
       }),
     });
 
     const newToken =
-      tmpTokens.find(
-        (t) => isChainOrTokenCompatible(t) && isSameAddress(t.address, selectedToken?.address),
-      ) ?? tmpTokens.find((t) => isChainOrTokenCompatible(t));
+      sortedTokens.find(
+        (t) =>
+          t.isCompatible &&
+          t.displaySymbol.toUpperCase() === selectedToken?.displaySymbol.toUpperCase(),
+      ) ?? sortedTokens.find((t) => t.isCompatible);
 
     updateSelectedInfo({
-      tmpToken: newToken,
-      tmpFromChain,
-      tmpToChain,
+      fromChainId,
+      toChainId: newToChain!.id,
+      tokenAddress: newToken!.address,
     });
   };
 
-  return {
-    async selectDefault({
-      walletChainId,
+  const selectToChain = async (toChainId: number) => {
+    const fromChainId = fromChain!.id;
+
+    const sortedTokens = await getSortedTokens({
+      fromChainId,
+      tokens: aggregator.getTokens({
+        fromChainId,
+        toChainId,
+      }),
+    });
+
+    const newToken =
+      sortedTokens.find(
+        (t) =>
+          t.isCompatible &&
+          t.displaySymbol.toUpperCase() === selectedToken?.displaySymbol.toUpperCase(),
+      ) ?? sortedTokens.find((t) => t.isCompatible);
+
+    updateSelectedInfo({
+      tokenAddress: newToken!.address,
       fromChainId,
       toChainId,
-      tokenSymbol,
-    }: {
-      walletChainId?: number;
-      fromChainId: number;
-      toChainId: number;
-      tokenSymbol: string;
-    }) {
-      const bridgeTypes = adapters.map((item) => item.bridgeType);
-      const token = Object.fromEntries(
-        bridgeTypes.map((item) => [item, { symbol: tokenSymbol }]),
-      ) as any as IBridgeToken;
+    });
+  };
 
-      if (walletChainId) {
-        const fromChains = getFromChains({});
-        const chain = fromChains.find((chain) => chain.id === walletChainId);
-        if (chain) {
-          selectFromChain(chain);
-          return;
-        }
-        if (fromChain?.id) return;
+  const selectToken = async (tokenAddress: string) => {
+    const fromChainId = fromChain!.id;
+    const toChainId = toChain!.id;
+
+    updateSelectedInfo({
+      tokenAddress,
+      fromChainId,
+      toChainId,
+    });
+  };
+
+  const selectToToken = async (toTokenAddress: string) => {
+    const fromChainId = fromChain!.id;
+    const toChainId = toChain!.id;
+    const tokenAddress = selectedToken!.address;
+
+    updateSelectedInfo({
+      fromChainId,
+      toChainId,
+      tokenAddress,
+      toTokenAddress,
+    });
+  };
+
+  const exchange = async () => {
+    dispatch(setSendValue(''));
+    dispatch(setToAccount({ address: '' }));
+
+    const fromChainId = toChain!.id;
+    const toChainId = fromChain!.id;
+
+    const fromChains = aggregator.getFromChains();
+    const newFromChain = fromChains.find((e) => e.id === fromChainId);
+    if (!newFromChain) {
+      if (fromChains?.[0].id) {
+        selectFromChain(fromChains?.[0].id);
       }
+      return;
+    }
 
-      const fromChains = getFromChains({
-        toChainId,
-        token,
-      });
-      const toChains = getToChains({
+    const toChains = aggregator.getFromChains();
+    const newToChain = toChains.find((e) => e.id === toChainId);
+    if (!newToChain) {
+      selectFromChain(fromChainId);
+      return;
+    }
+
+    const sortedTokens = await getSortedTokens({
+      fromChainId,
+      tokens: aggregator.getTokens({
         fromChainId,
-        token,
-      });
-      const tokens = getTokens({
-        fromChainId,
         toChainId,
-      });
+      }),
+    });
 
-      const newFromChain = fromChains.find((item) => item.id === fromChainId);
-      const newToChain = toChains.find((item) => item.id === toChainId);
-      const newToken = tokens.find(
-        (item) => item.displaySymbol.toUpperCase() === tokenSymbol.toUpperCase(),
-      );
+    const newToken =
+      sortedTokens.find(
+        (t) =>
+          t.isCompatible &&
+          t.displaySymbol.toUpperCase() === selectedToken?.displaySymbol.toUpperCase(),
+      ) ?? sortedTokens.find((t) => t.isCompatible);
 
-      dispatch(setFromChain(newFromChain));
-      dispatch(setToChain(newToChain));
-      dispatch(setSelectedToken(newToken));
+    if (!newToken) {
+      selectFromChain(fromChainId);
+      return;
+    }
 
-      updateToToken({
-        fromChainId: newFromChain?.id,
-        toChainId: newToChain?.id,
-        token: newToken,
-      });
-    },
+    updateSelectedInfo({
+      fromChainId,
+      toChainId,
+      tokenAddress: newToken.address,
+    });
+  };
+
+  const { getSortedTokens } = useSortedTokens();
+
+  return {
+    selectDefault,
     selectFromChain,
-    async selectToChain(tmpToChain: IBridgeChain) {
-      const fromChainId = fromChain!.id;
-
-      const tmpTokens = await getSortedTokens({
-        fromChainId,
-        tokens: getTokens({
-          fromChainId,
-          toChainId: tmpToChain?.id,
-        }),
-      });
-
-      const newToken =
-        tmpTokens.find(
-          (t) =>
-            isChainOrTokenCompatible(t) &&
-            t.displaySymbol.toUpperCase() === selectedToken?.displaySymbol.toUpperCase(),
-        ) ?? tmpTokens.find((t) => isChainOrTokenCompatible(t));
-
-      updateSelectedInfo({
-        tmpToken: newToken,
-        tmpFromChain: fromChain,
-        tmpToChain,
-      });
-    },
-
-    async selectToken(newToken: IBridgeToken) {
-      updateSelectedInfo({
-        tmpToken: newToken,
-      });
-    },
-
-    // Some wallets do not support current chain, and the first supported chain is re-selected by default
-    async selectFirstChain() {
-      const fromChains = getFromChains({});
-      const firstChain = fromChains?.[0];
-
-      if (fromChain && firstChain) {
-        const hasChain = fromChains.find((e) => e.id === fromChain.id);
-        if (!hasChain) {
-          selectFromChain(firstChain);
-        }
-      }
-    },
+    selectToChain,
+    selectToken,
+    selectToToken,
+    exchange,
   };
 }
 
 function useSortedTokens() {
-  const { transferConfig, chainConfigs } = useAggregator();
+  const bridgeConfig = useBridgeConfig();
+
   const { getTokenPrice } = useTokenPrice();
 
   const { address } = useAccount();
@@ -240,10 +293,10 @@ function useSortedTokens() {
       const balances = await getTokenBalances({
         chainType,
         tokens,
+        chainConfig: bridgeConfig.transfer.chainConfigs?.find((item) => item.id === fromChainId),
         evmParams: {
           account: address,
           chain: chains?.find((item) => item.id === fromChainId),
-          chainConfig: chainConfigs?.find((item) => item.id === fromChainId),
         },
         solanaParams: {
           account: solanaAddress,
@@ -257,7 +310,12 @@ function useSortedTokens() {
 
       const tmpTokens = tokens.map((item) => {
         const balance = balances[item.address?.toLowerCase()];
-        const price = getTokenPrice(item);
+        const price = getTokenPrice({
+          chainId: fromChainId,
+          chainType,
+          tokenAddress: item?.address,
+          tokenSymbol: item?.symbol,
+        });
 
         let value: number | undefined;
         if (balance !== undefined && price !== undefined) {
@@ -273,17 +331,16 @@ function useSortedTokens() {
 
       return sortTokens({
         tokens: tmpTokens,
-        orders: transferConfig.order?.tokens,
       });
     },
     [
+      bridgeConfig.transfer.chainConfigs,
       address,
       chains,
       solanaAddress,
       connection,
       tronAddress,
       tronWeb,
-      transferConfig.order?.tokens,
       getTokenPrice,
     ],
   );

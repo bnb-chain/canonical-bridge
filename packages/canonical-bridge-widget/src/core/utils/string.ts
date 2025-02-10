@@ -1,6 +1,6 @@
 import { MIN_FEE } from '@/core/constants';
 import { formatNumber } from '@/core/utils/number';
-import { IFeeDetails } from '@/modules/aggregator';
+import { IFeeDetails } from '@/modules/aggregator/types';
 
 export function truncateStr(str: string, headLen = 6, tailLen = 6) {
   if (!str) {
@@ -74,4 +74,12 @@ export function includesIgnoreCase(strArr: string[], target: string) {
 export function capitalizeFirst(text: string) {
   if (typeof text !== 'string') return '';
   return text.charAt(0).toUpperCase() + text.slice(1).toLowerCase();
+}
+
+export function checkResponseResult(response: any) {
+  return response.every(
+    (route: any) =>
+      (route.status === 'rejected' && route?.reason?.message?.includes('timeout')) ||
+      (route.status === 'fulfilled' && route.value === null),
+  );
 }

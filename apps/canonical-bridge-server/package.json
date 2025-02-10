@@ -20,6 +20,7 @@
     "prisma:migrate:div": "npx dotenv -e .env -- npx prisma migrate dev"
   },
   "dependencies": {
+    "@bnb-chain/canonical-bridge-sdk": "workspace:*",
     "@nestjs/axios": "~3.0.3",
     "@nestjs/bullmq": "~10.2.1",
     "@nestjs/cache-manager": "~2.2.2",
@@ -33,7 +34,7 @@
     "bullmq": "~5.12.14",
     "cache-manager": "~5.7.6",
     "cache-manager-ioredis-yet": "~2.1.1",
-    "express-prom-bundle": "~7.0.0",
+    "express-prom-bundle": "~8.0.0",
     "ioredis": "~5.4.1",
     "lodash": "~4.17.21",
     "prisma": "~5.19.1",
@@ -42,7 +43,7 @@
     "rxjs": "^7.8.1"
   },
   "devDependencies": {
-    "@bnb-chain/prettier-config": "workspace:*",
+    "@bnb-chain/prettier-config": "^1",
     "@nestjs/cli": "^10.0.0",
     "@nestjs/schematics": "^10.0.0",
     "@types/express": "^4.17.17",

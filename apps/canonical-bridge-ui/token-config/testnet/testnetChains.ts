@@ -2,6 +2,7 @@ import { IChainConfig } from '@bnb-chain/canonical-bridge-widget';
 
 export const testnetChains: IChainConfig[] = [
   {
+    chainType: 'evm',
     id: 97,
     name: 'BSC Testnet',
     nativeCurrency: {
@@ -9,13 +10,20 @@ export const testnetChains: IChainConfig[] = [
       symbol: 'BNB',
       decimals: 18,
     },
-    rpcUrl: 'https://bsc-testnet.bnbchain.org',
-    explorer: {
-      name: 'BSC Testnet',
-      url: 'https://testnet.bscscan.com',
+    rpcUrls: {
+      default: {
+        http: ['https://bsc-testnet.bnbchain.org'],
+      },
+    },
+    blockExplorers: {
+      default: {
+        name: 'BSC Testnet',
+        url: 'https://testnet.bscscan.com',
+      },
     },
   },
   {
+    chainType: 'evm',
     id: 1001,
     name: 'Klaytn Testnet Baobab',
     nativeCurrency: {
@@ -23,13 +31,18 @@ export const testnetChains: IChainConfig[] = [
       symbol: 'KLAY',
       decimals: 18,
     },
-    rpcUrl: 'https://public-en-baobab.klaytn.net',
-    explorer: {
-      name: 'Klaytn Scope',
-      url: 'https://baobab.klaytnscope.com',
+    rpcUrls: {
+      default: { http: ['https://public-en-baobab.klaytn.net'] },
+    },
+    blockExplorers: {
+      default: {
+        name: 'Klaytn Scope',
+        url: 'https://baobab.klaytnscope.com',
+      },
     },
   },
   {
+    chainType: 'evm',
     id: 11155111,
     name: 'Sepolia',
     nativeCurrency: {
@@ -37,13 +50,20 @@ export const testnetChains: IChainConfig[] = [
       symbol: 'ETH',
       decimals: 18,
     },
-    rpcUrl: 'https://ethereum-sepolia-rpc.publicnode.com',
-    explorer: {
-      name: 'Sepolia Scan',
-      url: 'https://sepolia.etherscan.io',
+    rpcUrls: {
+      default: {
+        http: ['https://ethereum-sepolia-rpc.publicnode.com'],
+      },
+    },
+    blockExplorers: {
+      default: {
+        name: 'Sepolia Scan',
+        url: 'https://sepolia.etherscan.io',
+      },
     },
   },
   {
+    chainType: 'evm',
     id: 421614,
     name: 'Arbitrum Sepolia Testnet',
     nativeCurrency: {
@@ -51,13 +71,20 @@ export const testnetChains: IChainConfig[] = [
       symbol: 'ETH',
       decimals: 18,
     },
-    rpcUrl: 'https://sepolia-rollup.arbitrum.io/rpc',
-    explorer: {
-      name: 'Sepolia ArbiScan',
-      url: 'https://sepolia.arbiscan.io/',
+    rpcUrls: {
+      default: {
+        http: ['https://sepolia-rollup.arbitrum.io/rpc'],
+      },
+    },
+    blockExplorers: {
+      default: {
+        name: 'Sepolia ArbiScan',
+        url: 'https://sepolia.arbiscan.io/',
+      },
     },
   },
   {
+    chainType: 'evm',
     id: 11155420,
     name: 'OP Sepolia',
     nativeCurrency: {
@@ -65,13 +92,20 @@ export const testnetChains: IChainConfig[] = [
       symbol: 'ETH',
       decimals: 18,
     },
-    rpcUrl: 'https://sepolia.optimism.io',
-    explorer: {
-      name: 'OP Sepolia Scan',
-      url: 'https://sepolia-optimistic.etherscan.io',
+    rpcUrls: {
+      default: {
+        http: ['https://sepolia.optimism.io'],
+      },
+    },
+    blockExplorers: {
+      default: {
+        name: 'OP Sepolia Scan',
+        url: 'https://sepolia-optimistic.etherscan.io',
+      },
     },
   },
   {
+    chainType: 'tron',
     id: 3448148188,
     name: 'Tron Nile Testnet',
     nativeCurrency: {
@@ -79,12 +113,17 @@ export const testnetChains: IChainConfig[] = [
       symbol: 'TRX',
       decimals: 6,
     },
-    rpcUrl: 'https://api.nileex.io',
-    explorer: {
-      name: 'Tron Nile Scan',
-      url: 'https://nile.tronscan.org/',
-      tokenUrlPattern: 'https://nile.tronscan.org/#/token20/{0}',
+    rpcUrls: {
+      default: {
+        http: ['https://api.nileex.io'],
+      },
     },
-    chainType: 'tron',
+    blockExplorers: {
+      default: {
+        name: 'Tron Nile Scan',
+        url: 'https://nile.tronscan.org/',
+        tokenUrlPattern: 'https://nile.tronscan.org/#/token20/{0}',
+      },
+    },
   },
 ];

@@ -4,3 +4,7 @@ export interface ITokenJob {
   ids?: string;
   keyMap?: Record<string, string>;
 }
+
+export interface ITokenPriceRecord {
+  [k: string]: { price: string; id: number };
+}

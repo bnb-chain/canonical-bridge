@@ -1,5 +1,110 @@
 # @bnb-chain/canonical-bridge-widget
 
+## 0.6.0-alpha.25
+
+### Patch Changes
+
+- Use deBridge's own token symbol to prevent validation failures
+- Updated dependencies
+  - @bnb-chain/canonical-bridge-sdk@0.5.0-alpha.17
+
+## 0.6.0-alpha.24
+
+### Patch Changes
+
+- Modify polygon nativeCurrency
+- Updated dependencies
+  - @bnb-chain/canonical-bridge-sdk@0.5.0-alpha.16
+
+## 0.6.0-alpha.23
+
+### Patch Changes
+
+- Fix verification error on cBridge
+- Updated dependencies
+  - @bnb-chain/canonical-bridge-sdk@0.5.0-alpha.15
+
+## 0.6.0-alpha.22
+
+### Patch Changes
+
+- Fix could not jump to the app & toToken requiring two clicks on mobile
+- Updated dependencies
+  - @bnb-chain/canonical-bridge-sdk@0.5.0-alpha.14
+
+## 0.6.0-alpha.21
+
+### Patch Changes
+
+- Add timeout to meson api
+- Updated dependencies
+  - @bnb-chain/canonical-bridge-sdk@0.5.0-alpha.13
+
+## 0.6.0-alpha.20
+
+### Patch Changes
+
+- Clear input if timeout
+
+## 0.6.0-alpha.19
+
+### Patch Changes
+
+- d70611c: Fix issues
+
+## 0.6.0-alpha.18
+
+### Patch Changes
+
+- Filter the tokens whose price is 0
+- Updated dependencies
+  - @bnb-chain/canonical-bridge-sdk@0.5.0-alpha.12
+
+## 0.6.0-alpha.17
+
+### Patch Changes
+
+- use token price on ethereum if can not get the token price on specified chain
+- Updated dependencies
+  - @bnb-chain/canonical-bridge-sdk@0.5.0-alpha.11
+
+## 0.6.0-alpha.16
+
+### Patch Changes
+
+- Fix distorted price info in token list
+
+## 0.6.0-alpha.15
+
+### Patch Changes
+
+- Fix the issue of to token cannot be selected after exchange chain
+- Updated dependencies
+  - @bnb-chain/canonical-bridge-sdk@0.5.0-alpha.10
+
+## 0.6.0-alpha.14
+
+### Patch Changes
+
+- Use `chainId` + `tokenAddress` to get token price
+- Updated dependencies
+  - @bnb-chain/canonical-bridge-sdk@0.5.0-alpha.9
+
+## 0.6.0-alpha.13
+
+### Patch Changes
+
+- d5065a6: chore: Update confirmation popup amount styling
+- Remove unused code
+- Updated dependencies
+  - @bnb-chain/canonical-bridge-sdk@0.5.0-alpha.8
+
+## 0.5.19-alpha.0
+
+### Patch Changes
+
+- chore: Update confirmation popup amount styling
+
 ## 0.5.19
 
 ### Patch Changes

@@ -5,7 +5,7 @@ import { useAccount } from 'wagmi';
 import { useAppDispatch, useAppSelector } from '@/modules/store/StoreProvider';
 import { useInputValidation } from '@/modules/transfer/hooks/useInputValidation';
 import { setError, setIsTransferable } from '@/modules/transfer/action';
-import { useTokenBalance } from '@/modules/aggregator/hooks/useTokenBalance';
+import { useTokenBalance } from '@/modules/aggregator/providers/TokenBalancesProvider';
 
 export const InputValidationMessage = () => {
   const { colorMode } = useColorMode();

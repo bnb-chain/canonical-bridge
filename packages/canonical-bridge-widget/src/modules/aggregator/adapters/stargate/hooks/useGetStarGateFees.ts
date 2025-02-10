@@ -16,7 +16,7 @@ import { formatRouteFees } from '@/core/utils/string';
 import { useGetNativeToken } from '@/modules/transfer/hooks/useGetNativeToken';
 import { ERC20_TOKEN } from '@/core/contract/abi';
 import { useIsWalletCompatible } from '@/modules/wallet/hooks/useIsWalletCompatible';
-import { IFeeDetails } from '@/modules/aggregator';
+import { IFeeDetails } from '@/modules/aggregator/types';
 
 export const useGetStargateFees = () => {
   const dispatch = useAppDispatch();
@@ -77,12 +77,21 @@ export const useGetStargateFees = () => {
       const receiver = address || DEFAULT_ADDRESS;
       const bridgeAddress = selectedToken?.stargate?.raw?.address as `0x${string}`;
       const decimal = selectedToken?.stargate?.raw?.token?.decimals ?? (18 as number);
+      const maxDecimals = selectedToken?.stargate?.raw?.sharedDecimals ?? 18;
       const allowedMin = Number(formatUnits(fees[0].minAmountLD, decimal));
       const allowedMax = Number(formatUnits(fees[0].maxAmountLD, decimal));
       const amount = parseUnits(sendValue, decimal);
 
       // Can not retrieve other fees if token amount is out of range
       if (Number(sendValue) >= allowedMin && Number(sendValue) <= allowedMax && !!args) {
+        if (sendValue.split('.')[1]?.length > maxDecimals) {
+          dispatch(
+            setRouteError({
+              stargate: `The send amount must be less than ${maxDecimals} digits`,
+            }),
+          );
+          return { isDisplayError: true };
+        }
         if (!!Number(fees?.[2].amountReceivedLD)) {
           if (fees?.[2].amountReceivedLD) {
             args.minAmountLD = BigInt(fees[2].amountReceivedLD);
@@ -144,6 +153,7 @@ export const useGetStargateFees = () => {
               isDisplayError = true;
             }
           }
+
           try {
             if (chain && fromChain?.id === chain?.id && address && selectedToken?.address) {
               // gas fee

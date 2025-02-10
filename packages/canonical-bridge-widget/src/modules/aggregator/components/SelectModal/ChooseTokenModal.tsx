@@ -1,12 +1,11 @@
 import { Flex, Text, useColorMode, useIntl, useTheme } from '@bnb-chain/space';
 import { useAccount } from 'wagmi';
+import { isNativeToken, isSameAddress } from '@bnb-chain/canonical-bridge-sdk';
 
 import { useAppSelector } from '@/modules/store/StoreProvider';
-import { useTokens } from '@/modules/aggregator/hooks/useTokens';
 import { VirtualList } from '@/core/components/VirtualList';
-import { isChainOrTokenCompatible } from '@/modules/aggregator/shared/isChainOrTokenCompatible';
 import { useSelection } from '@/modules/aggregator/hooks/useSelection';
-import { formatAppAddress, isNativeToken, isSameAddress } from '@/core/utils/address';
+import { formatAppAddress } from '@/core/utils/address';
 import { ExLinkIcon } from '@/core/components/icons/ExLinkIcon';
 import { formatTokenUrl } from '@/core/utils/string';
 import { useResponsive } from '@/core/hooks/useResponsive';
@@ -19,6 +18,7 @@ import { ListItem } from '@/modules/aggregator/components/SelectModal/components
 import { openLink } from '@/core/utils/common';
 import { useTronAccount } from '@/modules/wallet/hooks/useTronAccount';
 import { useSolanaAccount } from '@/modules/wallet/hooks/useSolanaAccount';
+import { useTokens } from '@/modules/aggregator/hooks/useTokens';
 
 interface ChooseTokenModalProps {
   isOpen: boolean;
@@ -32,16 +32,12 @@ export function ChooseTokenModal(props: ChooseTokenModalProps) {
   const { colorMode } = useColorMode();
 
   const fromChain = useAppSelector((state) => state.transfer.fromChain);
-  const toChain = useAppSelector((state) => state.transfer.toChain);
   const selectedToken = useAppSelector((state) => state.transfer.selectedToken);
 
   const { isMobile } = useResponsive();
   const { selectToken } = useSelection();
 
-  const tokens = useTokens({
-    fromChainId: fromChain?.id,
-    toChainId: toChain?.id,
-  });
+  const tokens = useTokens();
 
   const { isNoResult, result, keyword, onSearch } = useSearch({
     data: tokens,
@@ -94,9 +90,9 @@ export function ChooseTokenModal(props: ChooseTokenModalProps) {
       <Flex flexDir="column" flex={1}>
         <VirtualList className="bccb-widget-token-virtual-list" data={data} itemHeight={52}>
           {(item) => {
-            const isDisabled = !isChainOrTokenCompatible(item);
+            const isDisabled = !item.isCompatible;
             const isActive =
-              isSameAddress(item.address, selectedToken?.address) && isChainOrTokenCompatible(item);
+              isSameAddress(item.address, selectedToken?.address) && item.isCompatible;
             const isNative = isNativeToken(item.address, fromChain?.chainType);
 
             return (
@@ -129,7 +125,7 @@ export function ChooseTokenModal(props: ChooseTokenModalProps) {
                     },
                   });
 
-                  selectToken(item);
+                  selectToken(item.address);
                   onClose();
                 }}
               >

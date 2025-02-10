@@ -29,6 +29,7 @@ export interface ICryptoCurrencyMapEntity {
 
 export interface ICryptoCurrencyQuoteEntity {
   id: number;
+  is_active: number;
   quote: {
     USD: {
       price: number;
@@ -82,41 +83,6 @@ export interface ITransferChain {
   cmc_price: string;
 }
 
-export interface ITransferConfigsForAll {
-  chains: ITransferChain[];
-  chain_token: Record<number, { token: ITransferToken[] }>;
-  farming_reward_contract_addr: string;
-  pegged_pair_configs: Array<{
-    org_chain_id: number;
-    org_token: ITransferToken;
-    pegged_chain_id: number;
-    pegged_token: ITransferToken;
-    pegged_deposit_contract_addr: string;
-    pegged_burn_contract_addr: string;
-    vault_version: number;
-    bridge_version: number;
-  }>;
-}
-
-export interface IDebridgeToken {
-  address: string;
-  symbol: string;
-  decimals: number;
-  name: string;
-  cmc_price: string;
-}
-
-export interface IDebridgeChain {
-  chainId: number;
-  originalChainId: number;
-  chainName: string;
-}
-
-export interface IDebridgeConfig {
-  chains: IDebridgeChain[];
-  tokens: Record<number, Record<string, IDebridgeToken>>;
-}
-
 export interface IAssetPlatform {
   id: string;
   chain_identifier: number;
@@ -136,63 +102,4 @@ export interface ICoinPrice {
   id: string;
   price: number;
   decimals: number;
-}
-
-export interface IStargateBridgeTokenInfo {
-  stargateType: string;
-  address: `0x${string}`;
-  token: {
-    address: `0x${string}`;
-    decimals: number;
-    symbol: string;
-  };
-  lpToken?: {
-    address: `0x${string}`;
-    decimals: number;
-    symbol: string;
-  };
-  farm?: {
-    stargateStaking: {
-      address: `0x${string}`;
-      rewardTokens: [
-        {
-          address: `0x${string}`;
-          decimals: number;
-          symbol: string;
-        },
-        {
-          address: `0x${string}`;
-          decimals: number;
-          symbol: string;
-        },
-      ];
-    };
-  };
-  id: string;
-  assetId: string;
-  chainKey: string;
-  chainName: string;
-  tokenMessaging: `0x${string}`;
-  sharedDecimals: number;
-}
-export interface IStargateTokenList {
-  v1: IStargateBridgeTokenInfo[];
-  v2: IStargateBridgeTokenInfo[];
-}
-
-export interface IMesonToken {
-  id: string;
-  symbol: string;
-  name: string;
-  decimals: number;
-  addr?: string;
-  min: string;
-  max: string;
-}
-export interface IMesonChain {
-  id: string;
-  name: string;
-  chainId: string;
-  address: string;
-  tokens: IMesonToken[];
 }

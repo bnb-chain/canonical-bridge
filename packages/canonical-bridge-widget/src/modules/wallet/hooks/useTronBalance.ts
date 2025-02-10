@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { FormattedBalance } from '@/modules/wallet/hooks/useEvmBalance';
 import { useTronWeb } from '@/core/hooks/useTronWeb';
 import { useTronAccount } from '@/modules/wallet/hooks/useTronAccount';
-import { REFETCH_INTERVAL } from '@/core/constants';
+import { UPDATE_INTERVAL } from '@/core/constants';
 
 export function useTronBalance() {
   const tronWeb = useTronWeb();
@@ -11,7 +11,7 @@ export function useTronBalance() {
 
   return useQuery<FormattedBalance>({
     queryKey: ['useTronBalance', address],
-    refetchInterval: REFETCH_INTERVAL,
+    refetchInterval: UPDATE_INTERVAL,
     enabled: !!address && !!tronWeb,
     queryFn: async () => {
       const balance = await tronWeb!.trx.getUnconfirmedBalance(address);

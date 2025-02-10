@@ -25,20 +25,31 @@ export enum Queues {
 }
 
 export enum Tasks {
-  fetchToken = 'fetchToken',
-  fetchCoingeckoToken = 'fetchCoingeckoToken',
-  fetchPrice = 'fetchPrice',
+  fetchCmcTokens = 'fetchTokens',
+  fetchCoingeckoTokens = 'fetchCoingeckoTokens',
+
+  fetchCmcPrice = 'fetchCmcPrice',
   fetchLlamaPrice = 'fetchLlamaPrice',
+
+  cacheCmcConfig = 'cacheCmcConfig',
+  cacheLlamaConfig = 'cacheLlamaConfig',
+  cacheCmcConfigV2 = 'cacheCmcConfigV2',
+  cacheLlamaConfigV2 = 'cacheLlamaConfigV2',
+
   fetchCbridge = 'fetchCbridge',
   fetchDebridge = 'fetchDebridge',
   fetchStargate = 'fetchStargate',
   fetchMeson = 'fetchMeson',
-  cacheCmcConfig = 'cacheCmcConfig',
-  cacheLlamaConfig = 'cacheLlamaConfig',
+
+  filterCBridge = 'filterCBridge',
+  filterDeBridge = 'filterDeBridge',
+  filterStargate = 'filterStargate',
+  filterMeson = 'filterMeson',
 }
 
-export const TOKEN_REQUEST_LIMIT = 1000;
-export const PRICE_REQUEST_LIMIT = 200;
+export const CMC_TOKEN_REQUEST_LIMIT = 2000;
+export const CMC_PRICE_REQUEST_LIMIT = 1000;
+export const LLAMA_PRICE_REQUEST_LIMIT = 100;
 
 export const CACHE_KEY = {
   TOKEN_STARTED: 'token:started',
@@ -53,6 +64,14 @@ export const CACHE_KEY = {
   CMC_CONFIG: 'cmc:config',
   LLAMA_CONFIG: 'llama:config',
   PLATFORM_MAPPING: 'llama:platform',
+
+  CMC_CONFIG_V2: 'cmc:config_v2',
+  LLAMA_CONFIG_V2: 'llama:config_v2',
+
+  FIELDED_CBRIDGE_CONFIG: 'bridge:filtered:cbridge',
+  FIELDED_DEBRIDGE_CONFIG: 'bridge:filtered:debridge',
+  FIELDED_STARGATE_CONFIG: 'bridge:filtered:stargate',
+  FIELDED_MESON_CONFIG: 'bridge:filtered:meson',
 };
 
 export const JOB_KEY = {
