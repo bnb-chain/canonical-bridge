@@ -29,6 +29,7 @@ export interface ICryptoCurrencyMapEntity {
 
 export interface ICryptoCurrencyQuoteEntity {
   id: number;
+  is_active: number;
   quote: {
     USD: {
       price: number;
@@ -80,41 +81,6 @@ export interface ITransferChain {
   suggested_gas_cost: string;
   transfer_agent_contract_addr: string;
   cmc_price: string;
-}
-
-export interface ITransferConfigsForAll {
-  chains: ITransferChain[];
-  chain_token: Record<number, { token: ITransferToken[] }>;
-  farming_reward_contract_addr: string;
-  pegged_pair_configs: Array<{
-    org_chain_id: number;
-    org_token: ITransferToken;
-    pegged_chain_id: number;
-    pegged_token: ITransferToken;
-    pegged_deposit_contract_addr: string;
-    pegged_burn_contract_addr: string;
-    vault_version: number;
-    bridge_version: number;
-  }>;
-}
-
-export interface IDebridgeToken {
-  address: string;
-  symbol: string;
-  decimals: number;
-  name: string;
-  cmc_price: string;
-}
-
-export interface IDebridgeChain {
-  chainId: number;
-  originalChainId: number;
-  chainName: string;
-}
-
-export interface IDebridgeConfig {
-  chains: IDebridgeChain[];
-  tokens: Record<number, IDebridgeToken[]>;
 }
 
 export interface IAssetPlatform {

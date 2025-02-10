@@ -66,19 +66,19 @@ function ToTokenItem({ token, isSelected }: { token: IBridgeToken; isSelected: b
   const { selectToToken } = useSelection();
   const { isMobile } = useResponsive();
 
-  const fromChain = useAppSelector((state) => state.transfer.fromChain);
+  const toChain = useAppSelector((state) => state.transfer.toChain);
   const isGlobalFeeLoading = useAppSelector((state) => state.transfer.isGlobalFeeLoading);
 
-  const tokenUrl = formatTokenUrl(fromChain?.tokenUrlPattern, token.address);
+  const tokenUrl = formatTokenUrl(toChain?.tokenUrlPattern, token.address);
 
   return (
-    <InfoTooltip label={token.name}>
+    <InfoTooltip label={token.name} isDisabled={isMobile}>
       <Flex
         className="bccb-widget-to-token-item"
-        data-to-name={token.name}
-        data-to-address={token.address}
-        data-to-symbol={token.symbol}
-        data-to-display-symbol={token.displaySymbol}
+        data-available-to-name={token.name}
+        data-available-to-address={token.address}
+        data-available-to-symbol={token.symbol}
+        data-available-to-display-symbol={token.displaySymbol}
         p={{ base: '8px', md: '8px 12px' }}
         h="48px"
         alignItems="center"
@@ -129,7 +129,7 @@ function ToTokenItem({ token, isSelected }: { token: IBridgeToken; isSelected: b
             {token.displaySymbol}
           </Text>
 
-          {!isNativeToken(token.address, fromChain?.chainType) && (
+          {!isNativeToken(token.address, toChain?.chainType) && (
             <>
               {isMobile ? (
                 <Flex

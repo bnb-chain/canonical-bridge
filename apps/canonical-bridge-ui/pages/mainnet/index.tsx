@@ -44,6 +44,7 @@ function BridgeWidget({ transferConfig }: { transferConfig: ICustomizedBridgeCon
       http: {
         serverEndpoint: env.SERVER_ENDPOINT,
         deBridgeReferralCode: env.DEBRIDGE_REFERRAL_CODE,
+        feeReloadMaxTime: Number(env.FEE_RELOAD_MAX_TIME),
       },
       transfer: transferConfig,
       onClickConnectWalletButton: onOpen,

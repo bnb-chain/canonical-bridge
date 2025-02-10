@@ -45,6 +45,7 @@ export interface IBridgeConfig {
   http: {
     refetchingInterval: number;
     apiTimeOut: number;
+    feeReloadMaxTime?: number;
     deBridgeAccessToken?: string;
     deBridgeReferralCode?: string;
     serverEndpoint?: string;
@@ -154,7 +155,7 @@ export function CanonicalBridgeProvider(props: CanonicalBridgeProviderProps) {
         brandChains: [],
         externalChains: [],
 
-        dollarUpperLimit: 500000,
+        dollarUpperLimit: 200000,
 
         chainOrders: [],
         tokenOrders: [],

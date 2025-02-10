@@ -88,6 +88,7 @@ export const TransferConfirmButton = ({
 
   const sendTx = useCallback(async () => {
     if (
+      !fromChain ||
       !selectedToken ||
       !transferActionInfo?.bridgeType ||
       (!transferActionInfo?.bridgeAddress && fromChain?.chainType !== 'solana') ||
@@ -108,10 +109,12 @@ export const TransferConfirmButton = ({
     try {
       // Check whether token price exists
       const result = await validateTokenPrice({
-        tokenSymbol: selectedToken.symbol,
+        chainId: fromChain.id,
+        chainType: fromChain.chainType,
         tokenAddress: selectedToken.address,
+        tokenSymbol: selectedToken.symbol,
       });
-      if (!result) {
+      if (result === undefined) {
         throw new Error(
           `Can not get token price from API server: ${sendValue} ${selectedToken.symbol}`,
         );
@@ -145,7 +148,7 @@ export const TransferConfirmButton = ({
             toTokenSymbol: toToken?.cBridge?.raw?.token.symbol,
             toTokenDecimals: toToken?.cBridge?.raw?.token.decimal as number,
             amount: Number(sendValue),
-            cBridgeEndpoint: `${CBRIDGE_ENDPOINT}/getTransferConfigsForAll`,
+            cBridgeEndpoint: `${CBRIDGE_ENDPOINT}/v2/getTransferConfigsForAll`,
           });
 
           if (!isValidToken) {
@@ -208,7 +211,7 @@ export const TransferConfirmButton = ({
           const isValidToken = await bridgeSDK.deBridge.validateDeBridgeToken({
             fromChainId: fromChain?.id,
             toChainId: toChain?.id,
-            fromTokenSymbol: selectedToken.symbol,
+            fromTokenSymbol: selectedToken?.deBridge?.raw?.symbol as string,
             fromTokenAddress: selectedToken.deBridge?.raw?.address as `0x${string}`,
             fromTokenDecimals: selectedToken.deBridge?.raw?.decimals as number,
             toTokenSymbol: toToken?.deBridge?.raw?.symbol,

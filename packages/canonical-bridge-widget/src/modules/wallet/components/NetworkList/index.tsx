@@ -203,7 +203,7 @@ export function NetworkList(props: NetworkListProps) {
               switchDropdown(onClose)
             ) : (
               <DropdownList>
-                {supportedChains.map((item) => {
+                {supportedChains?.map((item) => {
                   const isSelected = fromChain?.id === item.id;
 
                   return (
@@ -266,13 +266,13 @@ export function useFromChainConnectedInfo() {
   const solanaAccount = useSolanaAccount();
 
   const walletChain = useMemo(() => {
-    const evmChain = supportedChains.find(
+    const evmChain = supportedChains?.find(
       (e) => e.chainType === 'evm' && e.id === evmAccount.chainId,
     );
-    const tronChain = supportedChains.find(
+    const tronChain = supportedChains?.find(
       (e) => e.chainType === 'tron' && e.id === tronAccount.chainId,
     );
-    const solanaChain = supportedChains.find(
+    const solanaChain = supportedChains?.find(
       (e) => e.chainType === 'solana' && e.id === solanaAccount.chainId,
     );
 

@@ -24,7 +24,7 @@ export default defineConfig({
     target: 'esnext',
     minify: false,
     lib: {
-      formats: ['es'],
+      formats: ['es', 'cjs'],
       entry: {
         index: 'src/index.ts',
       },

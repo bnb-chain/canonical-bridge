@@ -1,9 +1,9 @@
 import axios from 'axios';
 import { useQuery } from '@tanstack/react-query';
 import { useCallback, useEffect } from 'react';
-import { IBridgeToken } from '@bnb-chain/canonical-bridge-sdk';
+import { ChainType, isNativeToken } from '@bnb-chain/canonical-bridge-sdk';
 
-import { IBridgeConfig, useBridgeConfig } from '@/CanonicalBridgeProvider';
+import { useBridgeConfig } from '@/CanonicalBridgeProvider';
 import { TIME } from '@/core/constants';
 import { useAppDispatch, useAppSelector } from '@/modules/store/StoreProvider';
 import { setIsLoadingTokenPrices, setTokenPrices } from '@/modules/aggregator/action';
@@ -19,7 +19,6 @@ interface ITokenPricesResponse {
 }
 
 export function TokenPricesProvider() {
-  const bridgeConfig = useBridgeConfig();
   const dispatch = useAppDispatch();
   const { fetchApiTokenPrices } = useTokenPrice();
 
@@ -27,7 +26,7 @@ export function TokenPricesProvider() {
     staleTime: TIME.MINUTE * 5,
     refetchInterval: TIME.MINUTE * 5,
     queryKey: ['tokenPrices'],
-    queryFn: async () => fetchApiTokenPrices(bridgeConfig),
+    queryFn: async () => fetchApiTokenPrices(),
   });
 
   useEffect(() => {
@@ -40,26 +39,43 @@ export function TokenPricesProvider() {
 
 export function useTokenPrice() {
   const tokenPrices = useAppSelector((state) => state.aggregator.tokenPrices);
+  const bridgeConfig = useBridgeConfig();
+
+  const { serverEndpoint } = bridgeConfig.http;
 
   const getTokenPrice = useCallback(
-    (params: IBridgeToken | { symbol?: string; address?: string } = {}) => {
-      const tokenSymbol = (params as IBridgeToken).displaySymbol;
-      const tokenAddress = params.address;
-
-      if (tokenSymbol && tokenAddress) {
+    ({
+      chainId,
+      chainType,
+      tokenAddress,
+      tokenSymbol,
+    }: {
+      chainId?: number;
+      chainType?: ChainType;
+      tokenAddress?: string;
+      tokenSymbol?: string;
+    } = {}) => {
+      if (chainId && chainType && tokenAddress) {
         const { cmcPrices, llamaPrices } = tokenPrices;
 
-        const key1 = `${tokenSymbol?.toLowerCase()}:${tokenAddress?.toLowerCase()}`;
-        const key3 = tokenSymbol?.toLowerCase();
-        const key2 = `ethereum:${key3}`;
+        let key = '';
+        const isNative = isNativeToken(tokenAddress, chainType);
+        if (isNative) {
+          key = `${chainId}`;
+        } else {
+          if (chainType === 'evm') {
+            key = `${chainId}:${tokenAddress.toLowerCase()}`;
+          } else {
+            key = `${chainId}:${tokenAddress}`;
+          }
+        }
 
+        const symbolKey = `1:${tokenSymbol?.toLowerCase()}`;
         let price =
-          cmcPrices?.[key1]?.price ??
-          llamaPrices?.[key1]?.price ??
-          cmcPrices?.[key2]?.price ??
-          llamaPrices?.[key2]?.price ??
-          cmcPrices?.[key3]?.price ??
-          llamaPrices?.[key3]?.price;
+          cmcPrices[key]?.price ??
+          llamaPrices[key]?.price ??
+          cmcPrices[symbolKey]?.price ??
+          llamaPrices[symbolKey]?.price;
 
         if (price !== undefined) {
           price = Number(price);
@@ -71,12 +87,10 @@ export function useTokenPrice() {
     [tokenPrices],
   );
 
-  const fetchApiTokenPrices = useCallback(async (bridgeConfig: IBridgeConfig) => {
-    const { serverEndpoint } = bridgeConfig.http;
-
+  const fetchApiTokenPrices = useCallback(async () => {
     const [cmcRes, llamaRes] = await Promise.allSettled([
-      axios.get<ITokenPricesResponse>(`${serverEndpoint}/api/token/cmc`),
-      axios.get<ITokenPricesResponse>(`${serverEndpoint}/api/token/llama`),
+      axios.get<ITokenPricesResponse>(`${serverEndpoint}/api/token/v2/cmc`),
+      axios.get<ITokenPricesResponse>(`${serverEndpoint}/api/token/v2/llama`),
     ]);
 
     const cmcPrices = cmcRes.status === 'fulfilled' ? cmcRes.value.data.data : {};
@@ -86,10 +100,35 @@ export function useTokenPrice() {
       cmcPrices,
       llamaPrices,
     };
-  }, []);
+  }, [serverEndpoint]);
+
+  const fetchTokenPrice = useCallback(
+    async ({
+      chainId,
+      chainType,
+      tokenAddress,
+      tokenSymbol,
+    }: {
+      chainId: number;
+      chainType: ChainType;
+      tokenAddress: string;
+      tokenSymbol: string;
+    }) => {
+      const { data } = await axios.get<{ data: number }>(`${serverEndpoint}/api/token/v2/price`, {
+        params: {
+          chainId,
+          tokenAddress: isNativeToken(tokenAddress, chainType) ? undefined : tokenAddress,
+          tokenSymbol,
+        },
+      });
+      return data;
+    },
+    [serverEndpoint],
+  );
 
   return {
     getTokenPrice,
+    fetchTokenPrice,
     fetchApiTokenPrices,
   };
 }

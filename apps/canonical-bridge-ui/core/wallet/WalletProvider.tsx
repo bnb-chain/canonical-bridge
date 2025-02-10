@@ -18,6 +18,7 @@ import * as allChains from 'viem/chains';
 import { defaultTronConfig, tronLink } from '@node-real/walletkit/tron';
 import {
   defaultSolanaConfig,
+  phantomWallet,
   phantomWallet as solanaPhantomWallet,
   trustWallet as solanaTrustWallet,
 } from '@node-real/walletkit/solana';
@@ -62,11 +63,28 @@ export function WalletProvider(props: WalletProviderProps) {
             const isInDappBrowser = evmWallets.some((e) => e.isInstalled());
 
             if (isInDappBrowser) {
+              if (
+                binanceWeb3Wallet().isInstalled() &&
+                phantomWallet().isInstalled() &&
+                wallet.id === phantomWallet().id
+              ) {
+                onOpen();
+                return false;
+              }
+              if (
+                phantomWallet().isInstalled() &&
+                metaMask().isInstalled() &&
+                wallet.id === metaMask().id
+              ) {
+                onOpen();
+                return false;
+              }
+
               // Some wallets will set `isMetaMask=true`
               const counter = evmWallets.filter((e) => e.isInstalled()).length;
               if (
                 (counter === 1 && wallet.isInstalled()) ||
-                (counter > 1 && wallet.isInstalled() && wallet.id !== 'metaMask')
+                (counter > 1 && wallet.isInstalled() && wallet.id !== metaMask().id)
               ) {
                 return true;
               } else {

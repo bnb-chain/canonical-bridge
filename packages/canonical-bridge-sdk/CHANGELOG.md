@@ -1,5 +1,80 @@
 # @bnb-chain/canonical-bridge-sdk
 
+## 0.5.0
+
+### Patch Changes
+
+- de7cfe2: Fix the issue of to token cannot be selected after exchange chain
+- 5abc2a3: Fix verification error on cBridge
+- d7cc821: Use `chainId` + `tokenAddress` to get token price
+- 9ca93e6: Modify polygon nativeCurrency
+- 7c3a46e: use token price on ethereum if can not get the token price on specified chain
+- e27a9ba: Use deBridge's own token symbol to prevent validation failures
+- 3d74756: Fix could not jump to the app & toToken requiring two clicks on mobile
+- 1543971: Filter the tokens whose price is 0
+- 3a3a67f: Remove unused code
+- 39051ef: Add timeout to meson api
+
+## 0.5.0-alpha.17
+
+### Patch Changes
+
+- Use deBridge's own token symbol to prevent validation failures
+
+## 0.5.0-alpha.16
+
+### Patch Changes
+
+- Modify polygon nativeCurrency
+
+## 0.5.0-alpha.15
+
+### Patch Changes
+
+- Fix verification error on cBridge
+
+## 0.5.0-alpha.14
+
+### Patch Changes
+
+- Fix could not jump to the app & toToken requiring two clicks on mobile
+
+## 0.5.0-alpha.13
+
+### Patch Changes
+
+- Add timeout to meson api
+
+## 0.5.0-alpha.12
+
+### Patch Changes
+
+- Filter the tokens whose price is 0
+
+## 0.5.0-alpha.11
+
+### Patch Changes
+
+- use token price on ethereum if can not get the token price on specified chain
+
+## 0.5.0-alpha.10
+
+### Patch Changes
+
+- Fix the issue of to token cannot be selected after exchange chain
+
+## 0.5.0-alpha.9
+
+### Patch Changes
+
+- Use `chainId` + `tokenAddress` to get token price
+
+## 0.5.0-alpha.8
+
+### Patch Changes
+
+- Remove unused code
+
 ## 0.4.7
 
 ### Patch Changes
