@@ -1,6 +1,6 @@
 export const ENDPOINT_PREFIX = 'api';
 export const SERVER_PORT = parseInt(process.env.SERVER_PORT, 10) || 3000;
-export const SERVER_TIMEOUT = parseInt(process.env.SERVER_TIMEOUT, 10) || 10000;
+export const SERVER_TIMEOUT = parseInt(process.env.SERVER_TIMEOUT, 10) || 30 * 1000;
 export const REDIS_URL = process.env.REDIS_URL;
 
 export const CMC_API_KEY = process.env.CMC_API_KEY;
