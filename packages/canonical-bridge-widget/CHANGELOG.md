@@ -1,5 +1,75 @@
 # @bnb-chain/canonical-bridge-widget
 
+## 0.6.0
+
+### Patch Changes
+
+- 8d94386: Clear input if timeout
+- d5065a6: chore: Update confirmation popup amount styling
+- de7cfe2: Fix the issue of to token cannot be selected after exchange chain
+- 5abc2a3: Fix verification error on cBridge
+- d7cc821: Use `chainId` + `tokenAddress` to get token price
+- 9ca93e6: Modify polygon nativeCurrency
+- d70611c: Fix issues
+- 7c3a46e: use token price on ethereum if can not get the token price on specified chain
+- e27a9ba: Use deBridge's own token symbol to prevent validation failures
+- 3d74756: Fix could not jump to the app & toToken requiring two clicks on mobile
+- 1543971: Filter the tokens whose price is 0
+- 433337e: Fix distorted price info in token list
+- 3a3a67f: Remove unused code
+- 39051ef: Add timeout to meson api
+- Updated dependencies [de7cfe2]
+- Updated dependencies [5abc2a3]
+- Updated dependencies [d7cc821]
+- Updated dependencies [9ca93e6]
+- Updated dependencies [7c3a46e]
+- Updated dependencies [e27a9ba]
+- Updated dependencies [3d74756]
+- Updated dependencies [1543971]
+- Updated dependencies [3a3a67f]
+- Updated dependencies [39051ef]
+  - @bnb-chain/canonical-bridge-sdk@0.5.0
+
+## 0.6.0-alpha.25
+
+### Patch Changes
+
+- Use deBridge's own token symbol to prevent validation failures
+- Updated dependencies
+  - @bnb-chain/canonical-bridge-sdk@0.5.0-alpha.17
+
+## 0.6.0-alpha.24
+
+### Patch Changes
+
+- Modify polygon nativeCurrency
+- Updated dependencies
+  - @bnb-chain/canonical-bridge-sdk@0.5.0-alpha.16
+
+## 0.6.0-alpha.23
+
+### Patch Changes
+
+- Fix verification error on cBridge
+- Updated dependencies
+  - @bnb-chain/canonical-bridge-sdk@0.5.0-alpha.15
+
+## 0.6.0-alpha.22
+
+### Patch Changes
+
+- Fix could not jump to the app & toToken requiring two clicks on mobile
+- Updated dependencies
+  - @bnb-chain/canonical-bridge-sdk@0.5.0-alpha.14
+
+## 0.6.0-alpha.21
+
+### Patch Changes
+
+- Add timeout to meson api
+- Updated dependencies
+  - @bnb-chain/canonical-bridge-sdk@0.5.0-alpha.13
+
 ## 0.6.0-alpha.20
 
 ### Patch Changes
