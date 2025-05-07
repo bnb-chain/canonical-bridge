@@ -1,5 +1,11 @@
 # @bnb-chain/canonical-bridge-widget
 
+## 0.6.1-alpha.0
+
+### Patch Changes
+
+- b17ceba: Fix meson amount limit & send button disable state
+
 ## 0.6.0
 
 ### Patch Changes
