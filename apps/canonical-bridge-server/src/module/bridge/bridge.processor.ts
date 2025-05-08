@@ -19,6 +19,7 @@ import {
   EVM_NATIVE_TOKEN_ADDRESS,
 } from '@bnb-chain/canonical-bridge-sdk';
 import { UtilService } from '@/shared/util/util.service';
+import { sleep } from '@/common/utils';
 
 @Processor(Queues.SyncBridge)
 export class BridgeProcessor extends WorkerHost {
@@ -60,11 +61,16 @@ export class BridgeProcessor extends WorkerHost {
     if (!config) return;
 
     const tokenMap: Record<string, IDeBridgeToken[]> = {};
+    const preConfig = await this.cache.get<IDeBridgeTransferConfig>(`${CACHE_KEY.DEBRIDGE_CONFIG}`);
 
     for (const chain of config.chains) {
+      // Prevent failure by sending too many requests in a short time
+      await sleep(2000);
       const data = await this.web3Service.getDebridgeChainTokens(chain.chainId);
       if (data) {
         tokenMap[chain.chainId] = Object.values(data.tokens);
+      } else {
+        tokenMap[chain.chainId] = preConfig?.tokens?.[chain.chainId]; // use old data
       }
     }
 

@@ -31,7 +31,6 @@ import { useGetLayerZeroFees } from '@/modules/aggregator/adapters/layerZero/hoo
 import { usePreSelectRoute } from '@/modules/transfer/hooks/usePreSelectRoute';
 import { useGetNativeToken } from '@/modules/transfer/hooks/useGetNativeToken';
 import { useGetMesonFees } from '@/modules/aggregator/adapters/meson/hooks/useGetMesonFees';
-import { formatNumber } from '@/core/utils/number';
 import { useSolanaAccount } from '@/modules/wallet/hooks/useSolanaAccount';
 import { useSolanaTransferInfo } from '@/modules/transfer/hooks/solana/useSolanaTransferInfo';
 import { useIsWalletCompatible } from '@/modules/wallet/hooks/useIsWalletCompatible';
@@ -284,13 +283,13 @@ export const useLoadingBridgeFees = () => {
             if (feeSortingRes) {
               dispatch(
                 setEstimatedAmount({
-                  meson: formatNumber(Number(formatUnits(receiveMesonAmt, decimals)), 8),
+                  meson: formatUnits(receiveMesonAmt, decimals),
                 }),
               );
               // TODO check amount value
               valueArr.push({
                 type: 'meson',
-                value: formatNumber(Number(formatUnits(receiveMesonAmt, decimals)), 8),
+                value: formatUnits(receiveMesonAmt, decimals),
                 isIgnoreSorted: false,
                 isDisplayError: false,
               });

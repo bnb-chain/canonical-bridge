@@ -2,23 +2,10 @@
   "mode": "pre",
   "tag": "alpha",
   "initialVersions": {
-    "@bnb-chain/canonical-bridge-sdk": "0.4.7",
-    "@bnb-chain/canonical-bridge-widget": "0.5.18"
+    "@bnb-chain/canonical-bridge-sdk": "0.5.0",
+    "@bnb-chain/canonical-bridge-widget": "0.6.0"
   },
   "changesets": [
-    "big-candles-breathe",
-    "blue-goats-shave",
-    "brown-suits-matter",
-    "clean-items-search",
-    "curvy-dingos-end",
-    "eight-spoons-divide",
-    "large-years-cover",
-    "modern-toys-give",
-    "rich-carpets-marry",
-    "shaggy-boats-rest",
-    "short-ants-love",
-    "smooth-vans-work",
-    "thick-donkeys-kneel",
-    "tidy-days-add"
+    "new-laws-fold"
   ]
 }

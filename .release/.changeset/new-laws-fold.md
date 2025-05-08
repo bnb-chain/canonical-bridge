@@ -2,4 +2,4 @@
 "@bnb-chain/canonical-bridge-widget": patch
 ---
 
-Fix issues
+Fix meson amount limit & send button disable state

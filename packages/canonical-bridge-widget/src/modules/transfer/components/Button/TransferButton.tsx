@@ -48,6 +48,8 @@ export function TransferButton({
   const fromChain = useAppSelector((state) => state.transfer.fromChain);
   const toChain = useAppSelector((state) => state.transfer.toChain);
   const toAccount = useAppSelector((state) => state.transfer.toAccount);
+  const toToken = useAppSelector((state) => state.transfer.toToken);
+  const toTokens = useAppSelector((state) => state.transfer.toTokens);
   const isToAddressChecked = useAppSelector((state) => state.transfer.isToAddressChecked);
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -173,7 +175,8 @@ export function TransferButton({
     isTronContract === true ||
     !!evmBytecode ||
     (isSolanaTransfer &&
-      (!isToAddressChecked || !toAccount.address || !isSolanaAvailableToAccount));
+      (!isToAddressChecked || !toAccount.address || !isSolanaAvailableToAccount)) ||
+    (toTokens.length > 1 && !toToken);
 
   return (
     <Flex
