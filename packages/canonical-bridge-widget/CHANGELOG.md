@@ -1,5 +1,23 @@
 # @bnb-chain/canonical-bridge-widget
 
+## 0.7.0-alpha.1
+
+### Minor Changes
+
+- Fix price tag color
+
+## 0.7.0-alpha.0
+
+### Minor Changes
+
+- Add price change ratio tag
+
+## 0.6.1
+
+### Patch Changes
+
+- 39da38d: Fix meson amount limit & send button disable state
+
 ## 0.6.1-alpha.0
 
 ### Patch Changes

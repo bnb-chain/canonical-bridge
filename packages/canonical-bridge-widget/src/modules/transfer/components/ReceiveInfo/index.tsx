@@ -165,7 +165,7 @@ export const ReceiveInfo = ({ onOpen }: ReceiveInfoProps) => {
               receiveAmt && !isGlobalFeeLoading ? (
                 <>
                   {
-                    <Box display={{ base: 'bock', lg: 'none' }}>
+                    <Box display={'block'}>
                       <RouteName bridgeType={bridgeType} isReceiveSection={true} />
                     </Box>
                   }

@@ -204,4 +204,26 @@ export const light: ColorType = {
     shadow: ' 0px 4px 8px 0px rgba(0, 0, 0, 0.48)',
     separator: '#E1E2E5',
   },
+  ratio: {
+    success: {
+      bg: rgba('#53eaa1', 0.05),
+      borderColor: rgba('#53eaa1', 0.15),
+      color: '#53eaa1',
+    },
+    normal: {
+      bg: rgba('#548fee', 0.05),
+      borderColor: rgba('#548fee', 0.15),
+      color: '#548fee',
+    },
+    warning: {
+      bg: rgba('#ffa260', 0.05),
+      borderColor: rgba('#ffa260', 0.15),
+      color: '#ffa260',
+    },
+    error: {
+      bg: rgba('#ff7a84', 0.05),
+      borderColor: rgba('#ff7a84', 0.15),
+      color: '#ff7a84',
+    },
+  },
 };
