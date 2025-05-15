@@ -1,5 +1,11 @@
 # @bnb-chain/canonical-bridge-widget
 
+## 0.7.1-alpha.0
+
+### Patch Changes
+
+- Hide ratio when some error occurs
+
 ## 0.7.0
 
 ### Minor Changes
