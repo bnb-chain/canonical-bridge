@@ -42,7 +42,7 @@ export const RedeemRatio = React.memo(({ bridgeType }: RedeemRatioProps) => {
     } else if (absRatio >= 0.01) {
       formattedRatio = `${Math.abs(Number(redeemRatio.toFixed(2)))}%`; // Two decimal places for 0.01% to 1%
     } else {
-      formattedRatio = `${redeemRatio < 0 ? '-' : ''}0.01%`; // 0.01% or -0.01% for < 0.01% or > -0.01%
+      formattedRatio = `0.01%`; // 0.01% or -0.01% for < 0.01% or > -0.01%
     }
   }
 
