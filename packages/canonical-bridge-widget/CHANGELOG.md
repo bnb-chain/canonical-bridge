@@ -1,5 +1,13 @@
 # @bnb-chain/canonical-bridge-widget
 
+## 0.7.0
+
+### Minor Changes
+
+- dc0fdaf: Add price change ratio tag
+- 6206f2d: Fix price tag color
+- a95ccaf: Fix negative ratio
+
 ## 0.7.0-alpha.2
 
 ### Minor Changes
