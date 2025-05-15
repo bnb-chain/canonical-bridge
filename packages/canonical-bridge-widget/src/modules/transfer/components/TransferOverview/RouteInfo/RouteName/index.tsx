@@ -15,10 +15,11 @@ interface RouteNameProps {
   bridgeType?: BridgeType;
   isReceiveSection?: boolean;
   isError?: boolean;
+  receiveAmt?: string;
 }
 
 export const RouteName = React.memo(
-  ({ bridgeType, isReceiveSection = false, isError }: RouteNameProps) => {
+  ({ bridgeType, isReceiveSection = false, isError, receiveAmt }: RouteNameProps) => {
     const { formatMessage } = useIntl();
     const { getSortedReceiveAmount } = useGetReceiveAmount();
     const bridgeConfig = useBridgeConfig();
@@ -102,7 +103,7 @@ export const RouteName = React.memo(
         <Flex gap={'4px'} pr={['48px', '48px', 0]}>
           {bridgeType === bestTimeRoute && <BestRouteTag bestMode={'bestTime'} />}
           {bridgeType === bestReturnRoute && <BestRouteTag bestMode={'bestReturn'} />}
-          <RedeemRatio bridgeType={bridgeType} />
+          {!(isError && receiveAmt === '--') && <RedeemRatio bridgeType={bridgeType} />}
         </Flex>
       </Flex>
     );

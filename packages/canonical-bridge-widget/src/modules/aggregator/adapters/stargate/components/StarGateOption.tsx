@@ -71,7 +71,7 @@ export const StarGateOption = () => {
       onSelectBridge={onSelectBridge}
       isSelected={transferActionInfo?.bridgeType === 'stargate'}
     >
-      <RouteName isError={isError} bridgeType="stargate" />
+      <RouteName isError={isError} bridgeType="stargate" receiveAmt={receiveAmt} />
       <RouteTitle
         isError={isError}
         receiveAmt={receiveAmt}

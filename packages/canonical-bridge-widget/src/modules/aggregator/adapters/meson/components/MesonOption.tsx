@@ -52,7 +52,7 @@ export const MesonOption = () => {
       onSelectBridge={onSelectBridge}
       isSelected={transferActionInfo?.bridgeType === 'meson'}
     >
-      <RouteName isError={isError} bridgeType="meson" />
+      <RouteName isError={isError} bridgeType="meson" receiveAmt={receiveAmt} />
       <RouteTitle isError={isError} receiveAmt={receiveAmt} toTokenInfo={toTokenInfo?.['meson']} />
       <EstimatedArrivalTime isError={isError} bridgeType={'meson'} />
       <FeesInfo isError={isError} bridgeType="meson" />
