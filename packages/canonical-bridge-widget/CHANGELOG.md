@@ -1,5 +1,11 @@
 # @bnb-chain/canonical-bridge-widget
 
+## 0.7.0-alpha.2
+
+### Minor Changes
+
+- Fix negative ratio
+
 ## 0.7.0-alpha.1
 
 ### Minor Changes
