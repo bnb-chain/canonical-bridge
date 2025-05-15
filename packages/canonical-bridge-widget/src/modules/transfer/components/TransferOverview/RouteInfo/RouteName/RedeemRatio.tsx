@@ -14,7 +14,7 @@ interface RedeemRatioProps {
 type RatioStatus = 'success' | 'normal' | 'warning' | 'error';
 
 const getRatioStatus = (ratio: number): RatioStatus => {
-  if (ratio === 0) return 'success';
+  if (ratio > 0) return 'success';
   if (ratio < -10) return 'error';
   if (ratio < -5) return 'warning';
   if (ratio < 0) return 'normal';
@@ -49,8 +49,7 @@ export const RedeemRatio = React.memo(({ bridgeType }: RedeemRatioProps) => {
   if (formattedRatio === null) return null;
 
   // Use rounded integer ratio for status calculation
-  const statusRatio = Math.round(redeemRatio);
-  const status = getRatioStatus(statusRatio);
+  const status = getRatioStatus(redeemRatio);
 
   return (
     <Flex

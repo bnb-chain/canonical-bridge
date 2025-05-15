@@ -102,7 +102,7 @@ export const RouteName = React.memo(
         <Flex gap={'4px'} pr={['48px', '48px', 0]}>
           {bridgeType === bestTimeRoute && <BestRouteTag bestMode={'bestTime'} />}
           {bridgeType === bestReturnRoute && <BestRouteTag bestMode={'bestReturn'} />}
-          {bridgeType === bestTimeRoute && <RedeemRatio bridgeType={bridgeType} />}
+          <RedeemRatio bridgeType={bridgeType} />
         </Flex>
       </Flex>
     );

@@ -6,6 +6,7 @@
     "@bnb-chain/canonical-bridge-widget": "0.6.1"
   },
   "changesets": [
-    "cyan-mangos-study"
+    "cyan-mangos-study",
+    "five-poets-heal"
   ]
 }

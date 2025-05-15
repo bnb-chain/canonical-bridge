@@ -1,5 +1,11 @@
 # @bnb-chain/canonical-bridge-widget
 
+## 0.7.0-alpha.1
+
+### Minor Changes
+
+- Fix price tag color
+
 ## 0.7.0-alpha.0
 
 ### Minor Changes
