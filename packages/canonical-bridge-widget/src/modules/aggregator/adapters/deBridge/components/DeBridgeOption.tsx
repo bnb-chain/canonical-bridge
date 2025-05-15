@@ -71,7 +71,7 @@ export const DeBridgeOption = ({}: DeBridgeOptionProps) => {
       isError={isError}
       onSelectBridge={onSelectBridge}
     >
-      <RouteName isError={isError} bridgeType="deBridge" />
+      <RouteName isError={isError} bridgeType="deBridge" receiveAmt={receiveAmt} />
       <RouteTitle
         isError={isError}
         receiveAmt={receiveAmt}

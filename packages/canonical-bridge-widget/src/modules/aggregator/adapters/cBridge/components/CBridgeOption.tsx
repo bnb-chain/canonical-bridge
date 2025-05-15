@@ -81,7 +81,7 @@ export const CBridgeOption = () => {
       isError={isError}
       onSelectBridge={onSelectBridge}
     >
-      <RouteName isError={isError} bridgeType="cBridge" />
+      <RouteName isError={isError} bridgeType="cBridge" receiveAmt={receiveAmt} />
       <RouteTitle
         isError={isError}
         receiveAmt={receiveAmt}

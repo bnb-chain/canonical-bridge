@@ -62,7 +62,7 @@ export const LayerZeroOption = () => {
       isError={isError}
       onSelectBridge={onSelectBridge}
     >
-      <RouteName isError={isError} bridgeType="layerZero" />
+      <RouteName isError={isError} bridgeType="layerZero" receiveAmt={receiveAmt} />
       <RouteTitle
         isError={isError}
         receiveAmt={receiveAmt}

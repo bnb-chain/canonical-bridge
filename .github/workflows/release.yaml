@@ -65,6 +65,9 @@ jobs:
         if: ${{steps.get-branch.outputs.branch == 'main'}}
         run: cd .release && pnpm ci:exit
 
+      - name: Debug .release directory
+        run: ls -la .release
+
       - name: Create and publish versions
         if: ${{steps.get-branch.outputs.branch == 'main'}}
         uses: changesets/action@v1
@@ -73,7 +76,7 @@ jobs:
           publish: pnpm ci:publish
           commit: 'chore: Update versions'
           title: 'chore: Update versions'
-          cwd: '.release'
+          cwd: ${{ github.workspace }}/.release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
