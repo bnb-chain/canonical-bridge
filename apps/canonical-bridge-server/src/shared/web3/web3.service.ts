@@ -28,9 +28,9 @@ import {
   IDeBridgeToken,
   IMesonTransferConfig,
   IStargateTokenList,
-  IMayanBridgeChain,
+  IMayanChain,
   IMayanTransferConfig,
-  IMayanBridgeToken,
+  IMayanToken,
 } from '@bnb-chain/canonical-bridge-sdk';
 
 @Injectable()
@@ -147,14 +147,14 @@ export class Web3Service {
 
   async getMayanConfigs(): Promise<IMayanTransferConfig> {
     try {
-      const { data: chains } = await this.httpService.axiosRef.get<Array<IMayanBridgeChain>>(
+      const { data: chains } = await this.httpService.axiosRef.get<Array<IMayanChain>>(
         `${MAYAN_ENDPOINT}/chains`,
       );
       const supportedChains = chains.filter(
         (chain) => chain.originActive && chain.destinationActive,
       );
       const { data: tokens } = await this.httpService.axiosRef.get<
-        Record<string, Array<IMayanBridgeToken>>
+        Record<string, Array<IMayanToken>>
       >(`${MAYAN_ENDPOINT}/tokens?nonPortal=true`);
       const supportedTokens = pick(
         tokens,

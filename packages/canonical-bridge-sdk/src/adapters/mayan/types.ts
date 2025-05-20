@@ -1,4 +1,4 @@
-export interface IMayanBridgeChainBaseToken {
+export interface IMayanChainBaseToken {
   mint: string;
   name: string;
   symbol: string;
@@ -11,7 +11,7 @@ export interface IMayanBridgeChainBaseToken {
   logoURI: string;
 }
 
-export interface IMayanBridgeChain {
+export interface IMayanChain {
   mode: string;
   tokenBridgeAddress: string;
   wChainId: number;
@@ -27,10 +27,10 @@ export interface IMayanBridgeChain {
   wrapContractAddress: string;
   originActive: boolean;
   destinationActive: boolean;
-  baseToken: IMayanBridgeChainBaseToken;
+  baseToken: IMayanChainBaseToken;
 }
 
-export interface IMayanBridgeToken {
+export interface IMayanToken {
   name: string;
   standard: string;
   symbol: string;
@@ -51,6 +51,6 @@ export interface IMayanBridgeToken {
 }
 
 export interface IMayanTransferConfig {
-  chains: IMayanBridgeChain[];
-  tokens: Record<string, IMayanBridgeToken[]>;
+  chains: IMayanChain[];
+  tokens: Record<string, IMayanToken[]>;
 }
