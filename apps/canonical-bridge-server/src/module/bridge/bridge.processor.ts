@@ -17,13 +17,13 @@ import {
   isNativeToken,
   IStargateTransferConfig,
   TRON_CHAIN_ID,
-  IMayanBridgeChain,
+  IMayanChain,
   IMayanTransferConfig,
-  IMayanBridgeToken,
+  IMayanToken,
+  SOLANA_CHAIN_ID,
 } from '@bnb-chain/canonical-bridge-sdk';
 import { UtilService } from '@/shared/util/util.service';
 import { sleep } from '@/common/utils';
-import { SOLANA_CHAIN_ID } from '@bnb-chain/canonical-bridge-sdk/src';
 
 @Processor(Queues.SyncBridge)
 export class BridgeProcessor extends WorkerHost {
@@ -355,7 +355,7 @@ export class BridgeProcessor extends WorkerHost {
     const priceConfig = await this.getPriceConfig();
 
     // Filter tokens for each chain
-    const filteredTokens: Record<string, IMayanBridgeToken[]> = {};
+    const filteredTokens: Record<string, IMayanToken[]> = {};
     Object.entries(config.tokens).forEach(([nameId, tokens]) => {
       filteredTokens[nameId] = tokens.filter((token) => {
         return this.hasTokenPrice({
@@ -368,7 +368,7 @@ export class BridgeProcessor extends WorkerHost {
     });
 
     // Filter chains to include only those with non-empty token lists
-    const filteredChains: IMayanBridgeChain[] = config.chains.filter((chain) => {
+    const filteredChains: IMayanChain[] = config.chains.filter((chain) => {
       const chainTokens = filteredTokens[chain.nameId];
       return chainTokens && chainTokens.length > 0;
     });

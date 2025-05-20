@@ -9,11 +9,11 @@ import {
   IStargateTransferConfig,
   TRON_CHAIN_ID,
   IMayanTransferConfig,
+  SOLANA_CHAIN_ID,
 } from '@bnb-chain/canonical-bridge-sdk';
 import { PrismaService } from '@/shared/prisma/prisma.service';
 import { CACHE_MANAGER, Cache } from '@nestjs/cache-manager';
 import { CACHE_KEY } from '@/common/constants';
-import { SOLANA_CHAIN_ID } from '@bnb-chain/canonical-bridge-sdk/src';
 
 @Injectable()
 export class BridgeService {
