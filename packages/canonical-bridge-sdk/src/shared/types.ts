@@ -18,7 +18,8 @@ export type BridgeType =
   | 'deBridge'
   | 'stargate'
   | 'layerZero'
-  | 'meson';
+  | 'meson'
+  | 'mayan';
 
 export interface IBridgeChain {
   id: number;

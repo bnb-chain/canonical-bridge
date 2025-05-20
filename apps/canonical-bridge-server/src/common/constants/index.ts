@@ -11,6 +11,7 @@ export const DEBRIDGE_ENDPOINT =
 export const STARGATE_ENDPOINT =
   process.env.STARGATE_ENDPOINT || 'https://mainnet.stargate-api.com/v1/metadata?version=v2';
 export const MESON_ENDPOINT = process.env.MESON_ENDPOINT || 'https://relayer.meson.fi/api/v1';
+export const MAYAN_ENDPOINT = process.env.MAYAN_ENDPOINT || 'https://price-api.mayan.finance/v3';
 export const LLAMA_COINS_ENDPOINT = process.env.LLMA_COINS__ENDPOINT || 'https://coins.llama.fi';
 export const COINGECKO_ENDPOINT = process.env.COINGECKO_ENDPOINT || 'https://api.coingecko.com/api';
 
@@ -40,11 +41,13 @@ export enum Tasks {
   fetchDebridge = 'fetchDebridge',
   fetchStargate = 'fetchStargate',
   fetchMeson = 'fetchMeson',
+  fetchMayan = 'fetchMayan',
 
   filterCBridge = 'filterCBridge',
   filterDeBridge = 'filterDeBridge',
   filterStargate = 'filterStargate',
   filterMeson = 'filterMeson',
+  filterMayan = 'filterMayan',
 }
 
 export const CMC_TOKEN_REQUEST_LIMIT = 2000;
@@ -61,6 +64,7 @@ export const CACHE_KEY = {
   DEBRIDGE_CONFIG: 'bridge:debridge',
   STARGATE_CONFIG: 'bridge:stargate',
   MESON_CONFIG: 'bridge:meson',
+  MAYAN_CONFIG: 'bridge:mayan',
   CMC_CONFIG: 'cmc:config',
   LLAMA_CONFIG: 'llama:config',
   PLATFORM_MAPPING: 'llama:platform',
@@ -68,10 +72,11 @@ export const CACHE_KEY = {
   CMC_CONFIG_V2: 'cmc:config_v2',
   LLAMA_CONFIG_V2: 'llama:config_v2',
 
-  FIELDED_CBRIDGE_CONFIG: 'bridge:filtered:cbridge',
-  FIELDED_DEBRIDGE_CONFIG: 'bridge:filtered:debridge',
-  FIELDED_STARGATE_CONFIG: 'bridge:filtered:stargate',
-  FIELDED_MESON_CONFIG: 'bridge:filtered:meson',
+  FILTERED_CBRIDGE_CONFIG: 'bridge:filtered:cbridge',
+  FILTERED_DEBRIDGE_CONFIG: 'bridge:filtered:debridge',
+  FILTERED_STARGATE_CONFIG: 'bridge:filtered:stargate',
+  FILTERED_MESON_CONFIG: 'bridge:filtered:meson',
+  FILTERED_MAYAN_CONFIG: 'bridge:filtered:mayan',
 };
 
 export const JOB_KEY = {

@@ -12,21 +12,25 @@ import {
   CBRIDGE_ENDPOINT,
   CMC_API_ENDPOINT,
   CMC_API_KEY,
+  CMC_TOKEN_REQUEST_LIMIT,
   COINGECKO_ENDPOINT,
   DEBRIDGE_ENDPOINT,
-  STARGATE_ENDPOINT,
-  MESON_ENDPOINT,
   LLAMA_COINS_ENDPOINT,
-  CMC_TOKEN_REQUEST_LIMIT,
+  MAYAN_ENDPOINT,
+  MESON_ENDPOINT,
   STARGATE_CHAIN_INFO,
+  STARGATE_ENDPOINT,
 } from '@/common/constants';
-import { values } from 'lodash';
+import { pick, values } from 'lodash';
 import {
   ICBridgeTransferConfig,
   IDeBridgeChain,
   IDeBridgeToken,
   IMesonTransferConfig,
   IStargateTokenList,
+  IMayanBridgeChain,
+  IMayanTransferConfig,
+  IMayanBridgeToken,
 } from '@bnb-chain/canonical-bridge-sdk';
 
 @Injectable()
@@ -138,6 +142,30 @@ export class Web3Service {
     } catch (e) {
       this.logger.log(`Failed to retrieve Meson API data at ${new Date().getTime()}, ${e}`);
       return [];
+    }
+  }
+
+  async getMayanConfigs(): Promise<IMayanTransferConfig> {
+    try {
+      const { data: chains } = await this.httpService.axiosRef.get<Array<IMayanBridgeChain>>(
+        `${MAYAN_ENDPOINT}/chains`,
+      );
+      const supportedChains = chains.filter(
+        (chain) => chain.originActive && chain.destinationActive,
+      );
+      const { data: tokens } = await this.httpService.axiosRef.get<
+        Record<string, Array<IMayanBridgeToken>>
+      >(`${MAYAN_ENDPOINT}/tokens?nonPortal=true`);
+      const supportedTokens = pick(
+        tokens,
+        supportedChains.map((c) => c.nameId),
+      );
+      return {
+        chains: supportedChains,
+        tokens: supportedTokens,
+      };
+    } catch (e) {
+      this.logger.log(`Failed to retrieve cBridge data at ${new Date().getTime()}, ${e.message}`);
     }
   }
 

@@ -34,7 +34,7 @@ export class BridgeController {
 
   @Get('/v2/cbridge')
   async getCbridgeConfigV2() {
-    const config = await this.cache.get(CACHE_KEY.FIELDED_CBRIDGE_CONFIG);
+    const config = await this.cache.get(CACHE_KEY.FILTERED_CBRIDGE_CONFIG);
     if (config) {
       return config;
     }
@@ -44,7 +44,7 @@ export class BridgeController {
 
   @Get('/v2/debridge')
   async getDeBridgeConfigV2() {
-    const config = await this.cache.get(CACHE_KEY.FIELDED_DEBRIDGE_CONFIG);
+    const config = await this.cache.get(CACHE_KEY.FILTERED_DEBRIDGE_CONFIG);
     if (config) {
       return config;
     }
@@ -54,7 +54,7 @@ export class BridgeController {
 
   @Get('/v2/stargate')
   async getStargateConfigV2() {
-    const config = await this.cache.get(CACHE_KEY.FIELDED_STARGATE_CONFIG);
+    const config = await this.cache.get(CACHE_KEY.FILTERED_STARGATE_CONFIG);
     if (config) {
       return config;
     }
@@ -64,12 +64,22 @@ export class BridgeController {
 
   @Get('/v2/meson')
   async getMesonConfigV2() {
-    const config = await this.cache.get(CACHE_KEY.FIELDED_MESON_CONFIG);
+    const config = await this.cache.get(CACHE_KEY.FILTERED_MESON_CONFIG);
     if (config) {
       return config;
     }
 
     return this.cache.get(CACHE_KEY.MESON_CONFIG);
+  }
+
+  @Get('/v2/mayan')
+  async getMayanConfigV2() {
+    const config = await this.cache.get(CACHE_KEY.FILTERED_MAYAN_CONFIG);
+    if (config) {
+      return config;
+    }
+
+    return this.cache.get(CACHE_KEY.MAYAN_CONFIG);
   }
 
   @Get('/v2/stat')
