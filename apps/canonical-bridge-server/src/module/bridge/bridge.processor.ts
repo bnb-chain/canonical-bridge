@@ -7,16 +7,20 @@ import { Cache, CACHE_MANAGER } from '@nestjs/cache-manager';
 import { ITokenPriceRecord } from '@/module/token/token.interface';
 import { isEmpty } from 'lodash';
 import {
-  IMesonChain,
+  EVM_NATIVE_TOKEN_ADDRESS,
+  ICBridgeToken,
+  ICBridgeTransferConfig,
   IDeBridgeToken,
   IDeBridgeTransferConfig,
-  ICBridgeTransferConfig,
-  ICBridgeToken,
-  IStargateTransferConfig,
+  IMesonChain,
   IMesonTransferConfig,
-  TRON_CHAIN_ID,
   isNativeToken,
-  EVM_NATIVE_TOKEN_ADDRESS,
+  IStargateTransferConfig,
+  TRON_CHAIN_ID,
+  IMayanBridgeChain,
+  IMayanTransferConfig,
+  IMayanBridgeToken,
+  SOLANA_CHAIN_ID,
 } from '@bnb-chain/canonical-bridge-sdk';
 import { UtilService } from '@/shared/util/util.service';
 import { sleep } from '@/common/utils';
@@ -43,6 +47,8 @@ export class BridgeProcessor extends WorkerHost {
         return this.fetchMeson();
       case Tasks.fetchStargate:
         return this.fetchStargate();
+      case Tasks.fetchMayan:
+        return this.fetchMayan();
 
       case Tasks.filterCBridge:
         return this.filterCBridge();
@@ -52,6 +58,8 @@ export class BridgeProcessor extends WorkerHost {
         return this.filterStargate();
       case Tasks.filterMeson:
         return this.filterMeson();
+      case Tasks.filterMayan:
+        return this.filterMayan();
       default:
     }
   }
@@ -95,6 +103,12 @@ export class BridgeProcessor extends WorkerHost {
     const config = await this.web3Service.getMesonConfigs();
     if (!config) return;
     await this.cache.set(`${CACHE_KEY.MESON_CONFIG}`, config, TIME.DAY);
+  }
+
+  async fetchMayan() {
+    const config = await this.web3Service.getMayanConfigs();
+    if (!config) return;
+    await this.cache.set(CACHE_KEY.MAYAN_CONFIG, config, TIME.DAY);
   }
 
   private updateDeBridgeConfigManually(config?: IDeBridgeTransferConfig) {
@@ -257,7 +271,7 @@ export class BridgeProcessor extends WorkerHost {
       pegged_pair_configs: peggedPairConfigs,
     };
 
-    await this.cache.set(`${CACHE_KEY.FIELDED_CBRIDGE_CONFIG}`, finalConfig, TIME.DAY);
+    await this.cache.set(`${CACHE_KEY.FILTERED_CBRIDGE_CONFIG}`, finalConfig, TIME.DAY);
   }
 
   async filterDeBridge() {
@@ -285,7 +299,7 @@ export class BridgeProcessor extends WorkerHost {
       tokens: chainTokens,
     };
 
-    await this.cache.set(`${CACHE_KEY.FIELDED_DEBRIDGE_CONFIG}`, finalConfig, TIME.DAY);
+    await this.cache.set(`${CACHE_KEY.FILTERED_DEBRIDGE_CONFIG}`, finalConfig, TIME.DAY);
   }
 
   async filterStargate() {
@@ -303,7 +317,7 @@ export class BridgeProcessor extends WorkerHost {
       });
     });
 
-    await this.cache.set(`${CACHE_KEY.FIELDED_STARGATE_CONFIG}`, finalConfig, TIME.DAY);
+    await this.cache.set(`${CACHE_KEY.FILTERED_STARGATE_CONFIG}`, finalConfig, TIME.DAY);
   }
 
   async filterMeson() {
@@ -331,6 +345,41 @@ export class BridgeProcessor extends WorkerHost {
       }
     });
 
-    await this.cache.set(`${CACHE_KEY.FIELDED_MESON_CONFIG}`, finalConfig, TIME.DAY);
+    await this.cache.set(`${CACHE_KEY.FILTERED_MESON_CONFIG}`, finalConfig, TIME.DAY);
+  }
+
+  async filterMayan() {
+    const config = await this.cache.get<IMayanTransferConfig>(CACHE_KEY.MAYAN_CONFIG);
+    if (!config) return;
+
+    const priceConfig = await this.getPriceConfig();
+
+    // Filter tokens for each chain
+    const filteredTokens: Record<string, IMayanBridgeToken[]> = {};
+    Object.entries(config.tokens).forEach(([nameId, tokens]) => {
+      filteredTokens[nameId] = tokens.filter((token) => {
+        return this.hasTokenPrice({
+          ...priceConfig,
+          tokenAddress: token.contract,
+          tokenSymbol: token.symbol,
+          chainId: nameId === 'solana' ? SOLANA_CHAIN_ID : token.chainId,
+        });
+      });
+    });
+
+    // Filter chains to include only those with non-empty token lists
+    const filteredChains: IMayanBridgeChain[] = config.chains.filter((chain) => {
+      const chainTokens = filteredTokens[chain.nameId];
+      return chainTokens && chainTokens.length > 0;
+    });
+
+    // Create the final filtered configuration
+    const finalConfig: IMayanTransferConfig = {
+      chains: filteredChains,
+      tokens: filteredTokens,
+    };
+
+    // Cache the filtered configuration
+    await this.cache.set(`${CACHE_KEY.FILTERED_MAYAN_CONFIG}`, finalConfig, TIME.DAY);
   }
 }
