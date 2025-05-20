@@ -1,5 +1,55 @@
 # @bnb-chain/canonical-bridge-widget
 
+## 0.7.1
+
+### Patch Changes
+
+- 14c8f90: Hide ratio when some error occurs
+
+## 0.7.1-alpha.0
+
+### Patch Changes
+
+- Hide ratio when some error occurs
+
+## 0.7.0
+
+### Minor Changes
+
+- dc0fdaf: Add price change ratio tag
+- 6206f2d: Fix price tag color
+- a95ccaf: Fix negative ratio
+
+## 0.7.0-alpha.2
+
+### Minor Changes
+
+- Fix negative ratio
+
+## 0.7.0-alpha.1
+
+### Minor Changes
+
+- Fix price tag color
+
+## 0.7.0-alpha.0
+
+### Minor Changes
+
+- Add price change ratio tag
+
+## 0.6.1
+
+### Patch Changes
+
+- 39da38d: Fix meson amount limit & send button disable state
+
+## 0.6.1-alpha.0
+
+### Patch Changes
+
+- b17ceba: Fix meson amount limit & send button disable state
+
 ## 0.6.0
 
 ### Patch Changes

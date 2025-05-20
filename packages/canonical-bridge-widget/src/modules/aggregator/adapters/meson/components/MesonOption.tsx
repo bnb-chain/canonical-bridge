@@ -10,6 +10,7 @@ import { FeesInfo } from '@/modules/transfer/components/TransferOverview/RouteIn
 import { OtherRouteError } from '@/modules/transfer/components/TransferOverview/RouteInfo/OtherRouteError';
 import { RouteName } from '@/modules/transfer/components/TransferOverview/RouteInfo/RouteName';
 import { RouteWrapper } from '@/modules/transfer/components/TransferOverview/RouteInfo/RouteWrapper';
+import { formatNumber } from '@/core/utils/number';
 
 export const MesonOption = () => {
   const dispatch = useAppDispatch();
@@ -22,8 +23,8 @@ export const MesonOption = () => {
   const fromChain = useAppSelector((state) => state.transfer.fromChain);
 
   const receiveAmt = useMemo(() => {
-    return Number(estimatedAmount?.['meson']) ? estimatedAmount?.['meson'] : '--';
-  }, [estimatedAmount]);
+    return Number(estimatedAmount?.meson) ? formatNumber(estimatedAmount?.meson, 8) : '--';
+  }, [estimatedAmount?.meson]);
 
   const isError = useMemo(
     () =>
@@ -51,7 +52,7 @@ export const MesonOption = () => {
       onSelectBridge={onSelectBridge}
       isSelected={transferActionInfo?.bridgeType === 'meson'}
     >
-      <RouteName isError={isError} bridgeType="meson" />
+      <RouteName isError={isError} bridgeType="meson" receiveAmt={receiveAmt} />
       <RouteTitle isError={isError} receiveAmt={receiveAmt} toTokenInfo={toTokenInfo?.['meson']} />
       <EstimatedArrivalTime isError={isError} bridgeType={'meson'} />
       <FeesInfo isError={isError} bridgeType="meson" />

@@ -5,6 +5,7 @@ export * from './adapters/deBridge/exports';
 export * from './adapters/layerZero/exports';
 export * from './adapters/stargate/exports';
 export * from './adapters/meson/exports';
+export * from './adapters/mayan/exports';
 
 // aggregator
 export * from './aggregator/exports';
