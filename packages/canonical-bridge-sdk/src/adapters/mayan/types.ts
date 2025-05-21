@@ -54,3 +54,15 @@ export interface IMayanTransferConfig {
   chains: IMayanChain[];
   tokens: Record<string, IMayanToken[]>;
 }
+
+export interface IMayanQuotaInput {
+  amount: number;
+  fromToken: string;
+  toToken: string;
+  fromChain: string;
+  toChain: string;
+  slippageBps: number;
+  gasDrop: number;
+  referrer: string;
+  referrerBps: number;
+}

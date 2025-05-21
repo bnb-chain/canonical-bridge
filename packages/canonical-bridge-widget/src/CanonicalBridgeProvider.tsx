@@ -50,6 +50,10 @@ export interface IBridgeConfig {
     deBridgeReferralCode?: string;
     serverEndpoint?: string;
     mesonEndpoint: string;
+    mayanSlippageBps?: number;
+    mayanGasDrop?: number;
+    mayanReferrer?: string;
+    mayanReferrerBps?: number;
   };
 
   components: {
@@ -138,6 +142,10 @@ export function CanonicalBridgeProvider(props: CanonicalBridgeProviderProps) {
         refetchingInterval: 30000,
         apiTimeOut: 60000,
         mesonEndpoint: 'https://relayer.meson.fi/api/v1',
+        mayanSlippageBps: 300,
+        mayanGasDrop: 0,
+        mayanReferrer: '',
+        mayanReferrerBps: 5,
         ...http,
       },
 

@@ -21,6 +21,7 @@ export const FeesInfo = ({ bridgeType, isError }: FeesInfoProps) => {
   const feeDetails = useMemo(() => {
     let feeContent = '';
     const feeBreakdown = [];
+    // todo add mayan
     if (bridgeType === 'cBridge' && routeFees?.['cBridge']) {
       feeContent = routeFees?.['cBridge'].summary;
       feeBreakdown.push(...routeFees?.['cBridge'].breakdown);

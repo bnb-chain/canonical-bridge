@@ -9,7 +9,8 @@ import { useGetBestTime } from '@/modules/transfer/hooks/useGetBestTime';
 import { getMaxValueKey } from '@/core/utils/number';
 import { BestRouteTag } from '@/modules/transfer/components/TransferOverview/RouteInfo/RouteName/BestRouteTag';
 import { useBridgeConfig } from '@/CanonicalBridgeProvider';
-import { RedeemRatio } from '@/modules/transfer/components/TransferOverview/RouteInfo/RouteName/RedeemRatio.tsx';
+import { RedeemRatio } from '@/modules/transfer/components/TransferOverview/RouteInfo/RouteName/RedeemRatio';
+import { WormholeLogo } from '@/core/components/icons/brand/WormholeLogo';
 
 interface RouteNameProps {
   bridgeType?: BridgeType;
@@ -68,6 +69,8 @@ export const RouteName = React.memo(
             h={['16px', '16px', '16px', '20px']}
             borderRadius={'100%'}
           />
+        ) : bridgeType === 'mayan' ? (
+          <WormholeLogo w={['16px', '16px', '16px', '20px']} h={['16px', '16px', '16px', '20px']} />
         ) : null}
 
         <Flex
@@ -97,6 +100,8 @@ export const RouteName = React.memo(
               ? formatMessage({ id: 'route.option.layerZero.title' })
               : bridgeType === 'meson'
               ? formatMessage({ id: 'route.option.meson.title' })
+              : bridgeType === 'mayan'
+              ? formatMessage({ id: 'route.option.mayan.title' })
               : null}
           </Box>
         </Flex>
