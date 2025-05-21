@@ -1,3 +1,5 @@
+import { ReferrerAddresses } from '@mayanfinance/swap-sdk';
+
 export interface IMayanChainBaseToken {
   mint: string;
   name: string;
@@ -53,4 +55,36 @@ export interface IMayanToken {
 export interface IMayanTransferConfig {
   chains: IMayanChain[];
   tokens: Record<string, IMayanToken[]>;
+}
+
+export interface IMayanQuotaInputExtra {
+  slippageBps?: number | 'auto';
+  gasDrop?: number;
+  referrer?: ReferrerAddresses;
+  referrerBps?: number;
+}
+
+export interface IMayanQuotaInput {
+  amount: number;
+  fromToken: string;
+  toToken: string;
+  fromChain: string;
+  toChain: string;
+  extra: IMayanQuotaInputExtra
+}
+
+export interface IMayanTokenValidateParams {
+  fromTokenAddress: string;
+  fromBridgeAddress: string;
+  fromTokenSymbol: string;
+  fromChainNameId?: string;
+  fromChainType?: string;
+  toTokenAddress: string;
+  toTokenSymbol?: string;
+  toChainId?: number;
+  toChainNameId?: string;
+  toChainType?: string;
+  amount: number;
+  fromTokenDecimals?: number;
+  toTokenDecimals?: number;
 }

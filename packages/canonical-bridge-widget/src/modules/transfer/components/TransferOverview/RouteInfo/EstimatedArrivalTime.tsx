@@ -39,6 +39,8 @@ export const EstimatedArrivalTime = ({
       ? estimatedAmount?.['deBridge']?.order?.approximateFulfillmentDelay
       : bridgeType === 'stargate' && estimatedTime?.avgWaitTime
       ? estimatedTime?.avgWaitTime / 1000
+      : bridgeType === 'mayan' && estimatedAmount?.mayan?.wait
+      ? estimatedAmount?.mayan?.wait
       : null;
   }, [bridgeType, time, estimatedAmount, estimatedTime]);
 

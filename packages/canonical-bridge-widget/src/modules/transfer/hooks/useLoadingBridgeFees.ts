@@ -20,6 +20,7 @@ import {
   DEFAULT_ADDRESS,
   DEFAULT_SOLANA_ADDRESS,
   DEFAULT_TRON_ADDRESS,
+  SOLANA_NATIVE_TOKEN_ADDRESS,
 } from '@/core/constants';
 import { checkResponseResult, toObject } from '@/core/utils/string';
 import { useGetCBridgeFees } from '@/modules/aggregator/adapters/cBridge/hooks/useGetCBridgeFees';
@@ -37,6 +38,7 @@ import { useIsWalletCompatible } from '@/modules/wallet/hooks/useIsWalletCompati
 import { useFailGetQuoteModal } from '@/modules/transfer/hooks/modal/useFailGetQuoteModal';
 import { delay } from '@/core/utils/time';
 import { useFeeLoadTimeout } from '@/modules/transfer/hooks/modal/useFeeLoadTimeout';
+import { useGetMayanFees } from '@/modules/aggregator/adapters/mayan/hooks/useGetMayanFees';
 
 let lastTime = Date.now();
 
@@ -55,7 +57,7 @@ export const useLoadingBridgeFees = () => {
 
   const bridgeSDK = useBridgeSDK();
   const {
-    http: { deBridgeAccessToken, deBridgeReferralCode, feeReloadMaxTime = 15000 },
+    http: { deBridgeAccessToken, deBridgeReferralCode, feeReloadMaxTime = 15000, mayanOpts },
   } = useBridgeConfig();
   const nativeToken = useGetNativeToken();
   const { deBridgeFeeSorting: _deBridgeFeeSorting } = useGetDeBridgeFees();
@@ -80,10 +82,15 @@ export const useLoadingBridgeFees = () => {
   layerZeroFeeSorting.current = _layerZeroFeeSorting;
 
   const { mesonFeeSorting: _mesonFeeSorting } = useGetMesonFees();
-  const { onOpenFailedGetQuoteModal } = useFailGetQuoteModal();
-  const { onOpenFeeTimeoutModal } = useFeeLoadTimeout();
   const mesonFeeSorting = useRef(_mesonFeeSorting);
   mesonFeeSorting.current = _mesonFeeSorting;
+
+  const { mayanFeeSorting: _mayanFeeSorting } = useGetMayanFees();
+  const mayanFeeSorting = useRef(_mayanFeeSorting);
+  mayanFeeSorting.current = _mayanFeeSorting;
+
+  const { onOpenFailedGetQuoteModal } = useFailGetQuoteModal();
+  const { onOpenFeeTimeoutModal } = useFeeLoadTimeout();
 
   const { formatMessage } = useIntl();
 
@@ -133,6 +140,7 @@ export const useLoadingBridgeFees = () => {
           stargate: undefined,
           layerZero: undefined,
           meson: undefined,
+          mayan: undefined,
         }),
       );
       const bridgeTypeList: BridgeType[] = [];
@@ -197,6 +205,17 @@ export const useLoadingBridgeFees = () => {
                     : DEFAULT_SOLANA_ADDRESS
                   : undefined,
             },
+            mayanOpts: {
+              amount: Number(debouncedSendValue),
+              fromToken:
+                selectedToken.address === SOLANA_NATIVE_TOKEN_ADDRESS
+                  ? '0x0000000000000000000000000000000000000000'
+                  : selectedToken.address,
+              toToken: toToken.address,
+              fromChain: fromChain.mayan?.raw?.nameId || '',
+              toChain: toChain.mayan?.raw?.nameId || '',
+              extra: mayanOpts,
+            },
           });
         };
 
@@ -207,7 +226,7 @@ export const useLoadingBridgeFees = () => {
         response = await loadFeeCoreFn();
         // eslint-disable-next-line no-console
         console.log(
-          'API response deBridge[0], cBridge[1], stargate[2], layerZero[3], meson[4]',
+          'API response deBridge[0], cBridge[1], stargate[2], layerZero[3], meson[4], mayan[5]',
           response,
         );
         if (lastTime > now) {
@@ -235,7 +254,8 @@ export const useLoadingBridgeFees = () => {
         }
 
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const [debridgeEst, cbridgeEst, stargateEst, layerZeroEst, mesonEst] = response as any;
+        const [debridgeEst, cbridgeEst, stargateEst, layerZeroEst, mesonEst, mayanEst] =
+          response as any;
         // meson
         if (mesonEst.status === 'fulfilled' && mesonEst?.value) {
           if (mesonEst?.value?.error) {
@@ -441,6 +461,56 @@ export const useLoadingBridgeFees = () => {
           dispatch(setRouteFees({ layerZero: undefined }));
         } else {
           dispatch(setEstimatedAmount({ layerZero: undefined }));
+        }
+
+        // mayan
+        if (mayanEst.status === 'fulfilled' && mayanEst.value?.length) {
+          const quote = mayanEst.value[0];
+          const feeSortingRes = await mayanFeeSorting.current(quote);
+          if (!feeSortingRes?.isFailedToGetGas) {
+            dispatch(
+              setEstimatedAmount({
+                mayan: {
+                  value: quote.expectedAmountOut,
+                  wait: quote.etaSeconds,
+                  quote,
+                },
+              }),
+            );
+            valueArr.push({
+              type: 'mayan',
+              value: quote.expectedAmountOut,
+              isIgnoreSorted: feeSortingRes?.isFailedToGetGas,
+              isDisplayError: feeSortingRes?.isDisplayError,
+            });
+          } else {
+            dispatch(setEstimatedAmount({ mayan: undefined }));
+          }
+        } else if (mayanEst.status === 'rejected') {
+          if (mayanEst.reason.data?.minAmountIn) {
+            dispatch(setEstimatedAmount({ mayan: 'error' }));
+            dispatch(
+              setRouteError({
+                mayan: formatMessage(
+                  { id: 'route.error.amount.min' },
+                  { min: `${mayanEst.reason.data?.minAmountIn} ${selectedToken.symbol}` },
+                ),
+              }),
+            );
+          } else if (mayanEst.reason?.code === 'BRIDGE_LIMIT_EXCEEDED') {
+            dispatch(setEstimatedAmount({ mayan: 'error' }));
+            dispatch(
+              setRouteError({
+                mayan: mayanEst.reason?.message,
+              }),
+            );
+          } else {
+            dispatch(setRouteError({ mayan: mayanEst.reason.message }));
+            dispatch(setEstimatedAmount({ mayan: undefined }));
+            dispatch(setRouteFees({ mayan: undefined }));
+          }
+        } else {
+          dispatch(setEstimatedAmount({ mayan: undefined }));
         }
 
         // Check if pre select route is failed

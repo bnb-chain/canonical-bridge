@@ -44,6 +44,7 @@ export const en = {
     'route.option.stargate.title': 'Stargate',
     'route.option.layerZero.title': 'LayerZero',
     'route.option.meson.title': 'Meson',
+    'route.option.mayan.title': 'Mayan',
     'route.option.tag.best-time': 'Fastest',
     'route.option.tag.highest-amount': 'Best Return',
     'route.option.info.estimated-time': 'Est. Time:',

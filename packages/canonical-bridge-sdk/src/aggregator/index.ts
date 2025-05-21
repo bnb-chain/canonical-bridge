@@ -89,6 +89,8 @@ export class Aggregator {
             return new LayerZeroAdapter(adapterOptions).init();
           case 'meson':
             return new MesonAdapter(adapterOptions).init();
+          case 'mayan':
+            return new MayanAdapter(adapterOptions).init();
           default:
             return new StargateAdapter(adapterOptions).init();
         }
