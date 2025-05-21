@@ -40,6 +40,9 @@
     "axios": ">=1.7.4",
     "viem": "^2"
   },
+  "dependencies": {
+    "@mayanfinance/swap-sdk": "~10.5.0"
+  },
   "devDependencies": {
     "@types/jest": "~29.5.14",
     "@types/react": "^18",

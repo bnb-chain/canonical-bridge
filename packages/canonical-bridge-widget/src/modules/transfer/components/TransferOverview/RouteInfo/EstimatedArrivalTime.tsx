@@ -32,6 +32,7 @@ export const EstimatedArrivalTime = ({
     isEnabled: bridgeType === 'cBridge',
   });
 
+  // todo add mayan
   const waitingTime = useMemo(() => {
     return bridgeType === 'cBridge'
       ? time?.median_transfer_latency_in_second

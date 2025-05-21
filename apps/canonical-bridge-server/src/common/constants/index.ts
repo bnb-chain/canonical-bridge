@@ -12,6 +12,7 @@ export const STARGATE_ENDPOINT =
   process.env.STARGATE_ENDPOINT || 'https://mainnet.stargate-api.com/v1/metadata?version=v2';
 export const MESON_ENDPOINT = process.env.MESON_ENDPOINT || 'https://relayer.meson.fi/api/v1';
 export const MAYAN_ENDPOINT = process.env.MAYAN_ENDPOINT || 'https://price-api.mayan.finance/v3';
+export const SIA_MAYAN_ENDPOINT = process.env.MAYAN_ENDPOINT || 'https://sia.mayan.finance/v6';
 export const LLAMA_COINS_ENDPOINT = process.env.LLMA_COINS__ENDPOINT || 'https://coins.llama.fi';
 export const COINGECKO_ENDPOINT = process.env.COINGECKO_ENDPOINT || 'https://api.coingecko.com/api';
 

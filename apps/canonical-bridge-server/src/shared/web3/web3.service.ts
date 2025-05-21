@@ -18,6 +18,7 @@ import {
   LLAMA_COINS_ENDPOINT,
   MAYAN_ENDPOINT,
   MESON_ENDPOINT,
+  SIA_MAYAN_ENDPOINT,
   STARGATE_CHAIN_INFO,
   STARGATE_ENDPOINT,
 } from '@/common/constants';
@@ -147,10 +148,10 @@ export class Web3Service {
 
   async getMayanConfigs(): Promise<IMayanTransferConfig> {
     try {
-      const { data: chains } = await this.httpService.axiosRef.get<Array<IMayanChain>>(
-        `${MAYAN_ENDPOINT}/chains`,
+      const { data } = await this.httpService.axiosRef.get<{ chains: Array<IMayanChain> }>(
+        `${SIA_MAYAN_ENDPOINT}/init`,
       );
-      const supportedChains = chains.filter(
+      const supportedChains = data.chains.filter(
         (chain) => chain.originActive && chain.destinationActive,
       );
       const { data: tokens } = await this.httpService.axiosRef.get<

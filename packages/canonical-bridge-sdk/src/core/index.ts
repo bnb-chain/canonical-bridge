@@ -17,6 +17,8 @@ import { IGetMesonEstimateFeeInput } from '@/adapters/meson/types';
 import { BridgeType, IBridgeToken } from '@/shared/types';
 import { IDeBridgeEstimatedFeesInput } from '@/adapters/deBridge/types';
 import { ICBridgePeggedPairConfig } from '@/adapters/cBridge/types';
+import { Mayan } from '@/adapters/mayan';
+import { IMayanQuotaInput } from '@/adapters/mayan/types';
 
 export * from './types';
 
@@ -30,6 +32,7 @@ export class CanonicalBridgeSDK {
   stargate!: Stargate;
   layerZero!: LayerZero;
   meson!: Meson;
+  mayan!: Mayan;
 
   private options: CanonicalBridgeSDKOptions<
     IBaseBridgeConfig | IDeBridgeConfig
@@ -58,6 +61,10 @@ export class CanonicalBridgeSDK {
       (item) => item.bridgeType === 'meson'
     );
 
+    const mayanConfig = options.bridgeConfigs.find(
+      (item) => item.bridgeType === 'mayan'
+    )
+
     if (cBridgeConfig) {
       this.cBridge = new CBridge(cBridgeConfig);
     }
@@ -72,6 +79,9 @@ export class CanonicalBridgeSDK {
     }
     if (mesonConfig) {
       this.meson = new Meson(mesonConfig);
+    }
+    if (mayanConfig) {
+      this.mayan = new Mayan();
     }
 
     this.options = options;
@@ -178,7 +188,7 @@ export class CanonicalBridgeSDK {
 
   /**
    * Load bridge fees and return fee information in the following order
-   * [deBridge, cBridge, stargate, layerZero, meson]
+   * [deBridge, cBridge, stargate, layerZero, meson, mayan]
    */
   async loadBridgeFees({
     bridgeType,
@@ -195,6 +205,7 @@ export class CanonicalBridgeSDK {
     mesonOpts,
     deBridgeOpts,
     toToken,
+    mayanOpts,
   }: {
     bridgeType: BridgeType[];
     fromChainId: number;
@@ -210,6 +221,7 @@ export class CanonicalBridgeSDK {
     mesonOpts?: IGetMesonEstimateFeeInput;
     deBridgeOpts?: IDeBridgeEstimatedFeesInput;
     toToken?: IBridgeToken;
+    mayanOpts?: IMayanQuotaInput;
   }) {
     // deBridge
     const promiseArr = [];
@@ -293,6 +305,13 @@ export class CanonicalBridgeSDK {
     ) {
       const mesonFeeAPICall = this.meson.getEstimatedFees(mesonOpts);
       promiseArr.push(mesonFeeAPICall);
+    } else {
+      promiseArr.push(new Promise((reject) => reject(null)));
+    }
+    // mayan
+    if (this.mayan && mayanOpts && bridgeType.includes('mayan') && toToken?.mayan) {
+      const mayanFeeAPICall = this.mayan.getEstimatedFees(mayanOpts);
+      promiseArr.push(mayanFeeAPICall);
     } else {
       promiseArr.push(new Promise((reject) => reject(null)));
     }
@@ -424,5 +443,7 @@ export class CanonicalBridgeSDK {
     } else {
       throw new Error('Invalid bridge inputs');
     }
+
+    // todo add mayan
   }
 }
