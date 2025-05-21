@@ -63,7 +63,7 @@ export class MesonAdapter extends BaseAdapter<
 
         const anotherTokenIndex = chain.tokens.findIndex(
           (e, eIndex) =>
-            e.symbol.toUpperCase() === token.symbol.toUpperCase() &&
+            e.symbol?.toUpperCase() === token.symbol?.toUpperCase() &&
             eIndex !== tokenIndex
         );
         const isDuplicatedToken =

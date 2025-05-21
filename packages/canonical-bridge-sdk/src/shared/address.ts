@@ -1,7 +1,4 @@
-import {
-  EVM_NATIVE_TOKEN_ADDRESS,
-  SOLANA_NATIVE_TOKEN_ADDRESS,
-} from '@/constants';
+import { EVM_NATIVE_TOKEN_ADDRESS, SOLANA_NATIVE_TOKEN_ADDRESS } from '@/constants';
 import { ChainType } from '@/shared/types';
 
 export function isSameAddress(A?: string, B?: string) {
@@ -19,11 +16,11 @@ export function isEvmAddress(address?: string) {
 }
 
 export function isNativeToken(
-  tokenAddress?: string,
-  chainType: ChainType = 'evm'
+  tokenAddress = EVM_NATIVE_TOKEN_ADDRESS,
+  chainType: ChainType = 'evm',
 ) {
   if (chainType === 'solana') {
-    return tokenAddress === SOLANA_NATIVE_TOKEN_ADDRESS;
+    return [SOLANA_NATIVE_TOKEN_ADDRESS, EVM_NATIVE_TOKEN_ADDRESS].includes(tokenAddress);
   }
 
   return tokenAddress === EVM_NATIVE_TOKEN_ADDRESS;
@@ -38,10 +35,10 @@ export function isTronAddress(address?: string) {
 }
 
 export const isValidTokenAddress = ({
-  contractAddress,
-  chainType,
-  isSourceChain,
-}: {
+                                      contractAddress,
+                                      chainType,
+                                      isSourceChain,
+                                    }: {
   contractAddress: string;
   chainType: string;
   isSourceChain: boolean;
@@ -52,7 +49,7 @@ export const isValidTokenAddress = ({
       console.log(
         `Invalid evm ${fromOrTo} contract address`,
         chainType,
-        contractAddress
+        contractAddress,
       );
       return false;
     }
@@ -61,7 +58,7 @@ export const isValidTokenAddress = ({
       console.log(
         `Invalid solana ${fromOrTo} contract address`,
         chainType,
-        contractAddress
+        contractAddress,
       );
       return false;
     }

@@ -11,6 +11,7 @@ import {
   IExternalChain,
 } from '@bnb-chain/canonical-bridge-sdk';
 import { breakpoints } from '@bnb-chain/space/dist/modules/theme/foundations/breakpoints';
+import { IMayanQuotaInputExtra } from '@bnb-chain/canonical-bridge-sdk';
 
 import { StoreProvider } from '@/modules/store/StoreProvider';
 import { ThemeProvider } from '@/core/theme/ThemeProvider';
@@ -50,6 +51,7 @@ export interface IBridgeConfig {
     deBridgeReferralCode?: string;
     serverEndpoint?: string;
     mesonEndpoint: string;
+    mayanOpts: IMayanQuotaInputExtra;
   };
 
   components: {
@@ -138,6 +140,15 @@ export function CanonicalBridgeProvider(props: CanonicalBridgeProviderProps) {
         refetchingInterval: 30000,
         apiTimeOut: 60000,
         mesonEndpoint: 'https://relayer.meson.fi/api/v1',
+        mayanOpts: {
+          slippageBps: 'auto',
+          gasDrop: 0,
+          referrerBps: 5,
+          ...http?.mayanOpts,
+          referrer: {
+            ...(http?.mayanOpts?.referrer ?? {}),
+          },
+        },
         ...http,
       },
 

@@ -13,8 +13,7 @@ export const useToTokenInfo = () => {
       stargate: selectedToken?.stargate?.raw?.token?.decimals || 0,
       layerZero: selectedToken?.layerZero?.raw?.decimals || 0,
       meson: selectedToken?.meson?.raw?.decimals || 0,
-      // todo
-      mayan: 0,
+      mayan: selectedToken?.mayan?.raw?.decimals || 0,
     };
   }, [toTokenInfo, selectedToken]);
   const getToTokenAddress = useCallback(() => {
@@ -24,8 +23,7 @@ export const useToTokenInfo = () => {
       stargate: toTokenInfo?.stargate?.raw?.token?.address || '',
       layerZero: toTokenInfo?.layerZero?.raw?.address || '',
       meson: toTokenInfo?.meson?.raw?.addr || '',
-      // todo
-      mayan: '',
+      mayan: toTokenInfo?.mayan?.raw?.contract || '',
     };
   }, [toTokenInfo]);
 
@@ -36,8 +34,7 @@ export const useToTokenInfo = () => {
       stargate: toTokenInfo?.stargate?.raw?.token?.symbol || '',
       layerZero: toTokenInfo?.layerZero?.raw?.symbol || '',
       meson: toTokenInfo?.meson?.raw?.id?.toUpperCase() || '',
-      // todo
-      mayan: '',
+      mayan: toTokenInfo?.mayan?.raw?.symbol || '',
     };
   }, [
     toTokenInfo?.cBridge?.raw?.token.symbol,
@@ -45,6 +42,7 @@ export const useToTokenInfo = () => {
     toTokenInfo?.stargate?.raw?.token?.symbol,
     toTokenInfo?.layerZero?.raw?.symbol,
     toTokenInfo?.meson?.raw?.id,
+    toTokenInfo?.mayan?.raw?.symbol,
   ]);
 
   return { toTokenInfo, getToDecimals, getToTokenAddress, getToTokenSymbol };

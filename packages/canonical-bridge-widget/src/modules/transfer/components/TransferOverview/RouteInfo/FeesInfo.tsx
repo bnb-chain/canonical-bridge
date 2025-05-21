@@ -36,6 +36,9 @@ export const FeesInfo = ({ bridgeType, isError }: FeesInfoProps) => {
     } else if (bridgeType === 'meson' && routeFees?.['meson']) {
       feeContent = routeFees?.['meson'].summary;
       feeBreakdown.push(...routeFees?.['meson'].breakdown);
+    } else if (bridgeType === 'mayan' && routeFees?.['mayan']) {
+      feeContent = routeFees?.['mayan'].summary;
+      feeBreakdown.push(...routeFees?.['mayan'].breakdown);
     }
     return { summary: feeContent ? feeContent : '--', breakdown: feeBreakdown };
   }, [bridgeType, routeFees]);

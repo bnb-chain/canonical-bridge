@@ -1,4 +1,5 @@
 import { BridgeType } from '@bnb-chain/canonical-bridge-sdk';
+import { Quote } from '@mayanfinance/swap-sdk';
 
 export interface ITransferActionInfo {
   data?: `0x${string}`;
@@ -6,6 +7,7 @@ export interface ITransferActionInfo {
   value?: string;
   bridgeType?: BridgeType;
   orderId?: string; // deBridge order id. May be used for tracking history
+  quote?: Quote;
 }
 
 export type IReceiveValue = {
