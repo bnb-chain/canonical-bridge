@@ -252,11 +252,8 @@ importers:
   ../../packages/canonical-bridge-sdk:
     devDependencies:
       '@mayanfinance/swap-sdk':
-        specifier: ~10.5.0
-        version: 10.5.0(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.5.4)(utf-8-validate@5.0.10)
-      '@openzeppelin/contracts':
-        specifier: ^5.2.0
-        version: 5.3.0
+        specifier: ~10.6.1
+        version: 10.6.1(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.5.4)(utf-8-validate@5.0.10)
       '@solana/wallet-adapter-react':
         specifier: ^0
         version: 0.15.35(@solana/web3.js@1.95.8(bufferutil@4.0.9)(encoding@0.1.13)(utf-8-validate@5.0.10))(bs58@6.0.0)(react@18.2.0)
@@ -303,11 +300,8 @@ importers:
   ../../packages/canonical-bridge-widget:
     dependencies:
       '@mayanfinance/swap-sdk':
-        specifier: ~10.5.0
-        version: 10.5.0(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.5.4)(utf-8-validate@5.0.10)
-      '@openzeppelin/contracts':
-        specifier: ^5.2.0
-        version: 5.3.0
+        specifier: ~10.6.1
+        version: 10.6.1(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.5.4)(utf-8-validate@5.0.10)
     devDependencies:
       '@bnb-chain/canonical-bridge-sdk':
         specifier: workspace:*
@@ -2423,8 +2417,8 @@ packages:
     resolution: {integrity: sha512-Z7C/xXCiGWsg0KuKsHTKJxbWhpI3Vs5GwLfOean7MGyVFGqdRgBbAjOCh6u4bbjPc/8MJ2pZmK/0DLdCbivLDA==}
     engines: {node: '>=8'}
 
-  '@mayanfinance/swap-sdk@10.5.0':
-    resolution: {integrity: sha512-rIIPmOrJLwOtNibk3Bl4LVLtCOWzBi6alTcXCbvyonjKIs89kOk1U1Mz/PCyZw835nB6B8wCbkiBdeLDn2Lamg==}
+  '@mayanfinance/swap-sdk@10.6.1':
+    resolution: {integrity: sha512-ILXRVVqRMFq7hdz6Mh8/ac7xX9f9JFAOOFBCnL9FFITGYK8VNqHOv2ygiiP2n2liCO24q9oht4d1M6Y0jMDSOA==}
 
   '@metamask/eth-json-rpc-provider@1.0.1':
     resolution: {integrity: sha512-whiUMPlAOrVGmX8aKYVPvlKyG4CpQXiNNyt74vE1xb5sPvmx5oA7B/kOi/JdBvhGQq97U1/AVdXEdk2zkP8qyA==}
@@ -2901,9 +2895,6 @@ packages:
   '@opentelemetry/api@1.9.0':
     resolution: {integrity: sha512-3giAOQvZiH5F9bMlMiv8+GSPMeqg0dbaeo58/0SlA9sxSqZhnUtxzX9/2FzyhS9sWQf5S0GJE0AKBrFqjpeYcg==}
     engines: {node: '>=8.0.0'}
-
-  '@openzeppelin/contracts@5.3.0':
-    resolution: {integrity: sha512-zj/KGoW7zxWUE8qOI++rUM18v+VeLTTzKs/DJFkSzHpQFPD/jKKF0TrMxBfGLl3kpdELCNccvB3zmofSzm4nlA==}
 
   '@particle-network/analytics@1.0.2':
     resolution: {integrity: sha512-E4EpTRYcfNOkxj+bgNdQydBrvdLGo4HfVStZCuOr3967dYek30r6L7Nkaa9zJXRE2eGT4lPvcAXDV2WxDZl/Xg==}
@@ -12721,7 +12712,7 @@ snapshots:
 
   '@lukeed/csprng@1.1.0': {}
 
-  '@mayanfinance/swap-sdk@10.5.0(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.5.4)(utf-8-validate@5.0.10)':
+  '@mayanfinance/swap-sdk@10.6.1(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.5.4)(utf-8-validate@5.0.10)':
     dependencies:
       '@mysten/sui': 1.30.0(typescript@5.5.4)
       '@solana/buffer-layout': 4.0.1
@@ -13368,8 +13359,6 @@ snapshots:
       - encoding
 
   '@opentelemetry/api@1.9.0': {}
-
-  '@openzeppelin/contracts@5.3.0': {}
 
   '@particle-network/analytics@1.0.2':
     dependencies:
