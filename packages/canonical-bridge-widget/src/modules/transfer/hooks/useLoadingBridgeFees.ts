@@ -493,6 +493,13 @@ export const useLoadingBridgeFees = () => {
                 ),
               }),
             );
+          } else if (mayanEst.reason?.code === 'BRIDGE_LIMIT_EXCEEDED') {
+            dispatch(setEstimatedAmount({ mayan: 'error' }));
+            dispatch(
+              setRouteError({
+                mayan: mayanEst.reason?.message,
+              }),
+            );
           } else {
             dispatch(setRouteError({ mayan: mayanEst.reason.message }));
             dispatch(setEstimatedAmount({ mayan: undefined }));
