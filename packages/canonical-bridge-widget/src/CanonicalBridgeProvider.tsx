@@ -143,7 +143,7 @@ export function CanonicalBridgeProvider(props: CanonicalBridgeProviderProps) {
         mayanOpts: {
           slippageBps: 'auto',
           gasDrop: 0,
-          referrerBps: 5,
+          referrerBps: 0,
           ...http?.mayanOpts,
           referrer: {
             ...(http?.mayanOpts?.referrer ?? {}),

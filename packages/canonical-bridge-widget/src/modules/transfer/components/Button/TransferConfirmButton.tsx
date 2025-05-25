@@ -107,13 +107,17 @@ export const TransferConfirmButton = ({
     const bridgeType = transferActionInfo.bridgeType;
 
     try {
+      setIsLoading(true);
+
       const result = await validateTokenPrice({
         chainId: fromChain.id,
         chainType: fromChain.chainType,
         tokenAddress: selectedToken.address,
         tokenSymbol: selectedToken.symbol,
       });
+
       if (result === undefined) {
+        setIsLoading(false);
         throw new Error(
           `Can not get token price from API server: ${sendValue} ${selectedToken.symbol}`,
         );
@@ -121,7 +125,6 @@ export const TransferConfirmButton = ({
 
       setHash(null);
       setChosenBridge('');
-      setIsLoading(true);
 
       onClose();
       onOpenConfirmingModal();

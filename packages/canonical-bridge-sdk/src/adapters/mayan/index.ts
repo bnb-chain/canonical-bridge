@@ -252,6 +252,7 @@ export class Mayan {
     try {
       const { blockhash, lastValidBlockHeight } =
         await connection.getLatestBlockhash();
+
       const result = await connection.confirmTransaction(
         {
           signature: swapRes.signature,
@@ -267,6 +268,7 @@ export class Mayan {
       console.log(`Mayan Transaction sent: ${swapRes.signature}`);
       return swapRes.signature;
     } catch (error) {
+      console.log(error);
       throw new Error('Mayan Transaction failed');
     }
   }
