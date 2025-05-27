@@ -18,7 +18,7 @@ export const useGetMayanFees = () => {
       // solanaRelayerFee
       if (quote.solanaRelayerFee) {
         feeBreakdown.push({
-          label: 'Solana Relayer Fee',
+          label: 'Solana Relayer Fee:',
           value: `${formatNumber(Number(quote.solanaRelayerFee), 8)} ${
             quote.type === 'WH' ? selectedToken?.symbol : 'USDC'
           }`,
@@ -29,7 +29,7 @@ export const useGetMayanFees = () => {
       // redeemRelayerFee
       if (quote.redeemRelayerFee) {
         feeBreakdown.push({
-          label: 'Redeem Relayer Fee',
+          label: 'Redeem Relayer Fee:',
           value: `${formatNumber(Number(quote.redeemRelayerFee), 8)} ${
             quote.type === 'WH' ? selectedToken?.symbol : 'USDC'
           }`,
