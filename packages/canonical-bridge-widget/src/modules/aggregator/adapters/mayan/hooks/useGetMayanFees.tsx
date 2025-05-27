@@ -4,7 +4,6 @@ import { Quote } from '@mayanfinance/swap-sdk';
 import { useAppDispatch, useAppSelector } from '@/modules/store/StoreProvider';
 import { setRouteFees } from '@/modules/transfer/action';
 import { formatNumber } from '@/core/utils/number';
-import { formatFeeAmount } from '@/core/utils/string';
 
 export const useGetMayanFees = () => {
   const dispatch = useAppDispatch();
@@ -40,9 +39,7 @@ export const useGetMayanFees = () => {
 
       // clientRelayerFeeSuccess
       if (quote.clientRelayerFeeSuccess) {
-        feeContent = `${String(
-          formatFeeAmount((quote.solanaRelayerFee || 0) + (quote.redeemRelayerFee || 0)),
-        )} ${quote.type === 'WH' ? selectedToken?.symbol : 'USDC'}`;
+        feeContent = `$${String(formatNumber(Number(quote.clientRelayerFeeSuccess), 4))}`;
       }
 
       dispatch(

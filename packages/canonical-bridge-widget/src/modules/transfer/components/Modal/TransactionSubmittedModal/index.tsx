@@ -50,11 +50,7 @@ export function TransactionSubmittedModal(
           } else if (chosenBridge === 'deBridge') {
             window.open(`${EXPLORER_URL[chosenBridge]}${useAddress}`);
           } else if (chosenBridge === 'mayan') {
-            window.open(
-              hash.includes('_')
-                ? `${EXPLORER_URL[chosenBridge]}/tx/${hash}`
-                : `${EXPLORER_URL[chosenBridge]}/trader/${useAddress}`,
-            );
+            window.open(`${EXPLORER_URL[chosenBridge]}/tx/${hash}`);
           } else if (
             (chosenBridge === 'stargate' || chosenBridge === 'layerZero') &&
             chain?.blockExplorers
