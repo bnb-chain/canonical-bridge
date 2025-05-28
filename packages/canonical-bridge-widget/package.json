@@ -1,6 +1,6 @@
 {
   "name": "@bnb-chain/canonical-bridge-widget",
-  "version": "0.8.0-alpha.0",
+  "version": "0.8.0",
   "description": "canonical bridge widget",
   "author": "bnb-chain",
   "private": false,
@@ -46,7 +46,7 @@
     "@solana/web3.js": "^1",
     "tronweb": "^6",
     "@tronweb3/tronwallet-adapter-react-hooks": "^1",
-    "@bnb-chain/canonical-bridge-sdk": "^0.6.0-alpha.0"
+    "@bnb-chain/canonical-bridge-sdk": "^0.6.0"
   },
   "dependencies": {
     "@mayanfinance/swap-sdk": "~10.6.1"
