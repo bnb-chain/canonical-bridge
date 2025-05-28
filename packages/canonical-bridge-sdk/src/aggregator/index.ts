@@ -21,6 +21,7 @@ import {
   INativeCurrency,
   ValueOf,
 } from '@/shared/types';
+import { MayanAdapter } from '@/adapters/mayan/adapter';
 
 export interface Adapters {
   cBridge: CBridgeAdapter;
@@ -28,6 +29,7 @@ export interface Adapters {
   layerZero: LayerZeroAdapter;
   meson: MesonAdapter;
   stargate: StargateAdapter;
+  mayan: MayanAdapter;
 }
 
 export interface AggregatorOptions
@@ -87,6 +89,8 @@ export class Aggregator {
             return new LayerZeroAdapter(adapterOptions).init();
           case 'meson':
             return new MesonAdapter(adapterOptions).init();
+          case 'mayan':
+            return new MayanAdapter(adapterOptions).init();
           default:
             return new StargateAdapter(adapterOptions).init();
         }

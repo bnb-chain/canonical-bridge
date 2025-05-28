@@ -6,6 +6,7 @@ import {
   DEBRIDGE_ENDPOINT,
   DEBRIDGE_STATS_ENDPOINT,
   STARGATE_QUEUE_URL,
+  MAYAN_ENDPOINT,
 } from '@/core/constants';
 import { useBridgeConfig } from '@/index';
 
@@ -44,6 +45,11 @@ export const useBridgeSDK = () => {
         {
           bridgeType: 'meson',
           endpoint: bridgeConfig.http.mesonEndpoint!,
+          timeout,
+        },
+        {
+          bridgeType: 'mayan',
+          endpoint: MAYAN_ENDPOINT,
           timeout,
         },
       ],

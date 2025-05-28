@@ -6,9 +6,11 @@ import {
   ICBridgeTransferConfig,
   ICustomizedBridgeConfig,
   IDeBridgeTransferConfig,
+  IMayanTransferConfig,
   IMesonTransferConfig,
   IStargateTransferConfig,
   layerZero,
+  mayan,
   meson,
   stargate,
 } from '@bnb-chain/canonical-bridge-widget';
@@ -22,7 +24,7 @@ export function useTransferConfig() {
 
   useEffect(() => {
     const initConfig = async () => {
-      const [cBridgeRes, deBridgeRes, stargateRes, mesonRes] = await Promise.all([
+      const [cBridgeRes, deBridgeRes, stargateRes, mesonRes, mayanRes] = await Promise.all([
         axios.get<{ data: ICBridgeTransferConfig }>(`${env.SERVER_ENDPOINT}/api/bridge/v2/cbridge`),
         axios.get<{ data: IDeBridgeTransferConfig }>(
           `${env.SERVER_ENDPOINT}/api/bridge/v2/debridge`,
@@ -31,12 +33,14 @@ export function useTransferConfig() {
           `${env.SERVER_ENDPOINT}/api/bridge/v2/stargate`,
         ),
         axios.get<{ data: IMesonTransferConfig }>(`${env.SERVER_ENDPOINT}/api/bridge/v2/meson`),
+        axios.get<{ data: IMayanTransferConfig }>(`${env.SERVER_ENDPOINT}/api/bridge/v2/mayan`),
       ]);
 
       const cBridgeConfig = cBridgeRes.data.data;
       const deBridgeConfig = deBridgeRes.data.data;
       const mesonConfig = mesonRes.data.data;
       const stargateConfig = stargateRes.data.data;
+      const mayanConfig = mayanRes.data.data;
 
       const transferConfig: ICustomizedBridgeConfig['transfer'] = {
         defaultFromChainId: 1,
@@ -143,6 +147,11 @@ export function useTransferConfig() {
             excludedTokens: {
               42161: ['SOL'],
             },
+          }),
+          mayan({
+            config: mayanConfig,
+            excludedChains: [],
+            excludedTokens: {},
           }),
         ],
       };

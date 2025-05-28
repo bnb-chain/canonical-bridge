@@ -24,7 +24,7 @@ export function toObject(value: any) {
   return JSON.parse(
     JSON.stringify(
       value,
-      (key, value) => (typeof value === 'bigint' ? value.toString() : value), // return everything else unchanged
+      (_key, value) => (typeof value === 'bigint' ? value.toString() : value), // return everything else unchanged
     ),
   );
 }

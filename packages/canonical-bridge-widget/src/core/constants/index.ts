@@ -7,6 +7,7 @@ export const EXPLORER_URL: Record<typeof BridgeList[number], string> = {
   deBridge: 'https://app.debridge.finance/orders?s=',
   // meson: 'https://testnet-explorer.meson.fi/swap/',
   meson: 'https://explorer.meson.fi/swap/',
+  mayan: 'https://explorer.mayan.finance',
 };
 
 export const STARGATE_QUEUE_URL = 'https://mainnet.stargate-api.com/v1/buses/bus-drive-settings';
@@ -20,6 +21,8 @@ export const DEBRIDGE_ENDPOINT = 'https://deswap.debridge.finance/v1.0';
 export const STARGATE_ENDPOINT = 'https://mainnet.stargate-api.com/v1/metadata?version=v2';
 export const MESON_ENDPOINT = 'https://relayer.meson.fi/api/v1';
 export const DEBRIDGE_STATS_ENDPOINT = 'https://stats-api.dln.trade/api';
+export const MAYAN_ENDPOINT = 'https://price-api.mayan.finance/v3';
+export const MAYAN_FORWARDER_CONTRACT = '0x337685fdaB40D39bd02028545a4FfA7D287cC3E2';
 
 export const nativeTokenMap = {
   1: 'ETH',
@@ -54,3 +57,5 @@ export const EVM_NATIVE_TOKEN_ADDRESS = '0x0000000000000000000000000000000000000
 export const SOLANA_NATIVE_TOKEN_ADDRESS = '11111111111111111111111111111111';
 
 export const TRON_CHAIN_ID = 728126428;
+
+export const SOLANA_CHAIN_ID = 7565164;

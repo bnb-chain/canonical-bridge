@@ -8,6 +8,7 @@ import { ILayerZeroChain, ILayerZeroToken } from '@/adapters/layerZero/types';
 import { IMesonChain, IMesonToken } from '@/adapters/meson/types';
 import { IStargateChain, IStargateToken } from '@/adapters/stargate';
 import { Chain } from 'viem';
+import { IMayanChain, IMayanToken } from '@/adapters/mayan/types';
 
 export type ValueOf<T> = T[keyof T];
 
@@ -18,7 +19,8 @@ export type BridgeType =
   | 'deBridge'
   | 'stargate'
   | 'layerZero'
-  | 'meson';
+  | 'meson'
+  | 'mayan';
 
 export interface IBridgeChain {
   id: number;
@@ -44,6 +46,9 @@ export interface IBridgeChain {
   meson?: {
     raw?: IMesonChain;
   };
+  mayan?: {
+    raw?: IMayanChain;
+  }
 }
 
 export interface IBridgeTokenBaseInfo {
@@ -74,6 +79,9 @@ export interface IBridgeToken extends IBridgeTokenBaseInfo {
   meson?: IBridgeTokenBaseInfo & {
     raw?: IMesonToken;
   };
+  mayan?: IBridgeTokenBaseInfo & {
+    raw?: IMayanToken;
+  }
 }
 
 export interface IBridgeTokenWithBalance extends IBridgeToken {

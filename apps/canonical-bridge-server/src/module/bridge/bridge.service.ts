@@ -8,6 +8,8 @@ import {
   IMesonTransferConfig,
   IStargateTransferConfig,
   TRON_CHAIN_ID,
+  IMayanTransferConfig,
+  SOLANA_CHAIN_ID,
 } from '@bnb-chain/canonical-bridge-sdk';
 import { PrismaService } from '@/shared/prisma/prisma.service';
 import { CACHE_MANAGER, Cache } from '@nestjs/cache-manager';
@@ -54,6 +56,7 @@ export class BridgeService {
     const deBridge = await this.cache.get<IDeBridgeTransferConfig>(CACHE_KEY.DEBRIDGE_CONFIG);
     const stargate = await this.cache.get<IStargateTransferConfig>(CACHE_KEY.STARGATE_CONFIG);
     const meson = await this.cache.get<IMesonTransferConfig>(CACHE_KEY.MESON_CONFIG);
+    const mayan = await this.cache.get<IMayanTransferConfig>(CACHE_KEY.MAYAN_CONFIG);
 
     const tokenCountMap: Record<string, number> = {};
     const bridgeMap: Record<number, string[]> = {};
@@ -72,6 +75,13 @@ export class BridgeService {
         tokenCountMap[bridgeType]++;
       }
     };
+
+    Object.entries(mayan.tokens).forEach(([nameId, tokens]) => {
+      tokens.forEach((token) => {
+        const chainId = nameId === 'solana' ? SOLANA_CHAIN_ID : token.chainId;
+        addToBridgeMap(chainId, token.contract, 'mayan');
+      });
+    });
 
     Object.entries(cBridge.chain_token).forEach(([key, { token }]) => {
       token.forEach((e) => {
