@@ -1,7 +1,6 @@
 import React, { useContext, useMemo } from 'react';
-import { DeepPartial, IntlProvider, theme } from '@bnb-chain/space';
+import { DeepPartial, IntlProvider, theme, theme as spaceTheme } from '@bnb-chain/space';
 import { merge } from 'lodash';
-import { theme as spaceTheme } from '@bnb-chain/space';
 import {
   ChainType,
   IBridgeChain,
@@ -9,9 +8,9 @@ import {
   IBridgeToken,
   IChainConfig,
   IExternalChain,
+  IMayanQuotaInputExtra,
 } from '@bnb-chain/canonical-bridge-sdk';
 import { breakpoints } from '@bnb-chain/space/dist/modules/theme/foundations/breakpoints';
-import { IMayanQuotaInputExtra } from '@bnb-chain/canonical-bridge-sdk';
 
 import { StoreProvider } from '@/modules/store/StoreProvider';
 import { ThemeProvider } from '@/core/theme/ThemeProvider';
@@ -24,6 +23,7 @@ import { ExportsProvider } from '@/ExportsProvider';
 import { en } from '@/core/locales/en';
 import { light } from '@/core/theme/colors/light';
 import { ColorType, dark } from '@/core/theme/colors/dark';
+import { AnalyticsConfig, AnalyticsProvider } from '@/core/analytics';
 
 export interface IBridgeConfig {
   bridgeTitle: React.ReactNode;
@@ -85,6 +85,8 @@ export interface IBridgeConfig {
     chainId: number;
     onConnected?: (params?: { walletType?: ChainType; chainId?: number }) => void;
   }) => void;
+
+  analytics?: AnalyticsConfig;
 }
 
 export type ICustomizedBridgeConfig = DeepPartial<IBridgeConfig>;
@@ -243,21 +245,26 @@ export function CanonicalBridgeProvider(props: CanonicalBridgeProviderProps) {
   ]);
 
   return (
-    <CanonicalBridgeContext.Provider value={value}>
-      <StoreProvider>
-        <IntlProvider locale={value.locale.language} messages={value.locale.messages}>
-          <ThemeProvider>
-            <AggregatorProvider>
-              <TronAccountProvider>
-                <TokenBalancesProvider />
-                <TokenPricesProvider />
-                <ExportsProvider>{children}</ExportsProvider>
-              </TronAccountProvider>
-            </AggregatorProvider>
-          </ThemeProvider>
-        </IntlProvider>
-      </StoreProvider>
-    </CanonicalBridgeContext.Provider>
+    <AnalyticsProvider
+      userId={config?.analytics?.userId}
+      onEvent={config?.analytics?.enabled !== false ? config?.analytics?.onEvent : undefined}
+    >
+      <CanonicalBridgeContext.Provider value={value}>
+        <StoreProvider>
+          <IntlProvider locale={value.locale.language} messages={value.locale.messages}>
+            <ThemeProvider>
+              <AggregatorProvider>
+                <TronAccountProvider>
+                  <TokenBalancesProvider />
+                  <TokenPricesProvider />
+                  <ExportsProvider>{children}</ExportsProvider>
+                </TronAccountProvider>
+              </AggregatorProvider>
+            </ThemeProvider>
+          </IntlProvider>
+        </StoreProvider>
+      </CanonicalBridgeContext.Provider>
+    </AnalyticsProvider>
   );
 }
 

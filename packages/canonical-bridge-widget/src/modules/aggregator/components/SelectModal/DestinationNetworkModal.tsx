@@ -5,11 +5,11 @@ import { useAppSelector } from '@/modules/store/StoreProvider';
 import { useSelection } from '@/modules/aggregator/hooks/useSelection';
 import { ExLinkIcon } from '@/core/components/icons/ExLinkIcon';
 import { openLink } from '@/core/utils/common';
-import { reportEvent } from '@/core/utils/gtm';
 import { useSearch } from '@/modules/aggregator/components/SelectModal/hooks/useSearch';
 import { BaseModal } from '@/modules/aggregator/components/SelectModal/components/BaseModal';
 import { ListItem } from '@/modules/aggregator/components/SelectModal/components/ListItem';
 import { useToChains } from '@/modules/aggregator/hooks/useToChains';
+import { EventTypes, useAnalytics } from '@/core/analytics';
 
 interface DestinationNetworkModalProps {
   isOpen: boolean;
@@ -19,6 +19,7 @@ interface DestinationNetworkModalProps {
 export function DestinationNetworkModal(props: DestinationNetworkModalProps) {
   const { isOpen, onClose } = props;
   const { formatMessage } = useIntl();
+  const { emit } = useAnalytics();
 
   const toChain = useAppSelector((state) => state.transfer.toChain);
 
@@ -58,11 +59,9 @@ export function DestinationNetworkModal(props: DestinationNetworkModalProps) {
               id: 'select-modal.destination.incompatible.tooltip',
             })}
             onClick={() => {
-              reportEvent({
-                id: 'select_bridge_toDropdown',
-                params: {
-                  item_name: item.name,
-                },
+              emit(EventTypes.SELECT_BRIDGE_TO_DROPDOWN, {
+                item_name: item.name,
+                toNetwork: item.name,
               });
 
               if (item.chainType === 'link') {

@@ -10,7 +10,6 @@ import { ExLinkIcon } from '@/core/components/icons/ExLinkIcon';
 import { formatTokenUrl } from '@/core/utils/string';
 import { useResponsive } from '@/core/hooks/useResponsive';
 import { formatNumber } from '@/core/utils/number';
-import { reportEvent } from '@/core/utils/gtm';
 import { BaseModal } from '@/modules/aggregator/components/SelectModal/components/BaseModal';
 import { useSearch } from '@/modules/aggregator/components/SelectModal/hooks/useSearch';
 import { useTokenList } from '@/modules/aggregator/components/SelectModal/hooks/useTokenList';
@@ -19,6 +18,7 @@ import { openLink } from '@/core/utils/common';
 import { useTronAccount } from '@/modules/wallet/hooks/useTronAccount';
 import { useSolanaAccount } from '@/modules/wallet/hooks/useSolanaAccount';
 import { useTokens } from '@/modules/aggregator/hooks/useTokens';
+import { EventTypes, useAnalytics } from '@/core/analytics';
 
 interface ChooseTokenModalProps {
   isOpen: boolean;
@@ -30,6 +30,7 @@ export function ChooseTokenModal(props: ChooseTokenModalProps) {
   const { formatMessage } = useIntl();
   const theme = useTheme();
   const { colorMode } = useColorMode();
+  const { emit } = useAnalytics();
 
   const fromChain = useAppSelector((state) => state.transfer.fromChain);
   const selectedToken = useAppSelector((state) => state.transfer.selectedToken);
@@ -118,11 +119,10 @@ export function ChooseTokenModal(props: ChooseTokenModalProps) {
                   },
                 }}
                 onClick={() => {
-                  reportEvent({
-                    id: 'select_bridge_tokenDropdown',
-                    params: {
-                      item_name: item?.displaySymbol ?? item?.symbol,
-                    },
+                  emit(EventTypes.SELECT_BRIDGE_TOKEN_DROPDOWN, {
+                    token: item?.displaySymbol ?? item?.symbol,
+                    tokenAddress: item.address,
+                    item_name: item?.displaySymbol ?? item?.symbol,
                   });
 
                   selectToken(item.address);

@@ -6,9 +6,9 @@ import { useAccount } from 'wagmi';
 import { useApprove } from '@/core/contract/hooks';
 import { useAppSelector } from '@/modules/store/StoreProvider';
 import { StateModal, StateModalProps } from '@/core/components/StateModal';
-import { reportEvent } from '@/core/utils/gtm';
 import { useTrc20 } from '@/modules/aggregator/adapters/meson/hooks/useTrc20';
 import { useTronAccount } from '@/modules/wallet/hooks/useTronAccount';
+import { EventTypes, useAnalytics } from '@/core/analytics';
 
 export function TransactionApproveModal(
   props: Omit<StateModalProps, 'title'> & {
@@ -24,6 +24,8 @@ export function TransactionApproveModal(
 
   const { isConnected: isEvmConnected } = useAccount();
   const { isConnected: isTronConnected } = useTronAccount();
+
+  const { emit } = useAnalytics();
 
   const { approveTrc20 } = useTrc20();
 
@@ -43,15 +45,16 @@ export function TransactionApproveModal(
   }, [isLoadingApprove, onOpenConfirmingModal, onCloseConfirmingModal]);
 
   const reportApproval = (variant: 'Approve' | 'Deny') => {
-    reportEvent({
-      id: 'click_bridge_approvalModal',
-      params: {
-        item_category: fromChain?.name,
-        item_category2: toChain?.name,
-        token: selectedToken!.displaySymbol,
-        value: sendValue,
-        item_variant: variant,
-      },
+    emit(EventTypes.CLICK_BRIDGE_APPROVAL_MODAL, {
+      fromNetwork: fromChain?.name || '',
+      toNetwork: fromChain?.name || '',
+      approvalResult: variant,
+      item_category: fromChain?.name || '',
+      item_category2: toChain?.name || '',
+      token: selectedToken!.displaySymbol,
+      tokenAddress: selectedToken?.address || '',
+      value: sendValue,
+      item_variant: variant,
     });
   };
 
