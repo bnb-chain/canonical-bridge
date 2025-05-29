@@ -11,3 +11,20 @@ export function reportEvent({ id, params }: IReportParams) {
     ...params,
   });
 }
+
+export function createGTMEventListener() {
+  return (eventName: string, eventData: any) => {
+    const params: Record<string, string> = {};
+
+    Object.entries(eventData || {}).forEach(([key, value]) => {
+      if (typeof value === 'string' || typeof value === 'number') {
+        params[key] = String(value);
+      }
+    });
+
+    reportEvent({
+      id: eventName,
+      params,
+    });
+  };
+}

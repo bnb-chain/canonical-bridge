@@ -2,11 +2,13 @@ import { Flex, FlexProps, useColorMode, useTheme } from '@bnb-chain/space';
 
 import { ExchangeIcon } from '@/core/components/icons/ExchangeIcon';
 import { useSelection } from '@/modules/aggregator/hooks/useSelection';
+import { EventTypes, useAnalytics } from '@/core/analytics';
 
 export function ExchangeChainButton(props: FlexProps) {
   const { colorMode } = useColorMode();
   const theme = useTheme();
   const { exchange } = useSelection();
+  const { emit } = useAnalytics();
 
   return (
     <Flex
@@ -27,7 +29,10 @@ export function ExchangeChainButton(props: FlexProps) {
       h={'24px'}
       cursor="pointer"
       m={{ base: '12px 0 4px', md: '0 12px 0 12px' }}
-      onClick={() => exchange()}
+      onClick={() => {
+        exchange();
+        emit(EventTypes.CLICK_BRIDGE_SWITCH_NETWORK, null);
+      }}
       {...props}
     >
       <ExchangeIcon transform={{ base: 'rotate(90deg)', md: 'none' }} />

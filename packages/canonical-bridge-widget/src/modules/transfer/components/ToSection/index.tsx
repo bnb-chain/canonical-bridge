@@ -2,13 +2,14 @@ import { Flex, Typography, theme, useColorMode, useDisclosure, useIntl } from '@
 
 import { SelectButton } from '@/modules/transfer/components/SelectButton';
 import { useAppSelector } from '@/modules/store/StoreProvider';
-import { reportEvent } from '@/core/utils/gtm';
 import { DestinationNetworkModal } from '@/modules/aggregator/components/SelectModal/DestinationNetworkModal';
+import { EventTypes, useAnalytics } from '@/core/analytics';
 
 export function ToSection() {
   const { isOpen, onClose, onOpen } = useDisclosure();
   const { formatMessage } = useIntl();
   const { colorMode } = useColorMode();
+  const { emit } = useAnalytics();
 
   const toChain = useAppSelector((state) => state.transfer.toChain);
 
@@ -37,9 +38,8 @@ export function ToSection() {
         chain={toChain}
         onClick={() => {
           onOpen();
-          reportEvent({
-            id: 'click_bridge_toDropdown',
-          });
+
+          emit(EventTypes.CLICK_BRIDGE_TO_DROPDOWN, null);
         }}
       />
       <DestinationNetworkModal isOpen={isOpen} onClose={onClose} />

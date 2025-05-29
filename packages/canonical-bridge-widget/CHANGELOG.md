@@ -1,5 +1,27 @@
 # @bnb-chain/canonical-bridge-widget
 
+## 0.8.0
+
+### Minor Changes
+
+- c98e5d6: Add mayan route
+
+### Patch Changes
+
+- Updated dependencies [c98e5d6]
+  - @bnb-chain/canonical-bridge-sdk@0.6.0
+
+## 0.8.0-alpha.0
+
+### Minor Changes
+
+- Add mayan route
+
+### Patch Changes
+
+- Updated dependencies
+  - @bnb-chain/canonical-bridge-sdk@0.6.0-alpha.0
+
 ## 0.7.1
 
 ### Patch Changes

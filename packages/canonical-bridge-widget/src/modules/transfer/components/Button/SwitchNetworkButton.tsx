@@ -8,16 +8,17 @@ import {
 } from '@bnb-chain/space';
 import { isMobile } from '@bnb-chain/canonical-bridge-sdk';
 
-import { reportEvent } from '@/core/utils/gtm';
 import { useAppSelector } from '@/modules/store/StoreProvider';
 import { useEvmSwitchChain } from '@/modules/wallet/hooks/useEvmSwitchChain';
 import { useTronSwitchChain } from '@/modules/wallet/hooks/useTronSwitchChain';
 import { SwitchingTipsModal } from '@/modules/wallet/components/SwitchingTipsModal';
+import { EventTypes, useAnalytics } from '@/core/analytics';
 
 export const SwitchNetworkButton = (props: ButtonProps) => {
   const { formatMessage } = useIntl();
   const theme = useTheme();
   const { colorMode } = useColorMode();
+  const { emit } = useAnalytics();
 
   const fromChain = useAppSelector((state) => state.transfer.fromChain);
 
@@ -57,11 +58,9 @@ export const SwitchNetworkButton = (props: ButtonProps) => {
         }}
         onClick={() => {
           onSwitchNetwork();
-          reportEvent({
-            id: 'click_bridge_goal',
-            params: {
-              item_name: 'Switch Network',
-            },
+          emit(EventTypes.CLICK_BRIDGE_GOAL, {
+            ctaLabel: 'Switch Network',
+            item_name: 'Switch Network',
           });
         }}
         {...props}

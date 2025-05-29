@@ -20,6 +20,7 @@ import {
   DEFAULT_ADDRESS,
   DEFAULT_SOLANA_ADDRESS,
   DEFAULT_TRON_ADDRESS,
+  SOLANA_NATIVE_TOKEN_ADDRESS,
 } from '@/core/constants';
 import { checkResponseResult, toObject } from '@/core/utils/string';
 import { useGetCBridgeFees } from '@/modules/aggregator/adapters/cBridge/hooks/useGetCBridgeFees';
@@ -206,7 +207,10 @@ export const useLoadingBridgeFees = () => {
             },
             mayanOpts: {
               amount: Number(debouncedSendValue),
-              fromToken: selectedToken.address,
+              fromToken:
+                selectedToken.address === SOLANA_NATIVE_TOKEN_ADDRESS
+                  ? '0x0000000000000000000000000000000000000000'
+                  : selectedToken.address,
               toToken: toToken.address,
               fromChain: fromChain.mayan?.raw?.nameId || '',
               toChain: toChain.mayan?.raw?.nameId || '',

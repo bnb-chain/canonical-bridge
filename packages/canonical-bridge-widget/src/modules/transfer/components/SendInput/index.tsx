@@ -16,8 +16,8 @@ import { TokenSelectButton } from '@/modules/transfer/components/SelectButton/To
 import { InputValidationMessage } from '@/modules/transfer/components/SendInput/InputValidationMessage';
 import { useDebounce } from '@/core/hooks/useDebounce';
 import { DEBOUNCE_DELAY } from '@/core/constants';
-import { reportEvent } from '@/core/utils/gtm';
 import { ChooseTokenModal } from '@/modules/aggregator/components/SelectModal/ChooseTokenModal';
+import { EventTypes, useAnalytics } from '@/core/analytics';
 
 const handleKeyPress = (e: React.KeyboardEvent) => {
   // only allow number and decimal
@@ -58,6 +58,8 @@ export const SendInput: React.FC = () => {
   const fromChain = useAppSelector((state) => state.transfer.fromChain);
   const error = useAppSelector((state) => state.transfer.error);
 
+  const { emit } = useAnalytics();
+
   const { isOpen, onClose, onOpen } = useDisclosure();
   const debouncedSendValue = useDebounce(sendValue, DEBOUNCE_DELAY);
 
@@ -82,13 +84,11 @@ export const SendInput: React.FC = () => {
 
     clearTimeout(timerRef.current);
     timerRef.current = setTimeout(() => {
-      reportEvent({
-        id: 'input_bridge_amount',
-        params: {
-          item_name: fromChain?.name,
-          token: selectedToken?.displaySymbol,
-          value: finalValue,
-        },
+      emit(EventTypes.INPUT_BRIDGE_AMOUNT, {
+        item_name: fromChain?.name || '',
+        tokenAddress: selectedToken?.address || '',
+        token: selectedToken?.displaySymbol || '',
+        value: finalValue,
       });
     }, DEBOUNCE_DELAY);
   };
@@ -201,9 +201,7 @@ export const SendInput: React.FC = () => {
         <TokenSelectButton
           token={selectedToken}
           onClick={() => {
-            reportEvent({
-              id: 'click_bridge_tokenDropdown',
-            });
+            emit(EventTypes.CLICK_BRIDGE_TOKEN_DROPDOWN, null);
             onOpen();
           }}
         />

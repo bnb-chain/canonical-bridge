@@ -8,9 +8,9 @@ import { ExLinkIcon } from '@/core/components/icons/ExLinkIcon';
 import { BaseModal } from '@/modules/aggregator/components/SelectModal/components/BaseModal';
 import { useSearch } from '@/modules/aggregator/components/SelectModal/hooks/useSearch';
 import { ListItem } from '@/modules/aggregator/components/SelectModal/components/ListItem';
-import { reportEvent } from '@/core/utils/gtm';
 import { setToAccount } from '@/modules/transfer/action';
 import { useFromChains } from '@/modules/aggregator/hooks/useFromChains';
+import { EventTypes, useAnalytics } from '@/core/analytics';
 
 interface SourceNetworkModalProps {
   isOpen: boolean;
@@ -21,6 +21,7 @@ export function SourceNetworkModal(props: SourceNetworkModalProps) {
   const { isOpen, onClose } = props;
   const { formatMessage } = useIntl();
   const dispatch = useAppDispatch();
+  const { emit } = useAnalytics();
 
   const fromChain = useAppSelector((state) => state.transfer.fromChain);
 
@@ -57,11 +58,9 @@ export function SourceNetworkModal(props: SourceNetworkModalProps) {
             isActive={fromChain?.id === item.id}
             isDisabled={false}
             onClick={() => {
-              reportEvent({
-                id: 'select_bridge_fromDropdown',
-                params: {
-                  item_name: item.name,
-                },
+              emit(EventTypes.SELECT_BRIDGE_FROM_DROPDOWN, {
+                item_name: item.name,
+                fromNetwork: item.name,
               });
 
               if (item.chainType === 'link') {
