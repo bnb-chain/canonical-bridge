@@ -6,6 +6,7 @@
     "@bnb-chain/canonical-bridge-widget": "0.8.0"
   },
   "changesets": [
+    "perfect-walls-matter",
     "rude-humans-marry"
   ]
 }

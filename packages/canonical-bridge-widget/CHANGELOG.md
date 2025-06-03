@@ -1,5 +1,11 @@
 # @bnb-chain/canonical-bridge-widget
 
+## 0.9.0-alpha.1
+
+### Patch Changes
+
+- Remove event field
+
 ## 0.9.0-alpha.0
 
 ### Minor Changes
