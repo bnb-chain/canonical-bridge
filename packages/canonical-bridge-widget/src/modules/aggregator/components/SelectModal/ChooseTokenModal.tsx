@@ -122,7 +122,6 @@ export function ChooseTokenModal(props: ChooseTokenModalProps) {
                   emit(EventTypes.SELECT_BRIDGE_TOKEN_DROPDOWN, {
                     token: item?.displaySymbol ?? item?.symbol,
                     tokenAddress: item.address,
-                    item_name: item?.displaySymbol ?? item?.symbol,
                   });
 
                   selectToken(item.address);

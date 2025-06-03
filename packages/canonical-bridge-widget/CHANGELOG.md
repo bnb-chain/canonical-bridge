@@ -1,5 +1,21 @@
 # @bnb-chain/canonical-bridge-widget
 
+## 0.9.0
+
+### Minor Changes
+
+- c52837a: Add analytics event callback support
+
+### Patch Changes
+
+- 8c38518: Remove event field
+
+## 0.9.0-alpha.1
+
+### Patch Changes
+
+- Remove event field
+
 ## 0.9.0-alpha.0
 
 ### Minor Changes
