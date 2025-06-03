@@ -1,5 +1,11 @@
 # @bnb-chain/canonical-bridge-widget
 
+## 0.9.0-alpha.0
+
+### Minor Changes
+
+- Add analytics event callback support
+
 ## 0.8.0
 
 ### Minor Changes

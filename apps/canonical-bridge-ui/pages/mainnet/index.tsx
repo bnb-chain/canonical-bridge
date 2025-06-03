@@ -1,7 +1,8 @@
 import {
-  CanonicalBridgeProvider,
-  BridgeTransfer,
   BridgeRoutes,
+  BridgeTransfer,
+  CanonicalBridgeProvider,
+  createGTMEventListener,
   ICustomizedBridgeConfig,
 } from '@bnb-chain/canonical-bridge-widget';
 import { useMemo } from 'react';
@@ -14,6 +15,8 @@ import { WalletProvider } from '@/core/wallet/WalletProvider';
 import { Layout } from '@/core/components/Layout';
 import { light } from '@/core/theme/light';
 import { dark } from '@/core/theme/dark';
+
+const gtmListener = createGTMEventListener();
 
 export default function MainnetPage() {
   return (
@@ -43,6 +46,13 @@ function BridgeWidget() {
       },
       transfer: transferConfig,
       onClickConnectWalletButton: onOpen,
+      analytics: {
+        onEvent: (eventName, eventData) => {
+          gtmListener(eventName, eventData);
+          // eslint-disable-next-line
+          console.log(eventName, eventData);
+        },
+      },
     }),
     [onOpen, transferConfig],
   );

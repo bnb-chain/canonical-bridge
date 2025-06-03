@@ -11,7 +11,6 @@ import { useAppSelector } from '@/modules/store/StoreProvider';
 import { useGetAllowance } from '@/core/contract/hooks/useGetAllowance';
 import { useCBridgeTransferParams } from '@/modules/aggregator/adapters/cBridge/hooks/useCBridgeTransferParams';
 import { useBridgeSDK } from '@/core/hooks/useBridgeSDK';
-import { reportEvent } from '@/core/utils/gtm';
 import { useGetTronAllowance } from '@/modules/aggregator/adapters/meson/hooks/useGetTronAllowance';
 import { useTronTransferInfo } from '@/modules/transfer/hooks/tron/useTronTransferInfo';
 import { utf8ToHex } from '@/core/utils/string';
@@ -26,6 +25,8 @@ import {
 } from '@/core/constants';
 import { useHandleTxFailure } from '@/modules/aggregator/hooks/useHandleTxFailure';
 import { usePriceValidation } from '@/modules/transfer/hooks/usePriceValidation';
+import { EventTypes, useAnalytics } from '@/core/analytics';
+import { useTokenPrice } from '@/modules/aggregator/providers/TokenPricesProvider';
 
 export const TransferConfirmButton = ({
   onClose,
@@ -71,6 +72,9 @@ export const TransferConfirmButton = ({
   const toChain = useAppSelector((state) => state.transfer.toChain);
   const toAccount = useAppSelector((state) => state.transfer.toAccount);
 
+  const { emit } = useAnalytics();
+  const { getTokenPrice } = useTokenPrice();
+
   const publicClient = usePublicClient({ chainId: fromChain?.id });
   const toPublicClient = usePublicClient({ chainId: toChain?.id });
   const [isLoading, setIsLoading] = useState(false);
@@ -84,6 +88,13 @@ export const TransferConfirmButton = ({
   const { isConnected: isEvmConnected } = useAccount();
   const { isConnected: isTronConnected } = useTronAccount();
   const { waitForTxReceipt } = useWaitForTxReceipt();
+
+  const tokenPrice = getTokenPrice({
+    chainId: fromChain?.id,
+    chainType: fromChain?.chainType,
+    tokenAddress: selectedToken?.address,
+    tokenSymbol: selectedToken?.symbol,
+  });
 
   const sendTx = async () => {
     if (
@@ -104,7 +115,26 @@ export const TransferConfirmButton = ({
       return;
     }
 
+    const successAnalyticsPayload = {
+      fromNetwork: fromChain.name,
+      toNetwork: toChain?.name || '',
+      tokenAddress: selectedToken.address,
+      usdRate: String(tokenPrice || ''),
+      toToken: toToken?.displaySymbol || '',
+      toTokenAddress: toToken?.address || '',
+      item_category: fromChain.name,
+      item_category2: toChain?.name || '',
+      token: selectedToken.displaySymbol,
+      value: sendValue,
+    };
+
     const bridgeType = transferActionInfo.bridgeType;
+
+    emit(EventTypes.CLICK_BRIDGE_CONFIRM_TRANSFER, {
+      ...successAnalyticsPayload,
+      bridgeRoute: bridgeType,
+      item_variant: bridgeType,
+    });
 
     try {
       setIsLoading(true);
@@ -129,9 +159,9 @@ export const TransferConfirmButton = ({
       onClose();
       onOpenConfirmingModal();
 
-      reportEvent({
-        id: 'click_bridge_goal',
-        params: { item_name: 'Send' },
+      emit(EventTypes.CLICK_BRIDGE_GOAL, {
+        ctaLabel: 'Send',
+        item_name: 'Send',
       });
 
       // cBridge
@@ -184,16 +214,12 @@ export const TransferConfirmButton = ({
         await waitForTxReceipt({ publicClient, hash: cBridgeHash });
 
         if (cBridgeHash) {
-          reportEvent({
-            id: 'transaction_bridge_success',
-            params: {
-              item_category: fromChain.name,
-              item_category2: toChain?.name,
-              token: selectedToken.displaySymbol,
-              value: sendValue,
-              item_variant: 'cBridge',
-            },
+          emit(EventTypes.TRANSACTION_BRIDGE_SUCCESS, {
+            ...successAnalyticsPayload,
+            bridgeRoute: 'cBridge',
+            item_variant: 'cBridge',
           });
+
           onCloseConfirmingModal();
           setHash(cBridgeHash);
           setChosenBridge('cBridge');
@@ -256,15 +282,10 @@ export const TransferConfirmButton = ({
         }
 
         if (deBridgeHash) {
-          reportEvent({
-            id: 'transaction_bridge_success',
-            params: {
-              item_category: fromChain?.name,
-              item_category2: toChain?.name,
-              token: selectedToken.displaySymbol,
-              value: sendValue,
-              item_variant: 'deBridge',
-            },
+          emit(EventTypes.TRANSACTION_BRIDGE_SUCCESS, {
+            ...successAnalyticsPayload,
+            bridgeRoute: 'deBridge',
+            item_variant: 'deBridge',
           });
           onCloseConfirmingModal();
           setChosenBridge('deBridge');
@@ -317,15 +338,10 @@ export const TransferConfirmButton = ({
         });
 
         if (stargateHash) {
-          reportEvent({
-            id: 'transaction_bridge_success',
-            params: {
-              item_category: fromChain?.name,
-              item_category2: toChain?.name,
-              token: selectedToken.displaySymbol,
-              value: sendValue,
-              item_variant: 'stargate',
-            },
+          emit(EventTypes.TRANSACTION_BRIDGE_SUCCESS, {
+            ...successAnalyticsPayload,
+            bridgeRoute: 'stargate',
+            item_variant: 'stargate',
           });
           onCloseConfirmingModal();
           setChosenBridge('stargate');
@@ -374,15 +390,10 @@ export const TransferConfirmButton = ({
         });
 
         if (layerZeroHash) {
-          reportEvent({
-            id: 'transaction_bridge_success',
-            params: {
-              item_category: fromChain?.name,
-              item_category2: toChain?.name,
-              token: selectedToken.displaySymbol,
-              value: sendValue,
-              item_variant: 'layerZero',
-            },
+          emit(EventTypes.TRANSACTION_BRIDGE_SUCCESS, {
+            ...successAnalyticsPayload,
+            bridgeRoute: 'layerZero',
+            item_variant: 'layerZero',
           });
           onCloseConfirmingModal();
           setChosenBridge('layerZero');
@@ -483,17 +494,11 @@ export const TransferConfirmButton = ({
             throw new Error(swapId.error.message);
           }
 
-          reportEvent({
-            id: 'transaction_bridge_success',
-            params: {
-              item_category: fromChain?.name,
-              item_category2: toChain?.name,
-              token: selectedToken.displaySymbol,
-              value: sendValue,
-              item_variant: 'meson',
-            },
+          emit(EventTypes.TRANSACTION_BRIDGE_SUCCESS, {
+            ...successAnalyticsPayload,
+            bridgeRoute: 'meson',
+            item_variant: 'meson',
           });
-
           onCloseConfirmingModal();
           onOpenSubmittedModal();
         } else {
@@ -556,15 +561,10 @@ export const TransferConfirmButton = ({
         }
 
         if (mayanBridgeHash) {
-          reportEvent({
-            id: 'transaction_bridge_success',
-            params: {
-              item_category: fromChain?.name,
-              item_category2: toChain?.name,
-              token: selectedToken.displaySymbol,
-              value: sendValue,
-              item_variant: 'mayan',
-            },
+          emit(EventTypes.TRANSACTION_BRIDGE_SUCCESS, {
+            ...successAnalyticsPayload,
+            bridgeRoute: 'mayan',
+            item_variant: 'mayan',
           });
           onCloseConfirmingModal();
           setChosenBridge('mayan');
