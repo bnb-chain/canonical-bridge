@@ -73,7 +73,6 @@ export interface BridgeEvents {
   select_bridge_tokenDropdown: {
     token: string;
     tokenAddress: string;
-    item_name: string;
   };
   input_bridge_amount: {
     token: string;
