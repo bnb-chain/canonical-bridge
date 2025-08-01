@@ -30,7 +30,7 @@ export function BridgeRoutes() {
     let mount = true;
     if (!mount || !toToken) return;
 
-    if (transferActionInfo) {
+    if (transferActionInfo?.bridgeAddress) {
       const params = {
         triggerType: 'refresh' as TriggerType,
       };
@@ -66,7 +66,7 @@ export function BridgeRoutes() {
       mount = false;
     }
   }, [
-    transferActionInfo,
+    transferActionInfo?.bridgeAddress,
     loadingBridgeFees,
     dispatch,
     bridgeConfig.http.refetchingInterval,

@@ -2,10 +2,10 @@
 import { Button, Flex, useColorMode, useIntl, useTheme } from '@bnb-chain/space';
 import { useState } from 'react';
 import { useAccount, usePublicClient, useSignMessage, useWalletClient } from 'wagmi';
-import { parseUnits } from 'viem';
+import { parseUnits, toHex } from 'viem';
 import { useWallet as useTronWallet } from '@tronweb3/tronwallet-adapter-react-hooks';
 import { useConnection, useWallet as useSolanaWallet } from '@solana/wallet-adapter-react';
-import { VersionedTransaction } from '@solana/web3.js';
+import { PublicKey, VersionedTransaction } from '@solana/web3.js';
 
 import { useAppSelector } from '@/modules/store/StoreProvider';
 import { useGetAllowance } from '@/core/contract/hooks/useGetAllowance';
@@ -352,7 +352,8 @@ export const TransferConfirmButton = ({
 
       // layerZero
       const handleLayerZero = async () => {
-        if (!address || !walletClient || !publicClient || !toPublicClient) return;
+        const fromEvm = fromChain?.chainType === 'evm';
+        const toEvm = toChain?.chainType === 'evm';
 
         const isValidToken = await bridgeSDK.layerZero.validateLayerZeroToken({
           fromPublicClient: publicClient,
@@ -380,14 +381,32 @@ export const TransferConfirmButton = ({
           return;
         }
 
-        const layerZeroHash = await bridgeSDK.layerZero.sendToken({
-          bridgeAddress: transferActionInfo.bridgeAddress as `0x${string}`,
-          dstEndpoint: toToken?.layerZero?.raw?.endpointID as number,
-          userAddress: address,
-          amount: parseUnits(sendValue, selectedToken.decimals),
-          walletClient,
-          publicClient,
-        });
+        let layerZeroHash = '';
+
+        if (fromEvm) {
+          if (!publicClient || !walletClient || !address) return;
+
+          layerZeroHash = await bridgeSDK.layerZero.sendEvm({
+            publicClient,
+            walletClient,
+            toAccount: toEvm ? address : toHex(new PublicKey(toAccount?.address || '').toBytes()),
+            bridgeAddress: transferActionInfo.bridgeAddress as `0x${string}`,
+            dstEndpoint: toToken?.layerZero?.raw?.endpointID as number,
+            amount: parseUnits(sendValue, selectedToken.decimals),
+          });
+        } else {
+          if (!toAccount.address || !transferActionInfo.bridgeAddress) return;
+
+          layerZeroHash = await bridgeSDK.layerZero.sendSolana({
+            connection,
+            solanaWallet,
+            toAccount: toAccount.address,
+            amount: parseUnits(sendValue, selectedToken.decimals),
+            bridgeAddress: transferActionInfo.bridgeAddress,
+            dstEndpoint: toToken?.layerZero?.raw?.endpointID as number,
+            details: transferActionInfo.details,
+          });
+        }
 
         if (layerZeroHash) {
           emit(EventTypes.TRANSACTION_BRIDGE_SUCCESS, {

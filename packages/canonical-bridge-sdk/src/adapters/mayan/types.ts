@@ -1,4 +1,5 @@
 import { ReferrerAddresses } from '@mayanfinance/swap-sdk';
+import { ILayerZeroToken } from '@/adapters/layerZero/types';
 
 export interface IMayanChainBaseToken {
   mint: string;
@@ -87,4 +88,8 @@ export interface IMayanTokenValidateParams {
   amount: number;
   fromTokenDecimals?: number;
   toTokenDecimals?: number;
+}
+
+export interface ILayerZeroQuotaInput {
+  details: Required<ILayerZeroToken['details']>
 }

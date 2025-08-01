@@ -8,6 +8,7 @@ export const EXPLORER_URL: Record<typeof BridgeList[number], string> = {
   // meson: 'https://testnet-explorer.meson.fi/swap/',
   meson: 'https://explorer.meson.fi/swap/',
   mayan: 'https://explorer.mayan.finance',
+  layerZero: 'https://layerzeroscan.com/tx/',
 };
 
 export const STARGATE_QUEUE_URL = 'https://mainnet.stargate-api.com/v1/buses/bus-drive-settings';

@@ -1,5 +1,16 @@
 # @bnb-chain/canonical-bridge-widget
 
+## 0.10.0-alpha.0
+
+### Minor Changes
+
+- Add solana <-> evm $cake support
+
+### Patch Changes
+
+- Updated dependencies
+  - @bnb-chain/canonical-bridge-sdk@0.7.0-alpha.0
+
 ## 0.9.0
 
 ### Minor Changes

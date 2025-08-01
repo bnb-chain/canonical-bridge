@@ -1,6 +1,6 @@
 {
   "name": "@bnb-chain/canonical-bridge-sdk",
-  "version": "0.6.0",
+  "version": "0.7.0-alpha.0",
   "description": "canonical bridge sdk",
   "author": "bnb-chain",
   "private": false,
@@ -38,15 +38,24 @@
   },
   "peerDependencies": {
     "axios": ">=1.7.4",
-    "viem": "^2",
+    "viem": "~2.21.14",
+    "@solana/web3.js": "~1.95.8",
+    "@solana/wallet-adapter-react": "^0.15.35"
+  },
+  "dependencies": {
+    "@layerzerolabs/lz-v2-utilities": "~3.0.119",
+    "@layerzerolabs/oft-v2-solana-sdk": "~3.0.119",
     "@mayanfinance/swap-sdk": "~10.6.1",
-    "@solana/wallet-adapter-react": "^0",
-    "@solana/web3.js": "^1"
+    "@metaplex-foundation/mpl-toolbox": "~0.9.4",
+    "@metaplex-foundation/umi": "~0.9.2",
+    "@metaplex-foundation/umi-bundle-defaults": "~0.9.2",
+    "@metaplex-foundation/umi-signer-wallet-adapters": "~0.9.2",
+    "@metaplex-foundation/umi-web3js-adapters": "~0.9.2",
+    "bs58": "~6.0.0"
   },
   "devDependencies": {
-    "@mayanfinance/swap-sdk": "~10.6.1",
-    "@solana/wallet-adapter-react": "^0",
-    "@solana/web3.js": "^1",
+    "@solana/wallet-adapter-react": "^0.15.35",
+    "@solana/web3.js": "~1.95.8",
     "@types/jest": "~29.5.14",
     "@types/react": "^18",
     "@types/react-dom": "^18",
@@ -55,7 +64,7 @@
     "jest": "~29.7.0",
     "rollup-plugin-peer-deps-external": "^2.2.4",
     "ts-jest": "~29.2.5",
-    "typescript": "^5",
+    "typescript": "~5.5.4",
     "viem": "~2.21.14",
     "vite": "^6.0.5",
     "vite-plugin-dts": "^3.6.3"

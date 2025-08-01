@@ -1,5 +1,6 @@
 import { useCallback, useMemo } from 'react';
 import { formatUnits } from 'viem';
+import { ILayerZeroToken } from '@bnb-chain/canonical-bridge-sdk';
 
 import { useAppDispatch, useAppSelector } from '@/modules/store/StoreProvider';
 import { useToTokenInfo } from '@/modules/transfer/hooks/useToTokenInfo';
@@ -48,10 +49,12 @@ export const LayerZeroOption = () => {
   const onSelectBridge = useCallback(() => {
     if (!selectedToken?.layerZero?.raw?.bridgeAddress || isError) return;
     const bridgeAddress = selectedToken.layerZero.raw?.bridgeAddress;
+    const details = selectedToken.layerZero.raw?.details || ({} as ILayerZeroToken['details']);
     dispatch(
       setTransferActionInfo({
         bridgeType: 'layerZero',
         bridgeAddress: bridgeAddress as `0x${string}`,
+        details,
       }),
     );
   }, [selectedToken, dispatch, isError]);
