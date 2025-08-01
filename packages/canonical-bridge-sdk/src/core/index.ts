@@ -18,7 +18,9 @@ import { BridgeType, IBridgeToken } from '@/shared/types';
 import { IDeBridgeEstimatedFeesInput } from '@/adapters/deBridge/types';
 import { ICBridgePeggedPairConfig } from '@/adapters/cBridge/types';
 import { Mayan } from '@/adapters/mayan';
-import { IMayanQuotaInput } from '@/adapters/mayan/types';
+import { ILayerZeroQuotaInput, IMayanQuotaInput } from '@/adapters/mayan/types';
+import { WalletContextState } from '@solana/wallet-adapter-react';
+import { Connection } from '@solana/web3.js';
 
 export * from './types';
 
@@ -194,10 +196,13 @@ export class CanonicalBridgeSDK {
     bridgeType,
     fromChainId,
     fromAccount,
+    toAccount,
     toChainId,
     sendValue,
     fromTokenSymbol,
     publicClient,
+    connection,
+    solanaWallet,
     endPointId,
     bridgeAddress,
     isPegged,
@@ -206,14 +211,18 @@ export class CanonicalBridgeSDK {
     deBridgeOpts,
     toToken,
     mayanOpts,
+                         layerZeroOpts,
   }: {
     bridgeType: BridgeType[];
     fromChainId: number;
-    fromAccount: `0x${string}`;
+    fromAccount: string;
+    toAccount: string;
     toChainId: number;
     sendValue: bigint;
     fromTokenSymbol: string;
     publicClient?: PublicClient;
+    connection: Connection;
+    solanaWallet: WalletContextState;
     endPointId?: IBridgeEndpointId;
     bridgeAddress?: IBridgeAddress;
     isPegged?: boolean;
@@ -222,6 +231,7 @@ export class CanonicalBridgeSDK {
     deBridgeOpts?: IDeBridgeEstimatedFeesInput;
     toToken?: IBridgeToken;
     mayanOpts: IMayanQuotaInput;
+    layerZeroOpts: ILayerZeroQuotaInput
   }) {
     // deBridge
     const promiseArr = [];
@@ -231,7 +241,11 @@ export class CanonicalBridgeSDK {
       bridgeType.includes('deBridge') &&
       toToken?.deBridge
     ) {
-      const debridgeFeeAPICall = this.deBridge.getEstimatedFees(deBridgeOpts);
+      const debridgeFeeAPICall = this.deBridge.getEstimatedFees({
+        ...deBridgeOpts,
+        userAddress: fromAccount,
+        toUserAddress: toAccount
+      });
       promiseArr.push(debridgeFeeAPICall);
     } else {
       promiseArr.push(new Promise((reject) => reject(null)));
@@ -269,7 +283,7 @@ export class CanonicalBridgeSDK {
         publicClient: publicClient,
         bridgeAddress: bridgeAddress.stargate,
         endPointId: endPointId.layerZeroV2,
-        receiver: fromAccount,
+        receiver: fromAccount as `0x${string}`,
         amount: sendValue,
       });
       promiseArr.push(stargateFeeAPICall);
@@ -282,15 +296,18 @@ export class CanonicalBridgeSDK {
       bridgeAddress?.layerZero &&
       endPointId?.layerZeroV1 &&
       bridgeType.includes('layerZero') &&
-      !!publicClient &&
       toToken?.layerZero
     ) {
       const layerZeroFeeAPICall = this.layerZero.getEstimateFee({
         bridgeAddress: bridgeAddress.layerZero,
         amount: sendValue,
         dstEndpoint: endPointId.layerZeroV1,
-        userAddress: fromAccount,
+        fromAccount,
+        toAccount,
         publicClient,
+        connection,
+        solanaWallet,
+        details: layerZeroOpts.details
       });
       promiseArr.push(layerZeroFeeAPICall);
     } else {
@@ -303,7 +320,10 @@ export class CanonicalBridgeSDK {
       bridgeType.includes('meson') &&
       toToken?.meson
     ) {
-      const mesonFeeAPICall = this.meson.getEstimatedFees(mesonOpts);
+      const mesonFeeAPICall = this.meson.getEstimatedFees({
+        ...mesonOpts,
+        fromAddr: fromAccount
+      });
       promiseArr.push(mesonFeeAPICall);
     } else {
       promiseArr.push(new Promise((reject) => reject(null)));
@@ -426,24 +446,5 @@ export class CanonicalBridgeSDK {
         amount,
       });
     }
-    // May implement LayerZero v2 in the future
-    else if (
-      this.layerZero &&
-      bridgeType === 'layerZero' &&
-      bridgeEndPointId?.layerZeroV1
-    ) {
-      return await this.layerZero.sendToken({
-        userAddress,
-        bridgeAddress,
-        amount,
-        dstEndpoint: bridgeEndPointId?.layerZeroV1 as number,
-        publicClient,
-        walletClient,
-      });
-    } else {
-      throw new Error('Invalid bridge inputs');
-    }
-
-    // todo add mayan
   }
 }

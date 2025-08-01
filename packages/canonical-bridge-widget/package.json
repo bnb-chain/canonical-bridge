@@ -1,6 +1,6 @@
 {
   "name": "@bnb-chain/canonical-bridge-widget",
-  "version": "0.9.0-alpha.1",
+  "version": "0.9.0",
   "description": "canonical bridge widget",
   "author": "bnb-chain",
   "private": false,
@@ -42,14 +42,23 @@
     "@emotion/react": "^11",
     "@emotion/styled": "^11",
     "@solana/spl-token": "^0",
-    "@solana/wallet-adapter-react": "^0",
-    "@solana/web3.js": "^1",
     "tronweb": "^6",
     "@tronweb3/tronwallet-adapter-react-hooks": "^1",
     "@bnb-chain/canonical-bridge-sdk": "^0.6.0"
   },
   "dependencies": {
-    "@mayanfinance/swap-sdk": "~10.6.1"
+    "@layerzerolabs/lz-definitions": "~3.0.119",
+    "@layerzerolabs/lz-v2-utilities": "~3.0.119",
+    "@layerzerolabs/oft-v2-solana-sdk": "~3.0.119",
+    "@mayanfinance/swap-sdk": "~10.6.1",
+    "@metaplex-foundation/mpl-toolbox": "~0.9.4",
+    "@metaplex-foundation/umi": "~0.9.2",
+    "@metaplex-foundation/umi-bundle-defaults": "~0.9.2",
+    "@metaplex-foundation/umi-signer-wallet-adapters": "~0.9.2",
+    "@metaplex-foundation/umi-web3js-adapters": "~0.9.2",
+    "@solana/wallet-adapter-react": "^0",
+    "@solana/web3.js": "1.95.8",
+    "bs58": "~6.0.0"
   },
   "devDependencies": {
     "@bnb-chain/canonical-bridge-sdk": "workspace:*",
@@ -61,7 +70,7 @@
     "@emotion/styled": "~11.13.0",
     "@solana/spl-token": "~0.4.9",
     "@solana/wallet-adapter-react": "~0.15.35",
-    "@solana/web3.js": "~1.95.4",
+    "@solana/web3.js": "1.95.8",
     "@tanstack/react-query": "~5.50.1",
     "@tronweb3/tronwallet-adapter-react-hooks": "~1.1.9",
     "@types/lodash": "~4.17.7",
