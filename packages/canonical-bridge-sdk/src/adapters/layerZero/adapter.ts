@@ -149,6 +149,7 @@ export class LayerZeroAdapter extends BaseAdapter<
       symbol: token.symbol,
       address: token.address,
       decimals: token.decimals,
+      details: token.details,
       ...this.getTokenDisplaySymbolAndIcon({
         chainId,
         tokenAddress: token.address,

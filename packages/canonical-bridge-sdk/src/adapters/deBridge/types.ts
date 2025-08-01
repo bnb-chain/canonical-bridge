@@ -80,7 +80,7 @@ export interface IDeBridgeEstimatedFeesInput {
   amount: bigint;
   toChainId: number;
   toTokenAddress: `0x${string}`;
-  userAddress: string;
+  userAddress?: string;
   toUserAddress?: string;
   affiliateFeePercent?: number;
   prependOperatingExpenses?: boolean;
