@@ -2,319 +2,446 @@ import { ERC20_TOKEN } from '@/abi/erc20Token';
 import { CAKE_PROXY_OFT_ABI } from '@/adapters/layerZero/abi/cakeProxyOFT';
 import {
   IGetEstimateFeeInput,
-  ISendCakeTokenInput,
+  ILayerZeroToken,
   ILayerZeroTokenValidateParams,
+  ISendEvmCakeTokenInput,
+  ISendSolanaCakeTokenInput,
 } from '@/adapters/layerZero/types';
-import { encodePacked, formatUnits, Hash, pad, parseUnits } from 'viem';
+import { Address, encodePacked, formatUnits, Hash, parseUnits, PublicClient, toHex } from 'viem';
 import { formatNumber } from '@/shared/number';
 import { isEvmAddress } from '@/shared/address';
+import { oft } from '@layerzerolabs/oft-v2-solana-sdk';
+import { createUmi } from '@metaplex-foundation/umi-bundle-defaults';
+import { Connection, PublicKey } from '@solana/web3.js';
+import { addressToBytes32, Options } from '@layerzerolabs/lz-v2-utilities';
+import { fromWeb3JsPublicKey } from '@metaplex-foundation/umi-web3js-adapters';
+import { createSignerFromWalletAdapter, walletAdapterIdentity } from '@metaplex-foundation/umi-signer-wallet-adapters';
+import {
+  findAssociatedTokenPda,
+  mplToolbox,
+  setComputeUnitLimit,
+  setComputeUnitPrice,
+} from '@metaplex-foundation/mpl-toolbox';
+import { transactionBuilder } from '@metaplex-foundation/umi';
+import bs58 from 'bs58';
+import { WalletContextState } from '@solana/wallet-adapter-react';
+import { DEFAULT_SOLANA_ADDRESS } from '@/constants';
+
+const PT_SEND = 0;
+const MSG_VALUE_SOLANA = 2_500_000n;
+const GAS_LIMIT = 200_000n;
+const MIN_AMOUNT_PRECISION = 8;
+const GAS_MULTIPLIER = 120n;
+
+type EstimateSendFeeArgs = [number, `0x${string}`, bigint, boolean, `0x${string}`];
 
 export class LayerZero {
-  /**
-   * Send token through layerZero V1 OFT
-   * https://docs.layerzero.network/v1/developers/evm/evm-guides/advanced/relayer-adapter-parameters
-   *
-   * @param userAddress User address
-   * @param bridgeAddress Bridge address
-   * @param amount Send amount
-   * @param dstEndpoint Destination endpoint
-   * @param publicClient Public client
-   * @param walletClient Wallet client
-   * @param gasAmount Gas amount
-   * @param version Relayer adapter parameters version
-   */
-  async sendToken({
-    userAddress,
-    bridgeAddress,
-    amount,
-    dstEndpoint,
-    publicClient,
-    walletClient,
-    gasAmount = 200000n,
-    version = 1,
-    airDropGas = 0n,
-    dstAddress = '0x',
-  }: ISendCakeTokenInput): Promise<Hash> {
+  private toBytes32(address: string): `0x${string}` {
+    return toHex(addressToBytes32(address));
+  }
+
+  private getAdapterParams(gasLimit: bigint, toEvm: boolean): `0x${string}` {
+    return toEvm
+      ? encodePacked(['uint16', 'uint256'], [1, gasLimit])
+      : encodePacked(
+        ['uint16', 'uint8', 'uint16', 'uint8', 'bytes'],
+        [3, 1, 33, 1, encodePacked(['uint128', 'uint128'], [gasLimit, MSG_VALUE_SOLANA])],
+      );
+  }
+
+  private async getMinDstGasLimit(
+    publicClient: PublicClient,
+    bridgeAddress: Address,
+    dstEndpoint: number,
+  ): Promise<bigint> {
+    const gasLimit = await publicClient.readContract({
+      address: bridgeAddress,
+      abi: CAKE_PROXY_OFT_ABI,
+      functionName: 'minDstGasLookup',
+      args: [dstEndpoint, PT_SEND],
+    });
+    return gasLimit !== 0n ? gasLimit : GAS_LIMIT;
+  }
+
+  private async estimateNativeFee(
+    publicClient: PublicClient,
+    bridgeAddress: Address,
+    args: EstimateSendFeeArgs,
+  ): Promise<bigint> {
+    return (await publicClient.readContract({
+      address: bridgeAddress,
+      abi: CAKE_PROXY_OFT_ABI,
+      functionName: 'estimateSendFee',
+      args,
+    }))[0];
+  }
+
+  private getSolanaPublicKeys(
+    bridgeAddress: string,
+    details: NonNullable<ILayerZeroToken['details']>,
+    solanaWallet: WalletContextState,
+  ) {
+    return {
+      tokenMint: fromWeb3JsPublicKey(new PublicKey(bridgeAddress)),
+      tokenEscrow: fromWeb3JsPublicKey(new PublicKey(details.escrowTokenAccount)),
+      oftProgramId: fromWeb3JsPublicKey(new PublicKey(details.oftProgramId)),
+      tokenProgramId: fromWeb3JsPublicKey(new PublicKey(details.innerTokenProgramId)),
+      publicKey: fromWeb3JsPublicKey(solanaWallet.publicKey || new PublicKey(DEFAULT_SOLANA_ADDRESS)),
+    };
+  }
+
+  private getMinAmount(amount: bigint): bigint {
+    return parseUnits(
+      formatNumber(Number(formatUnits(amount, 18)), MIN_AMOUNT_PRECISION, false),
+      18,
+    );
+  }
+
+  private async createSolanaUmi(
+    connection: Connection,
+    solanaWallet: WalletContextState,
+  ) {
+    return createUmi(connection.rpcEndpoint)
+      .use(mplToolbox())
+      .use(walletAdapterIdentity(solanaWallet));
+  }
+
+  async sendEvm(
+    {
+      publicClient,
+      walletClient,
+      toAccount,
+      bridgeAddress,
+      dstEndpoint,
+      amount,
+    }: ISendEvmCakeTokenInput): Promise<Hash> {
     try {
-      const address32Bytes = pad(userAddress, { size: 32 });
-      // check destination chain gas limit
-      const dstGasLimit = await publicClient.readContract({
-        address: bridgeAddress,
-        abi: CAKE_PROXY_OFT_ABI,
-        functionName: 'minDstGasLookup',
-        args: [dstEndpoint, 0],
-      });
-      const gasLimit =
-        dstGasLimit !== 0n && !!dstGasLimit ? dstGasLimit : gasAmount;
-      /* version 1 - send token
-       * version 2 - send token and air drop native gas on destination chain
-       * https://docs.layerzero.network/v1/developers/evm/evm-guides/advanced/relayer-adapter-parameters#airdrop
-       */
-      const adapterParams =
-        version === 1
-          ? encodePacked(['uint16', 'uint256'], [version, gasLimit])
-          : encodePacked(
-              ['uint16', 'uint', 'uint', 'address'],
-              [2, gasLimit, airDropGas, dstAddress]
-            );
-      const fees = await publicClient.readContract({
-        address: bridgeAddress,
-        abi: CAKE_PROXY_OFT_ABI,
-        functionName: 'estimateSendFee',
-        args: [
-          dstEndpoint,
-          address32Bytes,
-          amount,
-          false,
-          adapterParams as `0x${string}`,
-        ],
-      });
+      const fromAccount = walletClient.account?.address;
+      const toEvm = isEvmAddress(toAccount);
+      const address32Bytes = this.toBytes32(toAccount);
+      const gasLimit = await this.getMinDstGasLimit(publicClient, bridgeAddress, dstEndpoint);
+      const adapterParams = this.getAdapterParams(gasLimit, toEvm);
+      const minAmount = this.getMinAmount(amount);
+
+      const nativeFee = await this.estimateNativeFee(publicClient, bridgeAddress, [
+        dstEndpoint,
+        address32Bytes,
+        amount,
+        false,
+        adapterParams,
+      ]);
+
       const callParams = [
-        userAddress,
-        '0x0000000000000000000000000000000000000000', // zroPaymentAddress
+        fromAccount,
+        '0x0000000000000000000000000000000000000000',
         adapterParams,
       ];
-      const nativeFee = fees[0];
-      const minAmount = parseUnits(
-        String(formatNumber(Number(formatUnits(amount, 18)), 8, false)),
-        18
-      );
-      const cakeArgs = {
+
+      const contractArgs = {
         address: bridgeAddress,
         abi: CAKE_PROXY_OFT_ABI,
         functionName: 'sendFrom',
-        args: [
-          userAddress,
-          dstEndpoint,
-          address32Bytes,
-          amount,
-          minAmount,
-          callParams,
-        ],
+        args: [fromAccount, dstEndpoint, address32Bytes, amount, minAmount, callParams],
         value: nativeFee,
-        account: userAddress,
+        account: fromAccount,
       };
-      const gas = await publicClient.estimateContractGas(cakeArgs as any);
+
+      const gas = await publicClient.estimateContractGas(contractArgs as any);
       const gasPrice = await publicClient.getGasPrice();
-      const hash = await walletClient.writeContract({
-        ...(cakeArgs as any),
-        gas,
+
+      return await walletClient.writeContract({
+        ...(contractArgs as any),
+        gas: (gas * GAS_MULTIPLIER) / 100n,
         gasPrice,
       });
-      return hash;
-    } catch (error: any) {
-      throw new Error(`Failed to send CAKE token ${error}`);
+    } catch (error) {
+      throw new Error(`Failed to send EVM token: ${error}`);
     }
   }
 
-  /**
-   * Get estimate fee
-   * @param bridgeAddress Bridge address
-   * @param amount Send amount
-   * @param dstEndpoint Destination endpoint
-   * @param userAddress User address
-   * @param publicClient Public client
-   * @param gasAmount Gas amount
-   * @param version Relayer adapter parameters version
-   * @returns Estimate fee
-   */
-  async getEstimateFee({
-    bridgeAddress,
-    amount,
-    dstEndpoint,
-    userAddress,
-    publicClient,
-    gasAmount = 200000n,
-    version = 1,
-    airDropGas = 0n,
-    dstAddress = '0x',
-  }: IGetEstimateFeeInput) {
+  async sendSolana(
+    {
+      toAccount,
+      connection,
+      solanaWallet,
+      bridgeAddress,
+      dstEndpoint,
+      details,
+      amount,
+    }: ISendSolanaCakeTokenInput): Promise<string> {
     try {
-      // check destination chain gas limit
-      const dstGasLimit = await publicClient.readContract({
-        address: bridgeAddress,
-        abi: CAKE_PROXY_OFT_ABI,
-        functionName: 'minDstGasLookup',
-        args: [dstEndpoint, 0],
-      });
-      const gasLimit =
-        dstGasLimit !== 0n && !!dstGasLimit ? dstGasLimit : gasAmount;
-      const address32Bytes = pad(userAddress, { size: 32 });
-      const adapterParams =
-        version === 1
-          ? encodePacked(['uint16', 'uint256'], [version, gasLimit])
-          : encodePacked(
-              ['uint16', 'uint', 'uint', 'address'],
-              [2, gasLimit, airDropGas, dstAddress]
-            );
-      const fees = await publicClient.readContract({
-        address: bridgeAddress,
-        abi: CAKE_PROXY_OFT_ABI,
-        functionName: 'estimateSendFee',
-        args: [
-          dstEndpoint,
-          address32Bytes,
-          amount,
-          false,
-          adapterParams as `0x${string}`,
-        ],
-      });
-      return fees;
-    } catch (error: any) {
-      throw new Error(`Failed to get estimate fee ${error}`);
+      const umi = await this.createSolanaUmi(connection, solanaWallet);
+      const { tokenMint, tokenEscrow, oftProgramId, tokenProgramId, publicKey } =
+        this.getSolanaPublicKeys(bridgeAddress, details!, solanaWallet);
+
+      const recipientBytes32 = addressToBytes32(toAccount);
+      const options = Options.newOptions().addExecutorLzReceiveOption(GAS_LIMIT, 0);
+      const minAmount = this.getMinAmount(amount);
+
+      const { nativeFee } = await oft.quote(
+        umi.rpc,
+        {
+          payer: publicKey,
+          tokenMint,
+          tokenEscrow,
+        },
+        {
+          payInLzToken: false,
+          to: recipientBytes32,
+          dstEid: dstEndpoint,
+          amountLd: amount,
+          minAmountLd: minAmount,
+          options: options.toBytes(),
+        },
+        { oft: oftProgramId },
+      );
+
+      const tokenSource = findAssociatedTokenPda(umi, {
+        mint: tokenMint,
+        owner: publicKey,
+        tokenProgramId,
+      })[0];
+
+      const instruction = await oft.send(
+        umi.rpc,
+        {
+          payer: createSignerFromWalletAdapter(solanaWallet),
+          tokenMint,
+          tokenEscrow,
+          tokenSource,
+        },
+        {
+          to: recipientBytes32,
+          dstEid: dstEndpoint,
+          amountLd: amount,
+          minAmountLd: minAmount,
+          options: options.toBytes(),
+          nativeFee,
+        },
+        { oft: oftProgramId, token: tokenProgramId },
+      );
+
+      const transaction = transactionBuilder()
+        .add(setComputeUnitPrice(umi, { microLamports: 1000n }))
+        .add(setComputeUnitLimit(umi, { units: 500000 }))
+        .add([instruction]);
+
+      const { signature } = await transaction.sendAndConfirm(umi);
+      return bs58.encode(signature);
+    } catch (error) {
+      throw new Error(`Failed to send Solana token: ${error}`);
     }
   }
 
-  validateLayerZeroToken = async ({
-    fromPublicClient,
-    toPublicClient,
-    bridgeAddress,
-    fromTokenAddress,
-    fromTokenSymbol,
-    fromTokenDecimals,
-    toTokenAddress,
-    toTokenSymbol,
-    toTokenDecimals,
-    toBridgeAddress,
-    dstEndpoint,
-    amount,
-  }: ILayerZeroTokenValidateParams) => {
-    // Check amount
+  async getEstimateFee(
+    {
+      bridgeAddress,
+      amount,
+      dstEndpoint,
+      fromAccount,
+      toAccount,
+      publicClient,
+      solanaWallet,
+      connection,
+      details,
+    }: IGetEstimateFeeInput): Promise<bigint | undefined> {
+    const fromEvm = isEvmAddress(bridgeAddress);
+
+    if (!fromEvm) {
+      if (!connection || !solanaWallet || !toAccount || !details) {
+        return undefined;
+      }
+
+      try {
+        const umi = await this.createSolanaUmi(connection, solanaWallet);
+        const { tokenMint, tokenEscrow, oftProgramId, publicKey } = this.getSolanaPublicKeys(
+          bridgeAddress,
+          details,
+          solanaWallet,
+        );
+
+        const recipientBytes32 = addressToBytes32(toAccount);
+        const options = Options.newOptions().addExecutorLzReceiveOption(GAS_LIMIT, 0);
+        const minAmount = this.getMinAmount(amount);
+
+        const { nativeFee } = await oft.quote(
+          umi.rpc,
+          {
+            payer: publicKey,
+            tokenMint,
+            tokenEscrow,
+          },
+          {
+            payInLzToken: false,
+            to: recipientBytes32,
+            dstEid: dstEndpoint,
+            amountLd: amount,
+            minAmountLd: minAmount,
+            options: options.toBytes(),
+          },
+          { oft: oftProgramId },
+        );
+
+        return nativeFee;
+      } catch (error) {
+        throw new Error(`Failed to estimate Solana fee: ${error}`);
+      }
+    }
+
+    if (!publicClient) {
+      return undefined;
+    }
+
+    try {
+      const address32Bytes = this.toBytes32(fromAccount);
+      const gasLimit = await this.getMinDstGasLimit(publicClient, bridgeAddress, dstEndpoint);
+      const adapterParams = this.getAdapterParams(gasLimit, isEvmAddress(toAccount));
+
+      return await this.estimateNativeFee(publicClient, bridgeAddress, [
+        dstEndpoint,
+        address32Bytes,
+        amount,
+        false,
+        adapterParams,
+      ]);
+    } catch (error) {
+      throw new Error(`Failed to estimate EVM fee: ${error}`);
+    }
+  }
+
+  async validateLayerZeroToken(
+    {
+      fromPublicClient,
+      toPublicClient,
+      bridgeAddress,
+      fromTokenAddress,
+      fromTokenSymbol,
+      fromTokenDecimals,
+      toTokenAddress,
+      toTokenSymbol,
+      toTokenDecimals,
+      toBridgeAddress,
+      dstEndpoint,
+      amount,
+    }: ILayerZeroTokenValidateParams): Promise<boolean> {
+    // Validate amount
     if (Number(amount) <= 0) {
-      console.log('Invalid send amount');
-      return false;
-    }
-    if (
-      !fromPublicClient ||
-      !bridgeAddress ||
-      !fromTokenAddress ||
-      !fromTokenDecimals ||
-      !dstEndpoint ||
-      !toTokenAddress ||
-      !toBridgeAddress ||
-      !toTokenSymbol ||
-      !toTokenDecimals ||
-      !toPublicClient
-    ) {
-      console.log('Missing required parameters');
-      console.log('-- publicClient', fromPublicClient);
-      console.log('-- toPublicClient', toPublicClient);
-      console.log('-- bridgeAddress', bridgeAddress);
-      console.log('-- fromTokenAddress', fromTokenAddress);
-      console.log('-- fromTokenSymbol', fromTokenSymbol);
-      console.log('-- fromTokenDecimals', fromTokenDecimals);
-      console.log('-- toTokenAddress', toTokenAddress);
-      console.log('-- toBridgeAddress', toBridgeAddress);
-      console.log('-- toTokenSymbol', toTokenSymbol);
-      console.log('-- toTokenDecimals', toTokenDecimals);
-      console.log('-- dstEndpoint', dstEndpoint);
-      console.log('-- amount', amount);
-      return false;
-    }
-    // Check evm contract address
-    if (
-      !isEvmAddress(fromTokenAddress) ||
-      !isEvmAddress(toTokenAddress) ||
-      !isEvmAddress(toBridgeAddress) ||
-      !isEvmAddress(bridgeAddress)
-    ) {
-      console.log('Invalid contract address');
-      console.log('-- fromTokenAddress', fromTokenAddress);
-      console.log('-- toTokenAddress', toTokenAddress);
-      console.log('-- toBridgeAddress', toBridgeAddress);
-      console.log('-- bridgeAddress', bridgeAddress);
+      console.log('Invalid send amount:', amount);
       return false;
     }
 
-    // Check symbol from token contract address
-    const contractSymbol = await fromPublicClient.readContract({
-      address: fromTokenAddress as `0x${string}`,
-      abi: ERC20_TOKEN,
-      functionName: 'symbol',
-    });
-    if (contractSymbol.toLowerCase() !== fromTokenSymbol.toLowerCase()) {
-      console.log(
-        'Failed to match from token symbol',
+    // Determine transfer type
+    const isFromEvm = isEvmAddress(fromTokenAddress);
+    const isToEvm = isEvmAddress(toTokenAddress);
+    const isEvmToEvm = isFromEvm && isToEvm;
+    const isEvmToSolana = isFromEvm && !isToEvm;
+    const isSolanaToEvm = !isFromEvm && isToEvm;
+
+    // Validate required EVM-related parameters
+    const requiredEvmParams: Record<string, unknown> = {};
+
+    if (isEvmToEvm || isEvmToSolana) {
+      Object.assign(requiredEvmParams, {
+        fromPublicClient,
+        bridgeAddress,
+        fromTokenAddress,
         fromTokenSymbol,
-        contractSymbol
-      );
-      return false;
+        fromTokenDecimals,
+        dstEndpoint,
+      });
     }
-    const contractDecimals = await fromPublicClient.readContract({
-      address: fromTokenAddress as `0x${string}`,
-      abi: ERC20_TOKEN,
-      functionName: 'decimals',
-    });
-    if (fromTokenDecimals !== contractDecimals) {
-      console.log('Failed to match from token decimals');
-      return false;
-    }
-    // Remote contract address validation
-    const trustedRemoteAddress = await fromPublicClient.readContract({
-      address: bridgeAddress as `0x${string}`,
-      abi: CAKE_PROXY_OFT_ABI,
-      functionName: 'getTrustedRemoteAddress',
-      args: [dstEndpoint],
-    });
-    if (trustedRemoteAddress.toLowerCase() !== toBridgeAddress.toLowerCase()) {
-      console.log(
-        'Failed to match layerZero remote contract address',
-        trustedRemoteAddress,
-        toBridgeAddress
-      );
-      return false;
-    }
-    // Check to token contract address
-    const toTokenContractSymbol = await toPublicClient.readContract({
-      address: toTokenAddress as `0x${string}`,
-      abi: ERC20_TOKEN,
-      functionName: 'symbol',
-    });
-    if (toTokenContractSymbol.toLowerCase() !== toTokenSymbol.toLowerCase()) {
-      console.log(
-        'Failed to match to token symbol',
+
+    if (isEvmToEvm || isSolanaToEvm) {
+      Object.assign(requiredEvmParams, {
+        toPublicClient,
+        toBridgeAddress,
+        toTokenAddress,
         toTokenSymbol,
-        toTokenContractSymbol
-      );
-      return false;
+        toTokenDecimals,
+      });
     }
-    const toTokenContractDecimals = await toPublicClient.readContract({
-      address: toTokenAddress as `0x${string}`,
-      abi: ERC20_TOKEN,
-      functionName: 'decimals',
-    });
-    if (toTokenDecimals !== toTokenContractDecimals) {
-      console.log('Failed to match to token decimals');
-      return false;
+
+    for (const [key, value] of Object.entries(requiredEvmParams)) {
+      if (!value) {
+        console.log(`Missing required EVM parameter: ${key}`);
+        console.log('EVM Parameters:', requiredEvmParams);
+        return false;
+      }
     }
-    // Supported token validation
-    const supportedFromToken = await fromPublicClient.readContract({
-      address: bridgeAddress as `0x${string}`,
-      abi: CAKE_PROXY_OFT_ABI,
-      functionName: 'token',
-    });
-    const supportedToToken = await toPublicClient.readContract({
-      address: toBridgeAddress as `0x${string}`,
-      abi: CAKE_PROXY_OFT_ABI,
-      functionName: 'token',
-    });
-    if (
-      supportedFromToken.toLowerCase() === fromTokenAddress.toLowerCase() &&
-      supportedToToken.toLowerCase() === toTokenAddress.toLowerCase()
-    ) {
-      console.log('LayerZero token information matched');
-      console.log('From token address', fromTokenAddress, supportedFromToken);
-      console.log('To token address', toTokenAddress, supportedToToken);
+
+    // Validate EVM contract addresses
+    const evmAddresses: Record<string, string> = {};
+
+    if (isEvmToEvm || isEvmToSolana) {
+      Object.assign(evmAddresses, { bridgeAddress, fromTokenAddress });
+    }
+
+    if (isEvmToEvm || isSolanaToEvm) {
+      Object.assign(evmAddresses, { toBridgeAddress, toTokenAddress });
+    }
+
+    for (const [key, address] of Object.entries(evmAddresses)) {
+      if (!isEvmAddress(address)) {
+        console.log(`Invalid EVM contract address for ${key}:`, address);
+        return false;
+      }
+    }
+
+    try {
+      // Validate EVM token details
+      if (isEvmToEvm || isEvmToSolana) {
+        const [fromContractSymbol, fromContractDecimals] = await Promise.all([
+          fromPublicClient!.readContract({
+            address: fromTokenAddress as `0x${string}`,
+            abi: ERC20_TOKEN,
+            functionName: 'symbol',
+          }),
+          fromPublicClient!.readContract({
+            address: fromTokenAddress as `0x${string}`,
+            abi: ERC20_TOKEN,
+            functionName: 'decimals',
+          }),
+        ]);
+
+        if (fromContractSymbol.toLowerCase() !== fromTokenSymbol.toLowerCase()) {
+          console.log('From token symbol mismatch:', { expected: fromTokenSymbol, actual: fromContractSymbol });
+          return false;
+        }
+
+        if (fromContractDecimals !== fromTokenDecimals) {
+          console.log('From token decimals mismatch:', { expected: fromTokenDecimals, actual: fromContractDecimals });
+          return false;
+        }
+      }
+
+      if (isEvmToEvm || isSolanaToEvm) {
+        const [toTokenContractSymbol, toTokenContractDecimals] = await Promise.all([
+          toPublicClient!.readContract({
+            address: toTokenAddress as `0x${string}`,
+            abi: ERC20_TOKEN,
+            functionName: 'symbol',
+          }),
+          toPublicClient!.readContract({
+            address: toTokenAddress as `0x${string}`,
+            abi: ERC20_TOKEN,
+            functionName: 'decimals',
+          }),
+        ]);
+
+        if (toTokenContractSymbol.toLowerCase() !== toTokenSymbol.toLowerCase()) {
+          console.log('To token symbol mismatch:', { expected: toTokenSymbol, actual: toTokenContractSymbol });
+          return false;
+        }
+
+        if (toTokenContractDecimals !== toTokenDecimals) {
+          console.log('To token decimals mismatch:', { expected: toTokenDecimals, actual: toTokenContractDecimals });
+          return false;
+        }
+      }
       return true;
+    } catch (error) {
+      console.error('Validation error:', error);
+      return false;
     }
-    console.log('Failed to match layerZero token information');
-    console.log('-- publicClient', fromPublicClient);
-    console.log('-- bridgeAddress', bridgeAddress);
-    console.log('-- fromTokenAddress', fromTokenAddress);
-    console.log('-- fromTokenSymbol', fromTokenSymbol);
-    console.log('-- toTokenAddress', toTokenAddress);
-    console.log('-- toBridgeAddress', toBridgeAddress);
-    console.log('-- dstEndpoint', dstEndpoint);
-    return false;
-  };
+  }
 }

@@ -14,6 +14,8 @@ import { formatNumber } from '@/core/utils/number';
 import { formatFeeAmount } from '@/core/utils/string';
 import { useGetAllowance } from '@/core/contract/hooks/useGetAllowance';
 import { useIsWalletCompatible } from '@/modules/wallet/hooks/useIsWalletCompatible';
+import { useSolanaBalance } from '@/modules/wallet/hooks/useSolanaBalance';
+import { useAggregator } from '@/modules/aggregator/providers/AggregatorProvider';
 
 export const useGetLayerZeroFees = () => {
   const { address, chain } = useAccount();
@@ -27,7 +29,15 @@ export const useGetLayerZeroFees = () => {
   const fromChain = useAppSelector((state) => state.transfer.fromChain);
   const isWalletCompatible = useIsWalletCompatible();
 
-  const { data: nativeBalance } = useBalance({ address, chainId: fromChain?.id });
+  const { data: nativeEvmBalance } = useBalance({
+    address: address as `0x${string}`,
+    chainId: fromChain?.id,
+  });
+
+  const { data: nativeSolanaBalance } = useSolanaBalance();
+
+  const nativeBalance = fromChain?.chainType === 'solana' ? nativeSolanaBalance : nativeEvmBalance;
+
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const publicClient = usePublicClient({ chainId: fromChain?.id }) as any;
 
@@ -40,8 +50,13 @@ export const useGetLayerZeroFees = () => {
     sender: selectedToken?.layerZero?.raw?.bridgeAddress as `0x${string}`,
   });
 
+  const aggregator = useAggregator();
+  const nativeCurrency = aggregator.getNativeCurrency(fromChain?.id);
+
   const layerZeroFeeSorting = useCallback(
-    async (fees: any) => {
+    async (fees: bigint) => {
+      const nativeDecimals = nativeCurrency?.decimals ?? 18;
+
       let feeContent = '';
       let totalFee = null;
       let isFailedToGetGas = false;
@@ -54,20 +69,12 @@ export const useGetLayerZeroFees = () => {
       );
 
       const address32Bytes = pad(address || DEFAULT_ADDRESS, { size: 32 });
-      const dstGasLimit = await publicClient.readContract({
-        address: bridgeAddress,
-        abi: CAKE_PROXY_OFT_ABI,
-        functionName: 'minDstGasLookup',
-        args: [toTokenInfo?.layerZero?.raw?.endpointID, 0],
-      });
-      const gasLimit = dstGasLimit !== 0n && !!dstGasLimit ? dstGasLimit : 200000n;
-      const adapterParams = encodePacked(['uint16', 'uint256'], [1, gasLimit]);
       const callParams = [
         address,
         '0x0000000000000000000000000000000000000000', // zroPaymentAddress
-        adapterParams,
+        encodePacked(['uint16', 'uint256'], [1, 200000n]),
       ];
-      const nativeFee = fees[0];
+      const nativeFee = fees;
       const minAmount = parseUnits(
         String(formatNumber(Number(sendValue), 8, false)),
         selectedToken?.layerZero?.raw?.decimals ?? (18 as number),
@@ -100,7 +107,8 @@ export const useGetLayerZeroFees = () => {
           balance >= amount &&
           !!allowance &&
           allowance >= amount &&
-          selectedToken?.address !== bridgeAddress
+          selectedToken?.address !== bridgeAddress &&
+          fromChain.chainType === 'evm'
         ) {
           try {
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -127,7 +135,7 @@ export const useGetLayerZeroFees = () => {
       }
 
       if (!!nativeFee) {
-        const fee = formatUnits(nativeFee, 18);
+        const fee = formatUnits(nativeFee, nativeDecimals);
         totalFee = totalFee ? totalFee + Number(fee) : Number(fee);
         feeBreakdown.push({
           label: formatMessage({ id: 'route.option.info.native-fee' }),
@@ -148,6 +156,7 @@ export const useGetLayerZeroFees = () => {
       };
     },
     [
+      nativeCurrency?.decimals,
       dispatch,
       publicClient,
       address,
@@ -160,6 +169,7 @@ export const useGetLayerZeroFees = () => {
       balance,
       chain,
       fromChain?.id,
+      fromChain?.chainType,
       allowance,
       isWalletCompatible,
     ],
