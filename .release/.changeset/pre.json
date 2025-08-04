@@ -1,0 +1,12 @@
+{
+  "mode": "pre",
+  "tag": "alpha",
+  "initialVersions": {
+    "@bnb-chain/canonical-bridge-sdk": "0.6.0",
+    "@bnb-chain/canonical-bridge-widget": "0.9.0"
+  },
+  "changesets": [
+    "shaggy-zebras-study",
+    "wet-falcons-explode"
+  ]
+}

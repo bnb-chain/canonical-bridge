@@ -1,4 +1,4 @@
-import { BridgeType } from '@bnb-chain/canonical-bridge-sdk';
+import { BridgeType, ILayerZeroToken } from '@bnb-chain/canonical-bridge-sdk';
 import { Quote } from '@mayanfinance/swap-sdk';
 
 export interface ITransferActionInfo {
@@ -8,6 +8,7 @@ export interface ITransferActionInfo {
   bridgeType?: BridgeType;
   orderId?: string; // deBridge order id. May be used for tracking history
   quote?: Quote;
+  details?: ILayerZeroToken['details'];
 }
 
 export type IReceiveValue = {
@@ -15,10 +16,12 @@ export type IReceiveValue = {
 };
 
 export type IEstimatedAmount = {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [key in BridgeType]?: any; // TODO: response from quoteOFT
 };
 
 export type IBridgeError = {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [key in BridgeType]?: any;
 };
 
