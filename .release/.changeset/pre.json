@@ -6,6 +6,7 @@
     "@bnb-chain/canonical-bridge-widget": "0.9.0"
   },
   "changesets": [
+    "shaggy-zebras-study",
     "wet-falcons-explode"
   ]
 }
