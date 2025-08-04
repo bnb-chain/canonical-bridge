@@ -1,5 +1,17 @@
 # @bnb-chain/canonical-bridge-widget
 
+## 0.10.1
+
+### Patch Changes
+
+- Fix arbitrum eth token price
+
+## 0.10.1-alpha.0
+
+### Patch Changes
+
+- Fix arbitrum eth token price
+
 ## 0.10.0
 
 ### Minor Changes
