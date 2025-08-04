@@ -21,3 +21,5 @@ export const TRON_CHAIN_ID = 728126428;
 export const SOLANA_CHAIN_ID = 7565164;
 
 export const SOLANA_CHAIN_EID = 30168;
+
+export const DEFAULT_SOLANA_ADDRESS = 'J7JYXS8PMMBgfFKP1bqUu7mGgWyWUDL9xqfYujznc61r';

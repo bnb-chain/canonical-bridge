@@ -25,6 +25,7 @@ import {
 import { transactionBuilder } from '@metaplex-foundation/umi';
 import bs58 from 'bs58';
 import { WalletContextState } from '@solana/wallet-adapter-react';
+import { DEFAULT_SOLANA_ADDRESS } from '@/constants';
 
 const PT_SEND = 0;
 const MSG_VALUE_SOLANA = 2_500_000n;
@@ -85,7 +86,7 @@ export class LayerZero {
       tokenEscrow: fromWeb3JsPublicKey(new PublicKey(details.escrowTokenAccount)),
       oftProgramId: fromWeb3JsPublicKey(new PublicKey(details.oftProgramId)),
       tokenProgramId: fromWeb3JsPublicKey(new PublicKey(details.innerTokenProgramId)),
-      publicKey: fromWeb3JsPublicKey(solanaWallet.publicKey!),
+      publicKey: fromWeb3JsPublicKey(solanaWallet.publicKey || new PublicKey(DEFAULT_SOLANA_ADDRESS)),
     };
   }
 

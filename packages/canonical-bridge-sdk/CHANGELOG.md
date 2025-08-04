@@ -1,5 +1,27 @@
 # @bnb-chain/canonical-bridge-sdk
 
+## 0.7.0
+
+### Minor Changes
+
+- 67a5a1e: Add solana <-> evm $cake support
+
+### Patch Changes
+
+- 67a5a1e: get fee without connect wallet
+
+## 0.7.0-alpha.1
+
+### Patch Changes
+
+- 67a5a1e: get fee without connect wallet
+
+## 0.7.0-alpha.0
+
+### Minor Changes
+
+- Add solana <-> evm $cake support
+
 ## 0.6.0
 
 ### Minor Changes

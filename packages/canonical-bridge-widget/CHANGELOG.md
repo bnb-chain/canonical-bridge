@@ -1,5 +1,47 @@
 # @bnb-chain/canonical-bridge-widget
 
+## 0.10.1
+
+### Patch Changes
+
+- Fix arbitrum eth token price
+
+## 0.10.1-alpha.0
+
+### Patch Changes
+
+- Fix arbitrum eth token price
+
+## 0.10.0
+
+### Minor Changes
+
+- 67a5a1e: Add solana <-> evm $cake support
+
+### Patch Changes
+
+- Updated dependencies [67a5a1e]
+- Updated dependencies [67a5a1e]
+  - @bnb-chain/canonical-bridge-sdk@0.7.0
+
+## 0.10.0-alpha.1
+
+### Patch Changes
+
+- Updated dependencies [67a5a1e]
+  - @bnb-chain/canonical-bridge-sdk@0.7.0-alpha.1
+
+## 0.10.0-alpha.0
+
+### Minor Changes
+
+- Add solana <-> evm $cake support
+
+### Patch Changes
+
+- Updated dependencies
+  - @bnb-chain/canonical-bridge-sdk@0.7.0-alpha.0
+
 ## 0.9.0
 
 ### Minor Changes
