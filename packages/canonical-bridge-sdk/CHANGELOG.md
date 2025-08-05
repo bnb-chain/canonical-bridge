@@ -1,5 +1,17 @@
 # @bnb-chain/canonical-bridge-sdk
 
+## 0.7.1
+
+### Patch Changes
+
+- Fix debridge route bridge issue
+
+## 0.7.1-alpha.0
+
+### Patch Changes
+
+- Fix debridge route bridge issue
+
 ## 0.7.0
 
 ### Minor Changes
