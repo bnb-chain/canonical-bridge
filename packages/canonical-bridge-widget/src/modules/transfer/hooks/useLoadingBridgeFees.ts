@@ -172,7 +172,7 @@ export const useLoadingBridgeFees = () => {
                 ? toAccountRef.current || DEFAULT_SOLANA_ADDRESS
                 : toChain?.chainType === 'tron'
                 ? toAccountRef.current || DEFAULT_TRON_ADDRESS
-                : DEFAULT_ADDRESS,
+                : address || DEFAULT_ADDRESS,
             toChainId: toChain?.id,
             toToken,
             sendValue: amount,

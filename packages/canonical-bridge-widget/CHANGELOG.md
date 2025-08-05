@@ -1,5 +1,21 @@
 # @bnb-chain/canonical-bridge-widget
 
+## 0.10.2
+
+### Patch Changes
+
+- Fix debridge route bridge issue
+- Updated dependencies
+  - @bnb-chain/canonical-bridge-sdk@0.7.1
+
+## 0.10.2-alpha.0
+
+### Patch Changes
+
+- Fix debridge route bridge issue
+- Updated dependencies
+  - @bnb-chain/canonical-bridge-sdk@0.7.1-alpha.0
+
 ## 0.10.1
 
 ### Patch Changes
