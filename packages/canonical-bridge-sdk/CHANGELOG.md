@@ -1,5 +1,17 @@
 # @bnb-chain/canonical-bridge-sdk
 
+## 0.7.2
+
+### Patch Changes
+
+- Update to Account logic
+
+## 0.7.2-alpha.0
+
+### Patch Changes
+
+- Update to Account logic
+
 ## 0.7.1
 
 ### Patch Changes
