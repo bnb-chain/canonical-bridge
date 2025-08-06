@@ -211,7 +211,7 @@ export class CanonicalBridgeSDK {
     deBridgeOpts,
     toToken,
     mayanOpts,
-                         layerZeroOpts,
+    layerZeroOpts,
   }: {
     bridgeType: BridgeType[];
     fromChainId: number;
@@ -233,6 +233,10 @@ export class CanonicalBridgeSDK {
     mayanOpts: IMayanQuotaInput;
     layerZeroOpts: ILayerZeroQuotaInput
   }) {
+
+    console.log('fromAccount:', fromAccount);
+    console.log('toAccount:', toAccount);
+
     // deBridge
     const promiseArr = [];
     if (

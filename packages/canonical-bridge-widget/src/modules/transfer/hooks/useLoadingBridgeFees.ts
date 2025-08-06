@@ -40,6 +40,8 @@ import { useFailGetQuoteModal } from '@/modules/transfer/hooks/modal/useFailGetQ
 import { delay } from '@/core/utils/time';
 import { useFeeLoadTimeout } from '@/modules/transfer/hooks/modal/useFeeLoadTimeout';
 import { useGetMayanFees } from '@/modules/aggregator/adapters/mayan/hooks/useGetMayanFees';
+import { useTronTransferInfo } from '@/modules/transfer/hooks/tron/useTronTransferInfo';
+import { useSolanaTransferInfo } from '@/modules/transfer/hooks/solana/useSolanaTransferInfo';
 
 let lastTime = Date.now();
 
@@ -52,6 +54,9 @@ export const useLoadingBridgeFees = () => {
   const { address } = useAccount();
   const { address: tronAddress } = useTronWallet();
   const { address: solanaAddress } = useSolanaAccount();
+
+  const { isSolanaAvailableToAccount } = useSolanaTransferInfo();
+  const { isTronAvailableToAccount } = useTronTransferInfo();
 
   const isWalletCompatible = useIsWalletCompatible();
 
@@ -157,6 +162,39 @@ export const useLoadingBridgeFees = () => {
         }
       });
       try {
+        const getToAccount = () => {
+          if (fromChain?.chainType === 'solana') {
+            if (isSolanaAvailableToAccount) {
+              return toAccountRef.current || address || DEFAULT_ADDRESS;
+            } else {
+              return address || DEFAULT_ADDRESS;
+            }
+          }
+
+          if (fromChain?.chainType === 'tron') {
+            if (isTronAvailableToAccount) {
+              return toAccountRef.current || address || DEFAULT_ADDRESS;
+            }
+            return address || DEFAULT_ADDRESS;
+          }
+
+          if (toChain?.chainType === 'solana') {
+            if (isSolanaAvailableToAccount) {
+              return toAccountRef.current || solanaAddress || DEFAULT_SOLANA_ADDRESS;
+            }
+            return solanaAddress || DEFAULT_SOLANA_ADDRESS;
+          }
+
+          if (toChain?.chainType === 'tron') {
+            if (isTronAvailableToAccount) {
+              return toAccountRef.current || tronAddress || DEFAULT_TRON_ADDRESS;
+            }
+            return tronAddress || DEFAULT_TRON_ADDRESS;
+          }
+
+          return address || DEFAULT_ADDRESS;
+        };
+
         const loadFeeCoreFn = async () => {
           return await bridgeSDK.loadBridgeFees({
             bridgeType: bridgeTypeList,
@@ -167,12 +205,7 @@ export const useLoadingBridgeFees = () => {
                 : fromChain?.chainType === 'tron'
                 ? tronAddress || DEFAULT_TRON_ADDRESS
                 : address || DEFAULT_ADDRESS,
-            toAccount:
-              toChain?.chainType === 'solana'
-                ? toAccountRef.current || DEFAULT_SOLANA_ADDRESS
-                : toChain?.chainType === 'tron'
-                ? toAccountRef.current || DEFAULT_TRON_ADDRESS
-                : address || DEFAULT_ADDRESS,
+            toAccount: getToAccount(),
             toChainId: toChain?.id,
             toToken,
             sendValue: amount,
@@ -569,6 +602,11 @@ export const useLoadingBridgeFees = () => {
       }
     },
     [
+      isSolanaAvailableToAccount,
+      isTronAvailableToAccount,
+      connection,
+      mayanOpts,
+      solanaWallet,
       dispatch,
       selectedToken,
       fromChain,

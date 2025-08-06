@@ -1,5 +1,21 @@
 # @bnb-chain/canonical-bridge-widget
 
+## 0.10.3
+
+### Patch Changes
+
+- Update to Account logic
+- Updated dependencies
+  - @bnb-chain/canonical-bridge-sdk@0.7.2
+
+## 0.10.3-alpha.0
+
+### Patch Changes
+
+- Update to Account logic
+- Updated dependencies
+  - @bnb-chain/canonical-bridge-sdk@0.7.2-alpha.0
+
 ## 0.10.2
 
 ### Patch Changes
