@@ -1,5 +1,12 @@
 # @bnb-chain/canonical-bridge-widget
 
+## 0.10.4-alpha.0
+
+### Patch Changes
+
+- Updated dependencies [a3435be]
+  - @bnb-chain/canonical-bridge-sdk@0.7.3-alpha.0
+
 ## 0.10.3
 
 ### Patch Changes
