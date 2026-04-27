@@ -17,12 +17,13 @@ import { addressToBytes32, Options } from '@layerzerolabs/lz-v2-utilities';
 import { fromWeb3JsPublicKey } from '@metaplex-foundation/umi-web3js-adapters';
 import { createSignerFromWalletAdapter, walletAdapterIdentity } from '@metaplex-foundation/umi-signer-wallet-adapters';
 import {
+  fetchAddressLookupTable,
   findAssociatedTokenPda,
   mplToolbox,
   setComputeUnitLimit,
   setComputeUnitPrice,
 } from '@metaplex-foundation/mpl-toolbox';
-import { transactionBuilder } from '@metaplex-foundation/umi';
+import { publicKey as toUmiPublicKey, transactionBuilder } from '@metaplex-foundation/umi';
 import bs58 from 'bs58';
 import { WalletContextState } from '@solana/wallet-adapter-react';
 import { DEFAULT_SOLANA_ADDRESS } from '@/constants';
@@ -32,6 +33,9 @@ const MSG_VALUE_SOLANA = 2_500_000n;
 const GAS_LIMIT = 200_000n;
 const MIN_AMOUNT_PRECISION = 8;
 const GAS_MULTIPLIER = 120n;
+// LayerZero V2 default Address Lookup Table on Solana mainnet.
+// Required to keep the OFT send transaction under Solana's 1232-byte limit.
+const LZ_SOLANA_MAINNET_LOOKUP_TABLE = 'AokBxha6VMLLgf97B5VYHEtqztamWmYERBmmFvjuTzJB';
 
 type EstimateSendFeeArgs = [number, `0x${string}`, bigint, boolean, `0x${string}`];
 
@@ -221,10 +225,18 @@ export class LayerZero {
         { oft: oftProgramId, token: tokenProgramId },
       );
 
+      const lookupTable = await fetchAddressLookupTable(
+        umi,
+        toUmiPublicKey(LZ_SOLANA_MAINNET_LOOKUP_TABLE),
+      );
+
       const transaction = transactionBuilder()
         .add(setComputeUnitPrice(umi, { microLamports: 1000n }))
         .add(setComputeUnitLimit(umi, { units: 500000 }))
-        .add([instruction]);
+        .add([instruction])
+        .setAddressLookupTables([
+          { publicKey: lookupTable.publicKey, addresses: lookupTable.addresses },
+        ]);
 
       const { signature } = await transaction.sendAndConfirm(umi);
       return bs58.encode(signature);
