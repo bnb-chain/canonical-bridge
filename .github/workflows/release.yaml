@@ -50,7 +50,7 @@ jobs:
 
       - name: Create and publish alpha versions
         if: ${{steps.get-branch.outputs.branch == 'alpha/packages'}}
-        uses: changesets/action@v1
+        uses: changesets/action@v1.5.3
         with:
           version: pnpm ci:alpha-version
           publish: pnpm ci:publish
@@ -70,7 +70,7 @@ jobs:
 
       - name: Create and publish versions
         if: ${{steps.get-branch.outputs.branch == 'main'}}
-        uses: changesets/action@v1
+        uses: changesets/action@v1.5.3
         with:
           version: pnpm ci:stable-version
           publish: pnpm ci:publish
