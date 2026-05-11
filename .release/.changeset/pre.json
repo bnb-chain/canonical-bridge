@@ -2,10 +2,10 @@
   "mode": "pre",
   "tag": "alpha",
   "initialVersions": {
-    "@bnb-chain/canonical-bridge-sdk": "0.7.2",
-    "@bnb-chain/canonical-bridge-widget": "0.10.3"
+    "@bnb-chain/canonical-bridge-sdk": "0.7.3",
+    "@bnb-chain/canonical-bridge-widget": "0.10.4"
   },
   "changesets": [
-    "solana-lz-alt-fix"
+    "mayan-sdk-13-3-0"
   ]
 }
