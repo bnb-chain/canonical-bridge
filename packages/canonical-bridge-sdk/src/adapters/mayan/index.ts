@@ -281,7 +281,7 @@ export class Mayan {
     destAddr: string,
     fromChainId: number) {
 
-    const txPayload = getSwapFromEvmTxPayload(
+    const txPayload = await getSwapFromEvmTxPayload(
       quote,
       walletSrcAddr, // swapperAddress
       destAddr,

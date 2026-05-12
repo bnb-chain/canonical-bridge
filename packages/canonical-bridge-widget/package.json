@@ -1,6 +1,6 @@
 {
   "name": "@bnb-chain/canonical-bridge-widget",
-  "version": "0.10.4-alpha.0",
+  "version": "0.10.5-alpha.0",
   "description": "canonical bridge widget",
   "author": "bnb-chain",
   "private": false,
@@ -51,7 +51,7 @@
   "dependencies": {
     "@bnb-chain/icons": "^1.0.1",
     "@bnb-chain/space": "^1.0.3",
-    "@mayanfinance/swap-sdk": "~10.6.1",
+    "@mayanfinance/swap-sdk": "~13.3.0",
     "lodash": "~4.17.21",
     "react-virtuoso": "~4.10.4"
   },
