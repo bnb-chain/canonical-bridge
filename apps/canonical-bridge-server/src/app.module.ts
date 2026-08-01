@@ -40,7 +40,11 @@ import { BridgeModule } from '@/module/bridge/bridge.module';
       defaultJobOptions: {
         attempts: 3,
         removeOnComplete: 100,
-        removeOnFail: 10,
+        // All jobs are enqueued with fixed jobIds, and BullMQ silently drops an add()
+        // whose jobId still has a job record in ANY state. A retained failed record
+        // therefore blocks that job from ever being enqueued again until the next
+        // restart, so failed records must be removed immediately.
+        removeOnFail: true,
       },
     }),
   ],
