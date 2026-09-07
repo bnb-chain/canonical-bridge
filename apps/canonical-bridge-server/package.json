@@ -36,7 +36,7 @@
     "cache-manager": "~7.2.9",
     "express-prom-bundle": "~8.0.0",
     "ioredis": "~5.4.1",
-    "lodash": "~4.18.0",
+    "lodash": "^4.18.0",
     "prisma": "~5.19.1",
     "prom-client": "~15.1.3",
     "reflect-metadata": "^0.2.0",
