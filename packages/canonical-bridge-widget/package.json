@@ -1,6 +1,6 @@
 {
   "name": "@bnb-chain/canonical-bridge-widget",
-  "version": "0.10.3",
+  "version": "0.10.5",
   "description": "canonical bridge widget",
   "author": "bnb-chain",
   "private": false,
@@ -36,7 +36,7 @@
   "peerDependencies": {
     "react": "^18",
     "react-dom": "^18",
-    "viem": "~2.21.14",
+    "viem": "~2.55.19",
     "wagmi": "^2",
     "@tanstack/react-query": "^5",
     "@emotion/react": "^11",
@@ -46,13 +46,13 @@
     "@tronweb3/tronwallet-adapter-react-hooks": "^1",
     "@bnb-chain/canonical-bridge-sdk": "workspace:*",
     "@solana/wallet-adapter-react": "^0.15.35",
-    "@solana/web3.js": "~1.95.8"
+    "@solana/web3.js": "~1.98.4"
   },
   "dependencies": {
     "@bnb-chain/icons": "^1.0.1",
     "@bnb-chain/space": "^1.0.3",
-    "@mayanfinance/swap-sdk": "~10.6.1",
-    "lodash": "~4.17.21",
+    "@mayanfinance/swap-sdk": "~13.3.0",
+    "lodash": "~4.18.0",
     "react-virtuoso": "~4.10.4"
   },
   "devDependencies": {
@@ -63,7 +63,7 @@
     "@emotion/styled": "~11.13.0",
     "@solana/spl-token": "~0.4.9",
     "@solana/wallet-adapter-react": "^0.15.35",
-    "@solana/web3.js": "~1.95.8",
+    "@solana/web3.js": "~1.98.4",
     "@tanstack/react-query": "~5.50.1",
     "@tronweb3/tronwallet-adapter-react-hooks": "~1.1.9",
     "@types/lodash": "~4.17.7",
@@ -71,10 +71,9 @@
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "@vitejs/plugin-react": "^4.3.1",
-    "axios": "~1.7.4",
+    "axios": "~1.18.0",
     "eslint": "^8.8.0",
     "eslint-config-next": "14.2.3",
-    "ethers": "^5.7.2",
     "lint-staged": "~13.0.3",
     "polished": "~4.3.1",
     "prettier": "~2.7.1",
@@ -85,10 +84,10 @@
     "tsc-alias": "~1.8.10",
     "tsx": "~4.15.7",
     "typescript": "~5.5.4",
-    "viem": "~2.21.14",
-    "vite": "^6.0.5",
+    "viem": "~2.55.19",
+    "vite": "^6.4.3",
     "vite-plugin-css-injected-by-js": "~3.5.1",
-    "vite-plugin-dts": "^3.9.1",
+    "vite-plugin-dts": "^5.0.3",
     "wagmi": "^2.14.6"
   },
   "lint-staged": {

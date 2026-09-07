@@ -185,7 +185,7 @@ describe('LayerZero test cases', () => {
         fromTokenDecimals: 18,
         toTokenSymbol: 'CAKE',
         toTokenDecimals: 18,
-        dstEndpoint: 202,
+        dstEndpoint: 65535,
         amount: 1,
       })
     ).toBe(false);
