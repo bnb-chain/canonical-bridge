@@ -4,6 +4,8 @@ import { useAccount, useBalance, usePublicClient } from 'wagmi';
 import { BridgeType, IDeBridgeCreateQuoteResponse } from '@bnb-chain/canonical-bridge-sdk';
 import { useWallet as useTronWallet } from '@tronweb3/tronwallet-adapter-react-hooks';
 import { useIntl } from '@bnb-chain/space';
+import { useConnection } from '@solana/wallet-adapter-react';
+import { useWallet as useSolanaWallet } from '@solana/wallet-adapter-react';
 
 import { useAppDispatch, useAppSelector } from '@/modules/store/StoreProvider';
 import {
@@ -20,6 +22,7 @@ import {
   DEFAULT_ADDRESS,
   DEFAULT_SOLANA_ADDRESS,
   DEFAULT_TRON_ADDRESS,
+  SOLANA_NATIVE_TOKEN_ADDRESS,
 } from '@/core/constants';
 import { checkResponseResult, toObject } from '@/core/utils/string';
 import { useGetCBridgeFees } from '@/modules/aggregator/adapters/cBridge/hooks/useGetCBridgeFees';
@@ -32,12 +35,13 @@ import { usePreSelectRoute } from '@/modules/transfer/hooks/usePreSelectRoute';
 import { useGetNativeToken } from '@/modules/transfer/hooks/useGetNativeToken';
 import { useGetMesonFees } from '@/modules/aggregator/adapters/meson/hooks/useGetMesonFees';
 import { useSolanaAccount } from '@/modules/wallet/hooks/useSolanaAccount';
-import { useSolanaTransferInfo } from '@/modules/transfer/hooks/solana/useSolanaTransferInfo';
 import { useIsWalletCompatible } from '@/modules/wallet/hooks/useIsWalletCompatible';
 import { useFailGetQuoteModal } from '@/modules/transfer/hooks/modal/useFailGetQuoteModal';
 import { delay } from '@/core/utils/time';
 import { useFeeLoadTimeout } from '@/modules/transfer/hooks/modal/useFeeLoadTimeout';
 import { useGetMayanFees } from '@/modules/aggregator/adapters/mayan/hooks/useGetMayanFees';
+import { useTronTransferInfo } from '@/modules/transfer/hooks/tron/useTronTransferInfo';
+import { useSolanaTransferInfo } from '@/modules/transfer/hooks/solana/useSolanaTransferInfo';
 
 let lastTime = Date.now();
 
@@ -52,21 +56,19 @@ export const useLoadingBridgeFees = () => {
   const { address: solanaAddress } = useSolanaAccount();
 
   const { isSolanaAvailableToAccount } = useSolanaTransferInfo();
+  const { isTronAvailableToAccount } = useTronTransferInfo();
+
   const isWalletCompatible = useIsWalletCompatible();
 
   const bridgeSDK = useBridgeSDK();
   const {
-    http: {
-      deBridgeAccessToken,
-      deBridgeReferralCode,
-      feeReloadMaxTime = 15000,
-      mayanGasDrop = 0,
-      mayanReferrer = '',
-      mayanReferrerBps = 5,
-      mayanSlippageBps = 300,
-    },
+    http: { deBridgeAccessToken, deBridgeReferralCode, feeReloadMaxTime = 15000, mayanOpts },
   } = useBridgeConfig();
   const nativeToken = useGetNativeToken();
+
+  const { connection } = useConnection();
+  const solanaWallet = useSolanaWallet();
+
   const { deBridgeFeeSorting: _deBridgeFeeSorting } = useGetDeBridgeFees();
   const deBridgeFeeSorting = useRef(_deBridgeFeeSorting);
   deBridgeFeeSorting.current = _deBridgeFeeSorting;
@@ -160,16 +162,57 @@ export const useLoadingBridgeFees = () => {
         }
       });
       try {
+        const getToAccount = () => {
+          if (fromChain?.chainType === 'solana') {
+            if (isSolanaAvailableToAccount) {
+              return toAccountRef.current || address || DEFAULT_ADDRESS;
+            } else {
+              return address || DEFAULT_ADDRESS;
+            }
+          }
+
+          if (fromChain?.chainType === 'tron') {
+            if (isTronAvailableToAccount) {
+              return toAccountRef.current || address || DEFAULT_ADDRESS;
+            }
+            return address || DEFAULT_ADDRESS;
+          }
+
+          if (toChain?.chainType === 'solana') {
+            if (isSolanaAvailableToAccount) {
+              return toAccountRef.current || solanaAddress || DEFAULT_SOLANA_ADDRESS;
+            }
+            return solanaAddress || DEFAULT_SOLANA_ADDRESS;
+          }
+
+          if (toChain?.chainType === 'tron') {
+            if (isTronAvailableToAccount) {
+              return toAccountRef.current || tronAddress || DEFAULT_TRON_ADDRESS;
+            }
+            return tronAddress || DEFAULT_TRON_ADDRESS;
+          }
+
+          return address || DEFAULT_ADDRESS;
+        };
+
         const loadFeeCoreFn = async () => {
           return await bridgeSDK.loadBridgeFees({
             bridgeType: bridgeTypeList,
             fromChainId: fromChain.id,
-            fromAccount: address || DEFAULT_ADDRESS,
+            fromAccount:
+              fromChain.chainType === 'solana'
+                ? solanaAddress || DEFAULT_SOLANA_ADDRESS
+                : fromChain?.chainType === 'tron'
+                ? tronAddress || DEFAULT_TRON_ADDRESS
+                : address || DEFAULT_ADDRESS,
+            toAccount: getToAccount(),
             toChainId: toChain?.id,
             toToken,
             sendValue: amount,
             fromTokenSymbol: selectedToken.symbol,
             publicClient,
+            connection,
+            solanaWallet,
             endPointId: {
               layerZeroV1: toToken?.layerZero?.raw?.endpointID,
               layerZeroV2: toToken?.stargate?.raw?.endpointID,
@@ -180,14 +223,13 @@ export const useLoadingBridgeFees = () => {
             },
             isPegged: selectedToken?.isPegged,
             slippage: max_slippage,
+            layerZeroOpts: {
+              details: selectedToken?.layerZero?.raw?.details,
+            },
             mesonOpts: {
               fromToken: `${fromChain?.meson?.raw?.id}:${selectedToken?.meson?.raw?.id}`,
               toToken: `${toChain?.meson?.raw?.id}:${toToken?.meson?.raw?.id}`,
               amount: debouncedSendValue,
-              fromAddr:
-                fromChain?.chainType === 'tron'
-                  ? tronAddress ?? DEFAULT_TRON_ADDRESS
-                  : address ?? DEFAULT_ADDRESS,
             },
             deBridgeOpts: {
               fromChainId: fromChain.id,
@@ -197,31 +239,17 @@ export const useLoadingBridgeFees = () => {
               toTokenAddress: toToken?.deBridge?.raw?.address as `0x${string}`,
               accesstoken: deBridgeAccessToken,
               referralCode: deBridgeReferralCode,
-              userAddress:
-                fromChain.chainType === 'solana'
-                  ? solanaAddress || DEFAULT_SOLANA_ADDRESS
-                  : address || DEFAULT_ADDRESS,
-              toUserAddress:
-                fromChain.chainType === 'solana'
-                  ? isSolanaAvailableToAccount
-                    ? toAccountRef.current
-                    : DEFAULT_ADDRESS
-                  : toChain.chainType === 'solana'
-                  ? isSolanaAvailableToAccount
-                    ? toAccountRef.current
-                    : DEFAULT_SOLANA_ADDRESS
-                  : undefined,
             },
             mayanOpts: {
               amount: Number(debouncedSendValue),
-              fromToken: selectedToken.address,
+              fromToken:
+                selectedToken.address === SOLANA_NATIVE_TOKEN_ADDRESS
+                  ? '0x0000000000000000000000000000000000000000'
+                  : selectedToken.address,
               toToken: toToken.address,
               fromChain: fromChain.mayan?.raw?.nameId || '',
               toChain: toChain.mayan?.raw?.nameId || '',
-              slippageBps: mayanSlippageBps,
-              gasDrop: mayanGasDrop,
-              referrer: mayanReferrer,
-              referrerBps: mayanReferrerBps,
+              extra: mayanOpts,
             },
           });
         };
@@ -434,7 +462,7 @@ export const useLoadingBridgeFees = () => {
 
         // layerZero
         if (layerZeroEst.status === 'fulfilled' && layerZeroEst?.value) {
-          const nativeFee = layerZeroEst?.value[0];
+          const nativeFee = layerZeroEst?.value;
           if (
             nativeBalanceRef.current?.value &&
             nativeBalanceRef.current.value < Number(nativeFee) &&
@@ -471,7 +499,53 @@ export const useLoadingBridgeFees = () => {
         }
 
         // mayan
-        if (mayanEst.status === 'fulfilled' && mesonEst.value?.length) {
+        if (mayanEst.status === 'fulfilled' && mayanEst.value?.length) {
+          const quote = mayanEst.value[0];
+          const feeSortingRes = await mayanFeeSorting.current(quote);
+          if (!feeSortingRes?.isFailedToGetGas) {
+            dispatch(
+              setEstimatedAmount({
+                mayan: {
+                  value: quote.expectedAmountOut,
+                  wait: quote.etaSeconds,
+                  quote,
+                },
+              }),
+            );
+            valueArr.push({
+              type: 'mayan',
+              value: quote.expectedAmountOut,
+              isIgnoreSorted: feeSortingRes?.isFailedToGetGas,
+              isDisplayError: feeSortingRes?.isDisplayError,
+            });
+          } else {
+            dispatch(setEstimatedAmount({ mayan: undefined }));
+          }
+        } else if (mayanEst.status === 'rejected') {
+          if (mayanEst.reason.data?.minAmountIn) {
+            dispatch(setEstimatedAmount({ mayan: 'error' }));
+            dispatch(
+              setRouteError({
+                mayan: formatMessage(
+                  { id: 'route.error.amount.min' },
+                  { min: `${mayanEst.reason.data?.minAmountIn} ${selectedToken.symbol}` },
+                ),
+              }),
+            );
+          } else if (mayanEst.reason?.code === 'BRIDGE_LIMIT_EXCEEDED') {
+            dispatch(setEstimatedAmount({ mayan: 'error' }));
+            dispatch(
+              setRouteError({
+                mayan: mayanEst.reason?.message,
+              }),
+            );
+          } else {
+            dispatch(setRouteError({ mayan: mayanEst.reason.message }));
+            dispatch(setEstimatedAmount({ mayan: undefined }));
+            dispatch(setRouteFees({ mayan: undefined }));
+          }
+        } else {
+          dispatch(setEstimatedAmount({ mayan: undefined }));
         }
 
         // Check if pre select route is failed
@@ -528,6 +602,11 @@ export const useLoadingBridgeFees = () => {
       }
     },
     [
+      isSolanaAvailableToAccount,
+      isTronAvailableToAccount,
+      connection,
+      mayanOpts,
+      solanaWallet,
       dispatch,
       selectedToken,
       fromChain,
@@ -542,7 +621,6 @@ export const useLoadingBridgeFees = () => {
       deBridgeAccessToken,
       deBridgeReferralCode,
       solanaAddress,
-      isSolanaAvailableToAccount,
       feeReloadMaxTime,
       onOpenFeeTimeoutModal,
       formatMessage,

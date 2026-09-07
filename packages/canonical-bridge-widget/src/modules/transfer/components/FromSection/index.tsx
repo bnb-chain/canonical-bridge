@@ -2,13 +2,14 @@ import { Flex, Typography, useColorMode, useDisclosure, useIntl, useTheme } from
 
 import { SelectButton } from '@/modules/transfer/components/SelectButton';
 import { useAppSelector } from '@/modules/store/StoreProvider';
-import { reportEvent } from '@/core/utils/gtm';
 import { SourceNetworkModal } from '@/modules/aggregator/components/SelectModal/SourceNetworkModal';
+import { EventTypes, useAnalytics } from '@/core/analytics';
 
 export function FromSection() {
   const { colorMode } = useColorMode();
   const { isOpen, onClose, onOpen } = useDisclosure();
   const { formatMessage } = useIntl();
+  const { emit } = useAnalytics();
 
   const fromChain = useAppSelector((state) => state.transfer.fromChain);
   const theme = useTheme();
@@ -38,9 +39,7 @@ export function FromSection() {
         chain={fromChain}
         onClick={() => {
           onOpen();
-          reportEvent({
-            id: 'click_bridge_fromDropdown',
-          });
+          emit(EventTypes.CLICK_BRIDGE_FROM_DROPDOWN, null);
         }}
       />
       <SourceNetworkModal isOpen={isOpen} onClose={onClose} />

@@ -1,8 +1,8 @@
 import { Button, ButtonProps, useColorMode, useIntl, useTheme } from '@bnb-chain/space';
 
-import { reportEvent } from '@/core/utils/gtm';
 import { useAppSelector } from '@/modules/store/StoreProvider';
 import { useBridgeConfig } from '@/index';
+import { EventTypes, useAnalytics } from '@/core/analytics';
 
 export const WalletConnectButton = (props: ButtonProps) => {
   const { formatMessage } = useIntl();
@@ -11,6 +11,7 @@ export const WalletConnectButton = (props: ButtonProps) => {
 
   const fromChain = useAppSelector((state) => state.transfer.fromChain);
   const { onClickConnectWalletButton } = useBridgeConfig();
+  const { emit } = useAnalytics();
 
   return (
     <Button
@@ -21,11 +22,9 @@ export const WalletConnectButton = (props: ButtonProps) => {
       onClick={() => {
         onClickConnectWalletButton?.({ chainType: fromChain!.chainType, chainId: fromChain!.id });
 
-        reportEvent({
-          id: 'click_bridge_goal',
-          params: {
-            item_name: 'Connect Wallet',
-          },
+        emit(EventTypes.CLICK_BRIDGE_GOAL, {
+          ctaLabel: 'Connect Wallet',
+          item_name: 'Connect Wallet',
         });
       }}
       color={theme.colors[colorMode].button.wallet.text}

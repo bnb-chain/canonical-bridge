@@ -48,6 +48,8 @@ export const useGetReceiveAmount = () => {
           return sendValue;
         } else if (bridgeType === 'meson' && estimatedAmount?.['meson']) {
           return estimatedAmount?.['meson'];
+        } else if (bridgeType === 'mayan' && estimatedAmount?.['mayan']) {
+          return estimatedAmount?.['mayan'].value;
         }
       }
       return null;
@@ -76,6 +78,10 @@ export const useGetReceiveAmount = () => {
       meson: {
         value: Number(getReceiveAmount('meson')) ?? 0,
         isSorting: !routeError?.['meson'],
+      },
+      mayan: {
+        value: Number(getReceiveAmount('mayan')) ?? 0,
+        isSorting: !routeError?.['mayan'],
       },
     };
 

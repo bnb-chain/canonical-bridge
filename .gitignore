@@ -74,3 +74,4 @@ common/autoinstallers/*/.npmrc
 
 .pnpm-store
 .release/.npmrc
+**/**/.claude/settings.local.json

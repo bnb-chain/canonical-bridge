@@ -84,31 +84,31 @@ export class BridgeProcessor extends WorkerHost {
 
     const data = { chains: config.chains, tokens: tokenMap };
 
-    await this.cache.set(`${CACHE_KEY.DEBRIDGE_CONFIG}`, data, TIME.DAY);
+    await this.cache.set(`${CACHE_KEY.DEBRIDGE_CONFIG}`, data, TIME.WEEK);
   }
 
   async fetchCBridge() {
     const config = await this.web3Service.getTransferConfigsForAll();
     if (!config) return;
-    await this.cache.set(`${CACHE_KEY.CBRIDGE_CONFIG}`, config, TIME.DAY);
+    await this.cache.set(`${CACHE_KEY.CBRIDGE_CONFIG}`, config, TIME.WEEK);
   }
 
   async fetchStargate() {
     const config = await this.web3Service.getStargateConfigs();
     if (!config) return;
-    await this.cache.set(`${CACHE_KEY.STARGATE_CONFIG}`, config, TIME.DAY);
+    await this.cache.set(`${CACHE_KEY.STARGATE_CONFIG}`, config, TIME.WEEK);
   }
 
   async fetchMeson() {
     const config = await this.web3Service.getMesonConfigs();
     if (!config) return;
-    await this.cache.set(`${CACHE_KEY.MESON_CONFIG}`, config, TIME.DAY);
+    await this.cache.set(`${CACHE_KEY.MESON_CONFIG}`, config, TIME.WEEK);
   }
 
   async fetchMayan() {
     const config = await this.web3Service.getMayanConfigs();
     if (!config) return;
-    await this.cache.set(CACHE_KEY.MAYAN_CONFIG, config, TIME.DAY);
+    await this.cache.set(CACHE_KEY.MAYAN_CONFIG, config, TIME.WEEK);
   }
 
   private updateDeBridgeConfigManually(config?: IDeBridgeTransferConfig) {

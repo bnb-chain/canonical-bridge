@@ -1,5 +1,154 @@
 # @bnb-chain/canonical-bridge-widget
 
+## 0.10.5
+
+### Patch Changes
+
+- fc79e85: Upgrade `@mayanfinance/swap-sdk` from `~10.6.1` to `~13.3.0`. The only reachable breaking
+  change is that `getSwapFromEvmTxPayload` is now async, so the EVM swap path in the Mayan adapter
+  now `await`s the tx payload before sending. New chains (`hypercore`, `sonic`, `hyperevm`, `fogo`,
+  `ton`, `monad`) and quote types (`MONO_CHAIN`) added by the SDK are forward-compatible without
+  code changes.
+- Updated dependencies [fc79e85]
+  - @bnb-chain/canonical-bridge-sdk@0.7.4
+
+## 0.10.5-alpha.0
+
+### Patch Changes
+
+- Upgrade `@mayanfinance/swap-sdk` from `~10.6.1` to `~13.3.0`. The only reachable breaking change
+  is that `getSwapFromEvmTxPayload` is now async, so the EVM swap path in the Mayan adapter now
+  `await`s the tx payload before sending. New chains (`hypercore`, `sonic`, `hyperevm`, `fogo`,
+  `ton`, `monad`) and quote types (`MONO_CHAIN`) added by the SDK are forward-compatible without
+  code changes.
+- Updated dependencies
+  - @bnb-chain/canonical-bridge-sdk@0.7.4-alpha.0
+
+## 0.10.4-alpha.0
+
+### Patch Changes
+
+- Updated dependencies [a3435be]
+  - @bnb-chain/canonical-bridge-sdk@0.7.3-alpha.0
+
+## 0.10.3
+
+### Patch Changes
+
+- Update to Account logic
+- Updated dependencies
+  - @bnb-chain/canonical-bridge-sdk@0.7.2
+
+## 0.10.3-alpha.0
+
+### Patch Changes
+
+- Update to Account logic
+- Updated dependencies
+  - @bnb-chain/canonical-bridge-sdk@0.7.2-alpha.0
+
+## 0.10.2
+
+### Patch Changes
+
+- Fix debridge route bridge issue
+- Updated dependencies
+  - @bnb-chain/canonical-bridge-sdk@0.7.1
+
+## 0.10.2-alpha.0
+
+### Patch Changes
+
+- Fix debridge route bridge issue
+- Updated dependencies
+  - @bnb-chain/canonical-bridge-sdk@0.7.1-alpha.0
+
+## 0.10.1
+
+### Patch Changes
+
+- Fix arbitrum eth token price
+
+## 0.10.1-alpha.0
+
+### Patch Changes
+
+- Fix arbitrum eth token price
+
+## 0.10.0
+
+### Minor Changes
+
+- 67a5a1e: Add solana <-> evm $cake support
+
+### Patch Changes
+
+- Updated dependencies [67a5a1e]
+- Updated dependencies [67a5a1e]
+  - @bnb-chain/canonical-bridge-sdk@0.7.0
+
+## 0.10.0-alpha.1
+
+### Patch Changes
+
+- Updated dependencies [67a5a1e]
+  - @bnb-chain/canonical-bridge-sdk@0.7.0-alpha.1
+
+## 0.10.0-alpha.0
+
+### Minor Changes
+
+- Add solana <-> evm $cake support
+
+### Patch Changes
+
+- Updated dependencies
+  - @bnb-chain/canonical-bridge-sdk@0.7.0-alpha.0
+
+## 0.9.0
+
+### Minor Changes
+
+- c52837a: Add analytics event callback support
+
+### Patch Changes
+
+- 8c38518: Remove event field
+
+## 0.9.0-alpha.1
+
+### Patch Changes
+
+- Remove event field
+
+## 0.9.0-alpha.0
+
+### Minor Changes
+
+- Add analytics event callback support
+
+## 0.8.0
+
+### Minor Changes
+
+- c98e5d6: Add mayan route
+
+### Patch Changes
+
+- Updated dependencies [c98e5d6]
+  - @bnb-chain/canonical-bridge-sdk@0.6.0
+
+## 0.8.0-alpha.0
+
+### Minor Changes
+
+- Add mayan route
+
+### Patch Changes
+
+- Updated dependencies
+  - @bnb-chain/canonical-bridge-sdk@0.6.0-alpha.0
+
 ## 0.7.1
 
 ### Patch Changes

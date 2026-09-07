@@ -3,7 +3,7 @@ import { Box, BoxProps, IconProps, useColorMode, useTheme } from '@bnb-chain/spa
 import { useAppDispatch, useAppSelector } from '@/modules/store/StoreProvider';
 import { setIsManuallyReload, setIsRefreshing } from '@/modules/transfer/action';
 import { RefreshingIcon } from '@/modules/transfer/components/LoadingImg/RefreshingIcon';
-import { useBridgeConfig } from '@/index';
+import { EventTypes, useAnalytics, useBridgeConfig } from '@/index';
 
 export const RefreshingButton = ({
   iconProps,
@@ -20,6 +20,7 @@ export const RefreshingButton = ({
   const isRefreshing = useAppSelector((state) => state.transfer.isRefreshing);
 
   const bridgeConfig = useBridgeConfig();
+  const { emit } = useAnalytics();
 
   return transferActionInfo ? (
     <Box
@@ -35,6 +36,7 @@ export const RefreshingButton = ({
       onClick={() => {
         dispatch(setIsManuallyReload(true));
         dispatch(setIsRefreshing(true));
+        emit(EventTypes.CLICK_BRIDGE_REFRESH, null);
       }}
       {...boxProps}
     >

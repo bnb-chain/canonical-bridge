@@ -3,14 +3,15 @@ import { Box, Flex, useColorMode, useIntl, useTheme } from '@bnb-chain/space';
 import { useAppDispatch, useAppSelector } from '@/modules/store/StoreProvider';
 import { setSendValue } from '@/modules/transfer/action';
 import { formatNumber } from '@/core/utils/number';
-import { reportEvent } from '@/core/utils/gtm';
 import { useTokenBalance } from '@/modules/aggregator/providers/TokenBalancesProvider';
 import { useTokenPrice } from '@/modules/aggregator/providers/TokenPricesProvider';
+import { EventTypes, useAnalytics } from '@/core/analytics';
 
 export const MaxLink: React.FC = () => {
   const theme = useTheme();
   const selectedToken = useAppSelector((state) => state.transfer.selectedToken);
   const fromChain = useAppSelector((state) => state.transfer.fromChain);
+  const { emit } = useAnalytics();
 
   const dispatch = useAppDispatch();
   const { colorMode } = useColorMode();
@@ -31,13 +32,12 @@ export const MaxLink: React.FC = () => {
     if (!!balance && selectedToken) {
       const value = balance.toString();
       dispatch(setSendValue(value));
-      reportEvent({
-        id: 'click_bridge_max',
-        params: {
-          item_name: fromChain?.name,
-          token: selectedToken.displaySymbol,
-          value,
-        },
+      emit(EventTypes.CLICK_BRIDGE_MAX, {
+        networkName: fromChain?.name || '',
+        item_name: fromChain?.name || '',
+        token: selectedToken.displaySymbol,
+        value,
+        tokenAddress: selectedToken.address,
       });
     }
   };

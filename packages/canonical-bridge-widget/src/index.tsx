@@ -33,3 +33,5 @@ export * from '@/modules/wallet/hooks/useSolanaBalance';
 export * from '@/modules/wallet/hooks/useTronAccount';
 export * from '@/modules/wallet/hooks/useTronBalance';
 export * from '@/modules/wallet/hooks/useTronSwitchChain';
+
+export * from '@/core/analytics';

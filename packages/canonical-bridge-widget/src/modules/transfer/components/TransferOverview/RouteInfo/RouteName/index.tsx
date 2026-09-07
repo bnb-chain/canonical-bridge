@@ -1,4 +1,4 @@
-import { Box, Flex, Image, useIntl } from '@bnb-chain/space';
+import { Box, Flex, Image, useColorMode, useIntl } from '@bnb-chain/space';
 import React from 'react';
 import { BridgeType } from '@bnb-chain/canonical-bridge-sdk';
 
@@ -10,7 +10,8 @@ import { getMaxValueKey } from '@/core/utils/number';
 import { BestRouteTag } from '@/modules/transfer/components/TransferOverview/RouteInfo/RouteName/BestRouteTag';
 import { useBridgeConfig } from '@/CanonicalBridgeProvider';
 import { RedeemRatio } from '@/modules/transfer/components/TransferOverview/RouteInfo/RouteName/RedeemRatio';
-import { WormholeLogo } from '@/core/components/icons/brand/WormholeLogo';
+import { MayanLogo } from '@/core/components/icons/brand/MayanLogo';
+import { MayanWhiteLogo } from '@/core/components/icons/brand/MayanWhiteLogo';
 
 interface RouteNameProps {
   bridgeType?: BridgeType;
@@ -28,6 +29,7 @@ export const RouteName = React.memo(
     const receiveValue = getSortedReceiveAmount();
     const bestTimeRoute = useGetBestTime();
     const bestReturnRoute = getMaxValueKey(receiveValue);
+    const { colorMode } = useColorMode();
 
     return (
       <Flex
@@ -70,7 +72,14 @@ export const RouteName = React.memo(
             borderRadius={'100%'}
           />
         ) : bridgeType === 'mayan' ? (
-          <WormholeLogo w={['16px', '16px', '16px', '20px']} h={['16px', '16px', '16px', '20px']} />
+          colorMode === 'dark' ? (
+            <MayanWhiteLogo
+              w={['16px', '16px', '16px', '20px']}
+              h={['16px', '16px', '16px', '20px']}
+            />
+          ) : (
+            <MayanLogo w={['16px', '16px', '16px', '20px']} h={['16px', '16px', '16px', '20px']} />
+          )
         ) : null}
 
         <Flex

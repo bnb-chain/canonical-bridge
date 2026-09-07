@@ -61,7 +61,8 @@ export function useTokenPrice() {
         let key = '';
         const isNative = isNativeToken(tokenAddress, chainType);
         if (isNative) {
-          key = `${chainId}`;
+          // todo Arbitrum One ETH
+          key = chainId === 42161 && tokenSymbol === 'ETH' ? '1' : `${chainId}`;
         } else {
           if (chainType === 'evm') {
             key = `${chainId}:${tokenAddress.toLowerCase()}`;

@@ -6,8 +6,7 @@ import { IoredisModule } from './shared/ioredis/ioredis.module';
 import { HealthModule } from './module/health/health.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { CacheModule } from '@nestjs/cache-manager';
-import { RedisOptions } from 'ioredis';
-import { redisStore } from 'cache-manager-ioredis-yet';
+import KeyvRedis from '@keyv/redis';
 import { LoggerMiddleware } from './common/middlewares/logger.middleware';
 import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
 import { AllExceptionFilter } from './common/filters/all-exception.filter';
@@ -31,16 +30,20 @@ import { BridgeModule } from '@/module/bridge/bridge.module';
     IoredisModule,
     HealthModule,
     ScheduleModule.forRoot(),
-    CacheModule.register<RedisOptions>({
+    CacheModule.register({
       isGlobal: true,
-      store: () => redisStore({ host: REDIS_HOST, port: REDIS_PORT }),
+      stores: [new KeyvRedis(`redis://${REDIS_HOST}:${REDIS_PORT}`)],
     }),
     BullModule.forRoot({
       connection: { host: REDIS_HOST, port: REDIS_PORT },
       defaultJobOptions: {
         attempts: 3,
         removeOnComplete: 100,
-        removeOnFail: 10,
+        // All jobs are enqueued with fixed jobIds, and BullMQ silently drops an add()
+        // whose jobId still has a job record in ANY state. A retained failed record
+        // therefore blocks that job from ever being enqueued again until the next
+        // restart, so failed records must be removed immediately.
+        removeOnFail: true,
       },
     }),
   ],

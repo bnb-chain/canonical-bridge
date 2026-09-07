@@ -31,6 +31,7 @@ import { LayerZeroOption } from '@/modules/aggregator/adapters/layerZero/compone
 import { MesonOption } from '@/modules/aggregator/adapters/meson/components/MesonOption';
 import { useAggregator } from '@/modules/aggregator/providers/AggregatorProvider';
 import { CBridgeSendMaxMin } from '@/modules/aggregator/adapters/cBridge/components/CBridgeSendMaxMin';
+import { MayanOption } from '@/modules/aggregator/adapters/mayan/components/MayanOption';
 
 export interface TransferOverviewProps extends FlexProps {
   routeContentBottom?: ReactNode;
@@ -105,6 +106,9 @@ export function TransferOverview(props: TransferOverviewProps) {
       }
       if (bridge === 'meson' && estimatedAmount['meson']) {
         routes.push(<MesonOption key={'meson-option'} />);
+      }
+      if (bridge === 'mayan' && estimatedAmount['mayan']) {
+        routes.push(<MayanOption key={'mayan-option'} />);
       }
     }
     return routes;

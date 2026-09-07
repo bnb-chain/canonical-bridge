@@ -37,7 +37,7 @@ export type IMesonTransferConfig = IMesonChain[];
 export interface IGetMesonEstimateFeeInput {
   fromToken: string;
   toToken: string;
-  fromAddr: string;
+  fromAddr?: string;
   amount: string;
 }
 

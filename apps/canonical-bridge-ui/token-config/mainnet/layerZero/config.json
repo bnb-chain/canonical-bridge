@@ -87,6 +87,24 @@
         "endpointID": 183,
         "version": 1
       }
+    ],
+    "7565164": [
+      {
+        "address": "4qQeZ5LwSz6HuupUu8jCtgXyW1mYQcNbFAW1sWZp89HL",
+        "bridgeAddress": "4qQeZ5LwSz6HuupUu8jCtgXyW1mYQcNbFAW1sWZp89HL",
+        "decimals": 9,
+        "symbol": "CAKE",
+        "name": "Cake",
+        "endpointID": 30168,
+        "version": 2,
+        "details": {
+          "innerTokenProgramId": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+          "oftProgramId": "4S4vn2PZubb8BukEJsXEGdcuTYCgnnwaaona6YMLM4dS",
+          "escrowTokenAccount": "DTUCojYiwXrdNWjtA3xJ18VF7pA9u3x99b7hsV6LvvNN",
+          "oftPDA": "2r1KQ7hAPLpuWLVKpNVhKyxxCQ36mLhE74sRsa2z39Ax",
+          "mintAuthority": "2r1KQ7hAPLpuWLVKpNVhKyxxCQ36mLhE74sRsa2z39Ax"
+        }
+      }
     ]
   },
   "chains": [
@@ -115,6 +133,10 @@
     {
       "chainId": 59144,
       "chainName": "Linea"
+    },
+    {
+      "chainId": 7565164,
+      "chainName": "Solana"
     }
   ]
 }

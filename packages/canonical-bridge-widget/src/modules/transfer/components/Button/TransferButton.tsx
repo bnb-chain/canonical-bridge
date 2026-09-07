@@ -7,13 +7,13 @@ import { useWallet as useTronWallet } from '@tronweb3/tronwallet-adapter-react-h
 
 import { useAppSelector } from '@/modules/store/StoreProvider';
 import { useGetAllowance } from '@/core/contract/hooks/useGetAllowance';
-import { reportEvent } from '@/core/utils/gtm';
 import { useGetTronAllowance } from '@/modules/aggregator/adapters/meson/hooks/useGetTronAllowance';
 import { useTronTransferInfo } from '@/modules/transfer/hooks/tron/useTronTransferInfo';
 import { useTronContract } from '@/modules/aggregator/adapters/meson/hooks/useTronContract';
 import { useSolanaTransferInfo } from '@/modules/transfer/hooks/solana/useSolanaTransferInfo';
 import { useTronAccount } from '@/modules/wallet/hooks/useTronAccount';
 import { useHandleTxFailure } from '@/modules/aggregator/hooks/useHandleTxFailure';
+import { EventTypes, useAnalytics } from '@/core/analytics';
 
 export function TransferButton({
   onOpenFailedModal,
@@ -51,6 +51,8 @@ export function TransferButton({
   const toToken = useAppSelector((state) => state.transfer.toToken);
   const toTokens = useAppSelector((state) => state.transfer.toTokens);
   const isToAddressChecked = useAppSelector((state) => state.transfer.isToAddressChecked);
+
+  const { emit } = useAnalytics();
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const publicClient = usePublicClient({ chainId: fromChain?.id }) as any;
@@ -122,11 +124,9 @@ export function TransferButton({
         );
         onOpenApproveModal();
 
-        reportEvent({
-          id: 'click_bridge_goal',
-          params: {
-            item_name: 'Approval',
-          },
+        emit(EventTypes.CLICK_BRIDGE_GOAL, {
+          ctaLabel: 'Approval',
+          item_name: 'Approval',
         });
 
         return;
