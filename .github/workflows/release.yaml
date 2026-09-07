@@ -13,6 +13,7 @@ on:
 
 permissions:
   contents: write
+  id-token: write
   issues: write
   pull-requests: write
 
@@ -28,11 +29,14 @@ jobs:
       - name: Get branch name
         id: get-branch
         run: |
-          echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
+          echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> "$GITHUB_OUTPUT"
 
       - uses: ./.github/actions/setup
         with:
-          npm-token: ${{ secrets.NPM_TOKEN }}
+          node-version: '22.14.0'
+
+      - name: Setup npm for trusted publishing
+        run: npm install --global npm@11.19.1
 
       - name: Install & build
         run: |
@@ -59,7 +63,6 @@ jobs:
           cwd: '.release'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Exit pre mode
         if: ${{steps.get-branch.outputs.branch == 'main'}}
@@ -79,4 +82,3 @@ jobs:
           cwd: ${{ github.workspace }}/.release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
