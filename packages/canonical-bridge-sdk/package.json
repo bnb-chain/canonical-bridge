@@ -38,8 +38,8 @@
   },
   "peerDependencies": {
     "axios": ">=1.7.4",
-    "viem": "~2.21.14",
-    "@solana/web3.js": "~1.95.8",
+    "viem": "~2.55.19",
+    "@solana/web3.js": "~1.98.4",
     "@solana/wallet-adapter-react": "^0.15.35"
   },
   "dependencies": {
@@ -51,22 +51,23 @@
     "@metaplex-foundation/umi-bundle-defaults": "~0.9.2",
     "@metaplex-foundation/umi-signer-wallet-adapters": "~0.9.2",
     "@metaplex-foundation/umi-web3js-adapters": "~0.9.2",
-    "bs58": "~6.0.0"
+    "bs58": "~6.0.0",
+    "got": "~11.8.6"
   },
   "devDependencies": {
     "@solana/wallet-adapter-react": "^0.15.35",
-    "@solana/web3.js": "~1.95.8",
+    "@solana/web3.js": "~1.98.4",
     "@types/jest": "~29.5.14",
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "@vitejs/plugin-react": "^4.2.0",
-    "axios": "~1.7.4",
+    "axios": "~1.18.0",
     "jest": "~29.7.0",
     "rollup-plugin-peer-deps-external": "^2.2.4",
     "ts-jest": "~29.2.5",
     "typescript": "~5.5.4",
-    "viem": "~2.21.14",
-    "vite": "^6.0.5",
-    "vite-plugin-dts": "^3.6.3"
+    "viem": "~2.55.19",
+    "vite": "^6.4.3",
+    "vite-plugin-dts": "^5.0.3"
   }
 }

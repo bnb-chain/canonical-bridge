@@ -9,7 +9,7 @@ import {
 } from '@/adapters/layerZero/types';
 import { Address, encodePacked, formatUnits, Hash, parseUnits, PublicClient, toHex } from 'viem';
 import { formatNumber } from '@/shared/number';
-import { isEvmAddress } from '@/shared/address';
+import { isEvmAddress, isSolanaAddress } from '@/shared/address';
 import { oft } from '@layerzerolabs/oft-v2-solana-sdk';
 import { createUmi } from '@metaplex-foundation/umi-bundle-defaults';
 import { Connection, PublicKey } from '@solana/web3.js';
@@ -345,9 +345,22 @@ export class LayerZero {
     // Determine transfer type
     const isFromEvm = isEvmAddress(fromTokenAddress);
     const isToEvm = isEvmAddress(toTokenAddress);
+    const isFromSolana = isSolanaAddress(fromTokenAddress);
+    const isToSolana = isSolanaAddress(toTokenAddress);
+
+    if ((!isFromEvm && !isFromSolana) || (!isToEvm && !isToSolana)) {
+      console.log('Invalid source or destination token address');
+      return false;
+    }
+
     const isEvmToEvm = isFromEvm && isToEvm;
-    const isEvmToSolana = isFromEvm && !isToEvm;
-    const isSolanaToEvm = !isFromEvm && isToEvm;
+    const isEvmToSolana = isFromEvm && isToSolana;
+    const isSolanaToEvm = isFromSolana && isToEvm;
+
+    if (!isEvmToEvm && !isEvmToSolana && !isSolanaToEvm) {
+      console.log('Unsupported LayerZero transfer direction');
+      return false;
+    }
 
     // Validate required EVM-related parameters
     const requiredEvmParams: Record<string, unknown> = {};
@@ -400,6 +413,20 @@ export class LayerZero {
     }
 
     try {
+      if (isFromEvm) {
+        const trustedRemote = await fromPublicClient!.readContract({
+          address: bridgeAddress as `0x${string}`,
+          abi: CAKE_PROXY_OFT_ABI,
+          functionName: 'trustedRemoteLookup',
+          args: [dstEndpoint!],
+        });
+
+        if (trustedRemote === '0x') {
+          console.log('LayerZero destination endpoint is not trusted:', dstEndpoint);
+          return false;
+        }
+      }
+
       // Validate EVM token details
       if (isEvmToEvm || isEvmToSolana) {
         const [fromContractSymbol, fromContractDecimals] = await Promise.all([

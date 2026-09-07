@@ -40,7 +40,7 @@ export function ChooseTokenModal(props: ChooseTokenModalProps) {
 
   const tokens = useTokens();
 
-  const { isNoResult, result, keyword, onSearch } = useSearch({
+  const { isNoResult, result, onSearch } = useSearch({
     data: tokens,
     filter: (item, keyword) => {
       return (
@@ -51,7 +51,7 @@ export function ChooseTokenModal(props: ChooseTokenModalProps) {
     },
   });
 
-  const { isLoading, data } = useTokenList(result, keyword);
+  const { isLoading, data } = useTokenList(result);
 
   const evmAccount = useAccount();
   const tronAccount = useTronAccount();

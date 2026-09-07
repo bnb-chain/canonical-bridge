@@ -2,7 +2,6 @@
   "name": "changeset",
   "private": true,
   "version": "0.0.0",
-  "pnpm": {},
   "scripts": {
     "ci:enter": "pnpm changeset pre enter alpha || true",
     "ci:exit": "pnpm changeset pre exit || true",
@@ -12,6 +11,6 @@
     "ci:stable-version": "pnpm ci:exit && pnpm ci:version"
   },
   "dependencies": {
-    "@changesets/cli": "2.27.5"
+    "@changesets/cli": "2.31.1"
   }
 }
