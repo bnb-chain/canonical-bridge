@@ -1,0 +1,11 @@
+{
+  "mode": "pre",
+  "tag": "alpha",
+  "initialVersions": {
+    "@bnb-chain/canonical-bridge-sdk": "0.7.4",
+    "@bnb-chain/canonical-bridge-widget": "0.10.5"
+  },
+  "changesets": [
+    "security-dependency-upgrades"
+  ]
+}
