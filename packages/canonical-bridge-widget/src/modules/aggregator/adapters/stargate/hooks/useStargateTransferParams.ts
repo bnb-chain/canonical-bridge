@@ -1,7 +1,6 @@
 import { useAccount } from 'wagmi';
 import { useMemo } from 'react';
-import { parseUnits } from 'viem';
-import { ethers } from 'ethers';
+import { pad, parseUnits } from 'viem';
 import { IStargateParams } from '@bnb-chain/canonical-bridge-sdk';
 
 import { useAppSelector } from '@/modules/store/StoreProvider';
@@ -30,7 +29,7 @@ export const useStargateTransferParams = (): { args: IStargateParams | null } =>
     const receiver = address || DEFAULT_ADDRESS;
     return {
       dstEid: toTokenInfo?.stargate?.raw?.endpointID as number,
-      to: ethers.utils.hexZeroPad(receiver, 32) as `0x${string}`,
+      to: pad(receiver, { size: 32 }),
       amountLD: amount,
       minAmountLD: amount,
       extraOptions: '0x' as `0x${string}`,

@@ -1,0 +1,81 @@
+/**
+ * This configuration file provides settings specific to the PNPM package manager.
+ * More documentation is available at https://rushjs.io.
+ */
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/rush/v5/pnpm-config.schema.json",
+
+  "useWorkspaces": true,
+
+  /**
+   * Keep vulnerable transitive dependencies on patched releases. Selectors are
+   * major-scoped where multiple incompatible versions are present in the graph.
+   */
+  "globalOverrides": {
+    "@babel/core@7": "^7.29.6",
+    "@babel/helpers@7": "^7.26.10",
+    "@babel/plugin-transform-modules-systemjs@7": "^7.29.4",
+    "@babel/runtime@7": "^7.26.10",
+    "@coinbase/wallet-sdk@4": "^4.3.0",
+    "@metamask/sdk": "^0.33.1",
+    "@metamask/sdk-communication-layer": "^0.33.1",
+    "@protobufjs/utf8": "^1.1.1",
+    "@stablelib/ed25519": "^2.1.0",
+    "ajv@6": "^6.14.0",
+    "ajv@8": "^8.18.0",
+    "axios": "^1.18.0",
+    "base-x@3": "^3.0.11",
+    "base-x@4": "^4.0.1",
+    "base-x@5": "^5.0.1",
+    "bn.js@4": "^4.12.3",
+    "bn.js@5": "^5.2.3",
+    "body-parser@1": "^1.20.6",
+    "brace-expansion@1": "^1.1.18",
+    "brace-expansion@2": "^2.1.4",
+    "color-string": "^1.5.5",
+    "defu@6": "^6.1.5",
+    "elliptic": "^6.6.1",
+    "esbuild": "^0.25.0",
+    "fast-uri@3": "^3.1.5",
+    "flatted": "^3.4.2",
+    "follow-redirects": "^1.16.0",
+    "form-data@2": "^2.5.6",
+    "form-data@3": "^3.0.5",
+    "form-data@4": "^4.0.6",
+    "glob@10": "^10.5.0",
+    "h3@1": "^1.15.9",
+    "ip-address": "^10.3.1",
+    "js-yaml@3": "^3.15.1",
+    "js-yaml@4": "^4.3.1",
+    "lodash": "^4.18.0",
+    "lodash-es": "^4.18.0",
+    "minimatch@3": "^3.1.4",
+    "minimatch@5": "^5.1.8",
+    "minimatch@9": "^9.0.7",
+    "multer": "^2.2.0",
+    "nanoid@3": "^3.3.18",
+    "path-to-regexp@<0.2.0": "~0.1.13",
+    "pbkdf2": "^3.1.3",
+    "picomatch@2": "^2.3.2",
+    "picomatch@4": "^4.0.4",
+    "postcss@8": "^8.5.23",
+    "protobufjs@7": "^7.6.3",
+    "qs@6": "^6.15.2",
+    "rollup@4": "^4.59.0",
+    "serialize-javascript": "^7.0.5",
+    "sha.js": "^2.4.12",
+    "socket.io-parser@4": "^4.2.7",
+    "swiper": "^12.1.2",
+    "tmp": "^0.2.6",
+    "uuid": "^11.1.1",
+    "valibot": "^1.4.2",
+    "validator": "^13.15.22",
+    "vite@6": "^6.4.3",
+    "webpack@5": "^5.104.1",
+    "ws@6": "^6.2.4",
+    "ws@7": "^7.5.11",
+    "ws@8": "^8.21.0",
+    "yaml@1": "^1.10.3",
+    "yaml@2": "^2.8.3"
+  }
+}

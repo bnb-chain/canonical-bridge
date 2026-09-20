@@ -10,7 +10,7 @@ import { sortTokens } from '@/modules/aggregator/shared/sortTokens';
 import { useTokenBalance } from '@/modules/aggregator/providers/TokenBalancesProvider';
 import { useTokenPrice } from '@/modules/aggregator/providers/TokenPricesProvider';
 
-export function useTokenList(tokens: IBridgeToken[] = [], keyword?: string) {
+export function useTokenList(tokens: IBridgeToken[] = []) {
   const fromChain = useAppSelector((state) => state.transfer.fromChain);
   const selectedToken = useAppSelector((state) => state.transfer.selectedToken);
   const isLoadingTokenBalances = useAppSelector((state) => state.aggregator.isLoadingTokenBalances);
