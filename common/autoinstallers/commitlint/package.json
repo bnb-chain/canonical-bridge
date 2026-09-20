@@ -1,9 +1,40 @@
 {
   "name": "commitlint",
   "dependencies": {
-    "@commitlint/config-conventional": "^16.0.0",
-    "@microsoft/rush-lib": "^5.112.2",
-    "commitlint": "^16.0.2",
+    "@commitlint/config-conventional": "^20.5.3",
+    "@microsoft/rush-lib": "5.130.2",
+    "commitlint": "^20.5.3",
     "execa": "^5.1.1"
+  },
+  "pnpm": {
+    "overrides": {
+      "ajv@6": "^6.14.0",
+      "ajv@8": "^8.18.0",
+      "brace-expansion@1": "^1.1.18",
+      "brace-expansion@2": "^2.1.4",
+      "cross-spawn@7": "^7.0.5",
+      "diff@4": "^4.0.4",
+      "form-data@3": "^3.0.5",
+      "form-data@4": "^4.0.6",
+      "got": "^11.8.6",
+      "js-yaml@3": "^3.15.1",
+      "js-yaml@4": "^4.3.1",
+      "jsonpath-plus": "^10.3.0",
+      "jws@3": "^3.2.3",
+      "jws@4": "^4.0.1",
+      "lodash": "^4.18.0",
+      "micromatch": "^4.0.8",
+      "minimatch@3": "^3.1.4",
+      "minimatch@7": "^7.4.8",
+      "nanoid@3": "^3.3.18",
+      "picomatch@2": "^2.3.2",
+      "postcss@8": "^8.5.23",
+      "semver@7": "^7.5.2",
+      "tar": "^7.5.21",
+      "tmp": "^0.2.6",
+      "uuid": "^11.1.1",
+      "yaml@1": "^1.10.3",
+      "yaml@2": "^2.8.3"
+    }
   }
 }
