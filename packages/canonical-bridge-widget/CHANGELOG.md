@@ -1,5 +1,13 @@
 # @bnb-chain/canonical-bridge-widget
 
+## 0.10.6
+
+### Patch Changes
+
+- 866cb33: Upgrade vulnerable runtime dependencies to patched releases.
+- Updated dependencies [866cb33]
+  - @bnb-chain/canonical-bridge-sdk@0.7.5
+
 ## 0.10.5
 
 ### Patch Changes

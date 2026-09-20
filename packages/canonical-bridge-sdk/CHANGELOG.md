@@ -1,5 +1,11 @@
 # @bnb-chain/canonical-bridge-sdk
 
+## 0.7.5
+
+### Patch Changes
+
+- 866cb33: Upgrade vulnerable runtime dependencies to patched releases.
+
 ## 0.7.4
 
 ### Patch Changes
